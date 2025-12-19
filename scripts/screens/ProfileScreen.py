@@ -3032,7 +3032,10 @@ class ProfileScreen(Screens):
                                 temp_index += 1
                                 lives.append(life_names[temp_index])
                         else:
-                            lives = [life_names[index]]
+                            if index < len(life_names):
+                                lives = [life_names[index]]
+                            else:
+                                lives = ["unknown life"]
                         life_text = (
                             "lost {PRONOUN/m_c/poss} "
                             + adjust_list_text(lives)
