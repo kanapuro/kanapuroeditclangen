@@ -6,14 +6,18 @@ TODO: Docs
 
 """  # pylint: enable=line-too-long
 
-from random import choice, choices, randint, random, sample
+import logging
+import os
 import re
+from itertools import combinations
+from math import floor
+from random import choice, choices, randint, random, sample, randrange, getrandbits, gauss
+from sys import exit as sys_exit
+from typing import List, Tuple, TYPE_CHECKING, Type, Union
+
 import pygame
 import ujson
-import logging
-from sys import exit as sys_exit
-from typing import Dict
-
+from pygame_gui.core import ObjectID
 
 logger = logging.getLogger(__name__)
 from scripts.game_structure import image_cache
@@ -21,27 +25,44 @@ from scripts.cat.history import History
 from scripts.cat.names import names
 from scripts.cat.pelts import Pelt
 from scripts.cat.sprites import sprites
-from scripts.game_structure.game_essentials import game, screen_x, screen_y
+from scripts.game_structure.game_essentials import game
+import scripts.game_structure.screen_settings  # must be done like this to get updates when we change screen size etc
+
+if TYPE_CHECKING:
+    from scripts.cat.cats import Cat
 
 
 # ---------------------------------------------------------------------------- #
-#                              Counting Cats                                   #
+#                               Getting Cats                                   #
 # ---------------------------------------------------------------------------- #
+
 
 def get_alive_clan_queens(living_cats):
-    living_kits = [cat for cat in living_cats if not (cat.dead or cat.outside) and cat.status in ["kitten", "newborn"]]
+    living_kits = [
+        cat
+        for cat in living_cats
+        if not (cat.dead or cat.outside) and cat.status in ["kitten", "newborn"]
+    ]
 
     queen_dict = {}
     for cat in living_kits.copy():
         parents = cat.get_parents()
-        #Fetch parent object, only alive and not outside.
-        parents = [cat.fetch_cat(i) for i in parents if cat.fetch_cat(i) and not(cat.fetch_cat(i).dead or cat.fetch_cat(i).outside)]
+        # Fetch parent object, only alive and not outside.
+        parents = [
+            cat.fetch_cat(i)
+            for i in parents
+            if cat.fetch_cat(i)
+            and not (cat.fetch_cat(i).dead or cat.fetch_cat(i).outside)
+        ]
         if not parents:
             continue
 
-        if len(parents) == 1 or len(parents) > 2 or\
-            all(i.gender == "male" for i in parents) or\
-            parents[0].gender == "female":
+        if (
+            len(parents) == 1
+            or len(parents) > 2
+            or all(i.gender == "male" for i in parents)
+            or parents[0].gender == "female"
+        ):
             if parents[0].ID in queen_dict:
                 queen_dict[parents[0].ID].append(cat)
                 living_kits.remove(cat)
@@ -57,38 +78,40 @@ def get_alive_clan_queens(living_cats):
                 living_kits.remove(cat)
     return queen_dict, living_kits
 
-def get_alive_kits(Cat):
-    """
-    returns a list of IDs for all living kittens in the clan
-    """
-    alive_kits = [i for i in Cat.all_cats.values() if
-                  i.age in ['kitten', 'newborn'] and not i.dead and not i.outside]
 
-    return alive_kits
-
-
-def get_med_cats(Cat, working=True):
+def get_alive_status_cats(
+    Cat, get_status: list, working: bool = False, sort: bool = False
+) -> list:
     """
-    returns a list of all meds and med apps currently alive, in the clan, and able to work
-
-    set working to False if you want all meds and med apps regardless of their work status
+    returns a list of cat objects for all living cats of get_status in Clan
+    :param Cat Cat: Cat class
+    :param list get_status: list of statuses searching for
+    :param bool working: default False, set to True if you would like the list to only include working cats
+    :param bool sort: default False, set to True if you would like list sorted by descending moon age
     """
-    all_cats = Cat.all_cats.values()
-    possible_med_cats = [i for i in all_cats if
-                         i.status in ['medicine cat apprentice', 'medicine cat'] and not (i.dead or i.outside)]
+
+    alive_cats = [i for i in Cat.all_cats.values() if i.status in get_status and not i.dead and not i.outside]
 
     if working:
-        possible_med_cats = [i for i in possible_med_cats if not i.not_working()]
+        alive_cats = [i for i in alive_cats if not i.not_working()]
 
-    # Sort the cats by age before returning
-    possible_med_cats = sorted(possible_med_cats, key=lambda cat: cat.moons, reverse=True)
+    if sort:
+        alive_cats = sorted(alive_cats, key=lambda cat: cat.moons, reverse=True)
 
-    return possible_med_cats
+    return alive_cats
 
+def get_alive_cats(Cat):
+    """
+    returns a list of Cats for all living cats in the clan
+    """
+    alive_cats = [i for i in Cat.all_cats.values() if
+                  not i.dead and not i.outside]
+    return alive_cats
 
 def get_living_cat_count(Cat):
     """
-    TODO: DOCS
+    Returns the int of all living cats, both in and out of the Clan
+    :param Cat: Cat class
     """
     count = 0
     for the_cat in Cat.all_cats.values():
@@ -100,7 +123,8 @@ def get_living_cat_count(Cat):
 
 def get_living_clan_cat_count(Cat):
     """
-    TODO: DOCS
+    Returns the int of all living cats within the Clan
+    :param Cat: Cat class
     """
     count = 0
     for the_cat in Cat.all_cats.values():
@@ -110,10 +134,15 @@ def get_living_clan_cat_count(Cat):
     return count
 
 
-def get_cats_same_age(cat, range=10):  # pylint: disable=redefined-builtin
-    """Look for all cats in the Clan and returns a list of cats, which are in the same age range as the given cat."""
+def get_cats_same_age(Cat, cat, age_range=10):
+    """
+    Look for all cats in the Clan and returns a list of cats which are in the same age range as the given cat.
+    :param Cat: Cat class
+    :param cat: the given cat
+    :param int age_range: The allowed age difference between the two cats, default 10
+    """
     cats = []
-    for inter_cat in cat.all_cats.values():
+    for inter_cat in Cat.all_cats.values():
         if inter_cat.dead or inter_cat.outside or inter_cat.exiled:
             continue
         if inter_cat.ID == cat.ID:
@@ -125,7 +154,10 @@ def get_cats_same_age(cat, range=10):  # pylint: disable=redefined-builtin
                 inter_cat.create_one_relationship(cat)
             continue
 
-        if inter_cat.moons <= cat.moons + range and inter_cat.moons <= cat.moons - range:
+        if (
+            inter_cat.moons <= cat.moons + age_range
+            and inter_cat.moons <= cat.moons - age_range
+        ):
             cats.append(inter_cat)
 
     return cats
@@ -151,25 +183,93 @@ def get_free_possible_mates(cat):
     return cats
 
 
+def get_random_moon_cat(
+    Cat, main_cat, parent_child_modifier=True, mentor_app_modifier=True
+):
+    """
+    returns a random cat for use in moon events
+    :param Cat: Cat class
+    :param main_cat: cat object of main cat in event
+    :param parent_child_modifier: increase the chance of the random cat being a
+    parent of the main cat. Default True
+    :param mentor_app_modifier: increase the chance of the random cat being a mentor or
+    app of the main cat. Default True
+    """
+    random_cat = None
+
+    # grab list of possible random cats
+    possible_r_c = list(
+        filter(
+            lambda c: not c.dead
+            and not c.exiled
+            and not c.outside
+            and (c.ID != main_cat.ID),
+            Cat.all_cats.values(),
+        )
+    )
+
+    if possible_r_c:
+        random_cat = choice(possible_r_c)
+        if parent_child_modifier and not int(random() * 3):
+            possible_parents = []
+            if main_cat.parent1:
+                if Cat.fetch_cat(main_cat.parent1) in possible_r_c:
+                    possible_parents.append(main_cat.parent1)
+            if main_cat.parent2:
+                if Cat.fetch_cat(main_cat.parent2) in possible_r_c:
+                    possible_parents.append(main_cat.parent2)
+            if main_cat.adoptive_parents:
+                for parent in main_cat.adoptive_parents:
+                    if Cat.fetch_cat(parent) in possible_r_c:
+                        possible_parents.append(parent)
+            if possible_parents:
+                random_cat = Cat.fetch_cat(choice(possible_parents))
+        if mentor_app_modifier:
+            if (
+                main_cat.status
+                in ["apprentice", "mediator apprentice", "medicine cat apprentice", "queen's apprentice"]
+                and main_cat.mentor
+                and not int(random() * 3)
+            ):
+                random_cat = Cat.fetch_cat(main_cat.mentor)
+            elif main_cat.apprentice and not int(random() * 3):
+                random_cat = Cat.fetch_cat(choice(main_cat.apprentice))
+
+    if isinstance(random_cat, str):
+        print(f"WARNING: random cat was {random_cat} instead of cat object")
+        random_cat = Cat.fetch_cat(random_cat)
+    return random_cat
+
+
+def get_warring_clan():
+    """
+    returns enemy clan if a war is currently ongoing
+    """
+    enemy_clan = None
+    if game.clan.war.get("at_war", False):
+        for other_clan in game.clan.all_clans:
+            if other_clan.name == game.clan.war["enemy"]:
+                enemy_clan = other_clan
+
+    return enemy_clan
+
+
 # ---------------------------------------------------------------------------- #
 #                          Handling Outside Factors                            #
 # ---------------------------------------------------------------------------- #
+
+
 def get_current_season():
     """
     function to handle the math for finding the Clan's current season
     :return: the Clan's current season
     """
 
-    if game.config['lock_season']:
+    if game.config["lock_season"]:
         game.clan.current_season = game.clan.starting_season
         return game.clan.starting_season
 
-    modifiers = {
-        "Newleaf": 0,
-        "Greenleaf": 3,
-        "Leaf-fall": 6,
-        "Leaf-bare": 9
-    }
+    modifiers = {"Newleaf": 0, "Greenleaf": 3, "Leaf-fall": 6, "Leaf-bare": 9}
     index = game.clan.age % 12 + modifiers[game.clan.starting_season]
 
     if index > 11:
@@ -179,12 +279,16 @@ def get_current_season():
 
     return game.clan.current_season
 
+
 def change_clan_reputation(difference):
     """
     will change the Clan's reputation with outsider cats according to the difference parameter.
     """
     game.clan.reputation += difference
-
+    if game.clan.reputation < 0:
+        game.clan.reputation = 0 # clamp to 0
+    elif game.clan.reputation > 100:
+        game.clan.reputation = 100 # clamp to 100
 
 def change_clan_relations(other_clan, difference):
     """
@@ -205,50 +309,538 @@ def change_clan_relations(other_clan, difference):
     # setting it in the Clan save
     game.clan.all_clans[y].relations = clan_relations
 
-def create_new_cat(Cat,
-                   Relationship,
-                   new_name:bool=False,
-                   loner:bool=False,
-                   kittypet:bool=False,
-                   kit:bool=False,
-                   litter:bool=False,
-                   other_clan:bool=None,
-                   backstory:bool=None,
-                   status:str=None,
-                   age:int=None,
-                   gender:str=None,
-                   thought:str='Is looking around the camp with wonder',
-                   alive:bool=True,
-                   outside:bool=False,
-                   parent1:str=None,
-                   parent2:str=None
-    ) -> list:
+
+def create_new_cat_block(
+    Cat, Relationship, event, in_event_cats: dict, i: int, attribute_list: List[str]
+) -> list:
+    """
+    Creates a single new_cat block and then generates and returns the cats within the block
+    :param Cat Cat: always pass Cat class
+    :param Relationship Relationship: always pass Relationship class
+    :param event: always pass the event class
+    :param dict in_event_cats: dict containing involved cats' abbreviations as keys and cat objects as values
+    :param int i: index of the cat block
+    :param list[str] attribute_list: attribute list contained within the block
+    """
+
+    thought = "Is looking around the camp with wonder"
+    new_cats = None
+
+    # gather parents
+    parent1 = None
+    parent2 = None
+    adoptive_parents = []
+    for tag in attribute_list:
+        parent_match = re.match(r"parent:([,0-9]+)", tag)
+        adoptive_match = re.match(r"adoptive:(.+)", tag)
+        if not parent_match and not adoptive_match:
+            continue
+
+        parent_indexes = parent_match.group(1).split(",") if parent_match else []
+        adoptive_indexes = adoptive_match.group(1).split(",") if adoptive_match else []
+        if not parent_indexes and not adoptive_indexes:
+            continue
+
+        parent_indexes = [int(index) for index in parent_indexes]
+        for index in parent_indexes:
+            if index >= i:
+                continue
+
+            if parent1 is None:
+                parent1 = event.new_cats[index][0]
+            else:
+                parent2 = event.new_cats[index][0]
+
+        adoptive_indexes = [
+            int(index) if index.isdigit() else index for index in adoptive_indexes
+        ]
+        for index in adoptive_indexes:
+            if in_event_cats[index].ID not in adoptive_parents:
+                adoptive_parents.append(in_event_cats[index].ID)
+                adoptive_parents.extend(in_event_cats[index].mates)
+
+    # gather mates
+    give_mates = []
+    for tag in attribute_list:
+        match = re.match(r"mate:([_,0-9a-zA-Z]+)", tag)
+        if not match:
+            continue
+
+        mate_indexes = match.group(1).split(",")
+
+        # TODO: make this less ugly
+        for index in mate_indexes:
+            if index in in_event_cats:
+                if in_event_cats[index] in ["apprentice", "medicine cat apprentice", "mediator apprentice"]:
+                    print("Can't give apprentices mates")
+                    continue
+
+                give_mates.append(in_event_cats[index])
+
+            try:
+                index = int(index)
+            except ValueError:
+                print(f"mate-index not correct: {index}")
+                continue
+
+            if index >= i:
+                continue
+
+            give_mates.extend(event.new_cats[index])
+
+    # determine gender
+    if "male" in attribute_list:
+        gender = "male"
+    elif "female" in attribute_list:
+        gender = "female"
+    elif (
+        "can_birth" in attribute_list and not game.clan.clan_settings["same sex birth"]
+    ):
+        gender = "female"
+    else:
+        gender = None
+
+    # will the cat get a new name?
+    if "new_name" in attribute_list:
+        new_name = True
+    elif "old_name" in attribute_list:
+        new_name = False
+    else:
+        new_name = bool(getrandbits(1))
+
+    # STATUS - must be handled before backstories
+    status = None
+    for _tag in attribute_list:
+        match = re.match(r"status:(.+)", _tag)
+        if not match:
+            continue
+
+        if match.group(1) in ["newborn", "kitten", "elder", "apprentice", "warrior",
+                              "mediator apprentice", "mediator", "medicine cat apprentice",
+                              "medicine cat"]:
+            status = match.group(1)
+            break
+
+    # SET AGE
+    age = None
+    for _tag in attribute_list:
+        match = re.match(r"age:(.+)", _tag)
+        if not match:
+            continue
+
+        if match.group(1) in Cat.age_moons:
+            age = randint(Cat.age_moons[match.group(1)][0], Cat.age_moons[match.group(1)][1])
+            break
+
+        # Set same as first mate
+        if match.group(1) in ["mate", "mate_with_kits"] and give_mates:
+            age = randint(Cat.age_moons[give_mates[0].age][0],
+                          Cat.age_moons[give_mates[0].age][1])
+            break
+
+        if match.group(1) == "has_kits":
+            age = randint(19, 120)
+            break
+
+    if status and not age:
+        if status in ["apprentice", "mediator apprentice", "medicine cat apprentice"]:
+            age = randint(Cat.age_moons["adolescent"][0], Cat.age_moons["adolescent"][1])
+        elif status in ["warrior", "mediator", "medicine cat"]:
+            age = randint(Cat.age_moons["young adult"][0], Cat.age_moons["senior adult"][1])
+        elif status == "elder":
+            age = randint(Cat.age_moons["senior"][0], Cat.age_moons["senior"][1])
+
+    if "kittypet" in attribute_list:
+        cat_type = "kittypet"
+    elif "rogue" in attribute_list:
+        cat_type = "rogue"
+    elif "loner" in attribute_list:
+        cat_type = "loner"
+    elif "clancat" in attribute_list:
+        cat_type = "former Clancat"
+
+    # LIFEGEN: for encountered dead cats --
+    elif "clan_status" in attribute_list:
+        if status:
+            cat_type = status
+        else:
+            if age:
+                if age < 6:
+                    cat_type = "kitten"
+                elif age < 12:
+                    cat_type = choice(
+                        [
+                            "apprentice", "medicine cat apprentice",
+                            "mediator apprentice", "queen's apprentice"
+                        ]
+                    )
+                elif age < 120:
+                    cat_type = choice(
+                        [
+                            "warrior", "medicine cat", "mediator", "queen"
+                        ]
+                    )
+                else:
+                    cat_type = "elder"
+            else:
+                age = randint(12,100)
+                cat_type = choice(["warrior", "medicine cat", "mediator", "queen"])
+    # -------------------------------------
+
+    else:
+        cat_type = choice(['kittypet', 'loner', 'former Clancat'])
+
+    # LITTER
+    litter = False
+    if "litter" in attribute_list:
+        litter = True
+        if status not in ["kitten", "newborn"]:
+            status = "kitten"
+
+    # CHOOSE DEFAULT BACKSTORY BASED ON CAT TYPE, STATUS
+   
+    if status in ("kitten", "newborn"):
+        chosen_backstory = choice(
+            BACKSTORIES["backstory_categories"]["abandoned_backstories"]
+        )
+    elif status == "medicine cat" and cat_type == "former Clancat":
+        chosen_backstory = choice(["medicine_cat", "disgraced1"])
+    elif status == "medicine cat":
+        chosen_backstory = choice(["wandering_healer1", "wandering_healer2"])
+    else:
+        if cat_type == "former Clancat":
+            x = "former_clancat"
+        else:
+            x = cat_type
+        chosen_backstory = choice(
+            BACKSTORIES["backstory_categories"].get(f"{x}_backstories", ["outsider1"])
+        )
+
+    # OPTION TO OVERRIDE DEFAULT BACKSTORY
+    bs_override = False
+    stor = []
+    for _tag in attribute_list:
+        match = re.match(r"backstory:(.+)", _tag)
+        if match:
+            bs_list = [x for x in re.split(r", ?", match.group(1))]
+            stor = []
+            for story in bs_list:
+                if story in set(
+                        [
+                            backstory
+                            for backstory_block in BACKSTORIES[
+                            "backstory_categories"
+                        ].values()
+                            for backstory in backstory_block
+                        ]
+                ):
+                    stor.append(story)
+                elif story in BACKSTORIES["backstory_categories"]:
+                    stor.extend(BACKSTORIES["backstory_categories"][story])
+            bs_override = True
+            break
+    if bs_override:
+        chosen_backstory = choice(stor)
+
+    # KITTEN THOUGHT
+    if status in ["kitten", "newborn"]:
+        thought = "Is snuggled safe in the nursery"
+
+    # MEETING - DETERMINE IF THIS IS AN OUTSIDE CAT
+    outside = False
+    if "meeting" in attribute_list:
+        outside = True
+        status = cat_type
+        new_name = False
+        thought = "Is wondering about those new cats"
+        if age is not None and age <= 6 and not bs_override:
+            chosen_backstory = "outsider1"
+
+    # IS THE CAT DEAD?
+    alive = True
+    if "dead" in attribute_list:
+        alive = False
+        thought = "Explores a new, starry world"
+
+    # LIFEGEN: encountered dead cat residences -----------------------
+    df = False
+    encountered_dead_df = False
+    encountered_dead_sc = False
+    encountered_dead_ur = False
+
+    for _tag in attribute_list:
+        match = re.match(r"residence:(.+)", _tag)
+        if not match:
+            continue
+        if match.group(1) == "ur":
+            outside = True
+            alive = False
+            thought = "Is intrigued by the living cat they just met"
+            chosen_backstory = choice(BACKSTORIES["backstory_categories"]["starclan_backstories"])
+            encountered_dead_ur = True
+            break
+        elif match.group(1) == "df":
+            df = True
+            outside = False
+            alive = False
+            thought = "Is annoyed with the living cat they just met"
+            chosen_backstory = choice(BACKSTORIES["backstory_categories"]["df_backstories"])
+            encountered_dead_df = True
+
+            new_name = True
+            # ^^ so they get a clan cat name
+            break
+        elif match.group(1) == "sc":
+            alive = False
+            outside = False
+            df = False
+            thought = "Is curious about the living cat they just met"
+            chosen_backstory = choice(BACKSTORIES["backstory_categories"]["starclan_backstories"])
+            # its annoying i have to do this here but oh welp
+            encountered_dead_sc = True
+
+            new_name = True
+            # ^^ so they get a clan cat name
+            break
+    # ---------------------------------------------------------------------
+
+    # check if we can use an existing cat here
+    chosen_cat = None
+    if "exists" in attribute_list:
+        existing_outsiders = [i for i in Cat.all_cats.values() if i.outside and not i.dead]
+        possible_outsiders = []
+        for cat in existing_outsiders:
+            if stor and cat.backstory not in stor:
+                continue
+            if cat_type != cat.status:
+                continue
+            if gender and gender != cat.gender:
+                continue
+            if age and age not in Cat.age_moons[cat.age]:
+                continue
+            possible_outsiders.append(cat)
+
+        if possible_outsiders:
+            chosen_cat = choice(possible_outsiders)
+            game.clan.add_to_clan(chosen_cat)
+            chosen_cat.status = status
+            chosen_cat.outside = outside
+            if not alive:
+                chosen_cat.die()
+
+            if new_name:
+                name = f"{chosen_cat.name.prefix}"
+                spaces = name.count(" ")
+                if bool(getrandbits(1)) and spaces > 0:  # adding suffix to OG name
+                    # make a list of the words within the name, then add the OG name back in the list
+                    words = name.split(" ")
+                    words.append(name)
+                    new_prefix = choice(words)  # pick new prefix from that list
+                    name = new_prefix
+                    chosen_cat.name.prefix = name
+                    chosen_cat.name.give_suffix(
+                        pelt=chosen_cat.pelt,
+                        biome=game.clan.biome,
+                        tortiepattern=chosen_cat.pelt.tortiepattern
+                    )
+                else:  # completely new name
+                    chosen_cat.name.give_prefix(
+                        eyes=chosen_cat.pelt.eye_colour,
+                        colour=chosen_cat.pelt.colour,
+                        biome=game.clan.biome
+                    )
+                    chosen_cat.name.give_suffix(
+                        pelt=chosen_cat.pelt.colour,
+                        biome=game.clan.biome,
+                        tortiepattern=chosen_cat.pelt.tortiepattern
+                    )
+
+            new_cats = [chosen_cat]
+
+    # Now we generate the new cat
+    if not chosen_cat:
+        new_cats = create_new_cat(
+            Cat,
+            new_name=new_name,
+            loner=cat_type in ["loner", "rogue"],
+            kittypet=cat_type == "kittypet",
+            other_clan=cat_type == "former Clancat",
+            kit=False if litter else status in ["kitten", "newborn"],
+            # this is for singular kits, litters need this to be false
+            litter=litter,
+            backstory=chosen_backstory,
+            status=status,
+            age=age,
+            gender=gender,
+            thought=thought,
+            alive=alive,
+            df=df,
+            outside=outside,
+            parent1=parent1.ID if parent1 else None,
+            parent2=parent2.ID if parent2 else None,
+            adoptive_parents=adoptive_parents if adoptive_parents else None,
+        )
+
+        # NEXT
+        # add relations to bio parents, if needed
+        # add relations to cats generated within the same block, as they are littermates
+        # add mates
+        # THIS DOES NOT ADD RELATIONS TO CATS IN THE EVENT, those are added within the relationships block of the event
+
+        for n_c in new_cats:
+
+            # LIFEGEN: encountered dead cat stuff -----------------------------
+            beginning = History.get_beginning(n_c)
+            if encountered_dead_df or encountered_dead_sc or encountered_dead_ur:
+                beginning['encountered'] = True
+            else:
+                beginning['encountered'] = False
+
+            if "encountered" in beginning:
+                if beginning["encountered"] is True:
+                    if n_c.parent2 != game.clan.your_cat.ID:
+                        n_c.dead_for = randint(50,140)
+                    n_c.dead = True
+                    n_c.status = status
+
+                    if n_c.parent2 == game.clan.your_cat.ID:
+                        n_c.thought = "Just met their parent!"
+                        n_c.dead_for = n_c.moons
+            # ------------------------------------------------------------------
+
+            # SET MATES
+            for inter_cat in give_mates:
+                if n_c == inter_cat or n_c.ID in inter_cat.mates:
+                    continue
+
+                # this is some duplicate work, since this triggers inheritance re-calcs
+                # TODO: optimize
+                n_c.set_mate(inter_cat)
+
+            # LITTERMATES
+            for inter_cat in new_cats:
+                if n_c == inter_cat:
+                    continue
+
+                y = randrange(0, 20)
+                start_relation = Relationship(n_c, inter_cat, False, True)
+                start_relation.platonic_like += 30 + y
+                start_relation.comfortable = 10 + y
+                start_relation.admiration = 15 + y
+                start_relation.trust = 10 + y
+                n_c.relationships[inter_cat.ID] = start_relation
+
+            # BIO PARENTS
+            for par in (parent1, parent2):
+                if not par:
+                    continue
+
+                y = randrange(0, 20)
+                start_relation = Relationship(par, n_c, False, True)
+                start_relation.platonic_like += 30 + y
+                start_relation.comfortable = 10 + y
+                start_relation.admiration = 15 + y
+                start_relation.trust = 10 + y
+                par.relationships[n_c.ID] = start_relation
+
+                y = randrange(0, 20)
+                start_relation = Relationship(n_c, par, False, True)
+                start_relation.platonic_like += 30 + y
+                start_relation.comfortable = 10 + y
+                start_relation.admiration = 15 + y
+                start_relation.trust = 10 + y
+                n_c.relationships[par.ID] = start_relation
+
+            # ADOPTIVE PARENTS
+            for par in adoptive_parents:
+                if not par:
+                    continue
+
+                par = Cat.fetch_cat(par)
+
+                y = randrange(0, 20)
+                start_relation = Relationship(par, n_c, False, True)
+                start_relation.platonic_like += 30 + y
+                start_relation.comfortable = 10 + y
+                start_relation.admiration = 15 + y
+                start_relation.trust = 10 + y
+                par.relationships[n_c.ID] = start_relation
+
+                y = randrange(0, 20)
+                start_relation = Relationship(n_c, par, False, True)
+                start_relation.platonic_like += 30 + y
+                start_relation.comfortable = 10 + y
+                start_relation.admiration = 15 + y
+                start_relation.trust = 10 + y
+                n_c.relationships[par.ID] = start_relation
+
+            # UPDATE INHERITANCE
+            n_c.create_inheritance_new_cat()
+
+    return new_cats
+
+
+def get_other_clan(clan_name):
+    """
+    returns the clan object of given clan name
+    """
+    for clan in game.clan.all_clans:
+        if clan.name == clan_name:
+            return clan
+
+
+def create_new_cat(
+    Cat,
+    new_name: bool = False,
+    loner: bool = False,
+    kittypet: bool = False,
+    kit: bool = False,
+    litter: bool = False,
+    other_clan: bool = None,
+    backstory: bool = None,
+    status: str = None,
+    age: int = None,
+    gender: str = None,
+    thought: str = "Is looking around the camp with wonder",
+    alive: bool = True,
+    # LG
+    df: bool = False,
+    # ---
+    outside: bool = False,
+    parent1: str = None,
+    parent2: str = None,
+    adoptive_parents: list = None,
+) -> list:
     """
     This function creates new cats and then returns a list of those cats
-    :param Cat: pass the Cat class
-    :params Relationship: pass the Relationship class
-    :param new_name: set True if cat(s) is a loner/rogue receiving a new Clan name - default: False
-    :param loner: set True if cat(s) is a loner or rogue - default: False
-    :param kittypet: set True if cat(s) is a kittypet - default: False
-    :param kit: set True if the cat is a lone kitten - default: False
-    :param litter: set True if a litter of kittens needs to be generated - default: False
-    :param other_clan: if new cat(s) are from a neighboring clan, set true
-    :param backstory: a list of possible backstories.json for the new cat(s) - default: None
-    :param status: set as the rank you want the new cat to have - default: None (will cause a random status to be picked)
-    :param age: set the age of the new cat(s) - default: None (will be random or if kit/litter is true, will be kitten.
-    :param gender: set the gender (BIRTH SEX) of the cat - default: None (will be random)
-    :param thought: if you need to give a custom "welcome" thought, set it here
-    :param alive: set this as False to generate the cat as already dead - default: True (alive)
-    :param outside: set this as True to generate the cat as an outsider instead of as part of the Clan - default: False (Clan cat)
-    :param parent1: Cat ID to set as the biological parent1
-    :param parent2: Cat ID object to set as the biological parert2
+    :param Cat Cat: pass the Cat class
+    :params Relationship Relationship: pass the Relationship class
+    :param bool new_name: set True if cat(s) is a loner/rogue receiving a new Clan name - default: False
+    :param bool loner: set True if cat(s) is a loner or rogue - default: False
+    :param bool kittypet: set True if cat(s) is a kittypet - default: False
+    :param bool kit: set True if the cat is a lone kitten - default: False
+    :param bool litter: set True if a litter of kittens needs to be generated - default: False
+    :param bool other_clan: if new cat(s) are from a neighboring clan, set true
+    :param bool backstory: a list of possible backstories.json for the new cat(s) - default: None
+    :param str status: set as the rank you want the new cat to have - default: None (will cause a random status to be picked)
+    :param int age: set the age of the new cat(s) - default: None (will be random or if kit/litter is true, will be kitten.
+    :param str gender: set the gender (BIRTH SEX) of the cat - default: None (will be random)
+    :param str thought: if you need to give a custom "welcome" thought, set it here
+    :param bool alive: set this as False to generate the cat as already dead - default: True (alive)
+    :param bool outside: set this as True to generate the cat as an outsider instead of as part of the Clan - default: False (Clan cat)
+    :param str parent1: Cat ID to set as the biological parent1
+    :param str parent2: Cat ID to set as the biological parent2
+    :param list adoptive_parents: Cat IDs to set as adoptive parents
     """
+    # TODO: it would be nice to rewrite this to be less bool-centric
     accessory = None
     if isinstance(backstory, list):
         backstory = choice(backstory)
 
     if backstory in (
-            BACKSTORIES["backstory_categories"]["former_clancat_backstories"] or BACKSTORIES["backstory_categories"]["otherclan_categories"]):
+        BACKSTORIES["backstory_categories"]["former_clancat_backstories"]
+        or BACKSTORIES["backstory_categories"]["otherclan_categories"]
+    ):
         other_clan = True
 
     created_cats = []
@@ -258,19 +850,18 @@ def create_new_cat(Cat,
     else:
         number_of_cats = choices([2, 3, 4, 5], [5, 4, 1, 1], k=1)[0]
 
-
     if not isinstance(age, int):
         if status == "newborn":
             age = 0
         elif litter or kit:
             age = randint(1, 5)
-        elif status in ('apprentice', 'medicine cat apprentice', 'mediator apprentice'):
+        elif status in ("apprentice", "medicine cat apprentice", "mediator apprentice"):
             age = randint(6, 11)
-        elif status == 'warrior':
+        elif status == "warrior":
             age = randint(23, 120)
-        elif status == 'medicine cat':
+        elif status == "medicine cat":
             age = randint(23, 140)
-        elif status == 'elder':
+        elif status == "elder":
             age = randint(120, 130)
         else:
             age = randint(6, 120)
@@ -286,39 +877,45 @@ def create_new_cat(Cat,
         elif age >= 12:
             status = "warrior"
         elif age >= 120:
-            status = 'elder'
+            status = "elder"
 
     # cat creation and naming time
     for index in range(number_of_cats):
         # setting gender
         if not gender:
-            _gender = choice(['female', 'male'])
+            _gender = choice(["female", "male"])
         else:
             _gender = gender
-
+    
         # other Clan cats, apps, and kittens (kittens and apps get indoctrinated lmao no old names for them)
         if other_clan or kit or litter or age < 12 and not (loner or kittypet):
-            new_cat = Cat(moons=age,
-                          status=status,
-                          gender=_gender,
-                          backstory=backstory,
-                          parent1=parent1,
-                          parent2=parent2)
+            new_cat = Cat(
+                moons=age,
+                status=status,
+                gender=_gender,
+                backstory=backstory,
+                parent1=parent1,
+                parent2=parent2,
+                adoptive_parents=adoptive_parents if adoptive_parents else [],
+            )
         else:
             # grab starting names and accs for loners/kittypets
             if kittypet:
                 name = choice(names.names_dict["loner_names"])
-                if choice([1, 2]) == 1:
+                if bool(getrandbits(1)):
                     accessory = choice(Pelt.collars)
-            elif loner and choice([1, 2]) == 1:  # try to give name from full loner name list
+            elif loner and bool(
+                getrandbits(1)
+            ):  # try to give name from full loner name list
                 name = choice(names.names_dict["loner_names"])
             else:
                 name = choice(
-                    names.names_dict["normal_prefixes"])  # otherwise give name from prefix list (more nature-y names)
+                    names.names_dict["normal_prefixes"]
+                )  # otherwise give name from prefix list (more nature-y names)
 
             # now we make the cats
             if new_name:  # these cats get new names
-                if choice([1, 2]) == 1:  # adding suffix to OG name
+                if bool(getrandbits(1)):  # adding suffix to OG name
                     spaces = name.count(" ")
                     if spaces > 0:
                         # make a list of the words within the name, then add the OG name back in the list
@@ -326,84 +923,153 @@ def create_new_cat(Cat,
                         words.append(name)
                         new_prefix = choice(words)  # pick new prefix from that list
                         name = new_prefix
-                    new_cat = Cat(moons=age,
-                                  prefix=name,
-                                  status=status,
-                                  gender=_gender,
-                                  backstory=backstory,
-                                  parent1=parent1,
-                                  parent2=parent2)
+                    new_cat = Cat(
+                        moons=age,
+                        prefix=name,
+                        status=status,
+                        gender=_gender,
+                        backstory=backstory,
+                        parent1=parent1,
+                        parent2=parent2,
+                        adoptive_parents=adoptive_parents if adoptive_parents else [],
+                    )
                 else:  # completely new name
-                    new_cat = Cat(moons=age,
-                                  status=status,
-                                  gender=_gender,
-                                  backstory=backstory,
-                                  parent1=parent1,
-                                  parent2=parent2)
+                    new_cat = Cat(
+                        moons=age,
+                        status=status,
+                        gender=_gender,
+                        backstory=backstory,
+                        parent1=parent1,
+                        parent2=parent2,
+                        adoptive_parents=adoptive_parents if adoptive_parents else [],
+                    )
             # these cats keep their old names
             else:
-                new_cat = Cat(moons=age,
-                              prefix=name,
-                              suffix="",
-                              status=status,
-                              gender=_gender,
-                              backstory=backstory,
-                              parent1=parent1,
-                              parent2=parent2)
+                new_cat = Cat(
+                    moons=age,
+                    prefix=name,
+                    suffix="",
+                    status=status,
+                    gender=_gender,
+                    backstory=backstory,
+                    parent1=parent1,
+                    parent2=parent2,
+                    adoptive_parents=adoptive_parents if adoptive_parents else [],
+                )
 
-        # give em a collar if they got one
-        if accessory:
-            new_cat.pelt.accessory = accessory
-
+            # give em a collar if they got one
+            if accessory:
+                new_cat.pelt.accessories.append(accessory)
+                new_cat.pelt.inventory.append(accessory)
         # give apprentice aged cat a mentor
-        if new_cat.age == 'adolescent':
+        if new_cat.age == "adolescent":
             new_cat.update_mentor()
 
-        # Remove disabling scars, if they generated.
-        not_allowed = ['NOPAW', 'NOTAIL', 'HALFTAIL', 'NOEAR', 'BOTHBLIND', 'RIGHTBLIND',
-                       'LEFTBLIND', 'BRIGHTHEART', 'NOLEFTEAR', 'NORIGHTEAR', 'MANLEG']
-        for scar in new_cat.pelt.scars:
-            if scar in not_allowed:
-                new_cat.pelt.scars.remove(scar)
+        if df is True:
+            if status != "kitten":
+                scarchance = randint(1,5)
+                if scarchance == 1 or 2 or 3:
+                    scar = choice(Pelt.scars1)
+                    new_cat.pelt.scars.append(scar)
+                    if new_cat.status in ["warrior", "deputy", "leader"]:
+                        scarchance = randint(1,2)
+                        if scarchance == 1:
+                            scar = choice(Pelt.scars3)
+                            new_cat.pelt.scars.append(scar)
+                    elif new_cat.status in ["medicine cat", "apprentice", 
+                    "elder", "medicine cat apprentice", "queen", "mediator", 
+                    "queen's apprentice", "mediator apprentice"]:
+                        scarchance = randint(1,8)
+                        if scarchance == 1:
+                            scar = choice(Pelt.scars3)
+                            new_cat.pelt.scars.append(scar)
+                    scar2chance = randint(1,50)
+                    if scar2chance == 1:
+                        scar = choice(Pelt.scars2)
+                        new_cat.pelt.scars.append(scar)
+            else:
+                scarchance = randint(1,2)
+                if scarchance == 1:
+                    scar = choice(Pelt.scars1)
+                    new_cat.pelt.scars.append(scar)
+            
+        # Remove disabling scars on living cats, if they generated.
+        if not df: 
+            not_allowed = ['NOPAW', 'NOTAIL', 'HALFTAIL', 'NOEAR', 'BOTHBLIND', 'RIGHTBLIND', 
+                        'LEFTBLIND', 'BRIGHTHEART', 'NOLEFTEAR', 'NORIGHTEAR', 'MANLEG']
+            for scar in new_cat.pelt.scars:
+                if scar in not_allowed:
+                    new_cat.pelt.scars.remove(scar)
 
         # chance to give the new cat a permanent condition, higher chance for found kits and litters
-        if game.clan.game_mode != 'classic':
-            if kit or litter:
-                chance = int(game.config["cat_generation"]["base_permanent_condition"] / 11.25)
-            else:
-                chance = game.config["cat_generation"]["base_permanent_condition"] + 10
-            if not int(random() * chance):
-                possible_conditions = []
-                genetics_exclusive = ["excess testosterone", "aneuploidy", "testosterone deficiency", "chimerism",
-                                      "mosaicism"]
-                for condition in PERMANENT:
-                    if (kit or litter) and (PERMANENT[condition]['congenital'] not in ['always', 'sometimes']) or (condition in genetics_exclusive):
-                        continue
-                    # next part ensures that a kit won't get a condition that takes too long to reveal
-                    age = new_cat.moons
-                    leeway = 5 - (PERMANENT[condition]['moons_until'] + 1)
-                    if age > leeway:
-                        continue
-                    possible_conditions.append(condition)
-
+        if kit or litter:
+            chance = int(
+                game.config["cat_generation"]["base_permanent_condition"] / 11.25
+            )
+        else:
+            chance = game.config["cat_generation"]["base_permanent_condition"] + 10
+        if not int(random() * chance):
+            possible_conditions = []
+            for condition in PERMANENT:
+                if (kit or litter) and PERMANENT[condition]["congenital"] not in [
+                    "always",
+                    "sometimes",
+                ]:
+                    continue
+                # next part ensures that a kit won't get a condition that takes too long to reveal
+                age = new_cat.moons
+                leeway = 5 - (PERMANENT[condition]["moons_until"] + 1)
+                if age > leeway:
+                    continue
+                possible_conditions.append(condition)
+                if "excess testosterone" in possible_conditions:
+                        possible_conditions.remove("excess testosterone")
+                if "testosterone deficiency" in possible_conditions:
+                        possible_conditions.remove("testosterone deficiency")
+                if "chimerism" in possible_conditions:
+                        possible_conditions.remove("chimerism")
+                if "mosaicism" in possible_conditions:
+                        possible_conditions.remove("mosaicism")
+                if "aneuploidy" in possible_conditions:
+                        possible_conditions.remove("aneuploidy")
                 if possible_conditions:
-                    chosen_condition = choice(possible_conditions)
-                    born_with = False
-                    if PERMANENT[chosen_condition]['congenital'] in ['always', 'sometimes']:
-                        born_with = True
+                        chosen_condition = choice(possible_conditions)
+
+            if possible_conditions:
+                chosen_condition = choice(possible_conditions)
+                born_with = False
+                if PERMANENT[chosen_condition]["congenital"] in [
+                    "always",
+                    "sometimes",
+                ]:
+                    born_with = True
 
                     new_cat.get_permanent_condition(chosen_condition, born_with)
+                    if (
+                        new_cat.permanent_condition[chosen_condition]["moons_until"]
+                        == 0
+                    ):
+                        new_cat.permanent_condition[chosen_condition][
+                            "moons_until"
+                        ] = -2
 
-                    # assign scars
-                    if chosen_condition in ['lost a leg', 'born without a leg'] and ('NOPAW') not in new_cat.pelt.scars:
-                        new_cat.pelt.scars.append('NOPAW')
-                    elif chosen_condition in ['lost their tail', 'born without a tail'] and ('NOTAIL') not in new_cat.pelt.scars:
-                        new_cat.pelt.scars.append("NOTAIL")
+                # assign scars
+                if chosen_condition in ["lost a leg", "born without a leg"]:
+                    new_cat.pelt.scars.append("NOPAW")
+                elif chosen_condition in ["lost their tail", "born without a tail"]:
+                    new_cat.pelt.scars.append("NOTAIL")
 
         if outside:
             new_cat.outside = True
         if not alive:
             new_cat.die()
+
+        if df:
+            new_cat.df = True
+        # give apprentice aged cat a mentor
+        # this is in a weird spot but DF cats were getting clancat mentors otherwise
+            if new_cat.age == 'adolescent' and not new_cat.dead:
+                new_cat.update_mentor()
 
         # newbie thought
         new_cat.thought = thought
@@ -418,55 +1084,9 @@ def create_new_cat(Cat,
         new_cat.create_relationships_new_cat()
         # Note - we always update inheritance after the cats are generated, to
         # allow us to add parents.
-        #new_cat.create_inheritance_new_cat()
+        # new_cat.create_inheritance_new_cat()
 
     return created_cats
-
-
-def create_outside_cat(Cat, status, backstory, alive=True, thought=None):
-    """
-        TODO: DOCS
-        """
-    suffix = ''
-    if backstory in BACKSTORIES["backstory_categories"]["rogue_backstories"]:
-        status = 'rogue'
-    elif backstory in BACKSTORIES["backstory_categories"]["former_clancat_backstories"]:
-        status = "former Clancat"
-    if status == 'kittypet':
-        name = choice(names.names_dict["loner_names"])
-    elif status in ['loner', 'rogue']:
-        name = choice(names.names_dict["loner_names"] +
-                      names.names_dict["normal_prefixes"])
-    elif status == 'former Clancat':
-        name = choice(names.names_dict["normal_prefixes"])
-        suffix = choice(names.names_dict["normal_suffixes"])
-    else:
-        name = choice(names.names_dict["loner_names"])
-    new_cat = Cat(prefix=name,
-                  suffix=suffix,
-                  status=status,
-                  gender=choice(['female', 'male']),
-                  backstory=backstory)
-    if status == 'kittypet':
-        new_cat.pelt.accessory = choice(Pelt.collars)
-    new_cat.outside = True
-
-    if not alive:
-        new_cat.die()
-
-    thought = "Wonders about those Clan cats they just met"
-    new_cat.thought = thought
-
-    # create relationships - only with outsiders
-    # (this function will handle, that the cat only knows other outsiders)
-    new_cat.create_relationships_new_cat()
-    new_cat.create_inheritance_new_cat()
-
-    game.clan.add_cat(new_cat)
-    game.clan.add_to_outside(new_cat)
-    name = str(name + suffix)
-
-    return name
 
 
 # ---------------------------------------------------------------------------- #
@@ -474,16 +1094,20 @@ def create_outside_cat(Cat, status, backstory, alive=True, thought=None):
 # ---------------------------------------------------------------------------- #
 
 
-def get_highest_romantic_relation(relationships, exclude_mate=False, potential_mate=False):
+def get_highest_romantic_relation(
+    relationships, exclude_mate=False, potential_mate=False
+):
     """Returns the relationship with the highest romantic value."""
     max_love_value = 0
     current_max_relationship = None
     for rel in relationships:
         if rel.romantic_love < 0:
             continue
-        if exclude_mate and rel.cat_from.ID in rel.cat_to.mate:
+        if exclude_mate and rel.cat_from.ID in rel.cat_to.mates:
             continue
-        if potential_mate and not rel.cat_to.is_potential_mate(rel.cat_from, for_love_interest=True):
+        if potential_mate and not rel.cat_to.is_potential_mate(
+            rel.cat_from, for_love_interest=True
+        ):
             continue
         if rel.romantic_love > max_love_value:
             current_max_relationship = rel
@@ -523,9 +1147,9 @@ def check_relationship_value(cat_from, cat_to, rel_value=None):
 
 def get_personality_compatibility(cat1, cat2):
     """Returns:
-        True - if personalities have a positive compatibility
-        False - if personalities have a negative compatibility
-        None - if personalities have a neutral compatibility
+    True - if personalities have a positive compatibility
+    False - if personalities have a negative compatibility
+    None - if personalities have a neutral compatibility
     """
     personality1 = cat1.personality.trait
     personality2 = cat2.personality.trait
@@ -539,7 +1163,12 @@ def get_personality_compatibility(cat1, cat2):
     sociability_diff = abs(cat1.personality.sociability - cat2.personality.sociability)
     aggression_diff = abs(cat1.personality.aggression - cat2.personality.aggression)
     stability_diff = abs(cat1.personality.stability - cat2.personality.stability)
-    list_of_differences = [lawfulness_diff, sociability_diff, aggression_diff, stability_diff]
+    list_of_differences = [
+        lawfulness_diff,
+        sociability_diff,
+        aggression_diff,
+        stability_diff,
+    ]
 
     running_total = 0
     for x in list_of_differences:
@@ -572,7 +1201,10 @@ def get_cats_of_romantic_interest(cat):
             continue
 
         # Extra check to ensure they are potential mates
-        if inter_cat.is_potential_mate(cat, for_love_interest=True) and cat.relationships[inter_cat.ID].romantic_love > 0:
+        if (
+            inter_cat.is_potential_mate(cat, for_love_interest=True)
+            and cat.relationships[inter_cat.ID].romantic_love > 0
+        ):
             cats.append(inter_cat)
     return cats
 
@@ -595,7 +1227,7 @@ def get_amount_of_cats_with_relation_value_towards(cat, value, all_cats):
         "admiration": [],
         "comfortable": [],
         "jealousy": [],
-        "trust": []
+        "trust": [],
     }
 
     for inter_cat in all_cats:
@@ -604,54 +1236,543 @@ def get_amount_of_cats_with_relation_value_towards(cat, value, all_cats):
         else:
             continue
 
-        relation_dict['romantic_love'].append(relation.romantic_love >= value)
-        relation_dict['platonic_like'].append(relation.platonic_like >= value)
-        relation_dict['dislike'].append(relation.dislike >= value)
-        relation_dict['admiration'].append(relation.admiration >= value)
-        relation_dict['comfortable'].append(relation.comfortable >= value)
-        relation_dict['jealousy'].append(relation.jealousy >= value)
-        relation_dict['trust'].append(relation.trust >= value)
+        relation_dict["romantic_love"].append(relation.romantic_love >= value)
+        relation_dict["platonic_like"].append(relation.platonic_like >= value)
+        relation_dict["dislike"].append(relation.dislike >= value)
+        relation_dict["admiration"].append(relation.admiration >= value)
+        relation_dict["comfortable"].append(relation.comfortable >= value)
+        relation_dict["jealousy"].append(relation.jealousy >= value)
+        relation_dict["trust"].append(relation.trust >= value)
 
     return_dict = {
-        "romantic_love": sum(relation_dict['romantic_love']),
-        "platonic_like": sum(relation_dict['platonic_like']),
-        "dislike": sum(relation_dict['dislike']),
-        "admiration": sum(relation_dict['admiration']),
-        "comfortable": sum(relation_dict['comfortable']),
-        "jealousy": sum(relation_dict['jealousy']),
-        "trust": sum(relation_dict['trust'])
+        "romantic_love": sum(relation_dict["romantic_love"]),
+        "platonic_like": sum(relation_dict["platonic_like"]),
+        "dislike": sum(relation_dict["dislike"]),
+        "admiration": sum(relation_dict["admiration"]),
+        "comfortable": sum(relation_dict["comfortable"]),
+        "jealousy": sum(relation_dict["jealousy"]),
+        "trust": sum(relation_dict["trust"]),
     }
 
     return return_dict
 
+def filter_relationship_type(
+        group: list, filter_types: List[str], event_id: str = None, patrol_leader=None
+):
+    """
+    filters for specific types of relationships between groups of cat objects, returns bool
+    :param list[Cat] group: the group of cats to be tested (make sure they're in the correct order (i.e. if testing for
+    parent/child, the cat being tested as parent must be index 0)
+    :param list[str] filter_types: the relationship types to check for. possible types: "siblings", "mates",
+    "mates_with_pl" (PATROL ONLY), "not_mates", "parent/child", "child/parent", "mentor/app", "app/mentor",
+    (following tags check if value is over given int) "romantic_int", "platonic_int", "dislike_int", "comfortable_int",
+    "jealousy_int", "trust_int"
+    :param str event_id: if the event has an ID, include it here
+    :param Cat patrol_leader: if you are testing a patrol, ensure you include the self.patrol_leader here
+    """
+    if not filter_types:
+        return True
 
-def change_relationship_values(cats_to: list,
-                               cats_from: list,
-                               romantic_love:int=0,
-                               platonic_like:int=0,
-                               dislike:int=0,
-                               admiration:int=0,
-                               comfortable:int=0,
-                               jealousy:int=0,
-                               trust:int=0,
-                               auto_romance:bool=False,
-                               log:str=None
-                               ):
+    # keeping this list here just for quick reference of what tags are handled here
+    possible_rel_types = [
+        "siblings",
+        "mates",
+        "mates_with_pl",
+        "not_mates",
+        "parent/child",
+        "child/parent",
+        "mentor/app",
+        "app/mentor",
+
+        #lg types
+        "df_app/df_mentor",
+        "df_mentor/df_app",
+        "strangers"
+    ]
+
+    possible_value_types = [
+        "romantic",
+        "platonic",
+        "dislike",
+        "comfortable",
+        "jealousy",
+        "trust",
+        "admiration",
+    ]
+
+    if "siblings" in filter_types:
+        test_cat = group[0]
+        testing_cats = [cat for cat in group if cat.ID != test_cat.ID]
+
+        siblings = [test_cat.is_sibling(inter_cat) for inter_cat in testing_cats]
+        if not all(siblings):
+            return False
+
+    if "mates" in filter_types:
+        # first test if more than one cat
+        if len(group) == 1:
+            return False
+
+        # then if cats don't have the needed number of mates
+        if not all(len(i.mates) >= (len(group) - 1) for i in group):
+            return False
+
+        # Now the expensive test.  We have to see if everone is mates with each other
+        # Hopefully the cheaper tests mean this is only needed on events with a small number of cats
+        for x in combinations(group, 2):
+            if x[0].ID not in x[1].mates:
+                return False
+
+    # check if all cats are mates with p_l (they do not have to be mates with each other)
+    if "mates_with_pl" in filter_types:
+        # First test if there is more than one cat
+        if len(group) == 1:
+            return False
+
+        # Check each cat to see if it is mates with the patrol leader
+        for cat in group:
+            if cat.ID == patrol_leader.ID:
+                continue
+            if cat.ID not in patrol_leader.mates:
+                return False
+
+    # Check if all cats are not mates
+    if "not_mates" in filter_types:
+        # opposite of mate check
+        for x in combinations(group, 2):
+            if x[0].ID in x[1].mates:
+                return False
+
+    # Check if the cats are in a parent/child relationship
+    if "parent/child" in filter_types:
+        if patrol_leader:
+            if patrol_leader in group:
+                group.remove(patrol_leader)
+            group.insert(0, patrol_leader)
+        # It should be exactly two cats for a "parent/child" event
+        if len(group) != 2:
+            return False
+        # test for parentage
+        if not group[0].is_parent(group[1]):
+            return False
+
+    if "child/parent" in filter_types:
+        if patrol_leader:
+            if patrol_leader in group:
+                group.remove(patrol_leader)
+            group.insert(0, patrol_leader)
+        # It should be exactly two cats for a "parent/child" event
+        if len(group) != 2:
+            return False
+        # test for parentage
+        if not group[1].is_parent(group[0]):
+            return False
+
+    if "mentor/app" in filter_types:
+        if patrol_leader:
+            if patrol_leader in group:
+                group.remove(patrol_leader)
+            group.insert(0, patrol_leader)
+        # It should be exactly two cats for a "parent/child" event
+        if len(group) != 2:
+            return False
+        # test for parentage
+        if not group[1].ID in group[0].apprentice:
+            return False
+
+    if "app/mentor" in filter_types:
+        if patrol_leader:
+            if patrol_leader in group:
+                group.remove(patrol_leader)
+            group.insert(0, patrol_leader)
+        # It should be exactly two cats for a "parent/child" event
+        if len(group) != 2:
+            return False
+        # test for parentage
+        if not group[0].ID in group[1].apprentice:
+            return False
+        
+    # lifegen
+    if "df_app/df_mentor" in filter_types:
+        if len(group) != 2:
+            return False
+        if not group[0].ID in group[1].df_apprentices:
+            return False
+        
+    if "df_mentor/df_app" in filter_types:
+        if len(group) != 2:
+            return False
+        if not group[1].ID in group[0].df_apprentices:
+            return False
+
+    if "strangers" in filter_types and len(group) == 2:
+        relationship = group[0].relationships[group[1].ID]
+        if relationship and (relationship.platonic_like < 1 or relationship.romantic_love < 1):
+            return False
+    elif "strangers" in filter_types:
+        return False
+
+    # Filtering relationship values
+    break_loop = False
+    for v_type in possible_value_types:
+        # first get all tags for current value types
+        tags = [constraint for constraint in filter_types if v_type in constraint]
+
+        # If there is not a tag for the current value type, check next one
+        if len(tags) == 0:
+            continue
+
+            # there should be only one value constraint for each value type
+        elif len(tags) > 1:
+            print(
+                f"ERROR: event {event_id} has multiple relationship constraints for the value {v_type}."
+            )
+            break_loop = True
+            break
+
+        # try to extract the value/threshold from the text
+        try:
+            threshold = int(tags[0].split("_")[1])
+        except:
+            print(
+                f"ERROR: event {event_id} with the relationship constraint for the value does not {v_type} follow the formatting guidelines."
+            )
+            break_loop = True
+            break
+
+        if threshold > 100:
+            print(
+                f"ERROR: event {event_id} has a relationship constraint for the value {v_type}, which is higher than the max value of a relationship."
+            )
+            break_loop = True
+            break
+
+        if threshold <= 0:
+            print(
+                f"ERROR: event {event_id} has a relationship constraint for the value {v_type}, which is lower than the min value of a relationship or 0."
+            )
+            break_loop = True
+            break
+
+        # each cat has to have relationships with this relationship value above the threshold
+        fulfilled = True
+        for inter_cat in group:
+            rel_above_threshold = []
+            group_ids = [cat.ID for cat in group]
+            relevant_relationships = list(
+                filter(
+                    lambda rel: rel.cat_to.ID in group_ids
+                                and rel.cat_to.ID != inter_cat.ID,
+                    list(inter_cat.relationships.values()),
+                )
+            )
+
+            # get the relationships depending on the current value type + threshold
+            if v_type == "romantic":
+                rel_above_threshold = [
+                    i for i in relevant_relationships if i.romantic_love >= threshold
+                ]
+            elif v_type == "platonic":
+                rel_above_threshold = [
+                    i for i in relevant_relationships if i.platonic_like >= threshold
+                ]
+            elif v_type == "dislike":
+                rel_above_threshold = [
+                    i for i in relevant_relationships if i.dislike >= threshold
+                ]
+            elif v_type == "comfortable":
+                rel_above_threshold = [
+                    i for i in relevant_relationships if i.comfortable >= threshold
+                ]
+            elif v_type == "jealousy":
+                rel_above_threshold = [
+                    i for i in relevant_relationships if i.jealousy >= threshold
+                ]
+            elif v_type == "trust":
+                rel_above_threshold = [
+                    i for i in relevant_relationships if i.trust >= threshold
+                ]
+            elif v_type == "admiration":
+                rel_above_threshold = [
+                    i for i in relevant_relationships if i.admiration >= threshold
+                ]
+
+            # if the lengths are not equal, one cat has not the relationship value which is needed to another cat of
+            # the event
+            if len(rel_above_threshold) + 1 != len(group):
+                fulfilled = False
+                break
+
+        if not fulfilled:
+            break_loop = True
+            break
+
+    # if break is used in the loop, the condition are not fulfilled
+    # and this event should not be added to the filtered list
+    if break_loop:
+        return False
+
+    return True
+
+
+
+def gather_cat_objects(
+    Cat, abbr_list: List[str], event, stat_cat=None, extra_cat=None
+) -> list:
+    """
+    gathers cat objects from list of abbreviations used within an event format block
+    :param Cat Cat: Cat class
+    :param list[str] abbr_list: The list of abbreviations, supports "m_c", "r_c", "p_l", "s_c", "app1" through "app6",
+    "clan", "some_clan", "patrol", "multi", "n_c{index}"
+    :param event: the controlling class of the event (e.g. Patrol, HandleShortEvents), default None
+    :param Cat stat_cat: if passing the Patrol class, must include stat_cat separately
+    :param Cat extra_cat: if not passing an event class, include the single affected cat object here. If you are not
+    passing a full event class, then be aware that you can only include "m_c" as a cat abbreviation in your rel block.
+    The other cat abbreviations will not work.
+    :return: list of cat objects
+    """
+    out_set = set()
+
+    for abbr in abbr_list:
+        if abbr == "m_c":
+            if extra_cat:
+                out_set.add(extra_cat)
+            else:
+                out_set.add(event.main_cat)
+        elif abbr == "r_c":
+            out_set.add(event.random_cat)
+        elif abbr == "p_l":
+            out_set.add(event.patrol_leader)
+        elif abbr == "s_c":
+            out_set.add(stat_cat)
+        # LG
+        elif abbr == "y_c":
+            out_set.add(game.clan.your_cat)
+        # ---
+        elif abbr == "app1" and len(event.patrol_apprentices) >= 1:
+            out_set.add(event.patrol_apprentices[0])
+        elif abbr == "app2" and len(event.patrol_apprentices) >= 2:
+            out_set.add(event.patrol_apprentices[1])
+        elif abbr == "app3" and len(event.patrol_apprentices) >= 3:
+            out_set.add(event.patrol_apprentices[2])
+        elif abbr == "app4" and len(event.patrol_apprentices) >= 4:
+            out_set.add(event.patrol_apprentices[3])
+        elif abbr == "app5" and len(event.patrol_apprentices) >= 5:
+            out_set.add(event.patrol_apprentices[4])
+        elif abbr == "app6" and len(event.patrol_apprentices) >= 6:
+            out_set.add(event.patrol_apprentices[5])
+        elif abbr == "clan":
+            out_set.update([x for x in Cat.all_cats_list if not (x.dead or x.outside or x.exiled)])
+        elif abbr == "some_clan":  # 1 / 8 of clan cats are affected
+            clan_cats = [x for x in Cat.all_cats_list if not (x.dead or x.outside or x.exiled)]
+            # LG
+            if len(clan_cats) < 2:
+                out_set.add(clan_cats[0])
+            else:
+            # ---
+                out_set.update(sample(clan_cats, randint(1, round(len(clan_cats) / 8))))
+        elif abbr == "patrol":
+            out_set.update(event.patrol_cats)
+        elif abbr == "multi":
+            cat_num = randint(1, max(1, len(event.patrol_cats) - 1))
+            out_set.update(sample(event.patrol_cats, cat_num))
+        elif re.match(r"n_c:[0-9]+", abbr):
+            index = re.match(r"n_c:([0-9]+)", abbr).group(1)
+            index = int(index)
+            if index < len(event.new_cats):
+                out_set.update(event.new_cats[index])
+        else:
+            print(f"WARNING: Unsupported ClanGen abbreviation {abbr}")
+
+    # LIFEGEN ABBREVS ------------------------
+    try:
+        for kitty in event.patrol_cat_dict.items():
+            print(abbr_list)
+            if kitty[0] in abbr_list:
+                out_set.add(kitty[1])
+    except Exception as e:
+        # print(e)
+        pass
+    # ----------------------------------------
+
+    return list(out_set)
+
+
+def unpack_rel_block(
+    Cat, relationship_effects: List[dict], event=None, stat_cat=None, extra_cat=None
+):
+    """
+    Unpacks the info from the relationship effect block used in patrol and moon events, then adjusts rel values
+    accordingly.
+
+    :param Cat Cat: Cat class
+    :param list[dict] relationship_effects: the relationship effect block
+    :param event: the controlling class of the event (e.g. Patrol, HandleShortEvents), default None
+    :param Cat stat_cat: if passing the Patrol class, must include stat_cat separately
+    :param Cat extra_cat: if not passing an event class, include the single affected cat object here. If you are not passing a full event class, then be aware that you can only include "m_c" as a cat abbreviation in your rel block.  The other cat abbreviations will not work.
+    """
+    possible_values = ("romantic", "platonic", "dislike", "comfort", "jealous", "trust", "respect")
+
+    for block in relationship_effects:
+        cats_from = block.get("cats_from", [])
+        cats_to = block.get("cats_to", [])
+        amount = block.get("amount")
+        values = [x for x in block.get("values", ()) if x in possible_values]
+
+        # Gather actual cat objects:
+        cats_from_ob = gather_cat_objects(Cat, cats_from, event, stat_cat, extra_cat)
+        cats_to_ob = gather_cat_objects(Cat, cats_to, event, stat_cat, extra_cat)
+
+        # Remove any "None" that might have snuck in
+        if None in cats_from_ob:
+            cats_from_ob.remove(None)
+        if None in cats_to_ob:
+            cats_to_ob.remove(None)
+
+        # Check to see if value block
+        if not (cats_to_ob and cats_from_ob and values and isinstance(amount, int)):
+            print(f"Relationship block incorrectly formatted: {block}")
+            continue
+
+        positive = False
+
+        # grabbing values
+        romantic_love = 0
+        platonic_like = 0
+        dislike = 0
+        comfortable = 0
+        jealousy = 0
+        admiration = 0
+        trust = 0
+        if "romantic" in values:
+            romantic_love = amount
+            if amount > 0:
+                positive = True
+        if "platonic" in values:
+            platonic_like = amount
+            if amount > 0:
+                positive = True
+        if "dislike" in values:
+            dislike = amount
+            if amount < 0:
+                positive = True
+        if "comfort" in values:
+            comfortable = amount
+            if amount > 0:
+                positive = True
+        if "jealous" in values:
+            jealousy = amount
+            if amount < 0:
+                positive = True
+        if "trust" in values:
+            trust = amount
+            if amount > 0:
+                positive = True
+        if "respect" in values:
+            admiration = amount
+            if amount > 0:
+                positive = True
+
+        if positive:
+            effect = f" (positive effect)"
+        else:
+            effect = f" (negative effect)"
+
+        # Get log
+        log1 = None
+        log2 = None
+        if block.get("log"):
+            log = block.get("log")
+            if isinstance(log, str):
+                log1 = log
+            elif isinstance(log, list):
+                if len(log) >= 2:
+                    log1 = log[0]
+                    log2 = log[1]
+                elif len(log) == 1:
+                    log1 = log[0]
+            else:
+                print(f"something is wrong with relationship log: {log}")
+
+        if not log1:
+            if hasattr(event, "text"):
+                try:
+                    log1 = event.text + effect
+                except AttributeError:
+                    print(f"WARNING: event changed relationships but did not create a relationship log")
+            else:
+                log1 = "These cats recently interacted." + effect
+        if not log2:
+            if hasattr(event, "text"):
+                try:
+                    log2 = event.text + effect
+                except AttributeError:
+                    print(f"WARNING: event changed relationships but did not create a relationship log")
+            else:
+                log2 = f"These cats recently interacted." + effect
+
+        change_relationship_values(
+            cats_to_ob,
+            cats_from_ob,
+            romantic_love,
+            platonic_like,
+            dislike,
+            admiration,
+            comfortable,
+            jealousy,
+            trust,
+            log=log1
+        )
+
+        if block.get("mutual"):
+            change_relationship_values(
+                cats_from_ob,
+                cats_to_ob,
+                romantic_love,
+                platonic_like,
+                dislike,
+                admiration,
+                comfortable,
+                jealousy,
+                trust,
+                log=log2
+            )
+
+
+def change_relationship_values(
+    cats_to: list,
+    cats_from: list,
+    romantic_love: int = 0,
+    platonic_like: int = 0,
+    dislike: int = 0,
+    admiration: int = 0,
+    comfortable: int = 0,
+    jealousy: int = 0,
+    trust: int = 0,
+    auto_romance: bool = False,
+    log: str = None,
+):
     """
     changes relationship values according to the parameters.
 
-    cats_from - a list of cats for the cats whose rel values are being affected
-    cats_to - a list of cat IDs for the cats who are the target of that rel value
-            i.e. cats in cats_from lose respect towards the cats in cats_to
-    auto_romance - if this is set to False (which is the default) then if the cat_from already has romantic value
-            with cat_to then the platonic_like param value will also be used for the romantic_love param
-            if you don't want this to happen, then set auto_romance to False
-    log - string to add to relationship log.
+    :param list[Cat] cats_from: list of cat objects whose rel values will be affected
+    (e.g. cat_from loses trust in cat_to)
+    :param list[Cat] cats_to: list of cats objects who are the target of that rel value
+    (e.g. cat_from loses trust in cat_to)
+    :param int romantic_love: amount to change romantic, default 0
+    :param int platonic_like: amount to change platonic, default 0
+    :param int dislike: amount to change dislike, default 0
+    :param int admiration: amount to change admiration (respect), default 0
+    :param int comfortable: amount to change comfort, default 0
+    :param int jealousy: amount to change jealousy, default 0
+    :param int trust: amount to change trust, default 0
+    :param bool auto_romance: if the cat_from already has romantic value with cat_to, then the platonic_like param value
+    will also be applied to romantic, default False
+    :param str log: the string to append to the relationship log of cats involved
+        """
 
-    use the relationship value params to indicate how much the values should change.
-
-    This is just for test prints - DON'T DELETE - you can use this to test if relationships are changing
-    changed = False
+    # This is just for test prints - DON'T DELETE - you can use this to test if relationships are changing
+    """changed = False
     if romantic_love == 0 and platonic_like == 0 and dislike == 0 and admiration == 0 and \
             comfortable == 0 and jealousy == 0 and trust == 0:
         changed = False
@@ -659,20 +1780,25 @@ def change_relationship_values(cats_to: list,
         changed = True"""
 
     # pick out the correct cats
+    if not cats_from:
+        return
     for single_cat_from in cats_from:
-        for single_cat_to_ID in cats_to:
-            single_cat_to = single_cat_from.fetch_cat(single_cat_to_ID)
-
+        for single_cat_to in cats_to:
+            # make sure we aren't trying to change a cat's relationship with themself
             if single_cat_from == single_cat_to:
                 continue
-            
-            if single_cat_to_ID not in single_cat_from.relationships:
+
+            # if the cats don't know each other, start a new relationship
+            if single_cat_to.ID not in single_cat_from.relationships:
                 single_cat_from.create_one_relationship(single_cat_to)
 
-            rel = single_cat_from.relationships[single_cat_to_ID]
+            rel = single_cat_from.relationships[single_cat_to.ID]
 
             # here we just double-check that the cats are allowed to be romantic with each other
-            if single_cat_from.is_potential_mate(single_cat_to, for_love_interest=True) or single_cat_to.ID in single_cat_from.mate:
+            if (
+                single_cat_from.is_potential_mate(single_cat_to, for_love_interest=True)
+                or single_cat_to.ID in single_cat_from.mates
+            ):
                 # if cat already has romantic feelings then automatically increase romantic feelings
                 # when platonic feelings would increase
                 if rel.romantic_love > 0 and auto_romance:
@@ -689,26 +1815,96 @@ def change_relationship_values(cats_to: list,
             rel.jealousy += jealousy
             rel.trust += trust
 
-            '''# for testing purposes - DON'T DELETE - you can use this to test if relationships are changing
-            print(str(kitty.name) + " gained relationship with " + str(rel.cat_to.name) + ": " +
+            # for testing purposes - DON'T DELETE - you can use this to test if relationships are changing
+            """
+            print(str(single_cat_from.name) + " gained relationship with " + str(rel.cat_to.name) + ": " +
                   "Romantic: " + str(romantic_love) +
                   " /Platonic: " + str(platonic_like) +
                   " /Dislike: " + str(dislike) +
                   " /Respect: " + str(admiration) +
                   " /Comfort: " + str(comfortable) +
                   " /Jealousy: " + str(jealousy) +
-                  " /Trust: " + str(trust)) if changed else print("No relationship change")'''
+                  " /Trust: " + str(trust)) if changed else print("No relationship change")"""
 
             if log and isinstance(log, str):
-                rel.log.append(log)
+                if single_cat_to.moons <= 1:
+                    log_text = (
+                        log
+                        + f"- {single_cat_to.name} was {single_cat_to.moons} moon old"
+                    )
+                    if log_text not in rel.log:
+                        rel.log.append(log_text)
+                else:
+                    log_text = (
+                        log
+                        + f"- {single_cat_to.name} was {single_cat_to.moons} moons old"
+                    )
+                    if log_text not in rel.log:
+                        rel.log.append(log_text)
+
+def get_cluster(trait):
+        # Mapping traits to their respective clusters
+    trait_to_clusters = {
+            "assertive": ["bloodthirsty", "crude", "sadistic", "venomous", "reactive", "deceitful", "arguementative", "strong", "malicious", "manipulative", "scary", "antagonistic", "remorseless", "judgemental", "serious", "passive-agressive", "intense", "forceful", "alert", "fierce", "bold", "daring", "confident", "arrogant", "competitive", "smug", "impulsive", "noisy"],
+            "brooding": ["bloodthirsty", "thievish", "suspicious", "scheming", "selfish", "resentful", "envious", "deceitful", "obsessive", "power-hungry", "cruel", "devious", "calculating", "blunt", "macabre", "fox-hearted", "moody", "desolate", "hypocrite", "disgusted", "grim", "pessimistic", "passive-agressive", "reserved", "complex", "dry", "cold", "cryptic", "angry", "gloomy", "strict", "vengeful", "grumpy", "bullying", "secretive", "aloof", "stoic", "reserved"],
+            "cool": ["charismatic", "calculating", "private", "enigmatic", "cool", "mysterious", "serious", "persuasive", "stoic", "secretive", "sarcastic", "logical", "dry", "escapist", "elegant", "cunning", "cryptic", "arrogant", "charming", "manipulative", "leader-like", "passionate", "witty", "flexible", "mellow", "flamboyant"],
+            "upstanding": ["righteous", "justified", "ritualistic", "humble", "disciplined", "civil", "teacherly", "self-reliant", "cooperative", "punctual", "philosophical", "reliable", "principled", "scholarly", "practical", "incorruptible", "leaderly", "peaceful", "protective", "polished", "hardworking", "passionate", "benevolent", "gallant", "heroic", "easy-going", "dedicated", "appreciative", "ambitious", "strict", "competitive", "responsible", "bossy", "know-it-all", "leader-like", "smug", "loyal", "justified", "methodical"],
+            "introspective": ["alert", "regretful", "opinionated", "misguided", "questioning", "unfoolable", "fatalistic", "tranquil", "philosophical", "overthinker", "high-minded", "incisive", "open", "free-thinking", "farsighted", "logical", "idealistic", "lonesome", "complex", "righteous", "calm", "wise", "thoughtful", "quiet", "daydreamer", "flexible", "mellow", "Self-conscious"],
+            "neurotic": ["nervous", "vague", "anxious", "frustrated", "perfectionist", "coward", "confused", "vulnerable", "fatalistic", "unpredictable", "fearful", "pessimistic", "self-pitying", "sensitive", "emotional", "dramatic", "angry", "insecure", "lonesome", "quiet", "secretive", "careful", "meek", "cowardly", "emotional", "self-conscious", "skittish"],
+            "silly": ["troublesome", "witty", "youthful", "whimsical", "silly", "energetic", "hyper", "cheeky", "goofy", "fun-loving", "humorous", "dedicated", "childish", "bubbly", "playful", "strange", "noisy", "attention-seeker", "rebellious", "bouncy", "energetic", "spontaneous"],
+            "stable": ["loyal", "transparent", "unimaginative", "uncaring", "airy", "flexible", "trusting", "overimaginative", "colorless", "artifical", "predictable", "tolerant", "ordinary", "tidy", "stable", "sentimental", "methodical", "fancy", "sentient", "creative", "honest", "enthusiastic", "delicate", "cheerful", "sleepy", "talkative", "dependent", "nerdy", "boring", "unreligious", "organized", "patient", "relaxed", "optimistic", "moralistic", "unaggressive", "folksy", "old-fashioned", "neutral", "fair", "casual", "dynamic", "responsible", "wise", "faithful", "polite", "disciplined", "patient", "passionate", "witty", "trusting"],
+            "sweet": ["compassionate", "mellow", "sympathetic", "meek", "sappy", "polite", "supportive", "flirty", "romantic", "warm", "genuine", "innocent", "hearty", "generous", "gracious", "soft", "unaggressive", "gentle", "nurturing", "chummy", "forgiving", "easy-going", "appreciative", "faithful", "loving", "oblivious", "sincere", "sweet", "polite", "daydreamer", "trusting", "humble", "emotional"],
+            "unabashed": ["childish", "small-thinking", "transparent", "sloppy", "vague", "ritualistic", "cowardly", "meek", "quirky", "obnoxious", "bizarre", "messy", "loud", "spontainious", "annoying", "aloof", "lazy", "faithless", "coward", "dull", "mysterious", "monotone", "flirty", "clumsy", "superficial", "snobbish", "charmless", "thoughtless", "forgetful", "aimless", "sarcastic", "sassy", "genuine", "free-thinking", "hypnotic", "dramatic", "distracted", "absent-minded", "carefree", "cryptic", "confident", "bold", "shameless", "strange", "oblivious", "flamboyant", "impulsive", "noisy", "honest", "spontaneous", "fearless"],
+            "unlawful": ["adventurous", "cruel", "sadistic", "devious", "fox-hearted", "malicious", "chaotic", "wrongful", "antagonistic", "amoral", "weak-willed", "spiteful", "greedy", "unreliable", "forceful", "destructive", "secretive", "sneaky", "rebellious", "manipulative", "obsessive", "aloof", "stoic", "cunning", "troublesome", "unruly"]
+        }
+    clusters = [key for key, values in trait_to_clusters.items() if trait in values]
+
+    # Assign cluster and second_cluster based on the length of clusters list
+    cluster = clusters[0] if clusters else "stable"
+    second_cluster = clusters[1] if len(clusters) > 1 else ""
+
+    return cluster, second_cluster
 
 
 # ---------------------------------------------------------------------------- #
 #                               Text Adjust                                    #
 # ---------------------------------------------------------------------------- #
 
+def get_leader_life_notice() -> str:
+    """
+    Returns a string specifying how many lives the leader has left or notifying of the leader's full death
+    """
+    text = ""
+
+    lives = game.clan.leader_lives
+
+    if lives > 0:
+        text = f"The leader has {int(lives)} lives left."
+    elif lives <= 0:
+        if game.clan.followingsc:
+            text = 'The leader has no lives left and has travelled to StarClan.'
+        else:
+            text = 'The leader has no lives left and has travelled to the Dark Forest.'
+
+    return text
+
+
+def get_other_clan_relation(relation):
+    """
+    converts int value into string relation and returns string: "hostile", "neutral", or "ally"
+    :param relation: the other_clan.relations value
+    """
+
+    if int(relation) >= 17:
+        return "ally"
+    elif 7 < int(relation) < 17:
+        return "neutral"
+    elif int(relation) <= 7:
+        return "hostile"
+
+
 def pronoun_repl(m, cat_pronouns_dict, raise_exception=False):
-    """ Helper function for add_pronouns. If raise_exception is
+    """Helper function for add_pronouns. If raise_exception is
     False, any error in pronoun formatting will not raise an
     exception, and will use a simple replacement "error" """
 
@@ -719,6 +1915,18 @@ def pronoun_repl(m, cat_pronouns_dict, raise_exception=False):
     inner_details = m.group(1).split("/")
 
     try:
+        # LG
+        # addon pronoun test stuff
+        if raise_exception:
+            abbrev = inner_details[1]
+            if "-" in abbrev:
+                fragments = abbrev.split("-")
+                for f in fragments:
+                    if "_" in f or f in ["theircrush", "yourcrush"]:
+                        # print("RAISE EXC-- CHANGING:", abbrev, "=>", f)
+                        inner_details[1] = f
+                        break
+        # ---
         d = cat_pronouns_dict[inner_details[1]][1]
         if inner_details[0].upper() == "PRONOUN":
             pro = d[inner_details[2]]
@@ -729,13 +1937,16 @@ def pronoun_repl(m, cat_pronouns_dict, raise_exception=False):
             return inner_details[d["conju"] + 1]
 
         if raise_exception:
-            raise KeyError(f"Pronoun tag: {m.group(1)} is not properly"
-                           "indicated as a PRONOUN or VERB tag.")
+            raise KeyError(
+                f"Pronoun tag: {m.group(1)} is not properly"
+                "indicated as a PRONOUN or VERB tag."
+            )
 
         print("Failed to find pronoun:", m.group(1))
         return "error1"
     except (KeyError, IndexError) as e:
         if raise_exception:
+            print("ERROR HERE:", e)
             raise
 
         logger.exception("Failed to find pronoun: " + m.group(1))
@@ -744,27 +1955,32 @@ def pronoun_repl(m, cat_pronouns_dict, raise_exception=False):
 
 
 def name_repl(m, cat_dict):
-    ''' Name replacement '''
+    """Name replacement"""
     return cat_dict[m.group(0)][0]
 
 
 def process_text(text, cat_dict, raise_exception=False):
-    """ Add the correct name and pronouns into a string. """
-    adjust_text = re.sub(r"\{(.*?)\}", lambda x: pronoun_repl(x, cat_dict, raise_exception),
-                                                              text)
+    """Add the correct name and pronouns into a string."""
+    adjust_text = re.sub(
+        r"\{(.*?)\}", lambda x: pronoun_repl(x, cat_dict, raise_exception), text
+    )
 
-    name_patterns = [r'(?<!\{)' + re.escape(l) + r'(?!\})' for l in cat_dict]
-    adjust_text = re.sub("|".join(name_patterns), lambda x: name_repl(x, cat_dict), adjust_text)
+    name_patterns = [r"(?<!\{)" + re.escape(l) + r"(?!\})" for l in cat_dict]
+    adjust_text = re.sub(
+        "|".join(name_patterns), lambda x: name_repl(x, cat_dict), adjust_text
+    )
     return adjust_text
 
 
-def adjust_list_text(list_of_items):
+def adjust_list_text(list_of_items) -> str:
     """
     returns the list in correct grammar format (i.e. item1, item2, item3 and item4)
     this works with any number of items
     :param list_of_items: the list of items you want converted
     :return: the new string
     """
+    if len(list_of_items) == 0:
+        return ""
     if len(list_of_items) == 1:
         insert = f"{list_of_items[0]}"
     elif len(list_of_items) == 2:
@@ -790,7 +2006,9 @@ def adjust_prey_abbr(patrol_text):
     return patrol_text
 
 
-def get_special_snippet_list(chosen_list, amount, sense_groups=None, return_string=True):
+def get_special_snippet_list(
+    chosen_list, amount, sense_groups=None, return_string=True
+):
     """
     function to grab items from various lists in snippet_collections.json
     list options are:
@@ -813,11 +2031,14 @@ def get_special_snippet_list(chosen_list, amount, sense_groups=None, return_stri
 
     # these lists don't get sense specific snippets, so is handled first
     if chosen_list in ["dream_list", "story_list"]:
-
-        if chosen_list == 'story_list':  # story list has some biome specific things to collect
-            snippets = SNIPPETS[chosen_list]['general']
+        if (
+            chosen_list == "story_list"
+        ):  # story list has some biome specific things to collect
+            snippets = SNIPPETS[chosen_list]["general"]
             snippets.extend(SNIPPETS[chosen_list][biome])
-        elif chosen_list == 'clair_list':  # the clair list also pulls from the dream list
+        elif (
+            chosen_list == "clair_list"
+        ):  # the clair list also pulls from the dream list
             snippets = SNIPPETS[chosen_list]
             snippets.extend(SNIPPETS["dream_list"])
         else:  # the dream list just gets the one
@@ -826,7 +2047,7 @@ def get_special_snippet_list(chosen_list, amount, sense_groups=None, return_stri
     else:
         # if no sense groups were specified, use all of them
         if not sense_groups:
-            if chosen_list == 'clair_list':
+            if chosen_list == "clair_list":
                 sense_groups = ["taste", "sound", "smell", "emotional", "touch"]
             else:
                 sense_groups = ["sight", "sound", "smell", "emotional", "touch"]
@@ -856,58 +2077,96 @@ def get_special_snippet_list(chosen_list, amount, sense_groups=None, return_stri
 def find_special_list_types(text):
     """
     purely to identify which senses are being called for by a snippet abbreviation
-    returns adjusted text, sense list, and list type
+    returns adjusted text, sense list, list type, and cat_tag
     """
     senses = []
-    if "omen_list" in text:
-        list_type = "omen_list"
-    elif "prophecy_list" in text:
-        list_type = "prophecy_list"
-    elif "dream_list" in text:
-        list_type = "dream_list"
-    elif "clair_list" in text:
-        list_type = "clair_list"
-    elif "story_list" in text:
-        list_type = "story_list"
-    else:
-        return text, None, None
+    list_text = None
+    list_type = None
+    words = text.split(" ")
+    for bit in words:
+        if "_list" in bit:
+            list_text = bit
+            # just getting rid of pesky punctuation
+            list_text = list_text.replace(".", "")
+            list_text = list_text.replace(",", "")
+            break
 
-    if "_sight" in text:
+    if not list_text:
+        return text, None, None, None
+
+    parts_of_tag = list_text.split("/")
+
+    try:
+        cat_tag = parts_of_tag[1]
+    except IndexError:
+        cat_tag = None
+
+    if "omen_list" in list_text:
+        list_type = "omen_list"
+    elif "prophecy_list" in list_text:
+        list_type = "prophecy_list"
+    elif "dream_list" in list_text:
+        list_type = "dream_list"
+    elif "clair_list" in list_text:
+        list_type = "clair_list"
+    elif "story_list" in list_text:
+        list_type = "story_list"
+
+    if "_sight" in list_text:
         senses.append("sight")
-        text = text.replace("_sight", "")
-    if "_sound" in text:
+    if "_sound" in list_text:
         senses.append("sound")
-        text = text.replace("_sight", "")
-    if "_smell" in text:
-        text = text.replace("_smell", "")
+    if "_smell" in list_text:
         senses.append("smell")
-    if "_emotional" in text:
-        text = text.replace("_emotional", "")
+    if "_emotional" in list_text:
         senses.append("emotional")
-    if "_touch" in text:
-        text = text.replace("_touch", "")
+    if "_touch" in list_text:
         senses.append("touch")
-    if "_taste" in text:
-        text = text.replace("_taste", "")
+    if "_taste" in list_text:
         senses.append("taste")
 
-    return text, senses, list_type
+    text = text.replace(list_text, list_type)
+
+    return text, senses, list_type, cat_tag
 
 
 def history_text_adjust(text,
                         other_clan_name,
-                        clan,other_cat_rc=None):
+                        clan,
+                        other_cat_rc=None):
     """
     we want to handle history text on its own because it needs to preserve the pronoun tags and cat abbreviations.
     this is so that future pronoun changes or name changes will continue to be reflected in history
     """
-    if "o_c" in text:
-        text = text.replace("o_c", other_clan_name)
+    vowels = ['A', 'E', 'I', 'O', 'U']
+
+    if "o_c_n" in text:
+        pos = 0
+        for x in range(text.count('o_c_n')):
+            if 'o_c_n' in text:
+                for y in vowels:
+                    if str(other_clan_name).startswith(y):
+                        modify = text.split()
+                        if 'o_c_n' in modify:
+                            pos = modify.index('o_c_n')
+                        if "o_c_n's" in modify:
+                            pos = modify.index("o_c_n's")
+                        if 'o_c_n.' in modify:
+                            pos = modify.index('o_c_n.')
+                        if modify[pos - 1] == 'a':
+                            modify.remove('a')
+                            modify.insert(pos - 1, 'an')
+                        text = " ".join(modify)
+                        break
+
+        text = text.replace("o_c_n", str(other_clan_name))
+
     if "c_n" in text:
-        text = text.replace("c_n", clan.name)
+        text = text.replace("c_n", str(game.clan.name) + "Clan")
     if "r_c" in text and other_cat_rc:
         text = selective_replace(text, "r_c", str(other_cat_rc.name))
     return text
+
 
 def selective_replace(text, pattern, replacement):
     i = 0
@@ -915,15 +2174,16 @@ def selective_replace(text, pattern, replacement):
         index = text.find(pattern, i)
         if index == -1:
             break
-        start_brace = text.rfind('{', 0, index)
-        end_brace = text.find('}', index)
+        start_brace = text.rfind("{", 0, index)
+        end_brace = text.find("}", index)
         if start_brace != -1 and end_brace != -1 and start_brace < index < end_brace:
             i = index + len(pattern)
         else:
-            text = text[:index] + replacement + text[index + len(pattern):]
+            text = text[:index] + replacement + text[index + len(pattern) :]
             i = index + len(replacement)
 
     return text
+
 
 def ongoing_event_text_adjust(Cat, text, clan=None, other_clan_name=None):
     """
@@ -936,19 +2196,21 @@ def ongoing_event_text_adjust(Cat, text, clan=None, other_clan_name=None):
     cat_dict = {}
     if "lead_name" in text:
         kitty = Cat.fetch_cat(game.clan.leader)
-        cat_dict["lead_name"] = (str(kitty.name), choice(kitty.pronouns))
+        if kitty:
+            cat_dict["lead_name"] = (str(kitty.name), choice(kitty.pronouns))
     if "dep_name" in text:
         kitty = Cat.fetch_cat(game.clan.deputy)
-        cat_dict["dep_name"] = (str(kitty.name), choice(kitty.pronouns))
+        if kitty:
+            cat_dict["dep_name"] = (str(kitty.name), choice(kitty.pronouns))
     if "med_name" in text:
-        kitty = choice(get_med_cats(Cat, working=False))
+        kitty = choice(get_alive_status_cats(Cat, ["medicine cat"], working=True))
         cat_dict["med_name"] = (str(kitty.name), choice(kitty.pronouns))
 
     if cat_dict:
         text = process_text(text, cat_dict)
 
     if other_clan_name:
-        text = text.replace("o_c", other_clan_name)
+        text = text.replace("o_c_n", other_clan_name)
     if clan:
         clan_name = str(clan.name)
     else:
@@ -962,87 +2224,235 @@ def ongoing_event_text_adjust(Cat, text, clan=None, other_clan_name=None):
     return text
 
 
-def event_text_adjust(Cat,
-                      text,
-                      cat,
-                      other_cat=None,
-                      other_clan_name=None,
-                      new_cat=None,
-                      clan=None,
-                      murder_reveal=False,
-                      victim=None):
+def event_text_adjust(
+    Cat,
+    text,
+    *,
+    patrol_cat_dict={},
+    patrol_leader=None,
+    main_cat=None,
+    random_cat=None,
+    stat_cat=None,
+    victim_cat=None,
+    patrol_cats: list = None,
+    patrol_apprentices: list = None,
+    new_cats: list = None,
+    multi_cats: list = None,
+    clan=None,
+    other_clan=None,
+    chosen_herb: str = None,
+):
     """
-    This function takes the given text and returns it with the abbreviations replaced appropriately
-    :param Cat: Always give the Cat class
-    :param text: The text that needs to be changed
-    :param cat: The cat taking the place of m_c
-    :param other_cat: The cat taking the place of r_c
-    :param other_clan_name: The other clan involved in the event
-    :param new_cat: The cat taking the place of n_c
-    :param clan: The player's Clan
-    :param murder_reveal: Whether or not this event is a murder reveal
-    :return: the adjusted text
+    handles finding abbreviations in the text and replacing them appropriately, returns the adjusted text
+    :param Cat Cat: always pass the Cat class
+    :param str text: the text being adjusted
+    :param dict patrol_cat_dict: LIFEGEN: dict to hold random cat abbrevs in LG patrols
+    :param Cat patrol_leader: Cat object for patrol_leader (p_l), if present
+    :param Cat main_cat: Cat object for main_cat (m_c), if present
+    :param Cat random_cat: Cat object for random_cat (r_c), if present
+    :param Cat stat_cat: Cat object for stat_cat (s_c), if present
+    :param Cat victim_cat: Cat object for victim_cat (mur_c), if present
+    :param list[Cat] patrol_cats: List of Cat objects for cats in patrol, if present
+    :param list[Cat] patrol_apprentices: List of Cat objects for patrol_apprentices (app#), if present
+    :param list[Cat] new_cats: List of Cat objects for new_cats (n_c:index), if present
+    :param list[Cat] multi_cats: List of Cat objects for multi_cat (multi_cat), if present
+    :param Clan clan: pass game.clan
+    :param OtherClan other_clan: OtherClan object for other_clan (o_c_n), if present
+    :param str chosen_herb: string of chosen_herb (chosen_herb), if present
     """
+    vowels = ["A", "E", "I", "O", "U"]
 
-    cat_dict = {}
+    if not text:
+        text = 'This should not appear, report as a bug please! Tried to adjust the text, but no text was provided.'
+        print("WARNING: Tried to adjust text, but no text was provided.")
 
-    if cat:
-        if cat.is_plural() and cat.front is not None:
-            cat_dict["m_c"] = (cat.front, choice(cat.pronouns))
-        else:
-            cat_dict["m_c"] = (str(cat.name), choice(cat.pronouns))
-        cat_dict["p_l"] = cat_dict["m_c"]
-    if "acc_plural" in text:
-        text = text.replace("acc_plural", str(ACC_DISPLAY[cat.pelt.accessory]["plural"]))
-    if "acc_singular" in text:
-        text = text.replace("acc_singular", str(ACC_DISPLAY[cat.pelt.accessory]["singular"]))
+    # this check is really just here to catch odd bug edge-cases from old saves, specifically in death history
+    # otherwise we should really *never* have lists being passed as the text
+    if isinstance(text, list):
+        text = text[0]
 
-    if other_cat:
-        if other_cat.pronouns:
-            if other_cat.is_plural() and other_cat.front is not None:
-                cat_dict["r_c"] = (cat.front, choice(cat.pronouns))
-            else:
-                cat_dict["r_c"] = (str(other_cat.name), choice(other_cat.pronouns))
-        else:
-            cat_dict["r_c"] = (str(other_cat.name))
+    replace_dict = {}
 
-    if new_cat:
-        cat_dict["n_c_pre"] = (str(new_cat.name.prefix), None)
-        cat_dict["n_c"] = (str(new_cat.name), choice(new_cat.pronouns))
-
-    if other_clan_name:
-        text = text.replace("o_c", other_clan_name)
-    if clan:
-        clan_name = str(clan.name)
-    else:
-        if game.clan is None:
-            clan_name = game.switches["clan_list"][0]
-        else:
-            clan_name = str(game.clan.name)
-
-    text = text.replace("c_n", clan_name + "Clan")
-
-    if murder_reveal and victim:
-        victim_cat = Cat.fetch_cat(victim)
-        cat_dict["mur_c"] = (str(victim_cat.name), choice(victim_cat.pronouns))
-
-    # Dreams and Omens
-    text, senses, list_type = find_special_list_types(text)
+    # special lists - this needs to happen first for pronoun tag reasons
+    text, senses, list_type, cat_tag = find_special_list_types(text)
     if list_type:
-        chosen_items = get_special_snippet_list(list_type, randint(1, 3), sense_groups=senses)
-        text = text.replace(list_type, chosen_items)
+        sign_list = get_special_snippet_list(
+            list_type, amount=randint(1, 3), sense_groups=senses
+        )
+        text = text.replace(list_type, str(sign_list))
+        if cat_tag:
+            text = text.replace("cat_tag", cat_tag)
 
-    adjust_text = process_text(text, cat_dict)
+    # main_cat
+    if "m_c" in text:
+        if main_cat:
+            replace_dict["m_c"] = (str(main_cat.name), choice(main_cat.pronouns))
 
-    return adjust_text
+    # patrol_lead
+    if "p_l" in text:
+        if patrol_leader:
+            replace_dict["p_l"] = (
+                str(patrol_leader.name),
+                choice(patrol_leader.pronouns),
+            )
+
+    # random_cat
+    if "r_c" in text:
+        if random_cat:
+            replace_dict["r_c"] = (str(random_cat.name), get_pronouns(random_cat))
+
+    # stat cat
+    if "s_c" in text:
+        if stat_cat:
+            replace_dict["s_c"] = (str(stat_cat.name), get_pronouns(stat_cat))
+
+    # LIFEGEN ABBREVS
+    if game.current_screen == 'patrol screen':
+        for cat in patrol_cat_dict.items():
+            pronoun_list = cat[1].pronouns if cat[1].pronouns else [{"subject": "they", "object": "them", "poss": "their", "inposs": "theirs", "self": "themself", "conju": 1}]
+            replace_dict[cat[0]] = (str(cat[1].name), choice(pronoun_list))
+
+    # other_cats
+    if patrol_cats:
+        other_cats = [i for i in patrol_cats if i not in [patrol_leader, random_cat, patrol_apprentices]]
+        other_cat_abbr = ["o_c1", "o_c2", "o_c3", "o_c4"]
+        for i, abbr in enumerate(other_cat_abbr):
+            if abbr not in text:
+                continue
+            if len(other_cats) > i:
+                replace_dict[abbr] = (str(other_cats[i].name), choice(other_cats[i].pronouns))
+
+    # patrol_apprentices
+    app_abbr = ["app1", "app2", "app3", "app4", "app5", "app6"]
+    for i, abbr in enumerate(app_abbr):
+        if abbr not in text:
+            continue
+        if len(patrol_apprentices) > i:
+            replace_dict[abbr] = (
+                str(patrol_apprentices[i].name), choice(patrol_apprentices[i].pronouns)
+            )
+
+    # new_cats (include pre version)
+    if "n_c" in text and new_cats:
+        for i, cat_list in enumerate(new_cats):
+            if len(new_cats) > 1:
+                pronoun = Cat.default_pronouns[0]  # They/them for multiple cats
+            else:
+                pronoun = choice(cat_list[0].pronouns)
+
+            replace_dict[f"n_c:{i}"] = (str(cat_list[0].name), pronoun)
+            replace_dict[f"n_c_pre:{i}"] = (str(cat_list[0].name.prefix), pronoun)
+
+    # mur_c (murdered cat for reveals)
+    if "mur_c" in text:
+        replace_dict["mur_c"] = (str(victim_cat.name), get_pronouns(victim_cat))
+
+    # lead_name
+    if "lead_name" in text:
+        leader = Cat.fetch_cat(game.clan.leader)
+        replace_dict["lead_name"] = (str(leader.name), choice(leader.pronouns))
+
+    # dep_name
+    if "dep_name" in text:
+        deputy = Cat.fetch_cat(game.clan.deputy)
+        replace_dict["dep_name"] = (str(deputy.name), choice(deputy.pronouns))
+
+    # med_name
+    if "med_name" in text:
+        med = choice(get_alive_status_cats(Cat, ["medicine cat"], working=True))
+        replace_dict["med_name"] = (str(med.name), choice(med.pronouns))
+
+    # assign all names and pronouns
+    if replace_dict:
+        text = process_text(text, replace_dict)
+
+    # multi_cat
+    if "multi_cat" in text:
+        name_list = []
+        for _cat in multi_cats:
+            name_list.append(str(_cat.name))
+        list_text = adjust_list_text(name_list)
+        text = text.replace("multi_cat", list_text)
+
+    # other_clan_name
+    if "o_c_n" in text:
+        other_clan_name = other_clan.name
+        pos = 0
+        for x in range(text.count('o_c_n')):
+            if 'o_c_n' in text:
+                for y in vowels:
+                    if str(other_clan_name).startswith(y):
+                        modify = text.split()
+                        if 'o_c_n' in modify:
+                            pos = modify.index('o_c_n')
+                        if "o_c_n's" in modify:
+                            pos = modify.index("o_c_n's")
+                        if 'o_c_n.' in modify:
+                            pos = modify.index('o_c_n.')
+                        if modify[pos - 1] == 'a':
+                            modify.remove('a')
+                            modify.insert(pos - 1, 'an')
+                        text = " ".join(modify)
+                        break
+
+        text = text.replace('o_c_n', str(other_clan_name) + 'Clan')
+
+    # clan_name
+    if "c_n" in text:
+        try:
+            clan_name = clan.name
+        except AttributeError:
+            clan_name = game.switches['clan_list'][0]
+
+        pos = 0
+        for x in range(text.count('c_n')):
+            if 'c_n' in text:
+                for y in vowels:
+                    if str(clan_name).startswith(y):
+                        modify = text.split()
+                        if 'c_n' in modify:
+                            pos = modify.index('c_n')
+                        if "c_n's" in modify:
+                            pos = modify.index("c_n's")
+                        if 'c_n.' in modify:
+                            pos = modify.index('c_n.')
+                        if modify[pos - 1] == 'a':
+                            modify.remove('a')
+                            modify.insert(pos - 1, 'an')
+                        text = " ".join(modify)
+                        break
+
+        text = text.replace('c_n', str(clan_name) + 'Clan')
+
+    # prey lists
+    text = adjust_prey_abbr(text)
+
+    # acc_plural (only works for main_cat's acc)
+    if "acc_plural" in text:
+        # text = text.replace("acc_plural", str(ACC_DISPLAY[main_cat.pelt.accessory]["plural"]))
+        text = text.replace("acc_plural", str(ACC_DISPLAY[main_cat.pelt.accessories[-1]]["plural"]))
+
+    # acc_singular (only works for main_cat's acc)
+    if "acc_singular" in text:
+        # text = text.replace("acc_singular", str(ACC_DISPLAY[main_cat.pelt.accessory]["singular"]))
+        text = text.replace("acc_singular", str(ACC_DISPLAY[main_cat.pelt.accessories[-1]]["singular"]))
+
+    if "given_herb" in text:
+        if "_" in chosen_herb:
+            chosen_herb = chosen_herb.replace("_", " ")
+        text = text.replace("given_herb", str(chosen_herb))
+
+    return text
 
 
-def leader_ceremony_text_adjust(Cat,
-                                text,
-                                leader,
-                                life_giver=None,
-                                virtue=None,
-                                extra_lives=None, ):
+def leader_ceremony_text_adjust(
+    Cat,
+    text,
+    leader,
+    life_giver=None,
+    virtue=None,
+    extra_lives=None,
+):
     """
     used to adjust the text for leader ceremonies
     """
@@ -1052,7 +2462,10 @@ def leader_ceremony_text_adjust(Cat,
     }
 
     if life_giver:
-        replace_dict["r_c"] = (str(Cat.fetch_cat(life_giver).name), choice(Cat.fetch_cat(life_giver).pronouns))
+        replace_dict["r_c"] = (
+            str(Cat.fetch_cat(life_giver).name),
+            choice(Cat.fetch_cat(life_giver).pronouns),
+        )
 
     text = process_text(text, replace_dict)
 
@@ -1061,23 +2474,25 @@ def leader_ceremony_text_adjust(Cat,
         text = text.replace("[virtue]", virtue)
 
     if extra_lives:
-        text = text.replace('[life_num]', str(extra_lives))
+        text = text.replace("[life_num]", str(extra_lives))
 
     text = text.replace("c_n", str(game.clan.name) + "Clan")
 
     return text
 
 
-def ceremony_text_adjust(Cat,
-                         text,
-                         cat,
-                         old_name=None,
-                         dead_mentor=None,
-                         mentor=None,
-                         previous_alive_mentor=None,
-                         random_honor=None,
-                         living_parents=(),
-                         dead_parents=()):
+def ceremony_text_adjust(
+    Cat,
+    text,
+    cat,
+    old_name=None,
+    dead_mentor=None,
+    mentor=None,
+    previous_alive_mentor=None,
+    random_honor=None,
+    living_parents=(),
+    dead_parents=(),
+):
     clanname = str(game.clan.name + "Clan")
 
     random_honor = random_honor
@@ -1087,15 +2502,29 @@ def ceremony_text_adjust(Cat,
     adjust_text = text
 
     cat_dict = {
-        "m_c": (str(cat.name), choice(cat.pronouns)) if cat else ("cat_placeholder", None),
-        "(mentor)": (str(mentor.name), choice(mentor.pronouns)) if mentor else ("mentor_placeholder", None),
-        "(deadmentor)": (str(dead_mentor.name), choice(dead_mentor.pronouns)) if dead_mentor else (
-            "dead_mentor_name", None),
+        "m_c": (
+            (str(cat.name), choice(cat.pronouns)) if cat else ("cat_placeholder", None)
+        ),
+        "(mentor)": (
+            (str(mentor.name), choice(mentor.pronouns))
+            if mentor
+            else ("mentor_placeholder", None)
+        ),
+        "(deadmentor)": (
+            (str(dead_mentor.name), get_pronouns(dead_mentor))
+            if dead_mentor
+            else ("dead_mentor_name", None)
+        ),
         "(previous_mentor)": (
-            str(previous_alive_mentor.name), choice(previous_alive_mentor.pronouns)) if previous_alive_mentor else (
-            "previous_mentor_name", None),
-        "l_n": (str(game.clan.leader.name), choice(game.clan.leader.pronouns)) if game.clan.leader else (
-            "leader_name", None),
+            (str(previous_alive_mentor.name), choice(previous_alive_mentor.pronouns))
+            if previous_alive_mentor
+            else ("previous_mentor_name", None)
+        ),
+        "l_n": (
+            (str(game.clan.leader.name), choice(game.clan.leader.pronouns))
+            if game.clan.leader
+            else ("leader_name", None)
+        ),
         "c_n": (clanname, None),
     }
 
@@ -1106,42 +2535,88 @@ def ceremony_text_adjust(Cat,
         cat_dict["r_h"] = (random_honor, None)
 
     if "p1" in adjust_text and "p2" in adjust_text and len(living_parents) >= 2:
-        cat_dict["p1"] = (str(living_parents[0].name), choice(living_parents[0].pronouns))
-        cat_dict["p2"] = (str(living_parents[1].name), choice(living_parents[1].pronouns))
+        cat_dict["p1"] = (
+            str(living_parents[0].name),
+            choice(living_parents[0].pronouns),
+        )
+        cat_dict["p2"] = (
+            str(living_parents[1].name),
+            choice(living_parents[1].pronouns),
+        )
     elif living_parents:
         random_living_parent = choice(living_parents)
-        cat_dict["p1"] = (str(random_living_parent.name), choice(random_living_parent.pronouns))
-        cat_dict["p2"] = (str(random_living_parent.name), choice(random_living_parent.pronouns))
+        cat_dict["p1"] = (
+            str(random_living_parent.name),
+            choice(random_living_parent.pronouns),
+        )
+        cat_dict["p2"] = (
+            str(random_living_parent.name),
+            choice(random_living_parent.pronouns),
+        )
 
-    if "dead_par1" in adjust_text and "dead_par2" in adjust_text and len(dead_parents) >= 2:
-        cat_dict["dead_par1"] = (str(dead_parents[0].name), choice(dead_parents[0].pronouns))
-        cat_dict["dead_par2"] = (str(dead_parents[1].name), choice(dead_parents[1].pronouns))
+    if (
+        "dead_par1" in adjust_text
+        and "dead_par2" in adjust_text
+        and len(dead_parents) >= 2
+    ):
+        cat_dict["dead_par1"] = (
+            str(dead_parents[0].name),
+            get_pronouns(dead_parents[0]),
+        )
+        cat_dict["dead_par2"] = (
+            str(dead_parents[1].name),
+            get_pronouns(dead_parents[1]),
+        )
     elif dead_parents:
         random_dead_parent = choice(dead_parents)
-        cat_dict["dead_par1"] = (str(random_dead_parent.name), choice(random_dead_parent.pronouns))
-        cat_dict["dead_par2"] = (str(random_dead_parent.name), choice(random_dead_parent.pronouns))
+        cat_dict["dead_par1"] = (
+            str(random_dead_parent.name),
+            get_pronouns(random_dead_parent),
+        )
+        cat_dict["dead_par2"] = (
+            str(random_dead_parent.name),
+            get_pronouns(random_dead_parent),
+        )
 
     adjust_text = process_text(adjust_text, cat_dict)
 
     return adjust_text, random_living_parent, random_dead_parent
 
 
-def shorten_text_to_fit(name, length_limit, font_size=None, font_type="resources/fonts/NotoSans-Medium.ttf"):
-    length_limit = length_limit//2 if not game.settings['fullscreen'] else length_limit
-    # Set the font size based on fullscreen settings if not provided
-    # Text box objects are named by their fullscreen text size so it's easier to do it this way
+def get_pronouns(Cat):
+    """Get a cat's pronoun even if the cat has faded to prevent crashes (use gender-neutral pronouns when the cat has faded)"""
+    if Cat.pronouns == []:
+        return {
+            "subject": "they",
+            "object": "them",
+            "poss": "their",
+            "inposs": "theirs",
+            "self": "themself",
+            "conju": 1,
+        }
+    else:
+        return choice(Cat.pronouns)
+
+
+def shorten_text_to_fit(
+    name, length_limit, font_size=None, font_type="resources/fonts/NotoSans-Medium.ttf"
+):
+    length_limit = length_limit * scripts.game_structure.screen_settings.screen_scale
     if font_size is None:
-        font_size = 30
-    font_size = font_size//2 if not game.settings['fullscreen'] else font_size
+        font_size = 15
+    font_size = floor(font_size * scripts.game_structure.screen_settings.screen_scale)
+
+    if font_type == "clangen":
+        font_type = "resources/fonts/clangen.ttf"
     # Create the font object
     font = pygame.font.Font(font_type, font_size)
 
     # Add dynamic name lengths by checking the actual width of the text
     total_width = 0
-    short_name = ''
+    short_name = ""
+    ellipsis_width = font.size("...")[0]
     for index, character in enumerate(name):
         char_width = font.size(character)[0]
-        ellipsis_width = font.size("...")[0]
 
         # Check if the current character is the last one and its width is less than or equal to ellipsis_width
         if index == len(name) - 1 and char_width <= ellipsis_width:
@@ -1152,32 +2627,95 @@ def shorten_text_to_fit(name, length_limit, font_size=None, font_type="resources
                 break
             short_name += character
 
-    # If the name was truncated, add '...'
+    # If the name was truncated, add "..."
     if len(short_name) < len(name):
-        short_name += '...'
+        short_name += "..."
 
     return short_name
+
 
 # ---------------------------------------------------------------------------- #
 #                                    Sprites                                   #
 # ---------------------------------------------------------------------------- #
 
-def scale(rect):
-    rect[0] = round(rect[0] / 1600 * screen_x) if rect[0] > 0 else rect[0]
-    rect[1] = round(rect[1] / 1400 * screen_y) if rect[1] > 0 else rect[1]
-    rect[2] = round(rect[2] / 1600 * screen_x) if rect[2] > 0 else rect[2]
-    rect[3] = round(rect[3] / 1400 * screen_y) if rect[3] > 0 else rect[3]
+
+def ui_scale(rect: pygame.Rect):
+    """
+    Scales a pygame.Rect appropriately for the UI scaling currently in use.
+    :param rect: a pygame.Rect
+    :return: the same pygame.Rect, scaled for the current UI.
+    """
+    # offset can be negative to allow for correct anchoring
+    rect[0] = floor(rect[0] * scripts.game_structure.screen_settings.screen_scale)
+    rect[1] = floor(rect[1] * scripts.game_structure.screen_settings.screen_scale)
+    # if the dimensions are negative, it's dynamically scaled, ignore
+    rect[2] = (
+        floor(rect[2] * scripts.game_structure.screen_settings.screen_scale)
+        if rect[2] > 0
+        else rect[2]
+    )
+    rect[3] = (
+        floor(rect[3] * scripts.game_structure.screen_settings.screen_scale)
+        if rect[3] > 0
+        else rect[3]
+    )
 
     return rect
 
 
-def scale_dimentions(dim):
-    dim = list(dim)
-    dim[0] = round(dim[0] / 1600 * screen_x) if dim[0] > 0 else dim[0]
-    dim[1] = round(dim[1] / 1400 * screen_y) if dim[1] > 0 else dim[1]
-    dim = tuple(dim)
+def ui_scale_dimensions(dim: Tuple[int, int]):
+    """
+    Use to scale the dimensions of an item - WILL IGNORE NEGATIVE VALUES
+    :param dim: The dimensions to scale
+    :return: The scaled dimensions
+    """
+    return (
+        floor(dim[0] * scripts.game_structure.screen_settings.screen_scale)
+        if dim[0] > 0
+        else dim[0],
+        floor(dim[1] * scripts.game_structure.screen_settings.screen_scale)
+        if dim[1] > 0
+        else dim[1],
+    )
 
-    return dim
+
+def ui_scale_offset(coords: Tuple[int, int]):
+    """
+    Use to scale the offset of an item (i.e. the first 2 values of a pygame.Rect).
+    Not to be confused with ui_scale_blit.
+    :param coords: The coordinates to scale
+    :return: The scaled coordinates
+    """
+    return (
+        floor(coords[0] * scripts.game_structure.screen_settings.screen_scale),
+        floor(coords[1] * scripts.game_structure.screen_settings.screen_scale),
+    )
+
+
+def ui_scale_value(val: int):
+    """
+    Use to scale a single value according to the UI scale. If you need this one,
+    you're probably doing something unusual. Try to avoid where possible.
+    :param val: The value to scale
+    :return: The scaled value
+    """
+    return floor(val * scripts.game_structure.screen_settings.screen_scale)
+
+
+def ui_scale_blit(coords: Tuple[int, int]):
+    """
+    Use to scale WHERE to blit an item, not the SIZE of it. (0, 0) is the top left corner of the pygame_gui managed window,
+    this adds the offset from fullscreen etc. to make it blit in the right place. Not to be confused with ui_scale_offset.
+    :param coords: The coordinates to blit to
+    :return: The scaled, correctly offset coordinates to blit to.
+    """
+    return floor(
+        coords[0] * scripts.game_structure.screen_settings.screen_scale
+        + scripts.game_structure.screen_settings.offset[0]
+    ), floor(
+        coords[1] * scripts.game_structure.screen_settings.screen_scale
+        + scripts.game_structure.screen_settings.offset[1]
+    )
 
 
 def update_sprite(cat):
@@ -1192,16 +2730,53 @@ def update_sprite(cat):
     cat.all_cats[cat.ID] = cat
 
 
-def generate_sprite(cat, life_state=None, scars_hidden=False, acc_hidden=False, always_living=False,
-                    no_not_working=False) -> pygame.Surface:
-    """Generates the sprite for a cat, with optional arugments that will override certain things.
-        life_stage: sets the age life_stage of the cat, overriding the one set by it's age. Set to string.
-        scar_hidden: If True, doesn't display the cat's scars. If False, display cat scars.
-        acc_hidden: If True, hide the accessory. If false, show the accessory.
-        always_living: If True, always show the cat with living lineart
-        no_not_working: If true, never use the not_working lineart.
-                        If false, use the cat.not_working() to determine the no_working art.
-        """
+def clan_symbol_sprite(clan, return_string=False, force_light=False):
+    """
+    returns the clan symbol for the given clan_name, if no symbol exists then random symbol is chosen
+    :param clan: the clan object
+    :param return_string: default False, set True if the sprite name string is required rather than the sprite image
+    :param force_light: Set true if you want this sprite to override the dark/light mode changes with the light sprite
+    """
+    if not clan.chosen_symbol:
+        possible_sprites = []
+        for sprite in sprites.clan_symbols:
+            name = sprite.strip("1234567890")
+            if f"symbol{clan.name.upper()}" == name:
+                possible_sprites.append(sprite)
+        if possible_sprites:
+            clan.chosen_symbol = choice(possible_sprites)
+        else:
+            # give random symbol if no matching symbol exists
+            print(
+                f"WARNING: attempted to return symbol, but there's no clan symbol for {clan.name.upper()}. "
+                f"Random chosen."
+            )
+            clan.chosen_symbol = choice(sprites.clan_symbols)
+
+    if return_string:
+        return clan.chosen_symbol
+    else:
+        return sprites.get_symbol(clan.chosen_symbol, force_light=force_light)
+
+
+def generate_sprite(
+    cat,
+    life_state=None,
+    scars_hidden=False,
+    acc_hidden=False,
+    always_living=False,
+    no_not_working=False,
+) -> pygame.Surface:
+    """
+    Generates the sprite for a cat, with optional arguments that will override certain things.
+
+    :param life_state: sets the age life_stage of the cat, overriding the one set by its age. Set to string.
+    :param scars_hidden: If True, doesn't display the cat's scars. If False, display cat scars.
+    :param acc_hidden: If True, hide the accessory. If false, show the accessory.
+    :param always_living: If True, always show the cat with living lineart
+    :param no_not_working: If true, never use the not_working lineart.
+                    If false, use the cat.not_working() to determine the no_working art.
+    """
 
     if life_state is not None:
         age = life_state
@@ -1214,39 +2789,52 @@ def generate_sprite(cat, life_state=None, scars_hidden=False, acc_hidden=False, 
         dead = cat.dead
 
     # setting the cat_sprite (bc this makes things much easier)
-    if not no_not_working and cat.not_working() and age != 'newborn' and game.config['cat_sprites']['sick_sprites']:
-        if age in ['kitten', 'adolescent']:
+    if (
+        not no_not_working
+        and cat.not_working()
+        and age != "newborn"
+        and game.config["cat_sprites"]["sick_sprites"]
+    ):
+        if age in ["kitten", "adolescent"]:
             cat_sprite = str(19)
         else:
             cat_sprite = str(18)
-    elif cat.pelt.paralyzed and age != 'newborn':
-        if age in ['kitten', 'adolescent']:
+    elif cat.pelt.paralyzed and age != "newborn":
+        if age in ["kitten", "adolescent"]:
             cat_sprite = str(17)
         else:
-            if cat.pelt.length == 'long':
+            if cat.pelt.length == "long":
                 cat_sprite = str(16)
             else:
                 cat_sprite = str(15)
     else:
-        if age == 'elder' and not game.config['fun']['all_cats_are_newborn']:
-            age = 'senior'
+        if age == "elder" and not game.config["fun"]["all_cats_are_newborn"]:
+            age = "senior"
 
-        if game.config['fun']['all_cats_are_newborn']:
-            cat_sprite = str(cat.pelt.cat_sprites['newborn'])
+        if game.config["fun"]["all_cats_are_newborn"]:
+            cat_sprite = str(cat.pelt.cat_sprites["newborn"])
         else:
             cat_sprite = str(cat.pelt.cat_sprites[age])
 
-    new_sprite = pygame.Surface((sprites.size, sprites.size), pygame.HWSURFACE | pygame.SRCALPHA)
+    new_sprite = pygame.Surface(
+        (sprites.size, sprites.size), pygame.HWSURFACE | pygame.SRCALPHA
+    )
 
     # generating the sprite
     try:
-        if cat.pelt.name not in ['Tortie', 'Calico']:
-            new_sprite.blit(sprites.sprites[cat.pelt.get_sprites_name() + cat.pelt.colour + cat_sprite], (0, 0))
+        if cat.pelt.name not in ["Tortie", "Calico"]:
+            new_sprite.blit(
+                sprites.sprites[
+                    cat.pelt.get_sprites_name() + cat.pelt.colour + cat_sprite
+                    ],
+                (0, 0),
+            )
         else:
             # Base Coat
             new_sprite.blit(
                 sprites.sprites[cat.pelt.tortiebase + cat.pelt.colour + cat_sprite],
-                (0, 0))
+                (0, 0),
+            )
 
             # Create the patch image
             if cat.pelt.tortiepattern == "Single":
@@ -1254,103 +2842,291 @@ def generate_sprite(cat, life_state=None, scars_hidden=False, acc_hidden=False, 
             else:
                 tortie_pattern = cat.pelt.tortiepattern
 
-            patches = sprites.sprites[
-                tortie_pattern + cat.pelt.tortiecolour + cat_sprite].copy()
-            patches.blit(sprites.sprites["tortiemask" + cat.pelt.pattern + cat_sprite], (0, 0),
-                         special_flags=pygame.BLEND_RGBA_MULT)
-
-            # Add patches onto cat.
-            new_sprite.blit(patches, (0, 0))
+            for pattern in cat.pelt.pattern:
+                patches = sprites.sprites[
+                    tortie_pattern + cat.pelt.tortiecolour + cat_sprite].copy()
+                patches.blit(sprites.sprites["tortiemask" + pattern + cat_sprite], (0, 0),
+                             special_flags=pygame.BLEND_RGBA_MULT)
+                # Add patches onto cat.
+                new_sprite.blit(patches, (0, 0))
 
         # TINTS
-        if cat.pelt.tint != "none" and cat.pelt.tint in sprites.cat_tints["tint_colours"]:
+        if (
+                cat.pelt.tint != "none"
+                and cat.pelt.tint in sprites.cat_tints["tint_colours"]
+        ):
             # Multiply with alpha does not work as you would expect - it just lowers the alpha of the
             # entire surface. To get around this, we first blit the tint onto a white background to dull it,
             # then blit the surface onto the sprite with pygame.BLEND_RGB_MULT
             tint = pygame.Surface((sprites.size, sprites.size)).convert_alpha()
             tint.fill(tuple(sprites.cat_tints["tint_colours"][cat.pelt.tint]))
             new_sprite.blit(tint, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
+        if (
+            cat.pelt.tint != "none"
+            and cat.pelt.tint in sprites.cat_tints["dilute_tint_colours"]
+        ):
+            tint = pygame.Surface((sprites.size, sprites.size)).convert_alpha()
+            tint.fill(tuple(sprites.cat_tints["dilute_tint_colours"][cat.pelt.tint]))
+            new_sprite.blit(tint, (0, 0), special_flags=pygame.BLEND_RGB_ADD)
 
         # draw white patches
-        if cat.pelt.white_patches is not None:
-            white_patches = sprites.sprites['white' + cat.pelt.white_patches + cat_sprite].copy()
-
-            # Apply tint to white patches.
-            if cat.pelt.white_patches_tint != "none" and cat.pelt.white_patches_tint in sprites.white_patches_tints[
-                "tint_colours"]:
-                tint = pygame.Surface((sprites.size, sprites.size)).convert_alpha()
-                tint.fill(tuple(sprites.white_patches_tints["tint_colours"][cat.pelt.white_patches_tint]))
-                white_patches.blit(tint, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
-
-            new_sprite.blit(white_patches, (0, 0))
+        if cat.pelt.white_patches:
+            for white in cat.pelt.white_patches:
+                if cat.pelt.white_patches_tint != "none" and cat.pelt.white_patches_tint in sprites.white_patches_tints["tint_colours"]:
+                    white_patch = sprites.sprites['white' + white + cat_sprite].copy()
+                    tint = pygame.Surface((sprites.size, sprites.size)).convert_alpha()
+                    tint.fill(tuple(sprites.white_patches_tints["tint_colours"][cat.pelt.white_patches_tint]))
+                    white_patch.blit(tint, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
+                    new_sprite.blit(white_patch, (0, 0))
+                else:
+                    new_sprite.blit(sprites.sprites['white' + white + cat_sprite], (0, 0))
 
         # draw vit & points
 
         if cat.pelt.points:
-            points = sprites.sprites['white' + cat.pelt.points + cat_sprite].copy()
-            if cat.pelt.white_patches_tint != "none" and cat.pelt.white_patches_tint in sprites.white_patches_tints[
-                "tint_colours"]:
+            points = sprites.sprites["white" + cat.pelt.points + cat_sprite].copy()
+            if (
+                    cat.pelt.white_patches_tint != "none"
+                    and cat.pelt.white_patches_tint
+                    in sprites.white_patches_tints["tint_colours"]
+            ):
                 tint = pygame.Surface((sprites.size, sprites.size)).convert_alpha()
-                tint.fill(tuple(sprites.white_patches_tints["tint_colours"][cat.pelt.white_patches_tint]))
+                tint.fill(
+                    tuple(
+                        sprites.white_patches_tints["tint_colours"][
+                            cat.pelt.white_patches_tint
+                        ]
+                    )
+                )
                 points.blit(tint, (0, 0), special_flags=pygame.BLEND_RGB_MULT)
             new_sprite.blit(points, (0, 0))
 
         if cat.pelt.vitiligo:
-            new_sprite.blit(sprites.sprites['white' + cat.pelt.vitiligo + cat_sprite], (0, 0))
+            new_sprite.blit(
+                sprites.sprites["white" + cat.pelt.vitiligo + cat_sprite], (0, 0)
+            )
 
         # draw eyes & scars1
-        eyes = sprites.sprites['eyes' + cat.pelt.eye_colour + cat_sprite].copy()
+        eyes = sprites.sprites["eyes" + cat.pelt.eye_colour + cat_sprite].copy()
         if cat.pelt.eye_colour2 != None:
-            eyes.blit(sprites.sprites['eyes2' + cat.pelt.eye_colour2 + cat_sprite], (0, 0))
-        if cat.pelt.lazy_eye != None:
-            eyes.blit(sprites.sprites['lazyeyes' + cat.pelt.lazy_eye + cat_sprite], (0, 0))
+            eyes.blit(
+                sprites.sprites["eyes2" + cat.pelt.eye_colour2 + cat_sprite], (0, 0)
+            )
         new_sprite.blit(eyes, (0, 0))
 
         if not scars_hidden:
             for scar in cat.pelt.scars:
                 if scar in cat.pelt.scars1:
-                    new_sprite.blit(sprites.sprites['scars' + scar + cat_sprite], (0, 0))
+                    new_sprite.blit(
+                        sprites.sprites["scars" + scar + cat_sprite], (0, 0)
+                    )
                 if scar in cat.pelt.scars3:
-                    new_sprite.blit(sprites.sprites['scars' + scar + cat_sprite], (0, 0))
+                    new_sprite.blit(
+                        sprites.sprites["scars" + scar + cat_sprite], (0, 0)
+                    )
 
         # draw line art
-        if game.settings['shaders'] and not dead:
-            new_sprite.blit(sprites.sprites['shaders' + cat_sprite], (0, 0), special_flags=pygame.BLEND_RGB_MULT)
-            new_sprite.blit(sprites.sprites['lighting' + cat_sprite], (0, 0))
+        if game.settings["shaders"] and not dead:
+            new_sprite.blit(
+                sprites.sprites["shaders" + cat_sprite],
+                (0, 0),
+                special_flags=pygame.BLEND_RGB_MULT,
+            )
+            new_sprite.blit(sprites.sprites["lighting" + cat_sprite], (0, 0))
 
         if not dead:
-            new_sprite.blit(sprites.sprites['lines' + cat_sprite], (0, 0))
+            new_sprite.blit(sprites.sprites["lines" + cat_sprite], (0, 0))
         elif cat.df:
-            new_sprite.blit(sprites.sprites['lineartdf' + cat_sprite], (0, 0))
+            new_sprite.blit(sprites.sprites["lineartdf" + cat_sprite], (0, 0))
+        elif cat.dead and cat.outside:
+            new_sprite.blit(sprites.sprites["lineartur" + cat_sprite], (0, 0))
         elif dead:
-            new_sprite.blit(sprites.sprites['lineartdead' + cat_sprite], (0, 0))
+            new_sprite.blit(sprites.sprites["lineartdead" + cat_sprite], (0, 0))
         # draw skin and scars2
         blendmode = pygame.BLEND_RGBA_MIN
-        new_sprite.blit(sprites.sprites['skin' + cat.pelt.skin + cat_sprite], (0, 0))
+        new_sprite.blit(sprites.sprites["skin" + cat.pelt.skin + cat_sprite], (0, 0))
 
         if not scars_hidden:
             for scar in cat.pelt.scars:
                 if scar in cat.pelt.scars2:
-                    new_sprite.blit(sprites.sprites['scars' + scar + cat_sprite], (0, 0), special_flags=blendmode)
+                    new_sprite.blit(
+                        sprites.sprites["scars" + scar + cat_sprite],
+                        (0, 0),
+                        special_flags=blendmode,
+                    )
 
         # draw accessories
-        if not acc_hidden:
-            if cat.pelt.accessory in cat.pelt.plant_accessories:
-                new_sprite.blit(sprites.sprites['acc_herbs' + cat.pelt.accessory + cat_sprite], (0, 0))
-            elif cat.pelt.accessory in cat.pelt.wild_accessories:
-                new_sprite.blit(sprites.sprites['acc_wild' + cat.pelt.accessory + cat_sprite], (0, 0))
-            elif cat.pelt.accessory in cat.pelt.collars:
-                new_sprite.blit(sprites.sprites['collars' + cat.pelt.accessory + cat_sprite], (0, 0))
-            elif cat.pelt.accessory in cat.pelt.toy_accessories:
-                new_sprite.blit(sprites.sprites['acc_dismod' + cat.pelt.accessory + cat_sprite], (0, 0))
-            elif cat.pelt.accessory in cat.pelt.blankie_accessories:
-                new_sprite.blit(sprites.sprites['acc_dismod' + cat.pelt.accessory + cat_sprite], (0, 0))
-            elif cat.pelt.accessory in cat.pelt.flag_accessories:
-                new_sprite.blit(sprites.sprites['acc_dismod' + cat.pelt.accessory + cat_sprite], (0, 0))
+        clangen_accessories = ['MAPLE LEAF',
+                            'HOLLY',
+                            'BLUE BERRIES',
+                            'FORGET ME NOTS',
+                            'RYE STALK',
+                            'LAUREL',
+                            'BLUEBELLS',
+                            'NETTLE',
+                            'POPPY',
+                            'LAVENDER',
+                            'HERBS',
+                            'PETALS',
+                            'OAK LEAVES',
+                            'CATMINT',
+                            'MAPLE SEED',
+                            'JUNIPER',
+                            'DRY HERBS',
+                            'DAISY',
+                            'CLOVER',
+                            'GORSE',
+                            'HEATHER',
+                            'SNAPDRAGON',
+                            'LILY OF THE VALLEY',
+                            'CATTAIL',
+                            'WHITE POPPY',
+                            'ORANGE POPPY',
+                            'PING POPPY',
+                            'CYAN POPPY',
+                            'BLUB WHITE',
+                            'BLUB YELLOW',
+                            'BLUB ORANGE',
+                            'BLUB PINK',
+                            'BLUB BLUE',
+                            'RASPBERRY',
+                            'RED FEATHERS',
+                            'BLUE FEATHERS',
+                            'JAY FEATHERS',
+                            'MOTH WINGS',
+                            'CICADA WINGS',
+                            'SPARROW FEATHERS',
+                            'GULL FEATHERS',
+                            'MONARCH BUTTERFLY',
+                            'MORPHO BUTTERFLY',
+                            'ROSY MOTH WINGS',
+                            'BLACK CICADA'
+                            'CRIMSON',
+                            'BLUE',
+                            'YELLOW',
+                            'CYAN',
+                            'RED',
+                            'LIME',
+                            'GREEN',
+                            'RAINBOW',
+                            'BLACK',
+                            'SPIKES',
+                            'WHITE',
+                            'PINK',
+                            'PURPLE',
+                            'MULTI',
+                            'INDIGO',
+                            'CRIMSONBELL',
+                            'BLUEBELL',
+                            'YELLOWBELL',
+                            'CYANBELL',
+                            'REDBELL',
+                            'LIMEBELL',
+                            'GREENBELL',
+                            'RAINBOWBELL',
+                            'BLACKBELL',
+                            'SPIKESBELL',
+                            'WHITEBELL',
+                            'PINKBELL',
+                            'PURPLEBELL',
+                            'MULTIBELL',
+                            'INDIGOBELL',
+                            'CRIMSONBOW',
+                            'BLUEBOW',
+                            'YELLOWBOW',
+                            'CYANBOW',
+                            'REDBOW',
+                            'LIMEBOW',
+                            'GREENBOW',
+                            'RAINBOWBOW',
+                            'BLACKBOW',
+                            'SPIKESBOW',
+                            'WHITEBOW',
+                            'PINKBOW',
+                            'PURPLEBOW',
+                            'MULTIBOW',
+                            'INDIGOBOW',
+                            'CRIMSONNYLON',
+                            'BLUENYLON',
+                            'YELLOWNYLON',
+                            'CYANNYLON',
+                            'REDNYLON',
+                            'LIMENYLON',
+                            'GREENNYLON',
+                            'RAINBOWNYLON',
+                            'BLACKNYLON',
+                            'SPIKESNYLON',
+                            'WHITENYLON',
+                            'PINKNYLON',
+                            'PURPLENYLON',
+                            'MULTINYLON',
+                            'INDIGONYLON']
+
+        for i in cat.pelt.accessories:
+            if i not in clangen_accessories and game.settings['new accessories'] is False:
+                continue
+            if not acc_hidden:
+                try:
+                    if i in cat.pelt.plant_accessories:
+                        new_sprite.blit(sprites.sprites['acc_herbs' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.wild_accessories:
+                        new_sprite.blit(sprites.sprites['acc_wild' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.collars:
+                        new_sprite.blit(sprites.sprites['collars' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.flower_accessories:
+                        new_sprite.blit(sprites.sprites['acc_flower' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.plant2_accessories:
+                        new_sprite.blit(sprites.sprites['acc_plant2' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.snake_accessories:
+                        new_sprite.blit(sprites.sprites['acc_snake' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.smallAnimal_accessories:
+                        new_sprite.blit(sprites.sprites['acc_smallAnimal' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.deadInsect_accessories:
+                        new_sprite.blit(sprites.sprites['acc_deadInsect' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.aliveInsect_accessories:
+                        new_sprite.blit(sprites.sprites['acc_aliveInsect' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.fruit_accessories:
+                        new_sprite.blit(sprites.sprites['acc_fruit' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.crafted_accessories:
+                        new_sprite.blit(sprites.sprites['acc_crafted' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.tail2_accessories:
+                        new_sprite.blit(sprites.sprites['acc_tail2' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.sterflowers:
+                        new_sprite.blit(sprites.sprites['acc_sterflower' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.bonesacc:
+                        new_sprite.blit(sprites.sprites['bone' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.butterflymothacc:
+                        new_sprite.blit(sprites.sprites['butterflies' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.twolegstuff:
+                        new_sprite.blit(sprites.sprites['twolegstuff' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.beetle_feathers:
+                        new_sprite.blit(sprites.sprites['beetle_feathers' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.beetle_accessories:
+                        new_sprite.blit(sprites.sprites['beetle_accessories' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.ties:
+                        new_sprite.blit(sprites.sprites['ties' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.french_scarves:
+                        new_sprite.blit(sprites.sprites['french_scarves' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.bandanas:
+                        new_sprite.blit(sprites.sprites['bandanas' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.teethcollars:
+                        new_sprite.blit(sprites.sprites['teethcollars' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.bows:
+                        new_sprite.blit(sprites.sprites['bows' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.sailormoon:
+                        new_sprite.blit(sprites.sprites['sailormoon' + i + cat_sprite], (0, 0))
+                    elif i in cat.pelt.randomaccessories:
+                        new_sprite.blit(sprites.sprites['randomaccessories' + i + cat_sprite], (0, 0))
+                except:
+                    continue
 
         # Apply fading fog
-        if cat.pelt.opacity <= 97 and not cat.prevent_fading and game.clan.clan_settings["fading"] and dead:
-
+        if (
+            cat.pelt.opacity <= 97
+            and not cat.prevent_fading
+            and game.clan.clan_settings["fading"]
+            and dead
+        ):
             stage = "0"
             if 80 >= cat.pelt.opacity > 45:
                 # Stage 1
@@ -1359,15 +3135,18 @@ def generate_sprite(cat, life_state=None, scars_hidden=False, acc_hidden=False, 
                 # Stage 2
                 stage = "2"
 
-            new_sprite.blit(sprites.sprites['fademask' + stage + cat_sprite],
-                            (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+            new_sprite.blit(
+                sprites.sprites["fademask" + stage + cat_sprite],
+                (0, 0),
+                special_flags=pygame.BLEND_RGBA_MULT,
+            )
 
             if cat.df:
-                temp = sprites.sprites['fadedf' + stage + cat_sprite].copy()
+                temp = sprites.sprites["fadedf" + stage + cat_sprite].copy()
                 temp.blit(new_sprite, (0, 0))
                 new_sprite = temp
             else:
-                temp = sprites.sprites['fadestarclan' + stage + cat_sprite].copy()
+                temp = sprites.sprites["fadestarclan" + stage + cat_sprite].copy()
                 temp.blit(new_sprite, (0, 0))
                 new_sprite = temp
 
@@ -1379,9 +3158,12 @@ def generate_sprite(cat, life_state=None, scars_hidden=False, acc_hidden=False, 
         logger.exception("Failed to load sprite")
 
         # Placeholder image
-        new_sprite = image_cache.load_image(f"sprites/error_placeholder.png").convert_alpha()
+        new_sprite = image_cache.load_image(
+            f"sprites/error_placeholder.png"
+        ).convert_alpha()
 
     return new_sprite
+
 
 def apply_opacity(surface, opacity):
     for x in range(surface.get_width()):
@@ -1396,8 +3178,10 @@ def apply_opacity(surface, opacity):
 #                                     OTHER                                    #
 # ---------------------------------------------------------------------------- #
 
+
 def chunks(L, n):
-    return [L[x: x + n] for x in range(0, len(L), n)]
+    return [L[x : x + n] for x in range(0, len(L), n)]
+
 
 def is_iterable(y):
     try:
@@ -1406,18 +3190,1025 @@ def is_iterable(y):
         return False
 
 
-def get_text_box_theme(theme_name=""):
+def get_text_box_theme(theme_name=None):
     """Updates the name of the theme based on dark or light mode"""
-    if game.settings['dark mode']:
-        if theme_name == "":
-            return "#default_dark"
-        else:
-            return theme_name + "_dark"
+    if game.settings["dark mode"]:
+        return ObjectID("#dark", theme_name)
     else:
-        if theme_name == "":
-            return "#text_box"
+        return theme_name
+
+# ---------------------------------------------------------------------------- #
+#                            LIFEGEN TEXT ABBREVS                              #
+# ---------------------------------------------------------------------------- #
+
+
+def add_to_cat_dict(abbrev, cluster, x, rel, r, abbrev_cat, text, cat_dict):
+    """ Adds a cat to the dict, assigning them to their abbrev to be reused in later text. """
+
+    if cluster and rel:
+        abbrev_string = f"{r}-{abbrev}-{x}"
+    elif cluster and not rel:
+        abbrev_string = f"{abbrev}-{x}"
+    elif rel and not cluster:
+        abbrev_string = f"{r}-{abbrev}"
+    else:
+        abbrev_string = abbrev
+
+    cat_dict[abbrev_string] = abbrev_cat
+    text = re.sub(fr'(?<!\/){abbrev_string}(?!\/)', str(abbrev_cat.name), text)
+    
+    return text
+
+
+def abbrev_addons(t_c, r_c, cluster, x, rel, r):
+    """ Checks if cluster and relationship adodns are fulfilled.
+        x = cluster
+        r = relationship value
+        cluster and rel are booleans for if the addons are present.
+    """
+
+    if (cluster and x not in get_cluster(r_c.personality.trait)):
+        return False
+    
+    if (
+            (
+            rel and (
+                r_c.ID not in t_c.relationships) or
+                (r == "plike" and t_c.relationships[r_c.ID].platonic_like < 20) or
+                (r == "plove" and t_c.relationships[r_c.ID].platonic_like < 50) or
+                (r == "rlike" and t_c.relationships[r_c.ID].romantic_love < 10) or
+                (r == "rlove" and t_c.relationships[r_c.ID].romantic_love < 50) or
+                (r == "dislike" and t_c.relationships[r_c.ID].dislike < 15) or
+                (r == "hate" and t_c.relationships[r_c.ID].dislike < 50) or
+                (r == "jealous" and t_c.relationships[r_c.ID].jealousy < 20) or
+                (r == "trust" and t_c.relationships[r_c.ID].trust < 20) or
+                (r == "comfort" and t_c.relationships[r_c.ID].comfortable < 20) or 
+                (r == "respect" and t_c.relationships[r_c.ID].admiration < 20) or
+                (r == "neutral" and
+                ( 
+                    (t_c.relationships[r_c.ID].platonic_like > 20) or
+                    (t_c.relationships[r_c.ID].romantic_love > 20) or
+                    (t_c.relationships[r_c.ID].dislike > 20) or
+                    (t_c.relationships[r_c.ID].jealousy > 20) or
+                    (t_c.relationships[r_c.ID].trust > 20) or
+                    (t_c.relationships[r_c.ID].comfortable > 20) or
+                    (t_c.relationships[r_c.ID].admiration > 20)
+                        
+                    )
+                )
+            )
+        ):
+        return False
+
+def cat_dict_check(abbrev, cluster, x, rel, r, text, cat_dict):
+    """ Checks if a cat is in the dict already.
+    If so, it will reuse the name in later text.
+    If not, it will find a cat for the abbrev."""
+    in_dict = False
+    try:
+        if cluster and rel:
+            abbrev_string = f"{r}-{abbrev}-{x}"
+        elif cluster and not rel:
+            abbrev_string = f"{abbrev}-{x}"
+        elif rel and not cluster:
+            abbrev_string = f"{r}-{abbrev}"
         else:
-            return theme_name
+            abbrev_string = abbrev
+        if abbrev_string in cat_dict:
+            in_dict = True
+            text = re.sub(fr'(?<!\/){abbrev_string}(?!\/)', str(cat_dict[abbrev_string].name), text)
+    except KeyError as e:
+        text = ""
+        # returning an empty string to reroll for dialogue
+    return text, in_dict
+
+def lifegen_abbrevs(Cat, text, you, cat, chosen_cat, cat_dict):
+    """ Checks the requirements for each random cat abbrev.
+        Returns a dict of all valid abbrevs """
+    abbrevs = {}
+
+    # heres AALLLL the conditions for certain abbrevs to be valid
+
+    current_cat_objects = []
+    for abbrev, cat_object in cat_dict.items():
+        current_cat_objects.append(cat_object)
+        # print("Already in cat dict:", cat_object.name)
+    
+    current_cat_objects.append(cat)
+    current_cat_objects.append(you)
+
+    yourcrush = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.ID in cat.mates or
+        chosen_cat.ID in you.mates or
+        not chosen_cat.is_dateable(you) or
+        len(you.mates) > 0 or
+        chosen_cat.outside or
+        chosen_cat.dead or
+        chosen_cat not in you.relationships or
+        (chosen_cat in you.relationships and you.relationships[chosen_cat.ID].romantic_love < 20) or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    theircrush = False if (
+        chosen_cat.ID == cat.ID or
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID in cat.mates or
+        chosen_cat.ID in you.mates or
+        not chosen_cat.is_dateable(cat) or
+        len(cat.mates) > 0 or
+        chosen_cat.outside or
+        chosen_cat.dead or
+        chosen_cat not in cat.relationships or
+        (chosen_cat in cat.relationships and cat.relationships[chosen_cat.ID].romantic_love < 15) or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Random statuses
+    r_c = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        "r_c1" in text or
+        "r_c2" in text or
+        "r_c3" in text or
+        "r_c4" in text or
+        chosen_cat.moons < 6 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    r_w = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status != "warrior" or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    r_k = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status not in ["kitten", "newborn"] or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    r_a = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status != "apprentice" or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    r_m = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status not in ["medicine cat", "medicine cat apprentice"] or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    r_d = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status not in ["mediator", "mediator apprentice"] or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    r_q = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status not in ["queen", "queen's apprentice"] or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    r_e = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status != "elder" or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Random statuses-- Shunned
+    rsh_c = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.shunned == 0 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    rsh_w = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status != "warrior" or
+        chosen_cat.shunned == 0 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    rsh_k = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status not in ["kitten", "newborn"] or
+        chosen_cat.shunned == 0 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    rsh_a = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status != "apprentice" or
+        chosen_cat.shunned == 0 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    rsh_m = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status not in ["medicine cat", "medicine cat apprentice"] or
+        chosen_cat.shunned == 0 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    rsh_d = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status not in ["mediator", "mediator apprentice"] or
+        chosen_cat.shunned == 0 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    rsh_q = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status not in ["queen", "queen's apprentice"] or
+        chosen_cat.shunned == 0 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    rsh_e = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status != "elder" or
+        chosen_cat.shunned == 0 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Random sick cat
+    r_s = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        not chosen_cat.is_ill() or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Random injured cat
+    r_i = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        not chosen_cat.is_injured() or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Random grieving cat
+    r_g = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        "grief stricken" not in chosen_cat.illnesses or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Your sibling-- any age
+    y_s = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in you.inheritance.get_siblings() or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Your littermate
+    y_l = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in you.inheritance.get_siblings() or
+        chosen_cat.moons != you.moons or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Their sibling-- any age
+    t_s = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in cat.inheritance.get_siblings() or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Their littermate
+    t_l = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in cat.inheritance.get_siblings() or
+        chosen_cat.moons != cat.moons or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Your apprentice
+    y_a = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in you.apprentice or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Their apprentice
+    t_a = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in cat.apprentice or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Your parent
+    y_p = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in you.inheritance.get_parents() or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Their parent
+    t_p = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in cat.inheritance.get_parents() or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Your mate
+    y_m = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in you.mates or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Their mate
+    t_m = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in cat.mates or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # nr_1/2 -- Two cats who are potential mates
+    n_r1 = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        len(chosen_cat.mates) > 0 or
+        chosen_cat.moons < 14 or
+        "n_r2" not in text or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Gather cat object for first n_r cat
+    n_r1_object = None
+    for i in cat_dict.items():
+        if i[0] == "n_r1":
+            n_r1_object = i[1]
+            break
+
+    n_r2 = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        len(chosen_cat.mates) > 0 or
+        (n_r1_object and not chosen_cat.is_potential_mate(n_r1_object)) or
+        n_r1_object is None or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Random cats
+    
+    r_c1 = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat in current_cat_objects
+    ) else True
+    
+    r_c2 = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat in current_cat_objects
+    ) else True
+    
+    r_c3 = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat in current_cat_objects
+    ) else True
+    
+    r_c4 = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Random warriors
+    r_w1 = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status != "warrior" or
+        chosen_cat in current_cat_objects
+    ) else True
+    
+    r_w2 = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status != "warrior" or
+        chosen_cat in current_cat_objects
+    ) else True
+    
+    r_w3 = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status != "warrior" or
+        chosen_cat in current_cat_objects
+    ) else True
+    
+    r_w4 = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.status != "warrior" or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Their kits
+    # any age
+    t_k = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in cat.inheritance.get_children() or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # kit age
+    t_kk = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in cat.inheritance.get_children() or
+        chosen_cat.moons > 5 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # adult age
+    t_ka = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in cat.inheritance.get_children() or
+        chosen_cat.moons < 12 or
+        chosen_cat in current_cat_objects
+    ) else True
+    
+    # Your kits
+    # any age
+    y_k = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in you.inheritance.get_children() or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # kit age
+    y_kk = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in you.inheritance.get_children() or
+        chosen_cat.moons > 5 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # adult age
+    y_ka = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID not in you.inheritance.get_children() or
+        chosen_cat.moons < 12 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Mentors
+    # Your DF mentor
+    df_m_n = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        not chosen_cat.dead or
+        not chosen_cat.df or
+        chosen_cat.ID != you.df_mentor or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Their DF mentor
+    t_df_mn = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        not chosen_cat.dead or
+        not chosen_cat.df or
+        chosen_cat.ID != cat.df_mentor or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Your mentor
+    m_n = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID != you.mentor or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Their mentor
+    tm_n = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        chosen_cat.ID != cat.mentor or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Leader
+    l_n = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        not game.clan.leader or
+        chosen_cat.ID != game.clan.leader.ID or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Deputy
+    d_n = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        not game.clan.deputy or
+        chosen_cat.ID != game.clan.deputy.ID or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Leader-- Shunned
+    sh_l = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        not game.clan.leader or 
+        chosen_cat.ID != game.clan.leader or
+        chosen_cat.shunned == 0 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Deputy-- Shunned
+    sh_d = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        chosen_cat.outside or
+        not game.clan.deputy or
+        chosen_cat.ID != game.clan.deputy or
+        chosen_cat.shunned == 0 or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Dead cat of any residence
+    d_c = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        not chosen_cat.dead or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Random DF cat
+    rdf_c = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        not chosen_cat.dead or
+        not chosen_cat.df or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Random UR cat
+    rur_c = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        not chosen_cat.dead or
+        not chosen_cat.outside or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Random SC cat
+    rsc_c = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        not chosen_cat.dead or
+        chosen_cat.df or
+        chosen_cat.outside or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Lost cat
+    l_c = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        not chosen_cat.outside or
+        chosen_cat.status in ["rogue", "kittypet", "loner", "former Clancat"] or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Exiled cat
+    e_c = False if (
+        chosen_cat.ID == you.ID or
+        chosen_cat.ID == cat.ID or
+        chosen_cat.dead or
+        not chosen_cat.outside or
+        chosen_cat.status == "exiled" or
+        not chosen_cat.exiled or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # Talk focus cat
+    fc_c = False if (
+        chosen_cat.ID != game.clan.focus_cat
+    ) else True
+
+    # grief cats
+    tg_c = False if (
+        "grief stricken" not in cat.illnesses or 
+        "grief stricken" in cat.illnesses and "grief_cat" not in cat.illnesses["grief stricken"] or
+        chosen_cat.ID != cat.illnesses["grief stricken"]["grief_cat"] or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    yg_c = False if (
+        "grief stricken" not in you.illnesses or 
+        "grief stricken" in you.illnesses and "grief_cat" not in you.illnesses["grief stricken"] or
+        chosen_cat.ID != you.illnesses["grief stricken"]["grief_cat"] or
+        chosen_cat in current_cat_objects
+    ) else True
+
+    # now the abbrevs dict!
+    # make sure to add new abbrevs here, or they won't get replaced!!!
+    abbrevs = {
+        "yourcrush": yourcrush,
+        "theircrush": theircrush,
+        "r_k": r_k,
+        "r_c": r_c,
+        "r_w": r_w,
+        "r_a": r_a,
+        "r_m": r_m,
+        "r_d": r_d,
+        "r_q": r_q,
+        "r_e": r_e,
+        "rsh_k": rsh_k,
+        "rsh_c": rsh_c,
+        "rsh_w": rsh_w,
+        "rsh_a": rsh_a,
+        "rsh_m": rsh_m,
+        "rsh_q": rsh_q,
+        "rsh_e": rsh_e,
+        "n_r1": n_r1,
+        "n_r2": n_r2,
+        "r_c1": r_c1,
+        "r_c2": r_c2,
+        "r_c3": r_c3,
+        "r_c4": r_c4,
+        "r_w1": r_w1,
+        "r_w2": r_w2,
+        "r_w3": r_w3,
+        "r_w4": r_w4,
+        "r_s": r_s,
+        "r_i": r_i,
+        "r_g": r_g,
+        "y_s": y_s,
+        "y_l": y_l,
+        "t_s": t_s,
+        "t_l": t_l,
+        "y_a": y_a,
+        "t_a": t_a,
+        "y_p": y_p,
+        "t_p": t_p,
+        "y_m": y_m,
+        "t_m": t_m,
+        "t_k": t_k,
+        "t_kk": t_kk,
+        "t_ka": t_ka,
+        "y_k": y_k,
+        "y_kk": y_kk,
+        "y_ka": y_ka,
+        "df_m_n": df_m_n,
+        "t_df_mn": t_df_mn,
+        "m_n": m_n,
+        "tm_n": tm_n,
+        "l_n": l_n,
+        "d_n": d_n,
+        "sh_l": sh_l,
+        "sh_d": sh_d,
+        "d_c": d_c,
+        "rdf_c": rdf_c,
+        "rur_c": rur_c,
+        "rsc_c": rsc_c,
+        "l_c": l_c,
+        "e_c": e_c,
+        "fc_c": fc_c,
+        "tg_c": tg_c,
+        "yg_c": yg_c
+    }
+
+    return abbrevs
+
+other_dict = {}   
+def lifegen_text_adjust(Cat, text, cat, cat_dict, r_c_allowed, o_c_allowed):
+    """ Adjusts dialogue text by replacing abbreviations with cat names
+    :param Cat Cat: Cat class
+    :param list text: The text being processed 
+    :param Cat cat: The object of the cat to whom relationship addons will apply
+    :param Dict cat_dict: the dict of cat objects
+    :param bool r_c_allowed: Whether or not r_c will be tried for. True for dialogue, False for patrols
+    :param bool o_c_allowed: Whether or not o_c will be tried for. True for dialogue, False for patrols
+    """
+
+    COUNTER_LIM = 30
+    you = game.clan.your_cat
+    alive_cats = get_alive_cats(Cat)
+    if len(alive_cats) == 0:
+        return ""
+    chosen_cat = choice(alive_cats)
+
+    # this is a throwaway cat just so i can grab the abbrevs dict
+    abbrevs = lifegen_abbrevs(Cat, text, you, cat, chosen_cat, cat_dict)
+
+    for abbrev_string in abbrevs.keys():
+        if abbrev_string in text:
+            # dialogue-specific stuff: don't replace an abbrev if its in between | |
+            if "|" in text:
+                if abbrev_string in text.split("|")[1]:
+                    # text = text.split("|")[-1]
+                    continue
+            
+            # ---
+            # first, go away if r_c and o_c are being disallowed for clangen reasons
+            if abbrev_string == "r_c" and r_c_allowed is False:
+                return ""
+            if abbrev_string == "o_c" and o_c_allowed is False:
+                return ""
+            
+            # some tomfoolery for abbrevs that might conflict with each other
+            if abbrev_string == "r_c" and any(ab in text for ab in ["r_c1", "r_c2", "r_c3", "r_c4"]):
+                continue
+            if abbrev_string == "r_w" and any(ab in text for ab in ["r_w1", "r_w2", "r_w3", "r_w4"]):
+                continue
+            if abbrev_string == "t_k" and "t_ka" in text:
+                continue
+            if abbrev_string == "t_k" and "t_kk" in text:
+                continue
+            if abbrev_string == "m_n" and "tm_n" in text:
+                continue
+
+            # find cluster and rel addons if theyre there
+            cluster = False
+            rel = False
+            match = re.search(fr'{abbrev_string}\-(\w+)', text)
+            if match:
+                x = match.group(1)
+                cluster = True
+            else:
+                x = ""
+            match2 = re.search(fr'(\w+)\-{abbrev_string}', text)
+            if match2:
+                r = match2.group(1)
+                rel = True
+            else:
+                r = ""
+
+            # Check if the abbrev is already in use
+            text, in_dict = cat_dict_check(abbrev_string, cluster, x, rel, r, text, cat_dict)
+            if in_dict is False:
+                cat_choices = []
+
+                # Grab the right selection of cats to narrow down the options before the counter starts
+                if abbrev_string in ["r_w", "r_w1", "r_w2", "r_w3", "r_w4", "rsh_w"]:
+                    cat_choices = get_alive_status_cats(Cat, ["warrior"])
+                elif abbrev_string in ["r_a", "rsh_a"]:
+                    cat_choices = get_alive_status_cats(Cat, ["apprentice"])
+                elif abbrev_string in ["r_m", "rsh_m"]:
+                    cat_choices = get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"])
+                elif abbrev_string in ["r_d", "rsh_d"]:
+                    cat_choices = get_alive_status_cats(Cat, ["mediator", "mediator apprentice"])
+                elif abbrev_string in ["r_q", "rsh_q"]:
+                    cat_choices = get_alive_status_cats(Cat, ["queen", "queen's apprentice"])
+                elif abbrev_string in ["r_e", "rsh_e"]:
+                    cat_choices = get_alive_status_cats(Cat, ["elder"])
+                elif abbrev_string in ["d_n", "sh_d"]:
+                    cat_choices = get_alive_status_cats(Cat, ["deputy"])
+                elif abbrev_string in ["l_n", "sh_l"]:
+                    cat_choices = get_alive_status_cats(Cat, ["leader"])
+                elif abbrev_string in ["t_k", "t_kk", "t_ka"]:
+                    for cat_id in cat.inheritance.get_children():
+                        cat_choices.append(Cat.fetch_cat(cat_id))
+                elif abbrev_string in ["y_k", "y_kk", "y_ka"]:
+                    for cat_id in you.inheritance.get_children():
+                        cat_choices.append(Cat.fetch_cat(cat_id))
+                elif abbrev_string in ["tm_n"]:
+                    cat_choices.append(Cat.fetch_cat(cat.mentor))
+                elif abbrev_string in ["m_n"]:
+                    cat_choices.append(Cat.fetch_cat(you.mentor))
+                elif abbrev_string in ["df_m_n"]:
+                    cat_choices.append(Cat.fetch_cat(you.df_mentor))
+                elif abbrev_string in ["t_df_mn"]:
+                    cat_choices.append(Cat.fetch_cat(cat.df_mentor))
+                elif abbrev_string in ["y_a"]:
+                    for cat_id in you.apprentice:
+                        cat_choices.append(Cat.fetch_cat(cat_id))
+                elif abbrev_string in ["t_a"]:
+                    for cat_id in cat.apprentice:
+                        cat_choices.append(Cat.fetch_cat(cat_id))
+                elif abbrev_string in ["y_m"]:
+                    for cat_id in you.mates:
+                        cat_choices.append(Cat.fetch_cat(cat_id))
+                elif abbrev_string in ["t_m"]:
+                    for cat_id in cat.mates:
+                        cat_choices.append(Cat.fetch_cat(cat_id))
+                elif abbrev_string in ["rdf_c", "d_c", "rur_c", "rsc_c"]:
+                    cat_choices = [i for i in Cat.all_cats_list if i.dead]
+                elif abbrev_string in ["tg_c"]:
+                    cat_choices = (
+                        [Cat.fetch_cat(cat.illnesses['grief stricken']["grief_cat"])]
+                        ) if (
+                            "grief stricken" in cat.illnesses and
+                            "grief_cat" in cat.illnesses['grief stricken']
+                            ) else []
+                elif abbrev_string in ["yg_c"]:
+                    cat_choices = (
+                        [Cat.fetch_cat(game.clan.your_cat.illnesses['grief stricken']["grief_cat"])]
+                        ) if (
+                            "grief stricken" in game.clan.your_cat.illnesses and
+                            "grief_cat" in game.clan.your_cat.illnesses['grief stricken']
+                            ) else []
+                else:
+                    if abbrev_string not in abbrevs:
+                        print("Unknown LifeGen abbrev:", abbrev_string)
+                    cat_choices = alive_cats
+
+                if cat_choices is None:
+                    cat_choices = [] # whatever
+
+                try:
+                    alive_cat = choice(cat_choices)
+                except IndexError:
+                    return ""
+
+                if alive_cat is None:
+                    return ""
+
+                new_abbrevs = lifegen_abbrevs(Cat, text, you, cat, alive_cat, cat_dict)
+                for string, value in new_abbrevs.items():
+                    if string == abbrev_string:
+                        new_abbrev_string = string
+                        abbrev_bool = value
+                        break
+                    else:
+                        continue
+
+                addon_check = abbrev_addons(cat, alive_cat, cluster, x, rel, r)
+                counter = 0
+                while abbrev_bool is False or addon_check is False:
+                    alive_cat = choice(cat_choices)
+                    new_abbrevs = lifegen_abbrevs(Cat, text, you, cat, alive_cat, cat_dict)
+                    for string, value in new_abbrevs.items():
+                        if string == abbrev_string:
+                            new_abbrev_string = string
+                            abbrev_bool = value
+                            break
+                        else:
+                            continue
+                    addon_check = abbrev_addons(cat, alive_cat, cluster, x, rel, r)
+                    counter += 1
+                    if counter >= 30:
+                        return ""
+                if game.current_screen == "patrol screen" and 'patrol_category' in game.switches and game.switches['patrol_category'] == "date" and new_abbrev_string == "r_c":
+                    continue
+                else:
+                    text = add_to_cat_dict(new_abbrev_string, cluster, x, rel, r, alive_cat, text, cat_dict)
+    # Other Clan
+    if o_c_allowed is True:
+        if "o_c_n" in text:
+            if "o_c_n" in other_dict:
+                text = re.sub(r'(?<!\/)o_c_n(?!\/)', str(other_dict["o_c_n"].name) + "Clan", text)
+            else:
+                other_clan = choice(game.clan.all_clans)
+                if not other_clan:
+                    return ""
+                other_dict["o_c_n"] = other_clan
+                text = re.sub(r'(?<!\/)o_c_n(?!\/)', str(other_clan.name) + "Clan", text)
+    # Warring Clan
+    if "w_cClan" in text:
+        if "at_war" in game.clan.war:
+            if not game.clan.war["at_war"]:
+                return ""
+        else:
+            return ""
+        text = text.replace("w_c", str(game.clan.war["enemy"]))
+
+    return text
 
 
 def quit(savesettings=False, clearevents=False):
@@ -1425,7 +4216,7 @@ def quit(savesettings=False, clearevents=False):
     Quits the game, avoids a bunch of repeated lines
     """
     if savesettings:
-        game.save_settings()
+        game.save_settings(None)
     if clearevents:
         game.cur_events_list.clear()
     game.rpc.close_rpc.set()
@@ -1437,21 +4228,19 @@ def quit(savesettings=False, clearevents=False):
     sys_exit()
 
 
-PERMANENT = None
-with open(f"resources/dicts/conditions/permanent_conditions.json", 'r') as read_file:
+with open(f"resources/dicts/conditions/permanent_conditions.json", "r") as read_file:
     PERMANENT = ujson.loads(read_file.read())
 
-ACC_DISPLAY = None
-with open(f"resources/dicts/acc_display.json", 'r') as read_file:
+with open(f"resources/dicts/acc_display.json", "r") as read_file:
     ACC_DISPLAY = ujson.loads(read_file.read())
 
-SNIPPETS = None
-with open(f"resources/dicts/snippet_collections.json", 'r') as read_file:
+with open(f"resources/dicts/snippet_collections.json", "r") as read_file:
     SNIPPETS = ujson.loads(read_file.read())
 
-PREY_LISTS = None
-with open(f"resources/dicts/prey_text_replacements.json", 'r') as read_file:
+with open(f"resources/dicts/prey_text_replacements.json", "r") as read_file:
     PREY_LISTS = ujson.loads(read_file.read())
 
-with open(f"resources/dicts/backstories.json", 'r') as read_file:
+with open(
+        os.path.normpath("resources/dicts/backstories.json"), "r", encoding="utf-8"
+) as read_file:
     BACKSTORIES = ujson.loads(read_file.read())

@@ -3,7 +3,7 @@
         "patrol_id": "dst_med_discussion1_greenleaf",
         "biome": ["desert"],
         "season": ["greenleaf"],
-        "types": [],
+        "types": ["herb_gathering"],
         "tags": [],
         "patrol_art": "med_general_intro",
         "min_cats": 2,
@@ -71,7 +71,7 @@
         "patrol_id": "dst_med_dwindleherbsgathering_greenleaf1",
         "biome": ["desert"],
         "season": ["greenleaf"],
-        "types": [],
+        "types": ["herb_gathering"],
         "tags": [],
         "patrol_art": "med_general_intro",
         "min_cats": 2,
@@ -157,7 +157,6 @@
                 "text": "Even though there should be many herbs they fail to find anything. p_l blames r_c for distracting them and they get into a huge argument.",
                 "exp": 0,
                 "weight": 20,
-                "stat_trait": ["None"],
                 "relationships": [
                     {
                         "cats_to": ["patrol"],

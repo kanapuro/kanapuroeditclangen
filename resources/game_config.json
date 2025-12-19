@@ -91,7 +91,7 @@
 			"confession (confess_acceptance) - if these conditions are fulfilled by the opposite cat, they accept, otherwise, they reject.",
 			"conditions for mates - both relationships have to fulfill this condition",
 			"poly (current_mate) - which conditions all current mate relationships has to have towards the main cat + vise versa",
-			"poly (each_other) - which conditions all current mate relationships haves to have towards the new possible mate + vise versa"
+            "poly (each_other) - which conditions all current mate relationships has to have towards the new possible mate + vise versa"
 		]
 	},
 	"new_cat": {
@@ -160,15 +160,21 @@
 	"pregnancy": {
 		"birth_cooldown": 6,
 		"primary_chance_mated": 80,
-		"primary_chance_unmated": 130,
+		"primary_chance_unmated": 200,
 		"random_affair_chance": 50,
 		"unmated_random_affair_chance": 10,
-		"one_kit_possibility": {"young adult": 8, "adult": 9, "senior adult": 10, "senior": 4},
-        "two_kit_possibility": {"young adult": 10, "adult": 13, "senior adult": 15, "senior": 3},
-        "three_kit_possibility": {"young adult": 17, "adult": 15, "senior adult": 5, "senior": 1},
-        "four_kit_possibility": {"young adult": 12, "adult": 8, "senior adult": 2, "senior": 0},
-        "five_kit_possibility": {"young adult": 6, "adult": 2, "senior adult": 0, "senior": 0},
-        "max_kit_possibility": {"young adult": 2, "adult": 0, "senior adult": 0, "senior": 0},
+		"one_kit_possibility": {"young adult": 28, "adult": 24, "senior adult": 17, "senior": 15},
+            "two_kit_possibility": {"young adult": 32, "adult": 28, "senior adult": 10, "senior": 10},
+            "three_kit_possibility": {"young adult": 36, "adult": 32, "senior adult": 5, "senior": 3},
+            "four_kit_possibility": {"young adult": 32, "adult": 28, "senior adult": 4, "senior": 2},
+            "five_kit_possibility": {"young adult": 28, "adult": 24, "senior adult": 3, "senior": 1},
+            "six_kit_possibility": {"young adult": 24, "adult": 20, "senior adult": 2, "senior": 0},
+            "seven_kit_possibility": {"young adult": 8, "adult": 6, "senior adult": 0, "senior": 0},
+            "eight_kit_possibility": {"young adult": 4, "adult": 2, "senior adult": 0, "senior": 0},
+            "nine_kit_possibility": {"young adult": 2, "adult": 1, "senior adult": 0, "senior": 0},
+            "ten_kit_possibility": {"young adult": 1, "adult": 0, "senior adult": 0, "senior": 0},
+            "eleven_kit_possibility": {"young adult": 1, "adult": 0, "senior adult": 0, "senior": 0},
+            "max_kit_possibility": {"young adult": 1, "adult": 1, "senior adult": 0, "senior": 0},
 		"min_kits": 1,
 		"max_kits": 6,
 		"comment": [
@@ -180,9 +186,7 @@
 		]
 	},
 	"cat_generation": {
-		"base_permanent_condition": 70,
-		"multiple_permanent_conditions": 20,
-		"max_conditions_born_with": 3,
+		"base_permanent_condition": 90,
 		"base_male_tortie": 13,
 		"base_female_tortie": 4,
 		"base_heterochromia": 120,
@@ -190,10 +194,19 @@
 		"wildcard_tortie": 9,
 		"vit_chance": 8,
 		"random_point_chance": 5,
+		"physical_trait_chance": 20,
+		"physical_trait_inherit_chance": 50,
+		"base_extra_white": 5,
+		"max_white_amount": 2,
+		"base_extra_tortie": 3,
+		"max_tortie_amount": 2,
+		"multiple_pronouns_chance": 20, 
+		"neopronoun_chance": 30,
 		"comment": [
-			"multiple_permanent_conditions (20 by default) - 1/chance for a cat to be born with one extra permanent condition,",
-			"runs until it's tried to give a cat [max_conditions_born_with - 1] extra conditions.",
-			"max_conditions_born_with (3 by default) - the max amount of permanent conditions a cat can be born with."
+			"max_white_amount is the max amount of white patches one cat can generate with - 2 by default",
+			"max_tortie_amount is the max amount of tortie patches one cat can generate with - 2 by default",
+			"Note that extra patch chances decrease with each extra patch - chances base_extra_white 5 by default, base_extra_tortie 3 by default",
+			"neopronoun_chance refers to the chance that a cats FIRST set of pronouns will be neopronouns"
 		]
 	},
 	"cat_name_controls": {
@@ -215,6 +228,11 @@
 		"grumpy_trait_modifier": 30,
 		"ceremony_modifier": -20
 	},
+	"transition_related": {
+		"base_trans_chance": 256,
+		"adolescent_modifier": -128,
+		"older_modifier": 256
+	},
 	"fading": {
 		"age_to_fade": 202,
 		"opacity_at_fade": 20,
@@ -226,10 +244,18 @@
 		"become_mediator_chances": {
 			"warrior": 5000,
 			"elder": 400
+		},
+		"become_med_chances": {
+			"warrior": 5000,
+			"elder": 400
+		},
+		"become_queen_chances": {
+			"warrior": 5000,
+			"elder": 400
 		}
 	},
 	"lost_cat": {
-		"rejoin_chance": 20
+		"rejoin_chance": 5
 	},
 	"cat_ages": {
 		"newborn": [0, 0],
@@ -258,19 +284,24 @@
 		"fail_stat_cat_modifier": -15,
 		"chance_of_romance_patrol": 16,
 		"debug_ensure_patrol_id": null,
+		"debug_override_patrol_stat_requirements": false,
+		"debug_ensure_patrol_outcome": null,
 		"comment": [
 			"the Cruel Season difficulty modifier needs to have a space rather than an underscore,",
 			"due to how it's written in the save files. So don't try to 'fix' it."
 		]
 	},
+	"event_generation": {
+		"debug_ensure_event_id": null
+	},
 	"death_related": {
-		"leader_death_chance": 125,
+		"leader_death_chance": 50,
 		"classic_death_chance": 500,
 		"expanded_death_chance": 350,
 		"cruel season_death_chance": 300,
 		"war_death_modifier_leader": 95,
 		"war_death_modifier": 250,
-		"base_random_murder_chance": 25,
+		"base_random_murder_chance":25,
 		"base_murder_kill_chance": 80,
 		"old_age_death_start": 150,
 		"old_age_death_curve": 4.5,
@@ -283,6 +314,7 @@
 	"condition_related": {
 		"expanded_illness_chance": 250,
 		"cruel season_illness_chance": 200,
+		"classic_illness_chance": 500,
 		"classic_injury_chance": 450,
 		"expanded_injury_chance": 250,
 		"cruel season_injury_chance": 150,
@@ -299,7 +331,8 @@
 		"max_apprentice_age": {
 			"medicine cat apprentice": 30,
 			"apprentice": 25,
-			"mediator apprentice": 25
+			"mediator apprentice": 25,
+			"queen's apprentice": 25
 		},
 		"min_graduating_age": 10
 	},
@@ -426,8 +459,54 @@
 	},
 	"theme": {
 		"dark_mode_background": [57, 50, 36],
-		"light_mode_background": [206, 194, 168]
+		"light_mode_background": [206, 194, 168],
+		"fullscreen_background": {
+			"light": {
+				"vignette_alpha": 10,
+				"fade_color": [150, 150, 148],
+				"dropshadow_alpha": 30
+			},
+			"dark": {
+				"vignette_alpha": 50,
+				"fade_color": [100, 100, 100],
+				"dropshadow_alpha": 100,
+				"mainmenu_tint": [239, 229, 206]
+			}
+		},
+		"dark_mode_clan_symbols": [239, 229, 206],
+		"light_mode_clan_symbols": [87, 76, 45],
+		"dark_mode_event_alternate": [87, 76, 55],
+		"light_mode_event_alternate": [167, 148, 111]
 	},
 	"lock_season": false, 
-	"comment": "Forces the season to be locked at the Clan's starting_season"
+	"comment": "Forces the season to be locked at the Clan's starting_season",
+	"affair_success_chance": 67,
+	"affair_success_pregnancy_chance": 20,
+	"affair_relationship_change_lb": 10,
+	"affair_relationship_change_ub": 30,
+	"murder_chance":85,
+	"accomplice_chance":50,
+	"debug_ensure_dialogue": "",
+	"debug_ensure_focus": "",
+	"debug_meow_error_locating": false,
+
+	"shunned_cat": {
+		"exile_chance": {
+			"newborn": 500,
+			"kitten": 45,
+			"adolescent": 20,
+			"young adult": 10,
+			"adult": 9,
+			"senior adult": 8,
+			"senior": 8	
+			},
+		"max_shunned_moons": 10,
+		"return_home_chance": 0,
+		"max_forgiven_moons": 10,
+		"comment": [
+		"Newborns have an exile_chance in case one of you sick freaks (/lhj) decides to save edit them to be shunned.",
+		"Leaving return_home_chance at zero will keep the game's default chances.",
+		"max_forgiven_moons is how many moons after being forgiven the cat get 'forgiven'-tagged dialogue and events."
+	]
+	}
 }
