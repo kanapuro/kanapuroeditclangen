@@ -1433,7 +1433,8 @@ class UIImageHorizontalSlider(pygame_gui.elements.UIHorizontalSlider):
         self.sliding_button.set_hold_range((self.background_rect.width, 100))
 
         # kill and remake the left button
-        self.left_button.kill()
+        if self.left_button:
+            self.left_button.kill()
         self.left_button = UIImageButton(
             pygame.Rect((0, 0), (self.arrow_button_width, self.background_rect.height)),
             text="",
@@ -1447,7 +1448,8 @@ class UIImageHorizontalSlider(pygame_gui.elements.UIHorizontalSlider):
         )
 
         # kill and remake the right button
-        self.right_button.kill()
+        if self.right_button:
+            self.right_button.kill()
         self.right_button = UIImageButton(
             pygame.Rect(
                 (-self.arrow_button_width, 0),
