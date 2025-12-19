@@ -868,12 +868,11 @@ class ElderStoryScreen(Screens):
         if self.error:
             self.error.set_text(error_message)
 
-        if (self.selected_story == "" or not self.selected_cats or invalid_cats):
+        if (self.selected_story == "" or no_cats or invalid_cats or invalid_elder):
             self.tell_story_button.disable()
         else:
             self.tell_story_button.enable()
-        
-
+    
         if self.stage == "cats":
             self.next_page.enable()
             self.previous_page.enable()
@@ -883,18 +882,18 @@ class ElderStoryScreen(Screens):
             if invalid_elder or no_cats or invalid_cats:
                 self.starclan_story_button.disable()
                 self.df_story_button.disable()
-                self.tell_story_button.disable()
+                self.tell_story_button.disable()  # Also disable here for consistency
                 self.ur_story_button.disable()
             else:
                 self.starclan_story_button.enable()
                 self.df_story_button.enable()
                 self.ur_story_button.enable()
             
-            if self.selected_story:
+            # This check is redundant now but keep it for safety
+            if self.selected_story and not no_cats and not invalid_cats and not invalid_elder:
                 self.tell_story_button.enable()
             else:
                 self.tell_story_button.disable()
-
 
             if self.selected_story == "starclan":
                 self.starclan_story_button.disable()
@@ -935,7 +934,6 @@ class ElderStoryScreen(Screens):
                 self.selected_cat_sprite_buttons[btn].disable()
             else:
                 self.selected_cat_sprite_buttons[btn].enable()
-        
 
     def update_search_cats(self, search_text):
         """Run this function when the search text changes, or when the screen is switched to."""
