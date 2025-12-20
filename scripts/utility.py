@@ -1857,7 +1857,19 @@ def get_cluster(trait):
             "unabashed": ["childish", "small-thinking", "transparent", "sloppy", "vague", "ritualistic", "cowardly", "meek", "quirky", "obnoxious", "bizarre", "messy", "loud", "spontainious", "annoying", "aloof", "lazy", "faithless", "coward", "dull", "mysterious", "monotone", "flirty", "clumsy", "superficial", "snobbish", "charmless", "thoughtless", "forgetful", "aimless", "sarcastic", "sassy", "genuine", "free-thinking", "hypnotic", "dramatic", "distracted", "absent-minded", "carefree", "cryptic", "confident", "bold", "shameless", "strange", "oblivious", "flamboyant", "impulsive", "noisy", "honest", "spontaneous", "fearless"],
             "unlawful": ["adventurous", "cruel", "sadistic", "devious", "fox-hearted", "malicious", "chaotic", "wrongful", "antagonistic", "amoral", "weak-willed", "spiteful", "greedy", "unreliable", "forceful", "destructive", "secretive", "sneaky", "rebellious", "manipulative", "obsessive", "aloof", "stoic", "cunning", "troublesome", "unruly"]
         }
-    clusters = [key for key, values in trait_to_clusters.items() if trait in values]
+    # normalize trait to avoid mismatches (None, capitalization, surrounding spaces)
+    trait_norm = (trait or "").strip().lower()
+
+    # build clusters by matching case-insensitively
+    clusters = []
+    for key, values in trait_to_clusters.items():
+        for v in values:
+            try:
+                if trait_norm == (v or "").strip().lower():
+                    clusters.append(key)
+                    break
+            except Exception:
+                continue
 
     # Assign cluster and second_cluster based on the length of clusters list
     cluster = clusters[0] if clusters else "stable"
@@ -1882,9 +1894,9 @@ def get_leader_life_notice() -> str:
         text = f"The leader has {int(lives)} lives left."
     elif lives <= 0:
         if game.clan.followingsc:
-            text = 'The leader has no lives left and has travelled to StarClan.'
+            text = 'The leader has no lives left and has travelled to the stars.'
         else:
-            text = 'The leader has no lives left and has travelled to the Dark Forest.'
+            text = 'The leader has no lives left and has travelled to the darkness.'
 
     return text
 

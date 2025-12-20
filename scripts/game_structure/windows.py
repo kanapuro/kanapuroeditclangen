@@ -214,7 +214,7 @@ class SaveCheck(UIWindow):
 
         self.clan_name = "UndefinedClan"
         if game.clan:
-            self.clan_name = f"{game.clan.name}Clan"
+            self.clan_name = f"{game.clan.name}"
         self.last_screen = last_screen
         self.isMainMenu = is_main_menu
         self.mm_btn = mm_btn
@@ -1187,7 +1187,7 @@ class KillCat(UIWindow):
                 "This cat died when {PRONOUN/m_c/subject}...", cat_dict
             )
             self.initial = process_text(
-                "{VERB/m_c/were/was} killed by something unknowable to even StarClan",
+                "{VERB/m_c/were/was} killed by something unknowable to even the stars",
                 cat_dict,
             )
             self.all_lives_check.hide()

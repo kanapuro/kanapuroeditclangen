@@ -313,12 +313,12 @@ class WarriorDenScreen(Screens):
         if self.original_focus_code in self.other_clan_settings:
             desc = "<br><b>Involved Clans:</b> "
             if len(game.clan.clans_in_focus) == 1:
-                desc += f"{game.clan.clans_in_focus[0]}clan"
+                desc += f"{game.clan.clans_in_focus[0]}"
             if len(game.clan.clans_in_focus) == 2:
-                desc += f"{game.clan.clans_in_focus[0]}clan and {game.clan.clans_in_focus[1]}clan"
+                desc += f"{game.clan.clans_in_focus[0]}clan and {game.clan.clans_in_focus[1]}"
             elif len(game.clan.clans_in_focus) > 2:
                 desc += "clan, ".join(game.clan.clans_in_focus[:-1])
-                desc += f"clan and {game.clan.clans_in_focus[-1]}clan"
+                desc += f"clan and {game.clan.clans_in_focus[-1]}"
 
         last_change_text = "unknown"
         next_change = "0 moons"

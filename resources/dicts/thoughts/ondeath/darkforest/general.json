@@ -10,8 +10,8 @@
     {
         "id": "star_death_dark_forest",
         "thoughts": [
-            "Is shocked to find {PRONOUN/m_c/self} here and not StarClan",
-            "Just can't believe {PRONOUN/m_c/subject} ended up in the Dark Forest. Was StarClan not watching over c_n?"
+            "Is shocked to find {PRONOUN/m_c/self} here and not among the stars",
+            "Just can't believe {PRONOUN/m_c/subject} ended up in the darkness. Were the stars not watching over c_n?"
         ],
         "main_skill_constraint": [
             "STAR,1"
@@ -20,7 +20,7 @@
     {
         "id": "dark_death_dark_forest_lifegen",
         "thoughts": [
-            "Is not surprised to find {PRONOUN/m_c/self} in the Dark Forest",
+            "Is not surprised to find {PRONOUN/m_c/self} in the darkness",
             "Grumbles as {PRONOUN/m_c/subject} {VERB/m_c/look/looks} around the blackened trees, realizing {PRONOUN/m_c/subject} failed"
         ],
         "main_skill_constraint": [

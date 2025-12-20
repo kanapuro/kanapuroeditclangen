@@ -155,7 +155,7 @@ class SwitchClanScreen(Screens):
         )
         if game.clan:
             self.current_clan.set_text(
-                f"The currently loaded Clan is {game.clan.name}Clan"
+                f"The currently loaded Clan is {game.clan.name}"
             )
         else:
             self.current_clan.set_text("There is no Clan currently loaded.")

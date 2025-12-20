@@ -590,16 +590,16 @@ class RoleScreen(Screens):
         if self.the_cat.status == "warrior":
             output = (
                 f"{self.the_cat.name} is a <b>warrior</b>. Warriors are adult cats who feed and protect their "
-                f"Clan. They are trained to hunt and fight in addition to the ways of the Warrior Code. "
+                f"Colony. They are trained to hunt and fight in addition to the ways of the Warrior Code. "
                 f"Warriors are essential to the survival of a Clan, and usually make up the bulk of it's members. "
             )
         elif self.the_cat.status == "leader":
             output = (
                 f"{self.the_cat.name} is the <b>leader</b> of {game.clan.name}Clan. The guardianship of all "
-                f"Clan cats has been entrusted to them by StarClan. The leader is the highest "
+                f"Colony cats has been entrusted to them by the stars. The leader is the highest "
                 f"authority in the Clan. The leader holds Clan meetings, determines mentors for "
                 f"new apprentices, and names new warriors. To help them protect the Clan, "
-                f'StarClan has given them nine lives. They typically take the suffix "star".'
+                f'The stars have given them nine lives. They typically take the suffix "star".'
             )
         elif self.the_cat.status == "deputy":
             output = (
@@ -617,15 +617,15 @@ class RoleScreen(Screens):
                 f"They treat "
                 f"injuries and illnesses with herbal remedies. Unlike warriors, medicine cats are not expected "
                 f"to hunt and fight for the Clan. In addition to their healing duties, medicine cats also have "
-                f"a special connection to StarClan. Every half-moon, they travel to their Clan's holy place "
-                f"to commune with StarClan. "
+                f"a special connection to the stars. Every half-moon, they travel to their Clan's holy place "
+                f"to commune with the stars. "
             )
         elif self.the_cat.status == "mediator":
             output = (
                 f"{self.the_cat.name} is a <b>mediator</b>. Mediators are not typically required "
                 f"to hunt or fight for "
-                f"the Clan. Rather, mediators are charged with handling disagreements between "
-                f"Clanmates and disputes between Clans. Some mediators train as apprentices to serve their Clan, "
+                f"the Colony. Rather, mediators are charged with handling disagreements between "
+                f"Colony members and disputes between Colonies. Some mediators train as apprentices to serve their Colony, "
                 f"while others may choose to become mediators later in life. "
             )
         elif self.the_cat.status == "queen":
@@ -655,8 +655,8 @@ class RoleScreen(Screens):
             output = (
                 f"{self.the_cat.name} is a <b>medicine cat apprentice</b>, training to become a full medicine cat. "
                 f"Kits can be made medicine cat apprentices at six moons of age, where they will learn how to "
-                f"heal their Clanmates and commune with StarClan. Medicine cat apprentices are typically chosen "
-                f"for their interest in healing and/or their connecting to StarClan. Apprentices take the suffix "
+                f"heal their Clanmates and commune with the stars. Medicine cat apprentices are typically chosen "
+                f"for their interest in healing and/or their connecting to the stars. Apprentices take the suffix "
                 f"-paw, to represent the path their paws take towards adulthood."
             )
         elif self.the_cat.status == "mediator apprentice":

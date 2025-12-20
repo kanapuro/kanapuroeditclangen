@@ -605,17 +605,17 @@ class ProfileScreen(Screens):
                             self.the_cat.outside, self.the_cat.exiled = False, False
                             self.the_cat.df = False
                             game.clan.add_to_starclan(self.the_cat)
-                            self.the_cat.thought = "Is relieved to once again hunt in StarClan"
+                            self.the_cat.thought = "Is relieved to once again hunt among the stars"
                         elif event.ui_object_id == "#exile_df_button":
                             self.the_cat.outside, self.the_cat.exiled = False, False
                             self.the_cat.df = True
                             game.clan.add_to_darkforest(self.the_cat)
-                            self.the_cat.thought = "Is distraught after being sent to the Place of No Stars"
+                            self.the_cat.thought = "Is distraught after being sent to this dark place"
                         elif event.ui_object_id == "#send_ur_button":
                             self.the_cat.outside, self.the_cat.exiled = True, False
                             self.the_cat.df = False
                             game.clan.add_to_unknown(self.the_cat)
-                            self.the_cat.thought = "Is wandering the Unknown Residence"
+                            self.the_cat.thought = "Is wandering aimlessly"
 
 
                     if self.the_cat.ID == game.clan.demon.ID and game.clan.followingsc == True:
@@ -1471,16 +1471,16 @@ class ProfileScreen(Screens):
         if is_sc_instructor:
 
             if game.clan.followingsc == True:
-                self.the_cat.thought = "Hello. I will be guiding the cats of " + game.clan.name + "Clan into StarClan."
+                self.the_cat.thought = "Hello. I will be guiding the cats of " + game.clan.name + "into the stars."
             else:
-                self.the_cat.thought = "Misses watching over " + game.clan.name + "Clan"
+                self.the_cat.thought = "Misses watching over " + game.clan.name
 
         if is_df_instructor:
             if game.clan.followingsc == True:
-                self.the_cat.thought = "Hello. I am here to drag the cats of " + game.clan.name + "Clan into the Dark Forest"
+                self.the_cat.thought = "Hello. I am here to drag the cats of " + game.clan.name + "into the darkness"
                 self.the_cat.df
             else:
-                self.the_cat.thought = "Is picking more " + game.clan.name + "Clan cats to join them"
+                self.the_cat.thought = "Is picking more " + game.clan.name + "cats to join them"
 
         self.profile_elements["cat_name"] = pygame_gui.elements.UITextBox(cat_name,
                                                                         ui_scale(pygame.Rect((50, 280), (-1, 105))),
@@ -2184,19 +2184,19 @@ class ProfileScreen(Screens):
                 output += the_cat.status
         elif the_cat.df:
             if game.settings['dark mode']:
-                output += "<font color='#FF9999' >" + "Dark Forest "+ the_cat.status + "</font>"
+                output += "<font color='#FF9999' >" + "parasite "+ the_cat.status + "</font>"
             else:
-                output += "<font color='#950000' >" + "Dark Forest "+ the_cat.status + "</font>"
+                output += "<font color='#950000' >" + "parasite "+ the_cat.status + "</font>"
         elif the_cat.dead and not the_cat.df and not the_cat.outside:
             if game.settings['dark mode']:
-                output += "<font color ='#A8BBFF'>" + "StarClan " + the_cat.status + "</font>"
+                output += "<font color ='#A8BBFF'>" + "ascender " + the_cat.status + "</font>"
             else:
-                output += "<font color ='#2B3DC3'>" + "StarClan " + the_cat.status + "</font>"
+                output += "<font color ='#2B3DC3'>" + "ascender " + the_cat.status + "</font>"
         elif the_cat.dead and not the_cat.df and the_cat.outside:
             if game.settings['dark mode']:
-                output += "<font color ='#CE9DFF'>" + "ghost " + the_cat.status + "</font>"
+                output += "<font color ='#CE9DFF'>" + "wanderer " + the_cat.status + "</font>"
             else:
-                output += "<font color ='#450E7B'>" + "ghost " + the_cat.status + "</font>"
+                output += "<font color ='#450E7B'>" + "wanderer " + the_cat.status + "</font>"
         else:
             output += the_cat.status
 
@@ -2649,9 +2649,9 @@ class ProfileScreen(Screens):
 
         if self.the_cat.history and self.the_cat.history.wrong_placement and self.the_cat.dead and not self.the_cat.outside:
             if self.the_cat.df:
-                text += f"<br>{self.the_cat.name} was wrongly placed in the Dark Forest."
+                text += f"<br>{self.the_cat.name} was wrongly placed in the darkness."
             else:
-                text += f"<br>{self.the_cat.name} was wrongly placed in StarClan."
+                text += f"<br>{self.the_cat.name} was wrongly placed among the stars."
 
         text = process_text(text, cat_dict)
         if "o_c_n" in text:
@@ -4036,7 +4036,7 @@ class ProfileScreen(Screens):
                     self.exile_cat_button = UIImageButton(ui_scale(pygame.Rect((578, 450), (172, 46))),
                                                             "",
                                                           object_id= "#follow_sc_button",
-                                                           tool_tip_text='Your Clan will go to StarClan'
+                                                           tool_tip_text='Your Clan will Ascend'
                                                                          ' after death.',
 
                                                           starting_height=2, manager=MANAGER)
@@ -4048,7 +4048,7 @@ class ProfileScreen(Screens):
                     self.exile_cat_button = UIImageButton(ui_scale(pygame.Rect((578, 450), (172, 46))),
                                                             "",
                                                           object_id= "#follow_df_button",
-                                                          tool_tip_text='Your Clan will go to the Dark'
+                                                          tool_tip_text='Your Clan will become Parisitic'
                                                                          ' forest after death.',
                                                           starting_height=2, manager=MANAGER)
                     if not game.clan.followingsc:

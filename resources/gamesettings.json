@@ -63,7 +63,7 @@
         ],
         "discord": [
             "Enable Discord integration",
-            "Discord will show info about your Clan, including your Clan name",
+            "Discord will show info about your colony, including your colony name",
             false
         ],
         "check_for_updates": [
@@ -82,8 +82,8 @@
             true
         ],
         "random relation": [
-            "Randomize relationship values when creating Clan",
-            "Clan founder cats will start the game with established relationships.",
+            "Randomize relationship values when creating a colony",
+            "Colony founder cats will start the game with established relationships.",
             true
         ],
         "they them default": [

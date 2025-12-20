@@ -2955,9 +2955,9 @@ class MakeClanScreen(Screens):
                 )
             for faith in ["starclan", "neutral", "dark forest", "flexible"]:
                 if faith == "starclan":
-                    faith_text = "StarClan"
+                    faith_text = "Ascenders"
                 elif faith == "dark forest":
-                    faith_text = "Dark Forest"
+                    faith_text = "Parasites"
                 else:
                     faith_text = faith.capitalize()
                 self.faith_buttons[faith] = UIImageButton(
@@ -4420,7 +4420,7 @@ class MakeClanScreen(Screens):
         )
         self.text["clan_name"] = pygame_gui.elements.UILabel(
             ui_scale(pygame.Rect((0, 0), (-1, -1))),
-            text=f"{self.clan_name}Clan",
+            text=f"{self.clan_name}",
             container=self.elements["text_container"],
             object_id=get_text_box_theme("#text_box_40"),
             manager=MANAGER,

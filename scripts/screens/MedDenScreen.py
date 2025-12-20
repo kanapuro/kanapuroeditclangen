@@ -371,9 +371,9 @@ class MedDenScreen(Screens):
                     med_concern = f"The herb stores are overflowing and the medicine cats have little worry."
             elif needed_amount * 2 < herb_amount:
                 if len(self.meds) == 1:
-                    med_concern = f"StarClan has blessed them with plentiful herbs and the medicine cat sends their thanks to Silverpelt."
+                    med_concern = f"The stars have blessed them with plentiful herbs and the medicine cat sends their thanks to Silverpelt."
                 else:
-                    med_concern = f"StarClan has blessed them with plentiful herbs and the medicine cats send their thanks to Silverpelt."
+                    med_concern = f"The stars have blessed them with plentiful herbs and the medicine cats send their thanks to Silverpelt."
 
             med_messages.append(meds_cover)
             med_messages.append(med_concern)

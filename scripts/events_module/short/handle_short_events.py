@@ -95,13 +95,13 @@ class HandleShortEvents:
         if game.clan.war.get("at_war", False):
             enemy_clan = get_warring_clan()
             self.other_clan = enemy_clan
-            self.other_clan_name = f"{self.other_clan.name}Clan"
+            self.other_clan_name = f"{self.other_clan.name}"
             self.sub_types.append("war")
         else:
             self.other_clan = random.choice(
                 game.clan.all_clans if game.clan.all_clans else None
             )
-            self.other_clan_name = f"{self.other_clan.name}Clan"
+            self.other_clan_name = f"{self.other_clan.name}"
 
         # checking if a murder reveal should happen
         if event_type == "misc":
@@ -333,31 +333,31 @@ class HandleShortEvents:
             if mc_affected:
                 if main_cat.faith <= 0:
                     if self.chosen_event.faith_effect < 0:
-                        self.additional_event_text = "(Dark Forest faith increased)"
+                        self.additional_event_text = "(Parasite faith increased)"
                     elif self.chosen_event.faith_effect > 0:
-                        self.additional_event_text = "(Dark Forest faith decreased)"
+                        self.additional_event_text = "(Parasite faith decreased)"
                     else:
                         self.additional_event_text = "(Faith unchanged)"
                 elif main_cat.faith > 0:
                     if self.chosen_event.faith_effect > 0:
-                        self.additional_event_text = "(StarClan faith increased)"
+                        self.additional_event_text = "(Ascender faith increased)"
                     elif self.chosen_event.faith_effect < 0:
-                        self.additional_event_text = "(StarClan faith decreased)"
+                        self.additional_event_text = "(Ascender faith decreased)"
                     else:
                         self.additional_event_text = "(Faith unchanged)"
             elif rc_affected:
                 if random_cat.faith <= 0:
                     if self.chosen_event.faith_effect < 0:
-                        self.additional_event_text = "(Dark Forest faith increased)"
+                        self.additional_event_text = "(Parasite faith increased)"
                     elif self.chosen_event.faith_effect > 0:
-                        self.additional_event_text = "(Dark Forest faith decreased)"
+                        self.additional_event_text = "(Parasite faith decreased)"
                     else:
                         self.additional_event_text = "(Faith unchanged)"
                 elif random_cat.faith > 0:
                     if self.chosen_event.faith_effect > 0:
-                        self.additional_event_text = "(StarClan faith increased)"
+                        self.additional_event_text = "(Ascender faith increased)"
                     elif self.chosen_event.faith_effect < 0:
-                        self.additional_event_text = "(StarClan faith decreased)"
+                        self.additional_event_text = "(Ascender faith decreased)"
                     else:
                         self.additional_event_text = "(Faith unchanged)"
 

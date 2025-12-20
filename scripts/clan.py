@@ -1861,7 +1861,7 @@ class OtherClan:
         )
 
     def __repr__(self):
-        return f"{self.name}Clan"
+        return f"{self.name}"
 
 
 class StarClan:

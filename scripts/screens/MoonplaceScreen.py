@@ -825,7 +825,7 @@ class MoonplaceScreen(Screens):
             formatted_names = ", ".join(med_names[:-1]) + f", and {med_names[-1]}" if len(med_names) > 2 else \
                             " and ".join(med_names) if len(med_names) == 2 else \
                             med_names[0]
-            return template.replace("o_cn", f"{clan_name}Clan").replace("o_c_m", formatted_names)
+            return template.replace("o_cn", f"{clan_name}").replace("o_c_m", formatted_names)
 
         other_clan = choice(game.switches["other_med_clan"])
         clan_index = game.switches["other_med_clan"].index(other_clan)

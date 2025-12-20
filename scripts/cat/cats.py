@@ -1170,10 +1170,10 @@ class Cat:
                 self.thought = final_thought
                 if game.clan.followingsc is True:
                     text = (
-                        "They've lost their last life and have travelled to StarClan."
+                        "They've lost their last life and have travelled to the stars."
                     )
                 else:
-                    text = "They've lost their last life and have travelled to the Dark Forest."
+                    text = "They've lost their last life and have travelled to the darkness."
         else:
             self.dead = True
             game.just_died.append(self.ID)
@@ -1568,10 +1568,10 @@ class Cat:
                 # These minor grief message will be applied as thoughts.
                 minor_grief_messages = (
                     "Told a fond story at r_c's vigil",
-                    "Bargains with StarClan, begging them to send r_c back",
+                    "Bargains with the dead, begging them to send r_c back",
                     "Sat all night at r_c's vigil",
                     "Will never forget r_c",
-                    "Prays that r_c is safe in StarClan",
+                    "Prays that r_c is safe in the stars",
                     "Misses the warmth that r_c brought to {PRONOUN/m_c/poss} life",
                     "Is mourning r_c",
                     "Can't stop coming to tears each time r_c is mentioned",
@@ -1584,7 +1584,7 @@ class Cat:
                     "Takes a part of r_c's nest to put with {PRONOUN/m_c/poss} own, clinging to the fading scent",
                     "Sleeps in r_c's nest tonight",
                     "Defensively states that {PRONOUN/m_c/subject} {VERB/m_c/don't/doesn't} need any comfort about r_c's death",
-                    "Wonders why StarClan had to take r_c so soon",
+                    "Wonders why the world had to take r_c so soon",
                     "Still needs r_c even though they're gone",
                     "Doesn't think {PRONOUN/m_c/subject} will ever be the same without r_c",
                     "Was seen crying in {PRONOUN/m_c/poss} nest after r_c's vigil",

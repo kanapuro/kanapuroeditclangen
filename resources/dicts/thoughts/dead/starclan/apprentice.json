@@ -3,15 +3,15 @@
         "id": "gen_dead_war_app",
         "thoughts": [
             "Is sad {PRONOUN/m_c/subject} never got {PRONOUN/m_c/poss} warrior name",
-            "Patrols StarClan's territory",
+            "Patrols the afterlife's territory",
             "Imagines what {PRONOUN/m_c/poss} warrior ceremony would have been like",
             "Practices {PRONOUN/m_c/poss} battle moves in the starry fields",
             "Wonders what {PRONOUN/m_c/poss} warrior name would've been",
-            "Is glad that elders don't get ticks in StarClan",
-            "Wonders if the water ever freezes in StarClan",
+            "Is glad that elders don't get ticks in the afterlife",
+            "Wonders if the water ever freezes in the afterlife",
             "Sneaks close to the border of the Dark Forest but dares not go in",
             "Hopes {PRONOUN/m_c/poss} valiant death rouses future apprentices",
-            "Is patrolling StarClan's borders, not wanting {PRONOUN/m_c/poss} skills to rust",
+            "Is patrolling the afterlife's borders, not wanting {PRONOUN/m_c/poss} skills to rust",
             "Was found slumbering, happy to be able to catnap all day"
         ],
         "random_living_status": [
@@ -23,7 +23,7 @@
         "id": "dead_app_to_dead_other",
         "thoughts": [
             "Laughs with r_c",
-            "Stalks through StarClan's forests with r_c",
+            "Stalks through the afterlife's forests with r_c",
             "Encourages r_c to dip {PRONOUN/r_c/poss} paws into the cool water"
         ],
         "random_living_status": [
@@ -39,8 +39,8 @@
             "Was dared by r_c to venture near the Dark Forest, but was halted by a scowling cat",
             "Is organizing a sublime ceremony for {PRONOUN/m_c/self} and r_c for others to cheer",
             "Is creating heroic, fictional myths about {PRONOUN/m_c/self} with r_c",
-            "Is trading stories with r_c about meeting their legendary heroes in StarClan",
-            "Offers r_c to join {PRONOUN/m_c/object} on an epic StarClan patrol"
+            "Is trading stories with r_c about meeting their legendary heroes in the afterlife",
+            "Offers r_c to join {PRONOUN/m_c/object} on an epic starry patrol"
         ],
         "main_status_constraint": [
             "apprentice",

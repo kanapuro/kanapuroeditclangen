@@ -44,13 +44,39 @@ def create_button(pos, size, text, style, anchors=None, sound_id=None):
 
 
 def create_dropdown(pos, size, options, selected_option, style=None):
-    return UIDropDownMenu(
-        options,
-        selected_option,
-        ui_scale(Rect(pos, size)),
-        object_id=f"#{style}",
-        manager=MANAGER
-    )
+    # Validate selected_option exists in options; fall back safely if not.
+    try:
+        opt_list = options if isinstance(options, list) else None
+        sel = selected_option
+
+        if opt_list:
+            if isinstance(opt_list[0], tuple):
+                if sel not in opt_list:
+                    sel_val = (sel[1] if isinstance(sel, tuple) and len(sel) > 1 else sel)
+                    found = None
+                    for o in opt_list:
+                        try:
+                            if str(o[1]).lower() == str(sel_val).lower():
+                                found = o
+                                break
+                        except Exception:
+                            continue
+                    sel = found if found else opt_list[0]
+            else:
+                if sel not in opt_list:
+                    found = None
+                    for o in opt_list:
+                        try:
+                            if str(o).lower() == str(sel).lower():
+                                found = o
+                                break
+                        except Exception:
+                            continue
+                    sel = found if found is not None else opt_list[0]
+
+        return UIDropDownMenu(options, sel, ui_scale(Rect(pos, size)), object_id=f"#{style}", manager=MANAGER)
+    except Exception:
+        return UIDropDownMenu(options, selected_option, ui_scale(Rect(pos, size)), object_id=f"#{style}", manager=MANAGER)
 
 # creates a list with display names and values of cat pelt attributes
 def create_options_list(attribute, case):

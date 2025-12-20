@@ -20,8 +20,8 @@ status_dict = {
     "patrol screen": "On a patrol",
     "profile screen": "Viewing a cat's profile",
     "ceremony screen": "Holding a ceremony",
-    "starclan screen": "Viewing StarClan",
-    "dark forest screen": "Viewing the Dark Forest",
+    "starclan screen": "Viewing Ascenders",
+    "dark forest screen": "Viewing Parasites",
     "med den screen": "In the medicine den",
 }
 
@@ -108,7 +108,7 @@ class _DiscordRPC(threading.Thread):
             # Example: beach_greenleaf_camp1_dark
 
             if game.clan:
-                clan_name = f"{game.clan.name}Clan"
+                clan_name = f"{game.clan.name}"
                 cats_amount = len(game.clan.clan_cats)
                 clan_age = game.clan.age
             else:

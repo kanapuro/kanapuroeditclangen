@@ -23,11 +23,11 @@
         "duration": 2,
         "season": "Any",
         "moon_event": [
-            "After a particularly controversial decision, l_n is called into question. Camp is filled with whisperings about whether they're really fit to lead the Clan."
+            "After a particularly controversial decision, l_n is called into question. Camp is filled with whisperings about whether they're really fit to lead the colony."
         ],
         "focus_loss": [
-            "Pressured by the dissent from the Clan, l_n has decided to reverse their unpopular decision, pleasing some cats, but losing the respect of others. Now that their decision is no longer in effect, cats have decided it's in bad taste to keep talking about it.",
-            "l_n has issued an order that any more criticism of their decision will not be tolerated, and dissenters can find a home in another Clan. For better or for worse, talk of their leadership has ceased, and things in c_n have gone back to normal ... Though, who knows what could be brewing just below the surface?",
+            "Pressured by the dissent from the colony, l_n has decided to reverse their unpopular decision, pleasing some cats, but losing the respect of others. Now that their decision is no longer in effect, cats have decided it's in bad taste to keep talking about it.",
+            "l_n has issued an order that any more criticism of their decision will not be tolerated, and dissenters can find a home in another colony. For better or for worse, talk of their leadership has ceased, and things in c_n have gone back to normal ... Though, who knows what could be brewing just below the surface?",
             "As the moons march on, slowly, l_n's decision becomes the new normal. Though some cats still have their reservations about l_n's leadership, everycat has been given enough time to adjust that emotions are no longer running so high."
         ]
     },
@@ -45,10 +45,10 @@
         "duration": 2,
         "season": "Any",
         "moon_event": [
-            "This moon, a Clanmate has mysteriously turned up dead. With no cat aware of who the killer could be, the Clan is very on edge."
+            "This moon, a companion has mysteriously turned up dead. With no cat aware of who the killer could be, the colony is very on edge."
         ],
         "focus_loss": [
-            "The discussion surrounding the Clan's mysterious murder has died down... for now."
+            "The discussion surrounding the colony's mysterious murder has died down... for now."
         ]
     }
 }

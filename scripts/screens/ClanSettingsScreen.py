@@ -444,9 +444,9 @@ class ClanSettingsScreen(Screens):
                 kits += 1
                     
         text = f"Living Clan Cats: {living_cats}\n" \
-        f"StarClan Cats: {starclan}\n" \
-        f"Dark Forest Cats: {df}\n" \
-        f"Unknown Residence Cats: {ur}\n" \
+        f"Ascender Cats: {starclan}\n" \
+        f"Parasite Cats: {df}\n" \
+        f"Wanderer Cats: {ur}\n" \
         f"Medicine Cats: {med_cats}\n" \
         f"Medicine Cat Apprentices: {med_cat_apprentices}\n" \
         f"Warriors: {warriors}\n" \

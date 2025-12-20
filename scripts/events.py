@@ -254,8 +254,8 @@ class Events:
                 insert = adjust_list_text(ghost_names)
 
             if len(Cat.dead_cats) > 1 and insert:
-                event = f"The past moon, {insert} have taken their place in StarClan. {game.clan.name}Clan mourns their " \
-                        f"loss, and their Clanmates will miss where they had been in their lives. Moments of their " \
+                event = f"The past moon, {insert} have taken their place in the stars. {game.clan.name} mourns their " \
+                        f"loss, and their companions will miss where they had been in their lives. Moments of their " \
                         f"lives are shared in stories around the circle of mourners as those that were closest to them " \
                         f"take them to their final resting place."
     
@@ -303,8 +303,8 @@ class Events:
 
             elif insert:
                 event = (
-                    f"The past moon, {insert} has taken their place in StarClan. {game.clan.name}Clan mourns their "
-                    f"loss, and their Clanmates will miss the spot they took up in their lives. Moments of their "
+                    f"The past moon, {insert} has taken their place in the stars. {game.clan.name} mourns their "
+                    f"loss, and their companions will miss the spot they took up in their lives. Moments of their "
                     f"life are shared in stories around the circle of mourners as those that were closest to them "
                     f"take them to their final resting place."
                 )
@@ -1840,8 +1840,8 @@ class Events:
                 game.cur_events_list.append(
                     Single_Event(
                         f"{cat.name} had chosen to use their skills and experience to heal "
-                        f"and commune with StarClan. A meeting is called, and they "
-                        f"become the Clan's newest medicine cat. ", "ceremony",
+                        f"and commune with the spirits. A meeting is called, and they "
+                        f"become the Colony's newest medicine cat. ", "ceremony",
                         cat.ID))
                 cat.status_change("medicine cat")
         if game.clan.clan_settings['become_queen']:
@@ -2677,7 +2677,7 @@ class Events:
 
         event = random.choice(war_events)
         event = ongoing_event_text_adjust(
-            Cat, event, other_clan_name=f"{enemy_clan.name}Clan", clan=game.clan
+            Cat, event, other_clan_name=f"{enemy_clan.name}", clan=game.clan
         )
         game.cur_events_list.append(Single_Event(event, "other_clans"))
 
@@ -4242,7 +4242,7 @@ class Events:
                             f"announcement that {random_cat.name} will be the Clan's new deputy.",
                             # pylint: disable=line-too-long
                             f"{random_cat.name} has been chosen as the new deputy. They pray to "  # pylint: disable=line-too-long
-                            f"StarClan that they are the right choice for the Clan.",  # pylint: disable=line-too-long
+                            f"the stars that they are the right choice for the Clan.",  # pylint: disable=line-too-long
                             f"{random_cat.name} has been chosen as the new deputy. Although"  # pylint: disable=line-too-long
                             f"they are nervous, they put on a brave front and look forward to serving"  # pylint: disable=line-too-long
                             f"the Clan.",

@@ -11,7 +11,7 @@
             "Is feeling sassy today",
             "Is thinking about a message to send",
             "Wishes {PRONOUN/m_c/subject} {VERB/m_c/were/was} still alive",
-            "Is admiring StarClan territory",
+            "Is admiring the afterlife territory",
             "Is thinking about {PRONOUN/m_c/poss} life",
             "Is missing a loved one",
             "Is hoping to meet with a medicine cat soon",
@@ -26,15 +26,15 @@
             "Is thinking about {PRONOUN/m_c/poss} ancient ancestors",
             "Is worried about the cats in the Dark Forest",
             "Is thinking of advice to give to a medicine cat",
-            "Is exploring StarClan",
+            "Is exploring the afterlife",
             "Is sad seeing how the Clan has changed",
             "Wishes {PRONOUN/m_c/subject} could speak to old friends",
             "Is sneezing on stardust",
-            "Is comforting another StarClan cat",
-            "Is exploring StarClan's hunting grounds",
-            "Is hunting mice in StarClan",
-            "Is chattering at the birds in StarClan",
-            "Is chasing rabbits in StarClan",
+            "Is comforting another starry cat",
+            "Is exploring the afterlife's hunting grounds",
+            "Is hunting mice in the afterlife",
+            "Is chattering at the birds in the afterlife",
+            "Is chasing rabbits in the afterlife",
             "Can feel some cat forgetting {PRONOUN/m_c/object}...",
             "Is planning to visit a loved one in their dreams",
             "Purring at {PRONOUN/m_c/poss} deserved peace",
@@ -44,7 +44,7 @@
             "Is eyeing down the roaming souls trapped in the Dark Forest",
             "Peers down at the roaming souls trapped in the Dark Forest with pity",
             "Is judging a codebreaker",
-            "Finds {PRONOUN/m_c/subject} can't use {PRONOUN/m_c/poss} skills for anything valuable in StarClan"
+            "Finds {PRONOUN/m_c/subject} can't use {PRONOUN/m_c/poss} skills for anything valuable in the afterlife"
         ],
         "random_living_status": [
             "living",
@@ -80,10 +80,10 @@
         "id": "founder_dead_to_dead_other",
         "thoughts": [
             "Is speaking with r_c about how c_n came to be",
-            "Is telling other StarClan cats stories of c_n's beginning",
+            "Is telling other starry cats stories of c_n's beginning",
             "Feeling reminiscent of the past, spent the day giving r_c a tale about {PRONOUN/m_c/poss} life before c_n",
             "Is listening to r_c the chronicle the events that led to c_n's current era",
-            "Is telling other StarClan cats about the ambitions, hopes, and dreams {PRONOUN/m_c/subject} had for c_n"
+            "Is telling other starry cats about the ambitions, hopes, and dreams {PRONOUN/m_c/subject} had for c_n"
         ],
         "main_age_constraint": [
             "adolescent",
@@ -149,7 +149,7 @@
         "id": "general_dead_to_alive_df",
         "thoughts": [
             "Has a bad feeling about r_c...",
-            "Is wondering if r_c will go to StarClan or the Dark Forest...",
+            "Is wondering if r_c will go to the afterlife...",
             "Is disappointed in r_c",
             "Is judging r_c"
         ],
@@ -194,7 +194,7 @@
         "thoughts": [
             "Regrets leaving the Clan one medicine cat short",
             "Is worried about the Clan's ability to survive the latest illness",
-            "Looks after the newborns in StarClan",
+            "Looks after the newborns in the afterlife",
             "Is watching c_n, ready to send an omen"
         ],
         "main_status_constraint": [
@@ -259,7 +259,7 @@
         "thoughts": [
             "Softly describes the stars to r_c",
             "Hums calming melodies to soothe r_c",
-            "Is trying to find solace to see r_c in StarClan despite being so young"
+            "Is trying to find solace to see r_c in the afterlife despite being so young"
         ],
         "main_status_constraint": [
             "medicine cat",
@@ -392,10 +392,10 @@
     {
         "id": "gen_dead_app",
         "thoughts": [
-            "Wants to use {PRONOUN/m_c/poss} training to help StarClan",
+            "Wants to use {PRONOUN/m_c/poss} training to help the afterlife",
             "Is sad {PRONOUN/m_c/subject} couldn't complete {PRONOUN/m_c/poss} training",
             "Tries to continue {PRONOUN/m_c/poss} training on {PRONOUN/m_c/poss} own",
-            "Is listening intently to other StarClan cats' stories"
+            "Is listening intently to other starry cats' stories"
         ],
         "main_status_constraint": [
             "apprentice",
@@ -452,7 +452,7 @@
         "id": "dead_app_to_alive_mentor",
         "thoughts": [
             "Hopes {PRONOUN/m_c/subject} made r_c proud",
-            "Promises to keep r_c's teaching with {PRONOUN/m_c/object} to protect StarClan"
+            "Promises to keep r_c's teaching with {PRONOUN/m_c/object} to protect the afterlife"
         ],
         "main_status_constraint": [
             "apprentice",
@@ -525,7 +525,7 @@
     {
         "id": "gen_dead_mediator",
         "thoughts": [
-            "Is trying to mediate StarClan cats' squabbles",
+            "Is trying to mediate the afterlife cats' squabbles",
             "Wishes {PRONOUN/m_c/subject} could help resolve the Clan's issues",
             "Is watching the Clans for any signs of discord"
         ],
@@ -547,8 +547,8 @@
     {
         "id": "skill_sc_h1",
         "thoughts": [
-            "Approves of StarClans theme of, well, stars",
-            "Is a bit disappointed StarClan doesn't have proper dens to decorate",
+            "Approves of the afterlife's theme of, well, stars",
+            "Is a bit disappointed the afterlife doesn't have proper dens to decorate",
             "Doesn't feel the need to decorate",
             "Maneuvers the clouds to make a beautiful structure",
             "Misses {PRONOUN/m_c/poss} beautiful den in c_n",
@@ -564,7 +564,7 @@
     {
         "id": "skill_sc_h2",
         "thoughts": [
-            "Is a bit disappointed StarClan doesn't have proper dens",
+            "Is a bit disappointed the afterlife doesn't have proper dens",
             "Attempts to make a den out of the clouds",
             "Disapproves of c_n's material decisions",
             "Wonders if c_n noticed the error in one of their den's structures",

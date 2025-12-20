@@ -409,7 +409,7 @@ class Thoughts:
         """
         Load the special leader death thoughts, since they function differently than regular ones
         :param lives_left: How many lives the leader has left - used to determine if they actually die or not
-        :param darkforest: Whether or not dead cats go to StarClan (false) or the DF (true)
+        :param darkforest: Whether or not dead cats go to Ascenders (false) or Parasites (true)
         """
         base_path = f"resources/dicts/thoughts/ondeath"
         if darkforest is False:

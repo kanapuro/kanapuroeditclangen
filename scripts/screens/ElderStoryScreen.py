@@ -278,14 +278,14 @@ class ElderStoryScreen(Screens):
 
         self.starclan_story_button = UISurfaceImageButton(
             ui_scale(pygame.Rect((73, 475), (160, 30))),
-            "StarClan",
+            "Ascenders",
             get_button_dict(ButtonStyles.ROUNDED_RECT, (160, 30)),
             object_id="@buttonstyles_rounded_rect",
             manager=MANAGER,
         )
         self.df_story_button = UISurfaceImageButton(
             ui_scale(pygame.Rect((73, 515), (160, 30))),
-            "Dark Forest",
+            "Parasites",
             get_button_dict(ButtonStyles.ROUNDED_RECT, (160, 30)),
             object_id="@buttonstyles_rounded_rect",
             manager=MANAGER,

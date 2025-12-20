@@ -70,10 +70,10 @@ class SkillPath(Enum):
     CAMP = ("picky nest builder", "steady paws", "den builder", "camp keeper")
     HEALER = ("interested in herbs", "good healer", "great healer", "fantastic healer")
     STAR = (
-        "curious about StarClan",
-        "connection to StarClan",
-        "deep StarClan bond",
-        "unshakable StarClan link",
+        "curious about spirits",
+        "connection to spirits",
+        "deep spiritual bond",
+        "unshakable spiritual link",
     )
     DARK = (
         "interested in the Dark Forest",
@@ -1119,7 +1119,7 @@ class CatSkills:
         """Generates a CatSkill object"""
         new_skill = CatSkills()
         conversion = {
-            "strong connection to StarClan": (SkillPath.STAR, 2),
+            "strong connection to spirits": (SkillPath.STAR, 2),
             "good healer": (SkillPath.HEALER, 1),
             "great healer": (SkillPath.HEALER, 2),
             "fantastic healer": (SkillPath.HEALER, 3),
