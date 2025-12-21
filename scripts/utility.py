@@ -539,7 +539,7 @@ def create_new_cat_block(
                     stor.extend(BACKSTORIES["backstory_categories"][story])
             bs_override = True
             break
-    if bs_override:
+    if bs_override and stor:
         chosen_backstory = choice(stor)
 
     # KITTEN THOUGHT

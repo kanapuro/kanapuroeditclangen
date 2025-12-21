@@ -1076,8 +1076,10 @@ class PronounCreation(UIWindow):
         text += f"That den is {pronouns['inposs']}. <br>"
         text += f"This cat hunts by {pronouns['self']}.<br>"
 
-        text += f"This cat wants to be a {pronouns['parent']} someday.<br>"
-        text += f"This cat is a good {pronouns['sibling']}.<br>"
+        parent = pronouns.get('parent', 'parent')
+        sibling = pronouns.get('sibling', 'sibling')
+        text += f"This cat wants to be a {parent} someday.<br>"
+        text += f"This cat is a good {sibling}.<br>"
 
         # Full Sentence Example, doesn't fit.
         """sentence = f"{pronouns['poss']} keen sense alerted {pronouns['object']} to prey and {pronouns['subject']} decided to treat {pronouns['self']} by catching prey that would be {pronouns['inposs']} alone to eat. "
