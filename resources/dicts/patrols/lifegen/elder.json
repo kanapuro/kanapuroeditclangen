@@ -66,7 +66,7 @@
                 "weight": 20
             },
             {
-                "text": "You've always had a knack for smoothing out your Clanmates' conflicts. You listen closely to both warriors' perspectives, asking questions where necessary to gain better understanding, and eventually manage to guide the two towards a resolution that both are happy with. l_n later praises you for how well you handled the dispute - apparently even the Clan mediators were having trouble getting the warriors to see eye-to-eye.",
+                "text": "You've always had a knack for smoothing out your companions' conflicts. You listen closely to both warriors' perspectives, asking questions where necessary to gain better understanding, and eventually manage to guide the two towards a resolution that both are happy with. l_n later praises you for how well you handled the dispute - apparently even the Clan mediators were having trouble getting the warriors to see eye-to-eye.",
                 "exp": 10,
                 "weight": 20,
                 "stat_skill": [
@@ -257,12 +257,12 @@
         "chance_of_success": 50,
         "success_outcomes": [
             {
-                "text": "You move into action, quickly grabbing the snake by its tail. You drag it out of the camp where you let it free, watching it slither into the grasses as your Clanmates let out a loud sigh of relief..",
+                "text": "You move into action, quickly grabbing the snake by its tail. You drag it out of the camp where you let it free, watching it slither into the grasses as your companions let out a loud sigh of relief..",
                 "exp": 10,
                 "weight": 20
             },
             {
-                "text": "Your interspecies communication skills are rusty, but you can still tell the snake in no uncertain terms that it's unwelcome in the camp. Problem solved: it glares at you and flicks its tail in annoyance, but makes its way out of the camp. New problem: now your awestruck Clanmates won't stop asking how you learned to speak snake.",
+                "text": "Your interspecies communication skills are rusty, but you can still tell the snake in no uncertain terms that it's unwelcome in the camp. Problem solved: it glares at you and flicks its tail in annoyance, but makes its way out of the camp. New problem: now your awestruck companions won't stop asking how you learned to speak snake.",
                 "exp": 10,
                 "weight": 20,
                 "stat_skill": [
@@ -303,7 +303,7 @@
         "chance_of_success": 50,
         "success_outcomes": [
             {
-                "text": "You gently move the bushes, only to see a familiar face. It's one of your Clanmates, who seemed to have come out on a walk as well. You two chat a little bit, and they seem to understand you a little better. You're glad to have come out here and, whilst it takes a little bit longer than usual, you are able to go back to sleep.",
+                "text": "You gently move the bushes, only to see a familiar face. It's one of your companions, who seemed to have come out on a walk as well. You two chat a little bit, and they seem to understand you a little better. You're glad to have come out here and, whilst it takes a little bit longer than usual, you are able to go back to sleep.",
                 "exp": 10,
                 "weight": 20
             }
@@ -441,11 +441,11 @@
         "min_max_status": {},
         "weight": 20,
         "intro_text": "Just as you're ready to take an afternoon nap, you're startled awake by an eager kit nudging your side, begging to hear tales of cats from days past.",
-        "decline_text": "You pause, getting choked with emotion as memories of lost Clanmates flood your thoughts. Shaking your head, you decline. Even after many moons, your heart remains too burdened with grief.",
+        "decline_text": "You pause, getting choked with emotion as memories of lost companions flood your thoughts. Shaking your head, you decline. Even after many moons, your heart remains too burdened with grief.",
         "chance_of_success": 50,
         "success_outcomes": [
             {
-                "text": "With a chuckle, you invite the kit in, enfolding them in your tail. You start to weave tales of your adventures with old friends, each more thrilling than the last. The kit is entranced, gripping your fur in wonder. You can't help but feel a surge of pride at getting the chance to honor your fallen Clanmates.",
+                "text": "With a chuckle, you invite the kit in, enfolding them in your tail. You start to weave tales of your adventures with old friends, each more thrilling than the last. The kit is entranced, gripping your fur in wonder. You can't help but feel a surge of pride at getting the chance to honor your fallen companions.",
                 "exp": 10,
                 "weight": 20
             }

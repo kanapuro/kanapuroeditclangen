@@ -152,7 +152,7 @@
         "intro": [
             "[t_c looks at the leader's den with a worried expression.]",
             "You know, I really do feel for l_n.",
-            "All that pressure, all those expectations to succeed for your Clanmates ...",
+            "All that pressure, all those expectations to succeed for your companions ...",
             "I would be a wreck in that position! If nothing else, I'm grateful l_n is one making the choices just so I don't have to."
         ]
     },
@@ -1040,7 +1040,7 @@
         },
         "intro": [
             "Oh, I just hate how much animosity there is around camp nowadays! Don't you, y_c? It seems like even the tiniest comments are enough to start a fight.",
-            "If you ask me, all this l_n nonsense couldn't be over soon enough. Clanmates are supposed to support one another! I miss it when we could all just get along."
+            "If you ask me, all this l_n nonsense couldn't be over soon enough. companions are supposed to support one another! I miss it when we could all just get along."
         ]
     },
     "neutral_opinion_AJ13": {
@@ -1103,7 +1103,7 @@
             "min_platonic_20"
         ],
         "intro": [
-            "Nowadays, everycat is either a l_n supporter or a l_n dissenter. It used to be that we were all just Clanmates.",
+            "Nowadays, everycat is either a l_n supporter or a l_n dissenter. It used to be that we were all just companions.",
             "Certainly everycat's true colors are showing, aren't they, y_c? I never would've imagined how vicious some cats can be towards members of their own Clan!"
         ]
     },

@@ -2,7 +2,7 @@
     {
         "id": "general_formerclancat_thoughts",
         "thoughts": [
-            "Thinks about {PRONOUN/m_c/poss} former Clanmates forlornly",
+            "Thinks about {PRONOUN/m_c/poss} former companions forlornly",
             "Wonders if StarClan still watches over {PRONOUN/m_c/object}",
             "Feels conflicted about hunting in another cat's territory",
             "Wonders if {PRONOUN/m_c/subject} could start {PRONOUN/m_c/poss} own Clan",
@@ -17,7 +17,7 @@
     {
         "id": "formerclancat_tragedy_thoughts",
         "thoughts": [
-            "Wonders what happened to {PRONOUN/m_c/poss} Clanmates",
+            "Wonders what happened to {PRONOUN/m_c/poss} companions",
             "Wakes up shaking after a nightmare",
             "Wonders if there's anything left of {PRONOUN/m_c/poss} old Clan",
             "Misses {PRONOUN/m_c/poss} family",

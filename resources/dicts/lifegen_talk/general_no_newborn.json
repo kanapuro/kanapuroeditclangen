@@ -1149,7 +1149,7 @@
             "But then I think about all the things that I've accomplished, and all the things that I have left to do ... I know I can make a difference in the world. How could that be wrong?",
             "Maybe there's a lot that I don't know.",
             "[Bossy, heady t_c's gaze is clouded with an uncharacteristic indecisiveness, an intensity that you can neither name nor fully understand.]",
-            "[You gaze down at your Clanmates from {PRONOUN/t_c/poss} perspective, trying to connect with a piece of that hunger that you know is inside of {PRONOUN/t_c/object}.]",
+            "[You gaze down at your companions from {PRONOUN/t_c/poss} perspective, trying to connect with a piece of that hunger that you know is inside of {PRONOUN/t_c/object}.]",
             "[But, no matter how hard you try, you can't seem to do it.]",
             "[Maybe you'll never fully understand what's happening inside of {PRONOUN/t_c/object}. But, at least you can be here, sitting at {PRONOUN/t_c/poss} side.]",
             "[Maybe that's all you need.]"
@@ -1313,7 +1313,7 @@
         },
         "intro": [
             "[Late at night, you swear you can overhear t_c ... praying?]",
-            "[You're sure you must be mistaken. t_c has never been one to pray, let alone in earshot of {PRONOUN/t_c/poss} Clanmates.]",
+            "[You're sure you must be mistaken. t_c has never been one to pray, let alone in earshot of {PRONOUN/t_c/poss} companions.]",
             "[But, sure enough, you can hear {PRONOUN/t_c/object} whispering a prayer into the slippery night air outside {PRONOUN/t_c/poss} den.]",
             "Uh ... Hey, StarClan. I know it's been a while ... It's t_c, in case you've forgotten.",
             "Look, I know I haven't exactly been the best cat ... But I could really use some help. Or, guidance, or whatever.",
@@ -1342,7 +1342,7 @@
         },
         "intro": [
             "[Late at night, you swear you can overhear t_c ... praying?]",
-            "[You're sure you must be mistaken. t_c has never been one to pray, let alone in earshot of {PRONOUN/t_c/poss} Clanmates.]",
+            "[You're sure you must be mistaken. t_c has never been one to pray, let alone in earshot of {PRONOUN/t_c/poss} companions.]",
             "[But, sure enough, you can hear {PRONOUN/t_c/object} whispering a prayer into the slippery night air outside {PRONOUN/t_c/poss} den.]",
             "Uh ... Hey, StarClan. I know it's been a while ... It's t_c, in case you've forgotten.",
             "Look, I know I haven't exactly been the best cat ... But I could really use some help. Or, guidance, or whatever.",
@@ -1372,7 +1372,7 @@
         },
         "intro": [
             "[Late at night, you swear you can overhear t_c ... praying?]",
-            "[You're sure you must be mistaken. t_c has never been one to pray, let alone in earshot of {PRONOUN/t_c/poss} Clanmates.]",
+            "[You're sure you must be mistaken. t_c has never been one to pray, let alone in earshot of {PRONOUN/t_c/poss} companions.]",
             "[But, sure enough, you can hear {PRONOUN/t_c/object} whispering a prayer into the slippery night air outside {PRONOUN/t_c/poss} den.]",
             "Uh ... Hey, StarClan. I know it's been a while ... It's t_c, in case you've forgotten.",
             "Look, I know I haven't exactly been the best cat ... But I could really use some help. Or, guidance, or whatever.",
@@ -2261,7 +2261,7 @@
             "y_c? That's a great name. A nice, strong name.",
             "Do you know where you are?",
             "Mhm. Yes, you're in the Dark Forest.",
-            "You're very smart for knowing that, little kit. Do your Clanmates know how smart you are?",
+            "You're very smart for knowing that, little kit. Do your companions know how smart you are?",
             "They probably don't. Those living Clan cats don't know anything.",
             "You're different than them, though. You'd do well here.",
             "Not yet, though. Come back when you're a bit older, and I'll show you around, okay?"
@@ -3027,7 +3027,7 @@
             "[Suddenly, though, t_c has swept you aside, sending you tumbling onto the ground. When you sit up, the shadow is gone.]",
             "[t_c speaks to you in a hushed, urgent voice.]",
             "Don't talk to them, y_c, do you hear me? They're dangerous. No matter how nice they are, don't listen.",
-            "[t_c finally notices the Clanmates staring at {PRONOUN/t_c/object}.]",
+            "[t_c finally notices the companions staring at {PRONOUN/t_c/object}.]",
             "Ahem. Sorry. Thought I saw the shadow of a hawk..."
         ]
     },
@@ -3229,7 +3229,7 @@
         "intro": [
             "[t_c approaches you. You stand warily before {PRONOUN/t_c/object}.]",
             "[After regarding you a moment, {PRONOUN/t_c/subject} {VERB/t_c/dip/dips} {PRONOUN/t_c/poss} head to you before walking on.]",
-            "[Your Clanmates in the waking world have shunned you, but here you have earned some respect it seems.]"
+            "[Your companions in the waking world have shunned you, but here you have earned some respect it seems.]"
         ]
     },
     "shunned_deaf_R2": {
@@ -3701,7 +3701,7 @@
             "min_trust_15"
         ],
         "intro": [
-            "Y'know, r_w-cool's a decent hunter and fighter and all, but if you ask me, {PRONOUN/r_w-cool/poss} real talent is how {PRONOUN/r_w-cool/subject} {VERB/r_w-cool/deal/deals} with {PRONOUN/r_w-cool/poss} Clanmates.",
+            "Y'know, r_w-cool's a decent hunter and fighter and all, but if you ask me, {PRONOUN/r_w-cool/poss} real talent is how {PRONOUN/r_w-cool/subject} {VERB/r_w-cool/deal/deals} with {PRONOUN/r_w-cool/poss} companions.",
             "I swear, the cat's got a silver tongue ... {PRONOUN/r_w-cool/subject/CAP} could probably talk a mouse into {PRONOUN/r_w-cool/poss} claws and get it to thank {PRONOUN/r_w-cool/object} on the way out!",
             "I wonder why {PRONOUN/r_w-cool/subject} didn't choose to become a mediator? {PRONOUN/r_w-cool/subject/CAP}{VERB/r_w-cool/'re/'s} certainly skilled enough to!"
         ]
@@ -4113,7 +4113,7 @@
             ]
         },
         "intro": [
-            "[t_c doesn't look up at you, but unlike your Clanmates it does not appear like {PRONOUN/t_c/subject} {VERB/t_c/are/is} intentionally ignoring you...]",
+            "[t_c doesn't look up at you, but unlike your companions it does not appear like {PRONOUN/t_c/subject} {VERB/t_c/are/is} intentionally ignoring you...]",
             "[You squeak in an attempt to be heard, and {PRONOUN/t_c/subject} head snaps up. Success!]",
             "Oh... y_c. I was just wondering about your Clan... is- is t_kk okay? I try to stay away in case {PRONOUN/t_kk/subject}{VERB/t_kk/'re/'s} like you, and I can't ask rdf_c.",
             "[Seems like an adventure! You scamper off and keep {PRONOUN/t_c/poss} request in your mind.]"

@@ -351,7 +351,7 @@
             "Jolted awake with a scream from a dream filled with disturbing images and spitting whispers",
             "Found {PRONOUN/m_c/self} among an eerie, misty landscape before waking up in a panic",
             "Is debating with {PRONOUN/m_c/self} about training in the Dark Forest instead of with {PRONOUN/m_c/poss} mentor",
-            "Prefers the company of the cold and sinister Dark Forest than {PRONOUN/m_c/poss} Clanmates",
+            "Prefers the company of the cold and sinister Dark Forest than {PRONOUN/m_c/poss} companions",
             "Feels as if {PRONOUN/m_c/subject} {VERB/m_c/is/are} growing far powerful in the Dark Forest than with {PRONOUN/m_c/poss} mentor"
         ],
         "main_skill_constraint": [

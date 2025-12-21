@@ -144,7 +144,7 @@
             "STORY,1",
             "LORE,1"
         ],
-        "intro_text": "The waves crash outside camp, an ever present noise brought into sharp focus by their unusual power and ferocity. The wind is blocked by camp walls, but p_l's Clanmates have their fur puffed out regardless. Now isn't a good time to leave shelter.",
+        "intro_text": "The waves crash outside camp, an ever present noise brought into sharp focus by their unusual power and ferocity. The wind is blocked by camp walls, but p_l's companions have their fur puffed out regardless. Now isn't a good time to leave shelter.",
         "decline_text": "The patrol stays in their nests instead of training.",
         "success_outcomes": [
             {
@@ -202,7 +202,7 @@
                 ]
             },
             {
-                "text": "This day will be a day of heroes, s_c whispers, capturing {PRONOUN/s_c/poss} Clanmates' attention. Heroes born, or made, or found - such things always appear in c_n's history, a stranger arriving soaked from a storm, a new life brought into the world as winds howl outside, a warrior rising to need. The storms mark it.",
+                "text": "This day will be a day of heroes, s_c whispers, capturing {PRONOUN/s_c/poss} companions' attention. Heroes born, or made, or found - such things always appear in c_n's history, a stranger arriving soaked from a storm, a new life brought into the world as winds howl outside, a warrior rising to need. The storms mark it.",
                 "exp": 40,
                 "weight": 20,
                 "art": "bch_train_stormwaves",

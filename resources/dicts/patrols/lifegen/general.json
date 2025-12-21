@@ -348,7 +348,7 @@
                 "weight": 15
             },
             {
-                "text": "You plunge into the fog, following the jingling sound. Soon, you can't see anything, and the jingling seems to be coming from all around you. You think you're running in circles, but without any visible landmarks, it feels like you're in a void. You're not sure how long it takes for the fog to clear. When you finally regain your bearings, you're at the edge of the territory, and you trudge home to find a distraught r_w-neurotic telling your Clanmates how the fog seemed to eat you.",
+                "text": "You plunge into the fog, following the jingling sound. Soon, you can't see anything, and the jingling seems to be coming from all around you. You think you're running in circles, but without any visible landmarks, it feels like you're in a void. You're not sure how long it takes for the fog to clear. When you finally regain your bearings, you're at the edge of the territory, and you trudge home to find a distraught r_w-neurotic telling your companions how the fog seemed to eat you.",
                 "exp": 0,
                 "weight": 15
             }
@@ -740,11 +740,11 @@
         "min_max_status": {},
         "weight": 15,
         "intro_text": "Now that newleaf is here, some cats have expressed how nice the camp would look with flower decorations. Do you want to look for some?",
-        "decline_text": "Flowers would be nice, but you already have a lot to do today. Maybe one of your less-busy Clanmates would be willing to take on the task instead.",
+        "decline_text": "Flowers would be nice, but you already have a lot to do today. Maybe one of your less-busy companions would be willing to take on the task instead.",
         "chance_of_success": 50,
         "success_outcomes": [
             {
-                "text": "The territory is full of flowers, and it's easy to locate some beautiful bunches along your usual patrol routes. You collect a variety and bring them back to camp, earning oohs from some of your Clanmates when they first see the colors. You even have enough to keep some for yourself!",
+                "text": "The territory is full of flowers, and it's easy to locate some beautiful bunches along your usual patrol routes. You collect a variety and bring them back to camp, earning oohs from some of your companions when they first see the colors. You even have enough to keep some for yourself!",
                 "exp": 10,
                 "weight": 15,
                 "accessory": [
@@ -769,7 +769,7 @@
                 "weight": 15
             },
             {
-                "text": "Of course you want to help out, but you don't want to overpick any plants! You spend a whole day combing the territory, carefully picking one or two blossoms at a time. You're exhausted by the end of the day, but you return to camp with a bouquet of dozens of types of flowers. Your Clanmates compliment your effort.",
+                "text": "Of course you want to help out, but you don't want to overpick any plants! You spend a whole day combing the territory, carefully picking one or two blossoms at a time. You're exhausted by the end of the day, but you return to camp with a bouquet of dozens of types of flowers. Your companions compliment your effort.",
                 "exp": 10,
                 "weight": 20,
                 "stat_trait": [
@@ -809,7 +809,7 @@
                 ]
             },
             {
-                "text": "You remember seeing a small patch of flowers not far from camp, but when you find it again, it's been mowed down by a group of rabbits. You manage to catch a few rabbits to bring back to camp, though, and your Clanmates are excited to see the unexpected fresh-kill.",
+                "text": "You remember seeing a small patch of flowers not far from camp, but when you find it again, it's been mowed down by a group of rabbits. You manage to catch a few rabbits to bring back to camp, though, and your companions are excited to see the unexpected fresh-kill.",
                 "exp": 5,
                 "weight": 15
             },
@@ -1036,7 +1036,7 @@
                 "can_have_stat": ["p_l"]
             },
             {
-                "text": "When you step out of the muck and fog, the apprentice whirls to face you, nervously introducing {PRONOUN/r_a/self} as r_a and hesitantly asking if you're from StarClan. Before you can answer, {PRONOUN/r_a/subject} {VERB/r_a/confide/confides} that {PRONOUN/r_a/subject}{VERB/r_a/'re/'s} seeking guidance: {PRONOUN/r_a/subject} {VERB/r_a/worry/worries} that {PRONOUN/r_a/poss} Clanmates see {PRONOUN/r_a/object} as weak, cowardly, and nothing more than an annoyance. Hearing the apprentice's fears, you smile and suggest that {PRONOUN/r_a/subject} train under you. After all, you promise, when {PRONOUN/r_a/subject} {VERB/r_a/demonstrate/demonstrates} what {PRONOUN/r_a/subject}{VERB/r_a/'ve/'s} learned from you, none of {PRONOUN/r_a/poss} Clanmates will doubt what {PRONOUN/r_a/subject}{VERB/r_a/'re/'s} capable of.",
+                "text": "When you step out of the muck and fog, the apprentice whirls to face you, nervously introducing {PRONOUN/r_a/self} as r_a and hesitantly asking if you're from StarClan. Before you can answer, {PRONOUN/r_a/subject} {VERB/r_a/confide/confides} that {PRONOUN/r_a/subject}{VERB/r_a/'re/'s} seeking guidance: {PRONOUN/r_a/subject} {VERB/r_a/worry/worries} that {PRONOUN/r_a/poss} companions see {PRONOUN/r_a/object} as weak, cowardly, and nothing more than an annoyance. Hearing the apprentice's fears, you smile and suggest that {PRONOUN/r_a/subject} train under you. After all, you promise, when {PRONOUN/r_a/subject} {VERB/r_a/demonstrate/demonstrates} what {PRONOUN/r_a/subject}{VERB/r_a/'ve/'s} learned from you, none of {PRONOUN/r_a/poss} companions will doubt what {PRONOUN/r_a/subject}{VERB/r_a/'re/'s} capable of.",
                 "exp": 0,
                 "weight": 15,
                 "stat_cluster": ["introspective","neurotic"],
@@ -1377,7 +1377,7 @@
                 "weight": 20
             },
             {
-                "text": "You catch a familiar scent and snake your way through the trees until you find it-- a large, untouched patch of catmint surrounding a crystal-clear puddle. Looking into the puddle gives you a hazy view of the c_n medicine den! You pluck a few catmint leaves and drop them in, hoping your living Clanmates will be able to receive them, and take the remaining herbs back to your StarClan camp.",
+                "text": "You catch a familiar scent and snake your way through the trees until you find it-- a large, untouched patch of catmint surrounding a crystal-clear puddle. Looking into the puddle gives you a hazy view of the c_n medicine den! You pluck a few catmint leaves and drop them in, hoping your living companions will be able to receive them, and take the remaining herbs back to your StarClan camp.",
                 "exp": 0,
                 "weight": 15,
                 "herbs": ["catmint"]

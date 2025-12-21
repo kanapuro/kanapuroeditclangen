@@ -1844,7 +1844,7 @@
         "chance_of_success": 30,
         "success_outcomes": [
             {
-                "text": "When you shyly ask r_c if {PRONOUN/r_c/subject}'d like to spend some time with you, to your surprise, {PRONOUN/r_c/subject} {VERB/r_c/say/says} yes! While you're not allowed to leave camp, you two lay in the sun together, tails entwined, ignoring the stares your Clanmates give you.",
+                "text": "When you shyly ask r_c if {PRONOUN/r_c/subject}'d like to spend some time with you, to your surprise, {PRONOUN/r_c/subject} {VERB/r_c/say/says} yes! While you're not allowed to leave camp, you two lay in the sun together, tails entwined, ignoring the stares your companions give you.",
                 "exp": 0,
                 "weight": 20,
                 "relationships": [
@@ -1868,7 +1868,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "You approach r_c to ask {PRONOUN/r_c/object} out, but before you can even finish speaking, {PRONOUN/r_c/subject} {VERB/r_c/react/reacts} with a 'no' so loud that a few Clanmates turn to look. You quickly retreat, returning to your nest and trying to get the humiliation out of your mind.",
+                "text": "You approach r_c to ask {PRONOUN/r_c/object} out, but before you can even finish speaking, {PRONOUN/r_c/subject} {VERB/r_c/react/reacts} with a 'no' so loud that a few companions turn to look. You quickly retreat, returning to your nest and trying to get the humiliation out of your mind.",
                 "exp": 0,
                 "weight": 20
             }
@@ -1928,7 +1928,7 @@
                 "weight": 20
             },
             {
-                "text": "When you tell {PRONOUN/r_c/object} how you feel, r_c rolls away, suddenly avoiding eye contact. You can see {PRONOUN/r_c/object} hiding a smile, but, noticing the stares of a few nearby Clanmates, {PRONOUN/r_c/subject} {VERB/r_c/stand/stands} and {VERB/r_c/run/runs} away without a word. {PRONOUN/r_c/subject/CAP} must be embarrassed to be receiving affection from a killer.",
+                "text": "When you tell {PRONOUN/r_c/object} how you feel, r_c rolls away, suddenly avoiding eye contact. You can see {PRONOUN/r_c/object} hiding a smile, but, noticing the stares of a few nearby companions, {PRONOUN/r_c/subject} {VERB/r_c/stand/stands} and {VERB/r_c/run/runs} away without a word. {PRONOUN/r_c/subject/CAP} must be embarrassed to be receiving affection from a killer.",
                 "exp": 0,
                 "weight": 20
             }
@@ -1961,14 +1961,14 @@
         ],
         "success_outcomes": [
             {
-                "text": "You can't bring yourself to tear yourself away from {PRONOUN/r_c/subject}. You fall asleep, cradled by r_c, and when you wake up again, it's been several hours and r_c is still here. None of your Clanmates must feel the need to separate you.",
+                "text": "You can't bring yourself to tear yourself away from {PRONOUN/r_c/subject}. You fall asleep, cradled by r_c, and when you wake up again, it's been several hours and r_c is still here. None of your companions must feel the need to separate you.",
                 "exp": 0,
                 "weight": 20
             }
         ],
         "fail_outcomes": [
             {
-                "text": "You begin falling asleep, cradled by r_c, but just as you're drifting off, you hear a Clanmate call out, wondering where r_c is. Though you understand, you're saddened when {PRONOUN/r_c/subject} {VERB/r_c/have/has} to get up and join the rest of {PRONOUN/r_c/poss} unshunned Clanmates.",
+                "text": "You begin falling asleep, cradled by r_c, but just as you're drifting off, you hear a Clanmate call out, wondering where r_c is. Though you understand, you're saddened when {PRONOUN/r_c/subject} {VERB/r_c/have/has} to get up and join the rest of {PRONOUN/r_c/poss} unshunned companions.",
                 "exp": 0,
                 "weight": 20
             }

@@ -293,7 +293,7 @@
     "art": "gen_flower_date_warrior_other_clan"
     },
     {
-        "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when a o_c_n dawn patrol catches them together on the border. n_c:0's Clanmates are enraged and, despite n_c:0's wails of protest, pounce on p_l, clawing {PRONOUN/p_l/object} within a mouse-length of {PRONOUN/p_l/poss} life. n_c:0, horrified by {PRONOUN/n_c:0/poss} Clanmates' actions, flees the territory.",
+        "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when a o_c_n dawn patrol catches them together on the border. n_c:0's companions are enraged and, despite n_c:0's wails of protest, pounce on p_l, clawing {PRONOUN/p_l/object} within a mouse-length of {PRONOUN/p_l/poss} life. n_c:0, horrified by {PRONOUN/n_c:0/poss}companionss' actions, flees the territory.",
         "exp": 0,
         "weight": 10,
         "other_clan_rep": -5,
@@ -309,8 +309,8 @@
         }
     ],
         "history_text": {
-                        "scar": "m_c was scarred by {PRONOUN/m_c/poss} mate's Clanmates.",
-                        "reg_death": "m_c died from injuries inflicted by {PRONOUN/m_c/poss} mate's Clanmates."
+                        "scar": "m_c was scarred by {PRONOUN/m_c/poss} mate's companions.",
+                        "reg_death": "m_c died from injuries inflicted by {PRONOUN/m_c/poss} mate's companions."
                     },
         "relationships": [
     {
@@ -341,7 +341,7 @@
     "art": "gen_battle_warrior_other_clan"
     },
     {
-        "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when a o_c_n dawn patrol catches them together on the border. n_c:0's Clanmates are enraged. Though n_c:0 tries to pull them off p_l, the o_c_n warriors leave p_l cold on the ground. n_c:0 flees, howling in grief for {PRONOUN/n_c:0/poss} lost love.",
+        "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when a o_c_n dawn patrol catches them together on the border. n_c:0's companions are enraged. Though n_c:0 tries to pull them off p_l, the o_c_n warriors leave p_l cold on the ground. n_c:0 flees, howling in grief for {PRONOUN/n_c:0/poss} lost love.",
         "exp": 0,
         "weight": 10,
         "dead_cats": [ "p_l" ],
@@ -355,7 +355,7 @@
         "history_text":
                     {
                         "cats": [ "p_l" ],
-                        "reg_death": "m_c was killed by {PRONOUN/m_c/poss} mate's Clanmates."
+                        "reg_death": "m_c was killed by {PRONOUN/m_c/poss} mate's companions."
                     },
         "relationships": [
     {
@@ -428,7 +428,7 @@
     
         "antag_success_outcomes": [
             {
-                "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when a c_n dawn patrol finds them. p_l tries to calm {PRONOUN/p_l/poss} Clanmates, but it's futile. They pounce on n_c:0, and though p_l tries to defend {PRONOUN/n_c:0/object}, n_c:0 is too grievously injured in the fray.",
+                "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when a c_n dawn patrol finds them. p_l tries to calm {PRONOUN/p_l/poss} companions, but it's futile. They pounce on n_c:0, and though p_l tries to defend {PRONOUN/n_c:0/object}, n_c:0 is too grievously injured in the fray.",
                 "exp": 0,
                 "weight": 10,
                 "dead_cats": [ "n_c:0" ],
@@ -442,7 +442,7 @@
                 "history_text":
                             {
                                 "cats": [ "n_c:0" ],
-                                "reg_death": "m_c was killed by {PRONOUN/m_c/poss} mate's Clanmates."
+                                "reg_death": "m_c was killed by {PRONOUN/m_c/poss} mate's companions."
                             },
                 "relationships": [
             {
@@ -553,7 +553,7 @@
             ],
             "history": [
     {
-            "reg_death": "m_c died in a fight with {PRONOUN/m_c/poss} mate's Clanmates."
+            "reg_death": "m_c died in a fight with {PRONOUN/m_c/poss} mate's companions."
     }
             ],
             "new_cat": [
@@ -1112,7 +1112,7 @@
                 "other_clan_rep": 2
             },
             {
-                "text": "p_l is about to step over the border when a hiss stops {PRONOUN/p_l/object} in {PRONOUN/p_l/poss} tracks. A o_c_n warrior bounds into view, bristling with rage. {PRONOUN/p_l/subject/CAP} quickly {VERB/p_l/explain/explains} that {PRONOUN/p_l/subject}{VERB/p_l/'re/'s} the medicine cat, that the Warrior Code allows {PRONOUN/p_l/object} to cross the border, and {VERB/p_l/assure/assures} the warrior that {PRONOUN/p_l/subject} only {VERB/p_l/need/needs} a few berries for some sick Clanmates. The warrior looks torn, but agrees to this.",
+                "text": "p_l is about to step over the border when a hiss stops {PRONOUN/p_l/object} in {PRONOUN/p_l/poss} tracks. A o_c_n warrior bounds into view, bristling with rage. {PRONOUN/p_l/subject/CAP} quickly {VERB/p_l/explain/explains} that {PRONOUN/p_l/subject}{VERB/p_l/'re/'s} the medicine cat, that the Warrior Code allows {PRONOUN/p_l/object} to cross the border, and {VERB/p_l/assure/assures} the warrior that {PRONOUN/p_l/subject} only {VERB/p_l/need/needs} a few berries for some sick companions. The warrior looks torn, but agrees to this.",
                 "exp": 20,
                 "weight": 20,
                 "stat_skill": ["MEDIATOR,3"],
@@ -4360,7 +4360,7 @@
                 ]
             },
             {
-                "text": "The hatred between them is no secret - r_c has said, in the past, that the world would be better off without p_l in it. But when o_c_n puts that to the test, battling against the border patrol, r_c puts {PRONOUN/r_c/poss} back to p_l like {PRONOUN/r_c/subject} would any of {PRONOUN/r_c/poss} other Clanmates, fighting just as fiercely to protect {PRONOUN/p_l/poss} flank. Maybe p_l is insufferable, but fox-dung if {PRONOUN/r_c/subject}'ll let o_c_n take them!",
+                "text": "The hatred between them is no secret - r_c has said, in the past, that the world would be better off without p_l in it. But when o_c_n puts that to the test, battling against the border patrol, r_c puts {PRONOUN/r_c/poss} back to p_l like {PRONOUN/r_c/subject} would any of {PRONOUN/r_c/poss} other companions, fighting just as fiercely to protect {PRONOUN/p_l/poss} flank. Maybe p_l is insufferable, but fox-dung if {PRONOUN/r_c/subject}'ll let o_c_n take them!",
                 "exp": 50,
                 "weight": 5,
                 "relationships": [

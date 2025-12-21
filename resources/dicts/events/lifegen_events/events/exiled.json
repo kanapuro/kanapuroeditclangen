@@ -2,7 +2,7 @@
     "exiled general": [
         "You wander around, lost.",
         "You see d_n leading a patrol around the borders. They, along with r_w1 and r_w2, snarl and chase you away after spotting you hanging around.",
-        "Life outside of the borders of your home is harder than you imagined. You miss the company of others within the camp, the comradery of your Clanmates.",
+        "Life outside of the borders of your home is harder than you imagined. You miss the company of others within the camp, the comradery of your companions.",
         "Prey is harder to come by out here. You take the time to sneak into c_n territory as carefully as you can, but get caught by r_w and chased away again.",
         "You meet a loner as you wander around. They seem wary of you however, and soon moves on.",
         "You meet a small group of rogues you know have been causing problems for your former Clan. With a bit of well-timed mischief, you manage to chase them off without a hitch.",
@@ -18,13 +18,13 @@
     ],
     "exiled assertive": [
         "You spend some time within c_n's borders. Sure, you don't need to anymore, but it's fun to spite your former Clan.",
-        "Despite exile being a punishment, it isn't for you. You've never felt so free. Now you can do what you want - without your Clanmates breathing down your neck.",
+        "Despite exile being a punishment, it isn't for you. You've never felt so free. Now you can do what you want - without your companions breathing down your neck.",
         "Some rogues are causing trouble for c_n. Without hesitation you chase them off. c_n is yours to mess with - not theirs.",
         "r_w is stalking a bird. You take a second before deciding to have some fun. You yowl to scare both r_w and the bird. It takes off in a burst of panic, and your former Clanmate spits at you.",
         "While sneaking around on c_n territory, you notice a patch of herbs flourishing. Just for the sake of it you trample part of the plant before leaving. r_m will be spitting mad later!",
         "When you meet a passing loner, they strike up conversation. You hold nothing back about your past in c_n, however, and the loner is quick to make an excuse to leave.",
         "You meet with a rogue you know is pleasant to work with. With your information, they are able to put together some plans to make c_n regret exiling you.",
-        "Exile is anything but boring. You can always bother your former Clanmates - or accomplish your dreams of exploring freely.",
+        "Exile is anything but boring. You can always bother your former companions - or accomplish your dreams of exploring freely.",
         "You mark your scent on the c_n borders. You're still here. They'd do well to remember that."
     ],
     "exiled brooding": [],

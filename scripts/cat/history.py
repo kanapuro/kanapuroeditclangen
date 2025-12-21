@@ -296,7 +296,7 @@ class History:
                 SkillPath.STEALTHY: ["stealth"],
                 SkillPath.MEMORY: ["memorization"],
                 SkillPath.MESSENGER: ["delivering messages"],
-                SkillPath.ASSIST: ["assisting Clanmates"],
+                SkillPath.ASSIST: ["assisting companions"],
                 SkillPath.HISTORIAN: ["reciting history"],
                 SkillPath.BOOKMAKER: ["creating stories"],
                 SkillPath.TUNNELER: ["tunneling"],

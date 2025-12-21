@@ -41,8 +41,8 @@
         ],
         "intro": [
             "I noticed you treating r_c the other day, and it really wasn't bad! You've come a long way. But, one thing I did notice was that you were a little too ... nice when delivering {PRONOUN/r_c/poss} diagnosis?",
-            "Not that you shouldn't be kind when trying to help your Clanmates. That's not what I mean. But you shouldn't be too afraid to say what you really mean, either.",
-            "We're medicine cats. It's our job to be honest with our Clanmates when something is wrong! Not protect their feelings.",
+            "Not that you shouldn't be kind when trying to help your companions. That's not what I mean. But you shouldn't be too afraid to say what you really mean, either.",
+            "We're medicine cats. It's our job to be honest with our companions when something is wrong! Not protect their feelings.",
             "The medicine den is a scary place, and you want to help cats feel safer. But isn't it better for a Clanmate to know what they're in for, rather than believe a nicer lie?",
             "Hm ... maybe I should be the one in charge of delivering the bad news from now on."
         ]
@@ -94,7 +94,7 @@
         ],
         "intro": [
             "Something I've noticed about you, y_c, is that you think too much.",
-            "That's not exactly a bad thing, plenty of apprentices are hesitant, but when one of your Clanmates needs your help, there's no time for thinking. You just have to see the problem in front of you, and go for it!",
+            "That's not exactly a bad thing, plenty of apprentices are hesitant, but when one of your companions needs your help, there's no time for thinking. You just have to see the problem in front of you, and go for it!",
             "Then again, I can't even remember how many times I've been chewed out by the deputy for acting too rashly ...",
             "I guess it's all about balance. You can't doubt yourself too much, but you can't be blinded by confidence, either.",
             "It's a tough thing to master, but I know you can do it!"
@@ -337,7 +337,7 @@
             "What? Haha, psh, have you got bees in your brain? It's ... I'm ...",
             "*Sigh*",
             "Okay. Ya got me. Truth is, I've been struggling a little lately because ... Well, I don't exactly feel like I know what I'm doing here.",
-            "My Clanmates' lives are in my paws ... I'm responsible for interpreting signs from StarClan ... What if I miss something? What if there's some crucial clue or omen I overlook because I'm too busy doing ... I dunno, anything else?",
+            "My companions' lives are in my paws ... I'm responsible for interpreting signs from StarClan ... What if I miss something? What if there's some crucial clue or omen I overlook because I'm too busy doing ... I dunno, anything else?",
             "It's just a lot, knowing that one small mistake on my part could cost a cat their life! Does everycat experience this kind of pressure, or is it just me?",
             "[You assure t_c that StarClan wouldn't set {PRONOUN/t_c/object} up to fail, and you'll always be by {PRONOUN/t_c/poss} side to back {PRONOUN/t_c/object} up.]",
             "... Thanks, y_c. I needed to hear that."
@@ -801,7 +801,7 @@
             "[In a moment of relaxation, you mention to t_c how weird it was to see {PRONOUN/t_c/object} so focused earlier.]",
             "Oh, were you trying to get my attention? Sorry about that -- Right paw to StarClan, I didn't even notice!",
             "r_i sorta took a turn for the worse, and they really needed all paws on deck in the medicine den.",
-            "I know, I know, hold your applause. 'Aww, t_c secretly has a sensitive side!' '{PRONOUN/t_c/subject/CAP} really {VERB/t_c/do/does} care about {PRONOUN/t_c/poss} Clanmates!' {PRONOUN/t_c/subject/CAP} {VERB/t_c/take/takes} {PRONOUN/t_c/poss} duty so seriously when it matters!'",
+            "I know, I know, hold your applause. 'Aww, t_c secretly has a sensitive side!' '{PRONOUN/t_c/subject/CAP} really {VERB/t_c/do/does} care about {PRONOUN/t_c/poss} companions!' {PRONOUN/t_c/subject/CAP} {VERB/t_c/take/takes} {PRONOUN/t_c/poss} duty so seriously when it matters!'",
             "Let me let you in on a little secret, y_c: it's all just a ploy for fame. Cats never forget the face of their savior! *Wink*"
         ]
     },
@@ -2261,7 +2261,7 @@
         "intro": [
             "y_c! I brought the herbs for r_k.",
             "[t_c gives you a smile, settling down next to you as you gently help the little one eat {PRONOUN/r_k/poss} herbs.]",
-            "You know, I never saw our roles as that different. Like- of course, there's differences, but at the end of the day... we're caring for our Clanmates. We guide them, and we help them when they fall down.",
+            "You know, I never saw our roles as that different. Like- of course, there's differences, but at the end of the day... we're caring for our companions. We guide them, and we help them when they fall down.",
             "[The sweet cat has a playful smile appear on {PRONOUN/t_c/poss} face as {PRONOUN/t_c/subject} {VERB/t_c/glance/glances} at you.]",
             "Although, your patients are way cuter when they're being stubborn."
         ]
@@ -2303,7 +2303,7 @@
         "intro": [
             "[t_c is sorting {PRONOUN/t_c/poss} herbs, {PRONOUN/t_c/subject} {VERB/t_c/seem/seems} a bit worried about something. {PRONOUN/t_c/subject/CAP} {VERB/t_c/nod/nods} as {PRONOUN/t_c/subject} {VERB/t_c/see/sees} you, {PRONOUN/t_c/poss} voice quiet.]",
             "Worried about r_s too?",
-            "That's not a bad thing, you know. It's a desired trait in most leaders, the concern for your Clanmates.",
+            "That's not a bad thing, you know. It's a desired trait in most leaders, the concern for your companions.",
             "Here, you can have this. I ate earlier.",
             "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/nudge/nudges} a fresh mouse over to you, almost as if {PRONOUN/t_c/subject} anticipated your arrival and got you something to eat... Though {PRONOUN/t_c/subject} {VERB/t_c/don't/doesn't} seen keen on admitting that.]",
             "Here, you can stay with me for a little while, and we can plan for the scenario if things do go wrong.",
@@ -3976,7 +3976,7 @@
             ]
         },
         "intro": [
-            "StarClan needs to watch our clanmates better, this should have never happened... Not to a cat like you...",
+            "StarClan needs to watch our companions better, this should have never happened... Not to a cat like you...",
             "Would you like anything to eat?",
             "Okay, I can arrange that, you stay here. I'll be back in a moment."
         ]
@@ -5139,7 +5139,7 @@
             "min_platonic_30"
         ],
         "intro": [
-            "[Tired of your Clanmates' hushed whispers and scornful glares each time they pass by your little corner, you decide to test your luck in the medicine den.]",
+            "[Tired of your companions' hushed whispers and scornful glares each time they pass by your little corner, you decide to test your luck in the medicine den.]",
             "[t_c, who seems to be in the middle of some mediocre chore, turns to fix you with a neutral stare as you settle down onto an old mossy nest. {PRONOUN/t_c/subject/CAP} {VERB/t_c/give/gives} you a slight nod and {VERB/t_c/turn/turns} back to {PRONOUN/t_c/poss} task.]",
             "[As much as you want to appreciate how {PRONOUN/t_c/subject} {VERB/t_c/don't/doesn't} bother to make conversation, you can't help but notice how {PRONOUN/t_c/subject} subtly {VERB/t_c/sweep/sweeps} {PRONOUN/t_c/poss} tail around the more hazardous herbs.]"
         ]

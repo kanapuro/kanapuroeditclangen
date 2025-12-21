@@ -677,7 +677,7 @@
   },
   {
     "interaction_type": "praise",
-    "event_text": "m_c speaks to {PRONOUN/m_c/poss} Clanmates before the Gathering, making it clear what tonight's goal is. When c_n arrives at the Gathering place, they all disperse to find o_c_n cats and take advantage of their prideful nature.",
+    "event_text": "m_c speaks to {PRONOUN/m_c/poss} companions before the Gathering, making it clear what tonight's goal is. When c_n arrives at the Gathering place, they all disperse to find o_c_n cats and take advantage of their prideful nature.",
     "rel_change": 3,
     "m_c": {},
     "player_clan_temper": ["cunning"],
@@ -1199,7 +1199,7 @@
   },
   {
     "interaction_type": "befriend",
-    "event_text": "At the Gathering, m_c nudges {PRONOUN/m_c/poss} Clanmates to go sit with o_c_nners and chat with them.",
+    "event_text": "At the Gathering, m_c nudges {PRONOUN/m_c/poss} companions to go sit with o_c_nners and chat with them.",
     "rel_change": 1,
     "m_c": {},
     "player_clan_temper": ["any"],
@@ -1786,7 +1786,7 @@
   },
   {
     "interaction_type": "antagonize",
-    "event_text": "Before entering the Gathering meeting place, m_c signals for {PRONOUN/m_c/poss} Clanmates to hang back. m_c eavesdrops on o_c_n, picking up all the Clan secrets that boastful warriors and indiscreet apprentices share, then strolls into the Gathering to use this information in {PRONOUN/m_c/poss} speech.",
+    "event_text": "Before entering the Gathering meeting place, m_c signals for {PRONOUN/m_c/poss} companions to hang back. m_c eavesdrops on o_c_n, picking up all the Clan secrets that boastful warriors and indiscreet apprentices share, then strolls into the Gathering to use this information in {PRONOUN/m_c/poss} speech.",
     "rel_change": -6,
     "m_c": {
       "skill": [ "SENSE,3" ],
@@ -1905,7 +1905,7 @@
   },
   {
     "interaction_type": "appease",
-    "event_text": "When o_c_n arrives at the Gathering, they are surprised to find c_n on its best behavior. m_c nods at {PRONOUN/m_c/poss} Clanmates from the leader's perch.",
+    "event_text": "When o_c_n arrives at the Gathering, they are surprised to find c_n on its best behavior. m_c nods at {PRONOUN/m_c/poss} companions from the leader's perch.",
     "rel_change": 1,
     "m_c": {},
     "player_clan_temper": ["any"],
@@ -2031,7 +2031,7 @@
   },
   {
     "interaction_type": "appease",
-    "event_text": "At the Gathering, o_c_n's leader gets in m_c's face. m_c squares {PRONOUN/m_c/poss} shoulders and lets {PRONOUN/m_c/poss} muscular physique speak for itself; o_c_n's leader suddenly acquires an appetite for peace. m_c's Clanmates giddily report the next morning that the leader looked like a kit next to {PRONOUN/m_c/object}.",
+    "event_text": "At the Gathering, o_c_n's leader gets in m_c's face. m_c squares {PRONOUN/m_c/poss} shoulders and lets {PRONOUN/m_c/poss} muscular physique speak for itself; o_c_n's leader suddenly acquires an appetite for peace. m_c's companions giddily report the next morning that the leader looked like a kit next to {PRONOUN/m_c/object}.",
     "rel_change": 3,
     "m_c": {
       "skill": [ "SWIMMER,2", "CLIMBER,2", "RUNNER,2", "FIGHTER,3" ],

@@ -515,14 +515,14 @@
         "chance_of_success": 40,
         "success_outcomes": [
             {
-                "text": "Excited for a chance to redeem yourself, you agree, and you receive no objections from your leader as you pass to leave camp. You catch a good amount of prey with your Clanmates and feel pride for the first time in a while as you drop it on the fresh-kill pile.",
+                "text": "Excited for a chance to redeem yourself, you agree, and you receive no objections from your leader as you pass to leave camp. You catch a good amount of prey with your companions and feel pride for the first time in a while as you drop it on the fresh-kill pile.",
                 "exp": 10,
                 "weight": 20
             }
         ],
         "fail_outcomes": [
             {
-                "text": "You instantly stand up and agree, excited at the chance to redeem yourself, but when your leader hears this, they turn their head to glare at the two warriors. Your Clanmates sheepishly apologise for asking, and turn to join their leader, who looks ready to give them a scolding for ignoring your shun.",
+                "text": "You instantly stand up and agree, excited at the chance to redeem yourself, but when your leader hears this, they turn their head to glare at the two warriors. Your companions sheepishly apologise for asking, and turn to join their leader, who looks ready to give them a scolding for ignoring your shun.",
                 "exp": 0,
                 "weight": 20
             }
@@ -546,7 +546,7 @@
         "min_max_status": {},
         "weight": 20,
         "intro_text": "As you're leaving your den in the morning to assemble dawn patrols, r_w1-neurotic stops you, apologises for bothering you, and asks not to be put on patrol with r_w2-brooding this morning.",
-        "decline_text": "You wave r_w1-neurotic off. All Clanmates must learn to work together, and if they end up on patrol together, {PRONOUN/r_w1-neurotic/subject}'ll have to deal with it!",
+        "decline_text": "You wave r_w1-neurotic off. All companions must learn to work together, and if they end up on patrol together, {PRONOUN/r_w1-neurotic/subject}'ll have to deal with it!",
         "chance_of_success": 50,
         "success_outcomes": [
             {
@@ -555,7 +555,7 @@
                 "weight": 20
             },
             {
-                "text": "You tell r_w1-neurotic that {PRONOUN/r_w1-neurotic/subject} can't avoid {PRONOUN/r_w1-neurotic/poss} Clanmates, and in fact, you'll make sure {PRONOUN/r_w1-neurotic/subject}{VERB/r_w1-neurotic/'re/'s} put on a patrol with r_w2-brooding today. r_w1-neurotic looks upset, but when {PRONOUN/r_w1-neurotic/subject} {VERB/r_w1-neurotic/return/returns} from {PRONOUN/r_w1-neurotic/poss} dawn patrol later, you see {PRONOUN/r_w1-neurotic/object} laughing and joking around with r_w2-brooding. Looks like {PRONOUN/r_w2-brooding/subject} {VERB/r_w2-brooding/weren't/wasn't} so scary after all.",
+                "text": "You tell r_w1-neurotic that {PRONOUN/r_w1-neurotic/subject} can't avoid {PRONOUN/r_w1-neurotic/poss} companions, and in fact, you'll make sure {PRONOUN/r_w1-neurotic/subject}{VERB/r_w1-neurotic/'re/'s} put on a patrol with r_w2-brooding today. r_w1-neurotic looks upset, but when {PRONOUN/r_w1-neurotic/subject} {VERB/r_w1-neurotic/return/returns} from {PRONOUN/r_w1-neurotic/poss} dawn patrol later, you see {PRONOUN/r_w1-neurotic/object} laughing and joking around with r_w2-brooding. Looks like {PRONOUN/r_w2-brooding/subject} {VERB/r_w2-brooding/weren't/wasn't} so scary after all.",
                 "exp": 15,
                 "weight": 20,
                 "can_have_stat": ["p_l"],
@@ -635,7 +635,7 @@
         "max_cats": 1,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "It's frigid this morning. Your Clanmates wake with numb paws and drops of their breath frozen to their whiskers. You've organized a morning border patrol, but you're not sure whether to tell its members to stay home for their safety.",
+        "intro_text": "It's frigid this morning. Your companions wake with numb paws and drops of their breath frozen to their whiskers. You've organized a morning border patrol, but you're not sure whether to tell its members to stay home for their safety.",
         "decline_text": "You decide to let l_n figure out this one. You have a lot of other things to do today.",
         "chance_of_success": 60,
         "success_outcomes": [
@@ -650,12 +650,12 @@
                 "weight": 20
             },
             {
-                "text": "Cats have noticed signs of rogues along one of the borders, so you think it's important to keep up your patrols regardless of the weather. However, you decide to join the group instead, so one of your Clanmates can stay out of the cold. The patrol passes without incident, and while your paws are numb for a while afterwards, no one suffers any long-term effects.",
+                "text": "Cats have noticed signs of rogues along one of the borders, so you think it's important to keep up your patrols regardless of the weather. However, you decide to join the group instead, so one of your companions can stay out of the cold. The patrol passes without incident, and while your paws are numb for a while afterwards, no one suffers any long-term effects.",
                 "exp": 15,
                 "weight": 20
             },
             {
-                "text": "It's important to keep patrols going, even in bad weather, but you don't want your Clanmates to get frostbitten. After a bit of thought, you suggest the patrol members wrap moss around their paws to keep them warm, and volunteer some of your bedding for the task. While the moss wrappings are falling apart by the time your Clanmates return, it seems they were successful in protecting their paws from the cold!",
+                "text": "It's important to keep patrols going, even in bad weather, but you don't want your companions to get frostbitten. After a bit of thought, you suggest the patrol members wrap moss around their paws to keep them warm, and volunteer some of your bedding for the task. While the moss wrappings are falling apart by the time your companions return, it seems they were successful in protecting their paws from the cold!",
                 "exp": 15,
                 "weight": 20,
                 "stat_skill": [
@@ -681,7 +681,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "You decide to send the patrol out anyways, but regret it when a blizzard sweeps through the territory shortly afterwards. Just after the storm settles, though, your disoriented Clanmates stumble back into camp, chilled but otherwise unharmed. r_w explains that they were lost in the snow, but a starry cat led them to shelter, and then back home...",
+                "text": "You decide to send the patrol out anyways, but regret it when a blizzard sweeps through the territory shortly afterwards. Just after the storm settles, though, your disoriented companions stumble back into camp, chilled but otherwise unharmed. r_w explains that they were lost in the snow, but a starry cat led them to shelter, and then back home...",
                 "exp": 0,
                 "weight": 20,
                 "faith_effects": [
@@ -694,7 +694,7 @@
                 ]
             },
             {
-                "text": "You decide to send the patrol out anyways, but regret it when a blizzard sweeps through the territory shortly afterwards. Your Clanmates don't return to camp on time, so l_n and you go looking for them as soon as the storm clears. You find them huddled together beneath a bush, shivering violently. r_w is particularly cold and wind-battered.",
+                "text": "You decide to send the patrol out anyways, but regret it when a blizzard sweeps through the territory shortly afterwards. Your companions don't return to camp on time, so l_n and you go looking for them as soon as the storm clears. You find them huddled together beneath a bush, shivering violently. r_w is particularly cold and wind-battered.",
                 "exp": 0,
                 "weight": 10,
                 "injury": [

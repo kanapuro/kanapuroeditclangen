@@ -1319,7 +1319,7 @@
             "[In a moment of relaxation, you mention to t_c how weird it was to see {PRONOUN/t_c/object} so focused earlier.]",
             "Oh, were you trying to get my attention? Sorry about that -- Right paw to StarClan, I didn't even notice!",
             "r_i sorta took a turn for the worse, and they really needed all paws on deck in the medicine den.",
-            "I know, I know, hold your applause. 'Aww, t_c secretly has a sensitive side!' '{PRONOUN/t_c/subject/CAP} really {VERB/t_c/do/does} care about {PRONOUN/t_c/poss} Clanmates!' {PRONOUN/t_c/subject/CAP} {VERB/t_c/take/takes} {PRONOUN/t_c/poss} duty so seriously when it matters!'",
+            "I know, I know, hold your applause. 'Aww, t_c secretly has a sensitive side!' '{PRONOUN/t_c/subject/CAP} really {VERB/t_c/do/does} care about {PRONOUN/t_c/poss} companions!' {PRONOUN/t_c/subject/CAP} {VERB/t_c/take/takes} {PRONOUN/t_c/poss} duty so seriously when it matters!'",
             "Let me let you in on a little secret, y_c: it's all just a ploy for fame. Cats never forget the face of their savior! *Wink*"
         ]
     },
@@ -1509,7 +1509,7 @@
             "Oh, hello, y_c! Ya know, I had a question I wanted to ask you earlier.",
             "If you could go back in time and change the path you went on as an apprentice, would you do that?",
             "I don't think I would. I'm happy here. It's difficult, and I have my worries, but it's worth it.",
-            "Sometimes I look at all my sick Clanmates and worry I may not be able to help them. But then I look at my mentor, and I know everything will be okay with them guiding me.",
+            "Sometimes I look at all my sick companions and worry I may not be able to help them. But then I look at my mentor, and I know everything will be okay with them guiding me.",
             "Oh, woah, that's a lot more serious than I thought it would be. I just said things, haha... Uh, marigold's the heather?",
             "Fox-dung! How's the weather? I mean that.",
             "Uh, hold on. I think I just heard my mentor calling me!",
@@ -2529,7 +2529,7 @@
             "Psst! y_c, over here!",
             "[You turn to see t_c hiding towards the back of the camp, beckoning you to come closer.]",
             "Look, I need your help with something. I need you to come on a mission with me to get more cobwebs from o_c_n territory. It's urgent.",
-            "Don't stare at me like that! I know it's against the code, but the health and safety of my Clanmates matter so much more to me. I wouldn't be doing this at all if I didn't feel like it's important, you know that.",
+            "Don't stare at me like that! I know it's against the code, but the health and safety of my companions matter so much more to me. I wouldn't be doing this at all if I didn't feel like it's important, you know that.",
             "And I need you to come with me just in case we do happen to meet some enemy warriors out there. You're a mediator, they'll listen to you! I think.",
             "Ok, you're a mediator-in-training, but what's the difference? Besides, m_n would never agree to this! That's why I'm asking you.",
             "Please help me, I swear by StarClan that I wouldn't do this if there was any other way."

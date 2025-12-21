@@ -140,7 +140,7 @@
             "Leaf-fall",
             "skill_trait_required"
         ],
-        "event_text": "m_c walks into the dreams of {PRONOUN/m_c/poss} Clanmates while everyone sleeps.",
+        "event_text": "m_c walks into the dreams of {PRONOUN/m_c/poss} companions while everyone sleeps.",
         "cat_trait": null,
         "cat_skill": [
             "DREAM,2"
@@ -208,7 +208,7 @@
             "Leaf-bare",
             "skill_trait_required"
         ],
-        "event_text": "m_c tosses in {PRONOUN/m_c/poss} sleep as {PRONOUN/m_c/poss} dreamself pads through the thoughts of {PRONOUN/m_c/poss} Clanmates, picking up snippets of dream_list. {PRONOUN/m_c/subject/CAP} slowly {VERB/m_c/blink/blinks} awake, wondering whose dreams {PRONOUN/m_c/subject} walked in.",
+        "event_text": "m_c tosses in {PRONOUN/m_c/poss} sleep as {PRONOUN/m_c/poss} dreamself pads through the thoughts of {PRONOUN/m_c/poss} companions, picking up snippets of dream_list. {PRONOUN/m_c/subject/CAP} slowly {VERB/m_c/blink/blinks} awake, wondering whose dreams {PRONOUN/m_c/subject} walked in.",
         "cat_trait": null,
         "cat_skill": [
             "DREAM,2"

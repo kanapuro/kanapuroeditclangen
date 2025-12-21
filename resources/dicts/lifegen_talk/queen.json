@@ -2954,7 +2954,7 @@
         ],
         "intro": [
             "[t_c overhears you talking to one of the kits, and pulls you to the side.]",
-            "You shouldn't lie to the kits, y_c, you know. Telling the truth is good for them; when you lie to them, you're going to teach them that they can't trust their Clanmates."
+            "You shouldn't lie to the kits, y_c, you know. Telling the truth is good for them; when you lie to them, you're going to teach them that they can't trust their companions."
         ]
     },
     "DF_queen_H1": {
@@ -3247,7 +3247,7 @@
             ]
         },
         "intro": [
-            "[t_c is ensuring you're not overwhelmed by curious Clanmates greeting the newest kitten.]"
+            "[t_c is ensuring you're not overwhelmed by curious companions greeting the newest kitten.]"
         ]
     },
     "youdeaf_R68": {
@@ -3542,7 +3542,7 @@
         "intro": [
             "[Feeling overwhelmed with the constant screaming and crying of the kits you quickly excuse yourself and stand outside the nursery. You take in a deep breath, your legs shake and your fur bristles.]",
             "y_c, are you okay? Can we talk please?",
-            "[You nod hesitantly and follow t_c to a shaded area away from the nursery and any clanmates. Your ears are pinned back, your nose scrunched up as you hold your tongue, you fear that the words you'll say are... Not appropriate...]",
+            "[You nod hesitantly and follow t_c to a shaded area away from the nursery and any companions. Your ears are pinned back, your nose scrunched up as you hold your tongue, you fear that the words you'll say are... Not appropriate...]",
             "You looked really upset, I understand that this can be a lot, especially for someone who's learning. It's not easy by any means. You're expected to do so much so quickly and all at once.",
             "Could you please explain to me what happened? How you felt and what triggered that response?",
             "['I just got overwhelmed... There was so much going on and I couldn't take it... It was loud and- r_k was crying all while r_w was trying to give some report... You were helping somecat and then a kit teasing another...']",
@@ -3754,7 +3754,7 @@
         ],
         "intro": [
             "[Now that {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} somewhat convinced that {PRONOUN/t_c/subject}{VERB/t_c/'ve/'s} removed anything that might be dangerous to kits from the camp, t_c has expanded {PRONOUN/t_c/poss} kit-proofing to the area just beyond the camp.]",
-            "[{PRONOUN/t_c/subject/CAP} busily {VERB/t_c/uproot/uproots} thistles and {VERB/t_c/move/moves} thorny sticks while your Clanmates watch, holding back their skepticism that any kit would be able to slip out of camp unseen.]"
+            "[{PRONOUN/t_c/subject/CAP} busily {VERB/t_c/uproot/uproots} thistles and {VERB/t_c/move/moves} thorny sticks while your companions watch, holding back their skepticism that any kit would be able to slip out of camp unseen.]"
         ]
     },
     "neurotic_queen_SQ6": {

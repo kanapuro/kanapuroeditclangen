@@ -3804,7 +3804,7 @@ class ProfileScreen(Screens):
                 ui_scale(pygame.Rect((578, 522), (172, 36))),
                 "",
                 object_id="#murder_button",
-                tool_tip_text='Choose to murder one of your clanmates',
+                tool_tip_text='Choose to murder one of your companions',
                 starting_height=2, manager=MANAGER
             )
             if game.clan.your_cat.moons == 0:
@@ -3835,7 +3835,7 @@ class ProfileScreen(Screens):
                 ui_scale(pygame.Rect((578, 594), (172, 36))),
                 "",
                 object_id="#affair_button",
-                tool_tip_text='Have an affair with one of your clanmates',
+                tool_tip_text='Have an affair with one of your companions',
                 starting_height=2, manager=MANAGER
             )
             if len(game.clan.your_cat.mates) == 0 or game.clan.affair:

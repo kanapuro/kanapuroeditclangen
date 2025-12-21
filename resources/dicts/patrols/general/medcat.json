@@ -470,7 +470,7 @@
                 ]
             },
             {
-                "text": "The sunlight feels great, however r_c presses on, wanting to be able to take care of {PRONOUN/r_c/poss} Clanmates.",
+                "text": "The sunlight feels great, however r_c presses on, wanting to be able to take care of {PRONOUN/r_c/poss} companions.",
                 "exp": 20,
                 "weight": 20,
                 "art": "gen_med_gatheringcatmint_greenleaf1",
@@ -513,7 +513,7 @@
                 ]
             },
             {
-                "text": "s_c lies in the patch of sun, huffing. {PRONOUN/s_c/subject/CAP} deserves a nice break, away from all {PRONOUN/s_c/poss} Clanmates. {PRONOUN/s_c/subject/CAP} could always just say {PRONOUN/s_c/subject} failed to find any herbs after all.",
+                "text": "s_c lies in the patch of sun, huffing. {PRONOUN/s_c/subject/CAP} deserves a nice break, away from all {PRONOUN/s_c/poss} companions. {PRONOUN/s_c/subject/CAP} could always just say {PRONOUN/s_c/subject} failed to find any herbs after all.",
                 "exp": 0,
                 "weight": 20,
                 "stat_trait": [
@@ -2663,7 +2663,7 @@
         },
         "weight": 5,
         "intro_text": "The gaggle of medicine cats strolls through c_n's territory, chatting amicably amongst themselves. It's a rare opportunity for all of them to be out like this together, and each cat plans to make the most of it.",
-        "decline_text": "Before they get very far, one of their Clanmates catches up to inform them of a small emergency back at camp that needs their attention. Oh well, maybe they'll get the chance again another day.",
+        "decline_text": "Before they get very far, one of their companions catches up to inform them of a small emergency back at camp that needs their attention. Oh well, maybe they'll get the chance again another day.",
         "chance_of_success": 20,
         "success_outcomes": [
             {
@@ -2800,7 +2800,7 @@
         },
         "weight": 5,
         "intro_text": "The apprentices stroll through c_n's territory, chatting amicably amongst themselves. The senior medicine cats are all busy back at camp, so the young cats get the chance to be out on their own today, which has everyone excited!",
-        "decline_text": "Before they get very far, one of their Clanmates catches up to inform them that they're wanted back at camp. Oh well, maybe they'll get the chance again another day.",
+        "decline_text": "Before they get very far, one of their companions catches up to inform them that they're wanted back at camp. Oh well, maybe they'll get the chance again another day.",
         "chance_of_success": 30,
         "success_outcomes": [
             {
@@ -4834,7 +4834,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "Surely, <i>surely</i> it's nothing - but p_l can't deny {PRONOUN/p_l/poss} instincts. This Death's Head Moth is an omen, and {PRONOUN/p_l/subject} {VERB/p_l/take/takes} off running, sprinting towards the training arena where {PRONOUN/p_l/poss} Clanmates said they'd be. But it's too late. By the time p_l arrives, r_c is choking on {PRONOUN/r_c/poss} last breaths, victim of a terrible accident.",
+                "text": "Surely, <i>surely</i> it's nothing - but p_l can't deny {PRONOUN/p_l/poss} instincts. This Death's Head Moth is an omen, and {PRONOUN/p_l/subject} {VERB/p_l/take/takes} off running, sprinting towards the training arena where {PRONOUN/p_l/poss} companions said they'd be. But it's too late. By the time p_l arrives, r_c is choking on {PRONOUN/r_c/poss} last breaths, victim of a terrible accident.",
                 "exp": 0,
                 "weight": 20,
                 "dead_cats": [

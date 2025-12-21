@@ -19,7 +19,7 @@
             "m_c accidentially stepped on r_c's tail.",
             "m_c teased r_c's for having messy fur right after waking up.",
 			"When m_c approached r_c, {PRONOUN/r_c/subject} made a weird face.",
-			"Something good happens to m_c and most Clanmates congratulate {PRONOUN/m_c/object}, but r_c doesn't say anything at all."
+			"Something good happens to m_c and most companions congratulate {PRONOUN/m_c/object}, but r_c doesn't say anything at all."
 		]
 	},
 	{
@@ -655,7 +655,7 @@
 			"m_c thinks the Clan would be better if it wasn't under r_c's leadership.",
 			"m_c wants to start an uprising against r_c.",
 			"m_c doesn't think r_c deserves {PRONOUN/r_c/poss} nine lives.",
-			"m_c tells {PRONOUN/m_c/poss} Clanmates that r_c should be overthrown.",
+			"m_c tells {PRONOUN/m_c/poss} companions that r_c should be overthrown.",
 			"m_c accuses r_c of being a mouthpiece of the Dark Forest.",
 			"m_c says r_c makes a mockery of past leaders' legacies.",
 			"m_c heckles r_c during meetings.",
@@ -751,7 +751,7 @@
 		"id": "dislike_inc_high8",
 		"intensity": "high",
 		"interactions": [
-        	"m_c and r_c nearly got into a serious fight in the middle of camp and had to be seperated by their Clanmates.",
+        	"m_c and r_c nearly got into a serious fight in the middle of camp and had to be seperated by their companions.",
             "m_c insulted r_c's biggest insecurity directly to {PRONOUN/m_c/poss} face.",
             "m_c called r_c an embarrassment to the Clan.",
             "m_c threatens to send r_c directly to the Dark Forest where {PRONOUN/r_c/subject} belong.",

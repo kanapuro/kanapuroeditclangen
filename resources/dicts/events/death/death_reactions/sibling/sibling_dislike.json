@@ -29,10 +29,10 @@
   },
   "ambitious": {
     "body": [
-	"r_c takes over m_c's duties in the days following the vigil, hoping Clanmates will notice {PRONOUN/r_c/poss} skill."
+	"r_c takes over m_c's duties in the days following the vigil, hoping companions will notice {PRONOUN/r_c/poss} skill."
     ],
     "no_body": [
-	"r_c takes over m_c's duties in the days following the vigil, hoping Clanmates will notice {PRONOUN/r_c/poss} skill."
+	"r_c takes over m_c's duties in the days following the vigil, hoping companions will notice {PRONOUN/r_c/poss} skill."
 
     ]
     },

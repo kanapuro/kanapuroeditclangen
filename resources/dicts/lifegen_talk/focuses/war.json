@@ -1118,8 +1118,8 @@
         "intro": [
             "[t_c watches the medicine cats rush to tend to the recent border patrol, deeply troubled.]",
             "Y'know, sometimes I wonder what our role is, in the midst of all this.",
-            "Why should we get to stay in camp all day while our Clanmates have to struggle and die on the front lines?",
-            "I get that what we do is important, but ... There's a war going on. Is it really more important than the lives of our Clanmates? It just seems a little unfair."
+            "Why should we get to stay in camp all day while our companions have to struggle and die on the front lines?",
+            "I get that what we do is important, but ... There's a war going on. Is it really more important than the lives of our companions? It just seems a little unfair."
         ]
     },
     "war_focus_AJ4": {
@@ -1940,7 +1940,7 @@
             "Hard doesn't even begin to describe it ...",
             "[t_c scoots closer to you, pressing {PRONOUN/t_c/poss} side into your fur.]",
             "I just don't know what to do anymore, y_c.",
-            "All I want is to take away everycat's pain. All the suffering our Clanmates have endured at the paws of w_cClan ... How much more can this community take?",
+            "All I want is to take away everycat's pain. All the suffering our companions have endured at the paws of w_cClan ... How much more can this community take?",
             "It's my job to maintain peace. To stop the war. But everything I ever learned in my training has failed. Logic has failed us. Reason has failed us.",
             "StarClan ....",
             "Well, I just don't know what to think about StarClan anymore.",
@@ -2334,7 +2334,7 @@
             "[t_c looks down at the border bitterly.]",
             "... Y'know, this is where it happened.",
             "d_n really should've listened to me when I told {PRONOUN/d_n/object} I wasn't good to patrol. At the first sign of fighting, I dashed right up this tree like an apprentice dodging tick duty.",
-            "Even as cats were dying ... Even as I heard my Clanmates' cries for help ... Right here is where I stayed.",
+            "Even as cats were dying ... Even as I heard my companions' cries for help ... Right here is where I stayed.",
             "I'm not an idiot. I know I'm no saint.",
             "But, my whole life, I always thought the selfish, manipulative jerk was just a costume I was wearing to protect myself. I thought I'd be able to show up for others when it really mattered.",
             "But ... I guess it isn't true. That selfish, manipulative jerk is just really who I am. There is no costume anymore.",
@@ -2614,7 +2614,7 @@
             "y_c...",
             "Don't overwork yourself, okay? I'm no medicine cat, but I'm happy to learn if you need help.",
             "Temporarily, yes, but...",
-            "I cannot stand seeing my Clanmates suffer and being unable to do anything about it besides cause more suffering for w_cClan."
+            "I cannot stand seeing my companions suffer and being unable to do anything about it besides cause more suffering for w_cClan."
         ]
     },
     "war_focusdf_SQ1": {

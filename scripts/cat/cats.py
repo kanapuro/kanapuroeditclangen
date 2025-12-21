@@ -1407,10 +1407,10 @@ class Cat:
         # print("RNG: ", acceptchance)
 
         if you.exiled:
-            event_text = f"You muster up your courage and turn to walk back home, hoping that your Clanmates will be able to forgive you. At the {game.clan.name}Clan border, you sit and wait for a patrol. <br>"
+            event_text = f"You muster up your courage and turn to walk back home, hoping that your companions will be able to forgive you. At the {game.clan.name}Clan border, you sit and wait for a patrol. <br>"
 
         elif you.outside:
-            event_text = f"You're ready to return home-- you're sure of it. You hope that your Clanmates will take you back in as you head for the {game.clan.name}Clan border to wait for a patrol. <br> "
+            event_text = f"You're ready to return home-- you're sure of it. You hope that your companions will take you back in as you head for the {game.clan.name}Clan border to wait for a patrol. <br> "
         if acceptchance == 1:
             event_text = event_text + f"When one finally comes, they're wary, but they agree to take you back to camp, and a Clan meeting is held. After much deliberation, it's decided that you will be allowed back home."
             you.exiled = False
@@ -1580,7 +1580,7 @@ class Cat:
                     "Lashes out at any cat who checks on {PRONOUN/m_c/object} after r_c's death",
                     "Took a long walk on {PRONOUN/m_c/poss} own to mourn r_c in private",
                     "Is busying {PRONOUN/m_c/self} with too much work to forget about r_c's death",
-                    "Does {PRONOUN/m_c/poss} best to console {PRONOUN/m_c/poss} clanmates about r_c's death",
+                    "Does {PRONOUN/m_c/poss} best to console {PRONOUN/m_c/poss} companions about r_c's death",
                     "Takes a part of r_c's nest to put with {PRONOUN/m_c/poss} own, clinging to the fading scent",
                     "Sleeps in r_c's nest tonight",
                     "Defensively states that {PRONOUN/m_c/subject} {VERB/m_c/don't/doesn't} need any comfort about r_c's death",

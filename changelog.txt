@@ -5,8 +5,8 @@ Changes/Additions:
 - Refreshed Menu art
 
 New Features:
-- Elder Stories: Your elders can tell stories to your Clanmates to affect their faith.
-- Faith Events: See how the faith of your Clanmates' is affected each moon.
+- Elder Stories: Your elders can tell stories to your companions to affect their faith.
+- Faith Events: See how the faith of your companions' is affected each moon.
 - Dead LifeGen Patrols: Explore your afterlife after death.
 - Multi-Cat Dialogue: Cats will now butt into your conversations!
 - Dark Forest Graduation: Cats who are experienced enough may graduate the DF and have their own apprentices

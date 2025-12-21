@@ -535,7 +535,7 @@
             "Just ... had a bad day, is all ...",
             "*Sigh* y_c, have you ever felt like you're not enough for anyone?",
             "Usually, when it comes to making a decision, I never hesitate. Whatever the obstacle, I'll run headfirst into it, no questions asked.",
-            "But, today, on patrol, I didn't listen to the leader, and accidentally ran straight into an enemy trap. Luckily, r_w was there to keep everycat safe, but because of me, my Clanmates could've been hurt, or worse.",
+            "But, today, on patrol, I didn't listen to the leader, and accidentally ran straight into an enemy trap. Luckily, r_w was there to keep everycat safe, but because of me, my companions could've been hurt, or worse.",
             "I just feel like such a failure. A liability. I can't help the way I am, but what if everycat's better off without me?",
             "[You offer t_c words of reassurance, but {PRONOUN/t_c/subject} {VERB/t_c/seem/seems} troubled beyond comforting.]",
             "[Still, you sit with {PRONOUN/t_c/object} through the night, hoping to stabilize {PRONOUN/t_c/object} through whatever storm {PRONOUN/t_c/subject} might be weathering right now.]"
@@ -1637,7 +1637,7 @@
         "intro": [
             "[t_c twitches {PRONOUN/t_c/poss} ear, noticing you following {PRONOUN/t_c/object} but not looking at you just yet. Perfect pouncing practice!]",
             "Yowch! That's quite the pounce you've got there, y_c! Hehe, with skills like that, you'll become a fine warrior in no time!",
-            "... But maybe hold off on biting your Clanmates so hard, hehe. I'll go and get you some moss to practice on instead!"
+            "... But maybe hold off on biting your companions so hard, hehe. I'll go and get you some moss to practice on instead!"
         ]
     },
     "sweet_warrior_4": {
@@ -2696,7 +2696,7 @@
             "It might be a silly question, I know. I'm practically always on patrols, or helping the apprentices patch up dens, or whatever, but does that all really matter if you feel like you aren't making a difference?",
             "All I've ever wanted was to help my Clan and be someone other cats can look up to. I want to be able to inspire someone to work even harder, just like I was.",
             "But sometimes, it just feels like I'm getting nowhere, like I'm barely making a difference.",
-            "My whole life, I have been trying to live up to my Clanmates' expectations, maybe even more than that! But now, it's starting to feel like the paw steps that I'm trying to fill are too big.",
+            "My whole life, I have been trying to live up to my companions' expectations, maybe even more than that! But now, it's starting to feel like the paw steps that I'm trying to fill are too big.",
             "I appreciate you for being patient while I work through all of this. Just know that I'm trying okay? I promise I'm doing my best."
         ]
     },
@@ -5007,8 +5007,8 @@
             ]
         },
         "intro": [
-            "I wish I was as self-disciplined as you are when I was your age. I had a thorn for a tongue and was merciless... I wish I treated my Clanmates with far more respect back then, but I've learned from my poor actions.",
-            "Keep it up, y_c, you have many good things ahead of you. You're doing well. With cats like you guiding our Clanmates, things will change for the better."
+            "I wish I was as self-disciplined as you are when I was your age. I had a thorn for a tongue and was merciless... I wish I treated my companions with far more respect back then, but I've learned from my poor actions.",
+            "Keep it up, y_c, you have many good things ahead of you. You're doing well. With cats like you guiding our companions, things will change for the better."
         ]
     },
     "stable_mate_13": {
@@ -5200,7 +5200,7 @@
             ]
         },
         "intro": [
-            "Do any of your Clanmates know you're here?",
+            "Do any of your companions know you're here?",
             "Okay... just let me know if they find out. We'll have to take care of them."
         ]
     },
@@ -5504,7 +5504,7 @@
         },
         "intro": [
             "[You're aware of a session in the nursery and decide to engage today as encouraged by both l_n and d_n. t_c sits calmly in the nursery, surrounded by the kits and apprentices. r_q briefly thanks them all for being so polite and gestures for t_c to start.]",
-            "Thank you and all that you do here for the nursery. Before I begin, my name is t_c, I am a warrior and one of your fellow Clanmates here in c_n. But as some of you may already know, I have a bit of trouble with my joints.",
+            "Thank you and all that you do here for the nursery. Before I begin, my name is t_c, I am a warrior and one of your fellow companions here in c_n. But as some of you may already know, I have a bit of trouble with my joints.",
             "Sometimes they ache a little, other times they hurt quite a lot and I'll need to sit down for the day. r_q was kind enough to invite me here today to teach you young ones about my condition. I think it's very important that as a Clan we educate each other on these topics.",
             "I was an apprentice at six moons and then became a warrior. I'm sure you've all heard it before but training is very hard work. But I persevered, as will all of you. When I was diagnosed, it was like my world turned upside down.",
             "To be told that you won't be able to perform to the best of your abilities is rough. Knowing that it was something I had to live with, was rougher. But, it changed my perspective on things. On life.",
@@ -6556,7 +6556,7 @@
         ],
         "intro": [
             "[It can be difficult to stay quiet while hunting with all the snow on the ground.]",
-            "[Most of your Clanmates have to focus on finding the softer, less crunchy sections to walk across, but t_c effortlessly finds the quietest paths.]",
+            "[Most of your companions have to focus on finding the softer, less crunchy sections to walk across, but t_c effortlessly finds the quietest paths.]",
             "[Even when {PRONOUN/t_c/subject} {VERB/t_c/stray/strays} across the louder patches of snow, {PRONOUN/t_c/poss} pawsteps are almost silent.]"
         ]
     },
@@ -8129,7 +8129,7 @@
             "[t_c approaches you after patrol. {PRONOUN/t_c/poss/CAP} grim expression has you ready for an issue.]",
             "[But the matter is surprisingly simple once you put together {PRONOUN/t_c/poss} signs - a beehive was found on a patrol path!]",
             "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/help/helps} you devise a new route - including brainstorming a new sign for that path - and is happy to spread the word of the change.]",
-            "[It's always great to work with your Clanmates!]"
+            "[It's always great to work with your companions!]"
         ]
     },
     "youdeaf_R60": {
@@ -8585,7 +8585,7 @@
             ]
         },
         "intro": [
-            "[t_c paces around the camp, checking in on {PRONOUN/t_c/poss} Clanmates with a smile.]",
+            "[t_c paces around the camp, checking in on {PRONOUN/t_c/poss} companions with a smile.]",
             "[First {PRONOUN/t_c/subject} {VERB/t_c/check/checks} on the kits, next the apprentices and then the warriors.]",
             "[You watch as {PRONOUN/t_c/poss} whiskers twitch calmly as {PRONOUN/t_c/subject} {VERB/t_c/report/reports} back to the leader with {PRONOUN/t_c/poss} tail held high.]"
         ]

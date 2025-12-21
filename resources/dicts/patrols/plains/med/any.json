@@ -742,7 +742,7 @@
             "normal adult": [1, 6]
         },
         "weight": 20,
-        "intro_text": "Bringing a motley assortment of Clanmates along with {PRONOUN/p_l/object}, p_l heads out on an herb-gathering patrol, searching for the ever-green, ever-reliable horsetail to harvest for the herb stores.",
+        "intro_text": "Bringing a motley assortment of companions along with {PRONOUN/p_l/object}, p_l heads out on an herb-gathering patrol, searching for the ever-green, ever-reliable horsetail to harvest for the herb stores.",
         "decline_text": "They're stopped before they leave camp - these warriors are needed elsewhere. p_l's expedition will have to wait.",
         "chance_of_success": 30,
         "success_outcomes": [
@@ -1078,7 +1078,7 @@
         "chance_of_success": 60,
         "success_outcomes": [
             {
-                "text": "Even though there's nothing different about this place, other than the serenity it was chosen for, p_l always feels that the grief and love their Clanmates express here has seeped into every blade of grass. They tidy the grounds together, collecting rosemary as they work. It feels appropriate for the plant to grow here, when its herbs are used to hide the scent of death.",
+                "text": "Even though there's nothing different about this place, other than the serenity it was chosen for, p_l always feels that the grief and love their companions express here has seeped into every blade of grass. They tidy the grounds together, collecting rosemary as they work. It feels appropriate for the plant to grow here, when its herbs are used to hide the scent of death.",
                 "exp": 10,
                 "weight": 20,
                 "herbs": ["rosemary"],
@@ -1127,7 +1127,7 @@
         "chance_of_success": 60,
         "success_outcomes": [
             {
-                "text": "Even though there's nothing different about this place, other than the serenity it was chosen for, p_l always feels that the grief and love their Clanmates express here has seeped into every blade of grass. They tidy the grounds together, collecting rosemary as they work. It feels appropriate for the plant to grow here, when its herbs are used to hide the scent of death.",
+                "text": "Even though there's nothing different about this place, other than the serenity it was chosen for, p_l always feels that the grief and love their companions express here has seeped into every blade of grass. They tidy the grounds together, collecting rosemary as they work. It feels appropriate for the plant to grow here, when its herbs are used to hide the scent of death.",
                 "exp": 10,
                 "weight": 20,
                 "herbs": ["rosemary"],
@@ -2418,7 +2418,7 @@
         "chance_of_success": 30,
         "success_outcomes": [
             {
-                "text": "While it's a traditional chore for apprentices, it's not a particularly <i>interesting</i> one. Still, the task isn't as important as the Clanmates helping, and though there's a bit of complaining, all the apprentices are glad to have the chance to spend time together.",
+                "text": "While it's a traditional chore for apprentices, it's not a particularly <i>interesting</i> one. Still, the task isn't as important as the companions helping, and though there's a bit of complaining, all the apprentices are glad to have the chance to spend time together.",
                 "exp": 20,
                 "weight": 20,
                 "herbs": ["moss"],
@@ -2507,7 +2507,7 @@
         "chance_of_success": 50,
         "success_outcomes": [
             {
-                "text": "While it's a traditional chore for apprentices, it's not a particularly <i>interesting</i> one. Still, the task isn't as important as the Clanmates helping, and though there's a bit of complaining, all the apprentices are glad to have the chance to spend time together.",
+                "text": "While it's a traditional chore for apprentices, it's not a particularly <i>interesting</i> one. Still, the task isn't as important as the companions helping, and though there's a bit of complaining, all the apprentices are glad to have the chance to spend time together.",
                 "exp": 20,
                 "weight": 20,
                 "herbs": ["moss"],
@@ -2685,7 +2685,7 @@
         "chance_of_success": 50,
         "success_outcomes": [
             {
-                "text": "While it's a traditional chore for apprentices, it's not a particularly <i>interesting</i> one. Still, the task isn't as important as the Clanmates helping, and though there's a bit of complaining, all the apprentices are glad to have the chance to spend time together.",
+                "text": "While it's a traditional chore for apprentices, it's not a particularly <i>interesting</i> one. Still, the task isn't as important as the companions helping, and though there's a bit of complaining, all the apprentices are glad to have the chance to spend time together.",
                 "exp": 20,
                 "weight": 20,
                 "herbs": ["moss"],
@@ -2862,7 +2862,7 @@
         "chance_of_success": 50,
         "success_outcomes": [
             {
-                "text": "While it's a traditional chore for apprentices, it's not a particularly <i>interesting</i> one. Still, the task isn't as important as the Clanmates helping, and though there's a bit of complaining, all the apprentices are glad to have the chance to spend time together.",
+                "text": "While it's a traditional chore for apprentices, it's not a particularly <i>interesting</i> one. Still, the task isn't as important as the companions helping, and though there's a bit of complaining, all the apprentices are glad to have the chance to spend time together.",
                 "exp": 20,
                 "weight": 20,
                 "herbs": ["moss"],

@@ -220,7 +220,7 @@
             ]
         },
         "intro": [
-            "[t_c hasn't spoken much since fc_c's death. {PRONOUN/t_c/subject/CAP} {VERB/t_c/don't/doesn't} meet anyone's eyes and {PRONOUN/t_c/subject} {VERB/t_c/jump/jumps} away from other cats, as if {PRONOUN/t_c/poss} Clanmates are just waiting for an opportunity to turn on {PRONOUN/t_c/object}.]"
+            "[t_c hasn't spoken much since fc_c's death. {PRONOUN/t_c/subject/CAP} {VERB/t_c/don't/doesn't} meet anyone's eyes and {PRONOUN/t_c/subject} {VERB/t_c/jump/jumps} away from other cats, as if {PRONOUN/t_c/poss} companions are just waiting for an opportunity to turn on {PRONOUN/t_c/object}.]"
         ]
     },
     "unkmurder_focus_SQ6": {
@@ -590,7 +590,7 @@
         ],
         "intro": [
             "Did dislike-fc_c-unabashed call my fur scruffy the night before {PRONOUN/dislike-fc_c-unabashed/subject} died? Yes. Have I made comments about wanting to kill {PRONOUN/dislike-fc_c-unabashed/object}? Absolutely.",
-            "Did I <i>actually</i> murder dislike-fc_c-unabashed? One of our Clanmates? Absolutely not. If I see one more cat looking at me suspiciously...",
+            "Did I <i>actually</i> murder dislike-fc_c-unabashed? One of our companions? Absolutely not. If I see one more cat looking at me suspiciously...",
             "[t_c stalks off, casting irritated looks across the camp.]"
         ]
     },
@@ -943,7 +943,7 @@
             "focus"
         ],
         "intro": [
-            "plike-fc_c... one of our Clanmates... was murdered...",
+            "plike-fc_c... one of our companions... was murdered...",
             "[t_c sits with {PRONOUN/t_c/poss} back to a tree, watching the camp. {PRONOUN/t_c/subject/CAP} {VERB/t_c/sniffle/sniffles}.]",
             "Isn't it my job to notice tensions and stop them before something bad happens?",
             "I should've seen something. I should've been a good enough mediator to keep plike-fc_c safe!"

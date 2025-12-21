@@ -562,7 +562,7 @@
                 ]
             },
             {
-                "text": "You stay calm, holding your breath and treading water until you reach the surface again. Some of the water was swallowed, however, and by morning your Clanmates find you ill without clear cause.",
+                "text": "You stay calm, holding your breath and treading water until you reach the surface again. Some of the water was swallowed, however, and by morning your companions find you ill without clear cause.",
                 "exp": 30,
                 "weight": 20,
                 "injury": [
@@ -581,7 +581,7 @@
                 }
             },
             {
-                "text": "You stay calm, holding your breath and treading water until you reach the surface again. Some of the water was swallowed, however, and by morning your Clanmates find you ill without clear cause.",
+                "text": "You stay calm, holding your breath and treading water until you reach the surface again. Some of the water was swallowed, however, and by morning your companions find you ill without clear cause.",
                 "exp": 30,
                 "weight": 20,
                 "injury": [
@@ -622,7 +622,7 @@
                 }
             },
             {
-                "text": "It's no use. You can't tell which way is up or down, and fall deeper into the depths. Your body is cold in your nest when your Clanmates go to wake you, pelt soaked in black liquid.",
+                "text": "It's no use. You can't tell which way is up or down, and fall deeper into the depths. Your body is cold in your nest when your companions go to wake you, pelt soaked in black liquid.",
                 "exp": 0,
                 "weight": 10,
                 "dead_cats": [
@@ -654,7 +654,7 @@
         "max_cats": 1,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "There's a familiar scent in the air. You track it down and find yourself face to face with... one of your Clanmates? They look lost.",
+        "intro_text": "There's a familiar scent in the air. You track it down and find yourself face to face with... one of your companions? They look lost.",
         "decline_text": "You gasp, waking up in your nest.",
         "chance_of_success": 50,
         "success_outcomes": [
@@ -808,7 +808,7 @@
                 }
             },
             {
-                "text": "You make good progress on some advanced battle moves, but r_c is looking worse for wear. The next morning, r_c refuses to train with you, leaving your Clanmates concerned.",
+                "text": "You make good progress on some advanced battle moves, but r_c is looking worse for wear. The next morning, r_c refuses to train with you, leaving your companions concerned.",
                 "exp": 10,
                 "weight": 20,
                 "relationships": [
@@ -1408,7 +1408,7 @@
                 "weight": 40
             },
             {
-                "text": "You turn a corner to keep exploring, and your eyes land on a large group of Dark Forest cats in a huddle. Feeling unwelcome, you instantly turn to run, but the group has already noticed you. The ghostly warriors are on your heels in an instant, and the last thing you feel is a dozen pairs of claws tearing into your fur. When your Clanmates find you in the morning, your nest is in tatters and your body cannot be salvaged.",
+                "text": "You turn a corner to keep exploring, and your eyes land on a large group of Dark Forest cats in a huddle. Feeling unwelcome, you instantly turn to run, but the group has already noticed you. The ghostly warriors are on your heels in an instant, and the last thing you feel is a dozen pairs of claws tearing into your fur. When your companions find you in the morning, your nest is in tatters and your body cannot be salvaged.",
                 "exp": 0,
                 "weight": 3,
                 "dead_cats": [
@@ -1546,7 +1546,7 @@
         "max_cats": 3,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "While in a group training session with some Clanmates in the Dark Forest, you notice r_c talking to a ghostly cat across the battleground that you haven't met. You can't help but worry for {PRONOUN/r_c/poss} safety, talking to this unfamiliar cat.",
+        "intro_text": "While in a group training session with some companions in the Dark Forest, you notice r_c talking to a ghostly cat across the battleground that you haven't met. You can't help but worry for {PRONOUN/r_c/poss} safety, talking to this unfamiliar cat.",
         "decline_text": "You shake the feeling of uncertainty and return to training. What your Clanmate gets up to in the Place of No Stars is their business, not yours.",
         "chance_of_success": 30,
         "success_outcomes": [
@@ -2156,7 +2156,7 @@
                 "weight": 20
             },
             {
-                "text": "You surge forward to greet your secret mate, but {PRONOUN/n_c:0/subject} {VERB/n_c:0/don't/doesn't} reciprocate. It's time to part ways despite your aching hearts. {PRONOUN/n_c:0/subject/CAP} {VERB/n_c:0/whisk/whisks} your confused kits forward and you choke out a goodbye as your love walks away with a hanging head. You need to get the little ones into a warm nest now. Now the question is, what to tell your Clanmates?",
+                "text": "You surge forward to greet your secret mate, but {PRONOUN/n_c:0/subject} {VERB/n_c:0/don't/doesn't} reciprocate. It's time to part ways despite your aching hearts. {PRONOUN/n_c:0/subject/CAP} {VERB/n_c:0/whisk/whisks} your confused kits forward and you choke out a goodbye as your love walks away with a hanging head. You need to get the little ones into a warm nest now. Now the question is, what to tell your companions?",
                 "exp": 15,
                 "weight": 1,
                 "new_cat": [
@@ -2457,7 +2457,7 @@
                 ]
             },
             {
-                "text": "A voice calls out right as a half-faded ancient warrior appears before you to attack. Before the foul claws can strike, a blur tackles them away. It's r_c! Between the two of you it's an easy task to end the old spirit. Your heart pounds as you gratefully thank r_c for the save. {PRONOUN/r_c/subject/CAP} {VERB/r_c/bunt/bunts} {PRONOUN/r_c/poss} head against you comfortingly and {VERB/r_c/remind/reminds} you that you're Clanmates. You would do it for {PRONOUN/r_c/object}, wouldn't you?",
+                "text": "A voice calls out right as a half-faded ancient warrior appears before you to attack. Before the foul claws can strike, a blur tackles them away. It's r_c! Between the two of you it's an easy task to end the old spirit. Your heart pounds as you gratefully thank r_c for the save. {PRONOUN/r_c/subject/CAP} {VERB/r_c/bunt/bunts} {PRONOUN/r_c/poss} head against you comfortingly and {VERB/r_c/remind/reminds} you that you're companions. You would do it for {PRONOUN/r_c/object}, wouldn't you?",
                 "exp": 15,
                 "weight": 20,
                 "relationships": [
@@ -2665,7 +2665,7 @@
         "chance_of_success": 45,
         "success_outcomes": [
             {
-                "text": "Navigating through the Dark Forest is no easy feat--and you're sure your Clanmates would be completely lost if they found themselves in the misty stretches. You, however, know this place better than any other cat in c_n. Effortlessly making your way to the training grounds, you emerge from the shrubbery with your head held high.",
+                "text": "Navigating through the Dark Forest is no easy feat--and you're sure your companions would be completely lost if they found themselves in the misty stretches. You, however, know this place better than any other cat in c_n. Effortlessly making your way to the training grounds, you emerge from the shrubbery with your head held high.",
                 "exp": 15,
                 "weight": 20
             }
@@ -3157,7 +3157,7 @@
         "max_cats": 1,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "You stalk along the edge of a murky river, examining the water closely. One of your Clanmates told you about a rumour that there were fish in the Dark Forest that could eat a cat whole.",
+        "intro_text": "You stalk along the edge of a murky river, examining the water closely. One of your companions told you about a rumour that there were fish in the Dark Forest that could eat a cat whole.",
         "decline_text": "You cast a doubtful look at the shadowy goop. There's no way anything would be able to live there! You shake your head and bound back into the forest, reminding yourself not to believe everything you hear.",
         "chance_of_success": 50,
         "success_outcomes": [
@@ -3327,7 +3327,7 @@
             "max_cats": 2,
             "min_max_status": {},
             "weight": 20,
-            "intro_text": "You pant heavily as you stalk out of the training grounds, declaring that you need to take a break. After padding down a path for a little bit, your whiskers flick in surprise as you see one of your Clanmates up ahead. r_c doesn't seem to see you, and you crouch down low, unsure of how to proceed.",
+            "intro_text": "You pant heavily as you stalk out of the training grounds, declaring that you need to take a break. After padding down a path for a little bit, your whiskers flick in surprise as you see one of your companions up ahead. r_c doesn't seem to see you, and you crouch down low, unsure of how to proceed.",
             "decline_text": "You carefully, quietly, slink away from r_c. Everycat has their own reasons for being here, and it's probably better to not pry to closely into anyone else's business.",
             "chance_of_success": 60,
             "success_outcomes": [
@@ -3379,7 +3379,7 @@
                         }
                     ],
                     "history_text": {
-                        "scar": "m_c was scarred after one of {PRONOUN/y_c/poss} Clanmates attacked {PRONOUN/m_c/object} in the Dark Forest."
+                        "scar": "m_c was scarred after one of {PRONOUN/y_c/poss} companions attacked {PRONOUN/m_c/object} in the Dark Forest."
                     }
                 }
             ]

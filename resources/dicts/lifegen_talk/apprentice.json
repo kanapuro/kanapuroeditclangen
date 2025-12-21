@@ -642,8 +642,8 @@
         },
         "intro": [
             "Uh, hey, y_c. When we were out training the other day, you were really intense. I could barely keep up with you.",
-            "It was... aha... kind of scary. I'm definitely glad we're Clanmates, or else I might have to fight you for real one day!",
-            "I know you'd never hurt one of your Clanmates, but sheesh, o_c_n better watch out!"
+            "It was... aha... kind of scary. I'm definitely glad we're companions, or else I might have to fight you for real one day!",
+            "I know you'd never hurt one of your companions, but sheesh, o_c_n better watch out!"
         ]
     },
     "assertive_medapp1": {
@@ -3298,7 +3298,7 @@
             ]
         },
         "intro": [
-            "My mouse-brained mentor ... always trying to get me to 'participate more' in training and 'work together' with my Clanmates ...",
+            "My mouse-brained mentor ... always trying to get me to 'participate more' in training and 'work together' with my companions ...",
             "Working together is for the weak! If you want something done right, you have to get it done yourself. Clearly, tm_n is too stupid to see it, though!",
             "I'll show them I can do everything myself ... That I don't need anybody ...",
             "... Have you been standing there this whole time?"
@@ -4280,7 +4280,7 @@
             "Anyways, thank you for listening, y_c, what should I do? Any ideas?",
             "[You assure {PRONOUN/t_c/object} it was a simple mistake and that it's good {PRONOUN/t_c/subject} {VERB/t_c/recognise/recognises} that behaviour. You make it clear that {PRONOUN/t_c/subject} {VERB/t_c/need/needs} to apologise and that StarClan will be by {PRONOUN/t_c/poss} side.]",
             "[Your words bring {PRONOUN/t_c/object} comfort as {PRONOUN/t_c/subject} {VERB/t_c/listen/listens}. Purring at your words, {PRONOUN/t_c/subject} {VERB/t_c/thank/thanks} you and {VERB/t_c/move/moves} to do the right thing.]",
-            "[A warmth fills your chest, suddenly you find yourself feeling a lot of pride being trusted by your Clanmates to be spoken to when they're at their lowest.]",
+            "[A warmth fills your chest, suddenly you find yourself feeling a lot of pride being trusted by your companions to be spoken to when they're at their lowest.]",
             "[It's certainly not a job for the faint of heart, but by StarClan is it rewarding.]"
         ]
     },
@@ -4476,7 +4476,7 @@
             "Gah! You have no idea how much I dislike o_c_n, I mean, just who do they think they are? The hunting ground in the west belongs to c_n, not their stinky hides.",
             "[You frown. Yes, you're aware that the discussion with the opposing Clan led to this... Unfortunately, when you approached the Clan and their mediator, it didn't go too smoothly...]",
             "[You agree with t_c, the land rightfully belongs to c_n, not them.]",
-            "I'm sorry, y_c, I didn't mean to make you mad or upset, it just gets on my nerves. But I trust that my Clanmates will be able to stand up for what we believe in.",
+            "I'm sorry, y_c, I didn't mean to make you mad or upset, it just gets on my nerves. But I trust that my companions will be able to stand up for what we believe in.",
             "We can earn that territory back, I know it! And y_c, you'll be there to support us, right?"
         ]
     },
@@ -4525,7 +4525,7 @@
             "Good morning, y_c, how are you today? Oh- you wanted to speak with me? What about?",
             "[You ask t_c about the recent Gathering, how you saw {PRONOUN/t_c/object} talking with a random o_c_n apprentice. You describe the two seemed close, and you ask {PRONOUN/t_c/object} what's going on between them.]",
             "We're friends, pretty good friends. I like to see how they're doing every once and a while. Not to worry, they're not a threat to c_n.",
-            "Even as an apprentice, I know where my loyalties lie and I will never put this Clan and my Clanmates at risk."
+            "Even as an apprentice, I know where my loyalties lie and I will never put this Clan and my companions at risk."
         ]
     },
     "stable_apprentice_34": {
@@ -4549,7 +4549,7 @@
             "y_c I'm sorry if this is a weird question to ask but, how did you become deputy? What did you have to do? How hard did you work, why did l_n choose you? Why not another warrior-",
             "I uh, no I didn't mean any offence by that!",
             "[You shake your head-- you're not offended at all. You explain everything you've done to get to where you are now, the hardships, the pain and the loss.]",
-            "[You also think fondly of your achievements and acts of bravery, the protection of your Clanmates. t_c stares in wonder as you tell stories of the past.]",
+            "[You also think fondly of your achievements and acts of bravery, the protection of your companions. t_c stares in wonder as you tell stories of the past.]",
             "Woah, I hope I grow up to be a warrior just like you."
         ]
     },

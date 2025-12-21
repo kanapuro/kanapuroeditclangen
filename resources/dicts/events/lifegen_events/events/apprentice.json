@@ -57,7 +57,7 @@
         "You wonder if you look cool and mysterious to other cats while you strut across the camp clearing.",
         "r_d gives you a quick lesson on mediation but you feel like you already know all of what {PRONOUN/r_d/subject}{VERB/r_d/'re/'s} lecturing.",
         "You spend a day in the medicine cat's den. r_m instructs you about some basic herbs and their uses. While you doubt you'll ever use the knowledge, you listen with practiced nonchalance.",
-        "Trotting into camp with an impressive catch, you accept your Clanmates' compliments with a flick of your tail.",
+        "Trotting into camp with an impressive catch, you accept your companions' compliments with a flick of your tail.",
         "You roll your eyes as m_n lectures you about how you need to take your training more seriously."
     ],
     "apprentice upstanding": [
@@ -106,7 +106,7 @@
         "You put a beetle in r_a's nest as a prank, giggling uncontrollably when {PRONOUN/r_a/subject} {VERB/r_a/leap/leaps} up in surprise.",
         "During a hunting lesson, you pounce on a leaf, pretending it's the fiercest prey in the forest.",
         "You convince the other apprentices to join you in a game of 'catch the falling feather,' leaping and tumbling around the camp.",
-        "You make up silly nicknames for all your Clanmates, like 'Fluffy' for r_w and 'Grumpywhiskers' for r_e.",
+        "You make up silly nicknames for all your companions, like 'Fluffy' for r_w and 'Grumpywhiskers' for r_e.",
         "When r_m is stressed, you volunteer to help sort herbs, making up silly songs about each plant to lighten the mood."
     ],
     "apprentice stable": [
@@ -126,7 +126,7 @@
     ],
     "apprentice sweet": [
         "You make a point to compliment your denmates every day.",
-        "You leave little gifts like pretty feathers or smooth stones in your Clanmates' nests to brighten their day.",
+        "You leave little gifts like pretty feathers or smooth stones in your companions' nests to brighten their day.",
         "You spend your free time making moss beds for the elders, ensuring they have the softest nests in the Clan.",
         "When r_a is feeling down, you sit with {PRONOUN/r_a/object} all night, offering a listening ear.",
         "You always make sure to thank m_n for {PRONOUN/m_n/poss} lessons, even when you're exhausted from training.",

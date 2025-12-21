@@ -541,7 +541,7 @@
         "chance_of_success": 40,
         "success_outcomes": [
             {
-                "text": "p_l acts as lookout, subtly directing the other cats with the smallest ear and tail twitches. If someone pounces too soon, the hunt will be ruined for their other Clanmates. Only once every cat in the patrol has a target is the trap triggered. They don't get all their targets - but they get enough, multiple rabbits for the fresh-kill pile.",
+                "text": "p_l acts as lookout, subtly directing the other cats with the smallest ear and tail twitches. If someone pounces too soon, the hunt will be ruined for their other companions. Only once every cat in the patrol has a target is the trap triggered. They don't get all their targets - but they get enough, multiple rabbits for the fresh-kill pile.",
                 "exp": 20,
                 "weight": 20,
                 "prey": ["medium"],
@@ -598,7 +598,7 @@
                 ]
             },
             {
-                "text": "s_c makes sure that as the sun creeps over the horizon it flashes its light into the eyes of the patrol's prey. The trick wins both prey and purrs from {PRONOUN/s_c/poss} Clanmates.",
+                "text": "s_c makes sure that as the sun creeps over the horizon it flashes its light into the eyes of the patrol's prey. The trick wins both prey and purrs from {PRONOUN/s_c/poss} companions.",
                 "exp": 20,
                 "weight": 20,
                 "art": "gen_hunt_rabbit",
@@ -1041,7 +1041,7 @@
                 "prey": ["medium"]
             },
             {
-                "text": "r_c finds a fat, dumb, slow rabbit, and {PRONOUN/r_c/subject} can barely drag the thing back to camp, but great StarClan, it's juicy when {PRONOUN/r_c/subject} {VERB/r_c/sit/sits} down to eat it with {PRONOUN/r_c/poss} Clanmates.",
+                "text": "r_c finds a fat, dumb, slow rabbit, and {PRONOUN/r_c/subject} can barely drag the thing back to camp, but great StarClan, it's juicy when {PRONOUN/r_c/subject} {VERB/r_c/sit/sits} down to eat it with {PRONOUN/r_c/poss} companions.",
                 "exp": 20,
                 "weight": 5,
                 "prey": ["medium"]
@@ -1110,7 +1110,7 @@
                 "prey": ["medium"]
             },
             {
-                "text": "r_c finds a fat, dumb, slow rabbit, and {PRONOUN/r_c/subject} can barely drag the thing back to camp, but great StarClan, it's juicy when {PRONOUN/r_c/subject} {VERB/r_c/sit/sits} down to eat it with {PRONOUN/r_c/poss} Clanmates. Purring, {PRONOUN/r_c/subject} {VERB/r_c/take/takes} the opportunity for a moment of peace, relaxing with {PRONOUN/r_c/poss} friends.",
+                "text": "r_c finds a fat, dumb, slow rabbit, and {PRONOUN/r_c/subject} can barely drag the thing back to camp, but great StarClan, it's juicy when {PRONOUN/r_c/subject} {VERB/r_c/sit/sits} down to eat it with {PRONOUN/r_c/poss} companions. Purring, {PRONOUN/r_c/subject} {VERB/r_c/take/takes} the opportunity for a moment of peace, relaxing with {PRONOUN/r_c/poss} friends.",
                 "exp": 20,
                 "weight": 5,
                 "prey": ["medium"]
@@ -1179,7 +1179,7 @@
                 "prey": ["medium"]
             },
             {
-                "text": "r_c finds a fat, dumb, slow rabbit, and {PRONOUN/r_c/subject} can barely drag the thing back to camp, but great StarClan, it's juicy when {PRONOUN/r_c/subject} {VERB/r_c/sit/sits} down to eat it with {PRONOUN/r_c/poss} Clanmates. Purring, {PRONOUN/r_c/subject} {VERB/r_c/take/takes} the opportunity for a moment of peace, relaxing with {PRONOUN/r_c/poss} friends.",
+                "text": "r_c finds a fat, dumb, slow rabbit, and {PRONOUN/r_c/subject} can barely drag the thing back to camp, but great StarClan, it's juicy when {PRONOUN/r_c/subject} {VERB/r_c/sit/sits} down to eat it with {PRONOUN/r_c/poss} companions. Purring, {PRONOUN/r_c/subject} {VERB/r_c/take/takes} the opportunity for a moment of peace, relaxing with {PRONOUN/r_c/poss} friends.",
                 "exp": 20,
                 "weight": 5,
                 "prey": ["medium"]

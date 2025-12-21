@@ -52,18 +52,18 @@
         "min_max_status": {},
         "weight": 20,
         "intro_text": "As you ponder over a tough decision to make for the Clan, you wonder if it would be wise to confide in some of your Clan members and ask for their opinions and advice. A few of your warriors may have good insight.",
-        "decline_text": "You decide not to confide in your Clanmates, confident in your ability to make decisions on your own.",
+        "decline_text": "You decide not to confide in your companions, confident in your ability to make decisions on your own.",
         "chance_of_success": 50,
         "success_outcomes": [
             {
-                "text": "You cave in and decide to ask the warriors what they think about your decision. You, r_w1, r_w2, and r_w3 are able to have a serious conversation, going over the advantages and disadvantages of your plan and how it could affect the Clan's future. You are able to walk away confident in both your decision and the opinions of your Clanmates.",
+                "text": "You cave in and decide to ask the warriors what they think about your decision. You, r_w1, r_w2, and r_w3 are able to have a serious conversation, going over the advantages and disadvantages of your plan and how it could affect the Clan's future. You are able to walk away confident in both your decision and the opinions of your companions.",
                 "exp": 10,
                 "weight": 20
             }
         ],
         "fail_outcomes": [
             {
-                "text": "You cave in and decide to ask the senior warriors what they think about your decision. Unfortunately, each of your Clanmates seem to have a different opinion from one another. r_w1, r_w2, and r_w3 are unable to see each other eye to eye despite your presence. You break up the conversation and stalk back to your den, your time wasted and your mind split with indecision.",
+                "text": "You cave in and decide to ask the senior warriors what they think about your decision. Unfortunately, each of your companions seem to have a different opinion from one another. r_w1, r_w2, and r_w3 are unable to see each other eye to eye despite your presence. You break up the conversation and stalk back to your den, your time wasted and your mind split with indecision.",
                 "exp": 0,
                 "weight": 20
             }
@@ -156,7 +156,7 @@
         "max_cats": 6,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "An argument between r_w1 and r_w2 threatens to divide the Clan. They stand in the clearing, fur bristled as they spit at each other. The rest of your Clanmates appear to be taking sides. You need to intervene and restore peace before this gets out of hand.",
+        "intro_text": "An argument between r_w1 and r_w2 threatens to divide the Clan. They stand in the clearing, fur bristled as they spit at each other. The rest of your companions appear to be taking sides. You need to intervene and restore peace before this gets out of hand.",
         "decline_text": "Instead of directly intervening, you decide to involve the Clan's mediator. This thoughtful action shows your belief in the strengths of your Clan members.",
         "chance_of_success": 70,
         "success_outcomes": [
@@ -168,7 +168,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "Despite your intervention, the warriors continue to argue. Frustration overtakes you, but d_n steps in to assist. With {PRONOUN/d_n/poss} help the situation dissolves finally but not thanks to you. Your Clanmates whisper behind your back. Maybe d_n simply knows r_w1 and r_w2 better?",
+                "text": "Despite your intervention, the warriors continue to argue. Frustration overtakes you, but d_n steps in to assist. With {PRONOUN/d_n/poss} help the situation dissolves finally but not thanks to you. Your companions whisper behind your back. Maybe d_n simply knows r_w1 and r_w2 better?",
                 "exp": 0,
                 "weight": 20
             }
@@ -191,7 +191,7 @@
         "max_cats": 6,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "A fierce storm has damaged the camp, and as the leader, you must organize the repair efforts. Several of your Clanmates are ready to help. All they need now is direction on where to start.",
+        "intro_text": "A fierce storm has damaged the camp, and as the leader, you must organize the repair efforts. Several of your companions are ready to help. All they need now is direction on where to start.",
         "decline_text": "Rather than dictating the repair process, you decide to listen to the ideas of your Clan members. This approach shows your trust in your Clan's abilities.",
         "chance_of_success": 75,
         "success_outcomes": [
@@ -320,7 +320,7 @@
                 "weight": 20
             },
             {
-                "text": "You do your best to concentrate on your conversation with the Clan's young ones, but even r_k can tell that you're beginning to nod off halfway through the conversation. None of your Clanmates blame you for excusing yourself early, but you feel guilt begin to writhe in your chest as you make your way out.",
+                "text": "You do your best to concentrate on your conversation with the Clan's young ones, but even r_k can tell that you're beginning to nod off halfway through the conversation. None of your companions blame you for excusing yourself early, but you feel guilt begin to writhe in your chest as you make your way out.",
                 "exp": 0,
                 "weight": 20
             }
@@ -353,14 +353,14 @@
                 "weight": 20
             },
             {
-                "text": "d_n hasn't seemed to catch on that r_w-assertive isn't a problem starter - {PRONOUN/r_w-assertive/subject}{VERB/r_w-assertive/'re/'s} a problem finisher. You gently remind {PRONOUN/d_n/object} that each of {PRONOUN/d_n/poss} Clanmates are unique. By the time you finish explaining d_n is more confident with new knowledge before heading off to complete the task.",
+                "text": "d_n hasn't seemed to catch on that r_w-assertive isn't a problem starter - {PRONOUN/r_w-assertive/subject}{VERB/r_w-assertive/'re/'s} a problem finisher. You gently remind {PRONOUN/d_n/object} that each of {PRONOUN/d_n/poss} companions are unique. By the time you finish explaining d_n is more confident with new knowledge before heading off to complete the task.",
                 "exp": 10,
                 "weight": 20
             }
         ],
         "fail_outcomes": [
             {
-                "text": "d_n doesn't know {PRONOUN/d_n/poss} own Clanmates if {PRONOUN/d_n/subject} can't see what's happening. Despite it being obvious to you, you can't seem to explain it in a way that makes sense to your deputy. In the end, d_n stalks out of your den in frustration.",
+                "text": "d_n doesn't know {PRONOUN/d_n/poss} own companions if {PRONOUN/d_n/subject} can't see what's happening. Despite it being obvious to you, you can't seem to explain it in a way that makes sense to your deputy. In the end, d_n stalks out of your den in frustration.",
                 "exp": 0,
                 "weight": 20
             },
@@ -573,12 +573,12 @@
     	"max_cats": 1,
     	"min_max_status": {},
     	"weight": 20,
-    	"intro_text": "All your life, your Clanmates would share scary stories about leaders who wound up in the Dark Forest. Now that you're one of those leaders in Dark Forest, you can't help but be curious... What stories are living cats telling about <i>you</i>?",
+    	"intro_text": "All your life, your companions would share scary stories about leaders who wound up in the Dark Forest. Now that you're one of those leaders in Dark Forest, you can't help but be curious... What stories are living cats telling about <i>you</i>?",
     	"decline_text": "Though you could easily find out, you decide not to. You already imagine them telling wild and outlandish stories about you, and you don't want to be disappointed if the real ones are boring.",
     	"chance_of_success": 50,
     	"success_outcomes": [
         	{
-            	"text": "Not wanting to risk being spotted by a living cat, you wait until the Dark Forest trainees have arrived for tonight's practice session and casually ask one if their Clanmates ever tell stories about you. Their eyes widen as they begin sharing one of the most common stories about you, one that's often used to frighten the kits and apprentices into behaving, and one they've heard many times themselves. Normally you'd interrupt a trainee's long-winded tale, since you're supposed to be focusing on battle moves, but you'll make an exception - just this once.",
+            	"text": "Not wanting to risk being spotted by a living cat, you wait until the Dark Forest trainees have arrived for tonight's practice session and casually ask one if their companions ever tell stories about you. Their eyes widen as they begin sharing one of the most common stories about you, one that's often used to frighten the kits and apprentices into behaving, and one they've heard many times themselves. Normally you'd interrupt a trainee's long-winded tale, since you're supposed to be focusing on battle moves, but you'll make an exception - just this once.",
             	"exp": 0,
             	"weight": 20
         	},
@@ -590,19 +590,19 @@
             	"can_have_stat": ["r_e"]
         	},
         	{
-            	"text": "Some of your former Clanmates are always keen to give the younger cats a good scare, so you slip out of the confines of the Dark Forest and slink into the c_n camp. Once the cats start sharing spooky stories, you're dismayed to realize that not one of them is about you. Perhaps, during your life, you didn't accomplish anything worthy of becoming a warning tale to your Clanmates... But then again, you realize, your presence in the Dark Forest means you can accomplish that during death.",
+            	"text": "Some of your former companions are always keen to give the younger cats a good scare, so you slip out of the confines of the Dark Forest and slink into the c_n camp. Once the cats start sharing spooky stories, you're dismayed to realize that not one of them is about you. Perhaps, during your life, you didn't accomplish anything worthy of becoming a warning tale to yourcompanionss... But then again, you realize, your presence in the Dark Forest means you can accomplish that during death.",
             	"exp": 0,
             	"weight": 18
         	}
     	],
     	"fail_outcomes": [
         	{
-            	"text": "Knowing that some of your former Clanmates are always keen to give the younger cats a good scare, you slip out of the confines of the Dark Forest and slink into the c_n camp. When the cats start sharing spooky stories, though, you're dismayed to realize that not one of them is about you. Did you really accomplish nothing worthy of becoming frightening lore among your Clanmates?",
+            	"text": "Knowing that some of your former companions are always keen to give the younger cats a good scare, you slip out of the confines of the Dark Forest and slink into the c_n camp. When the cats start sharing spooky stories, though, you're dismayed to realize that not one of them is about you. Did you really accomplish nothing worthy of becoming frightening lore among yourcompanionss?",
             	"exp": 0,
             	"weight": 20
         	},
         	{
-            	"text": "Not wanting to risk being spotted by a living cat, you save the question for that night: as you prepare to square off against a Dark Forest trainee, you casually ask if their Clanmates ever tell stories about you. The fury raises in your chest as they shake their head no, but you try to put that aside; after all, they're here to train. The fact that they return to the waking world with more injuries than usual has nothing to do with this piece of information, truly.",
+            	"text": "Not wanting to risk being spotted by a living cat, you save the question for that night: as you prepare to square off against a Dark Forest trainee, you casually ask if their companions ever tell stories about you. The fury raises in your chest as they shake their head no, but you try to put that aside; after all, they're here to train. The fact that they return to the waking world with more injuries than usual has nothing to do with this piece of information, truly.",
             	"exp": 0,
             	"weight": 20
         	}

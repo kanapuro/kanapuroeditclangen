@@ -2272,7 +2272,7 @@
             "y_c, you want a badger ride?",
             "C'mon, then.",
             "[You clamber onto t_c's back and {PRONOUN/t_c/subject} {VERB/t_c/parade/parades} you around camp, laughing and giggling.]",
-            "[The rest of your Clanmates seem awestruck. t_c must not act like this very often.]",
+            "[The rest of your companions seem awestruck. t_c must not act like this very often.]",
             "[But, with you, {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} always fun and gentle!]"
         ]
     },
@@ -2780,7 +2780,7 @@
             "Are you worried about your apprentice's ceremony, y_c?",
             "Oh, don't worry. It's not so bad. You just have to worry about pleasing your mentor, that's all.",
             "Well, I guess there's the training to consider, too. All those battle moves to memorize, and hunting positions ... Plus, there's apprentices' den politics, too. Making friends isn't always easy.",
-            "Not to mention the assessments, the huge territory, the crushing loneliness, the massive weight of your Clanmates' expectations on your shoulders ...",
+            "Not to mention the assessments, the huge territory, the crushing loneliness, the massive weight of your companions' expectations on your shoulders ...",
             "... I'm sorry, what was I talking about? Oh, yeah. You'll be fine, don't worry."
         ]
     },
@@ -7623,7 +7623,7 @@
         "intro": [
             "[You're batting a pebble when you lose control over it and it tumbles away. It rolls to a halt before t_c.]",
             "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/roll/rolls} it back after ensuring your attention was on {PRONOUN/t_c/object}. Thus begins an epic game!]",
-            "[You're both mesmerized by the back and forth until your Clanmates call each of you away. You'll have to play with t_c again sometime.]"
+            "[You're both mesmerized by the back and forth until your companions call each of you away. You'll have to play with t_c again sometime.]"
         ]
     },
     "youdeaf_df_R48": {
@@ -10035,7 +10035,7 @@
     "intro": [
        "It's important to be on time, y_c. Punctuality is what keeps this Clan running.",
        "[t_c eyes the members of {PRONOUN/t_c/poss} patrol, who are loitering by the fresh-kill pile. They don't seem in any hurry to head out.]",
-       "*sigh* When you're an apprentice, I hope you'll care more about punctuality than <i>some</i> of our Clanmates do."
+       "*sigh* When you're an apprentice, I hope you'll care more about punctuality than <i>some</i> of our companions do."
 ]
 }
 

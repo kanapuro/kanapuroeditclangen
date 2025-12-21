@@ -2009,7 +2009,7 @@ class MurderScreen(Screens):
             kit_punishment = ["You are assigned counseling by the Clan's medicine cat to help you understand the severity of your actions and to guide you to make better decisions in the future.",
                                 "You are to be kept in the nursery under the watchful eye of the queens at all times until you become an apprentice."]
             gen_punishment = ["You are assigned counseling by the Clan's medicine cat to help you understand the severity of your actions and to guide you to make better decisions in the future.",
-                                "You will be required to take meals last and are forced to sleep in a separate den away from your clanmates.",
+                                "You will be required to take meals last and are forced to sleep in a separate den away from your companions.",
                                 "You are assigned to several moons of tasks that include cleaning out nests, checking elders for ticks, and other chores alongside your normal duties.",
                                 "You are assigned a mentor who will better educate you about the Warrior Code and the sacredness of life."]
             # demote_leader = ["Your lives will be stripped away and you will be demoted to a warrior, no longer trusted to be the Clan's leader."]
@@ -2056,7 +2056,7 @@ class MurderScreen(Screens):
             kit_punishment = [f"{a_n} is assigned counseling by the Clan's medicine cat to help them understand the severity of their actions and to guide them to make better decisions in the future.",
                             f"{a_n} is to be kept in the nursery under the watchful eye of the queens at all times until they become an apprentice."]
             gen_punishment = [f"{a_n} is assigned counseling by the Clan's medicine cat to help them understand the severity of their actions and to guide them to make better decisions in the future.",
-                                f"{a_n} is required to take meals last and is forced to sleep in a separate den away from their clanmates.",
+                                f"{a_n} is required to take meals last and is forced to sleep in a separate den away from their companions.",
                                 f"{a_n} is assigned to several moons of tasks that include cleaning out nests, checking elders for ticks, and other chores alongside their normal duties.",
                                 f"{a_n} is assigned a mentor who will better educate them about the Warrior Code and the sacredness of life."]
             

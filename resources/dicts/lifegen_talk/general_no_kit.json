@@ -1776,7 +1776,7 @@
         },
         "intro": [
             "You! You worthless piece of fox-dung, I'll kill you!",
-            "[Several Clanmates have to hold t_c back as {PRONOUN/t_c/subject} {VERB/t_c/lunge/lunges} to attack you.]"
+            "[Several companions have to hold t_c back as {PRONOUN/t_c/subject} {VERB/t_c/lunge/lunges} to attack you.]"
         ]
     },
     "assertive_murder1": {
@@ -6730,7 +6730,7 @@
             "tg_c!!!",
             "Where ... What ...",
             "Uh ...",
-            "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/look/looks} around at {PRONOUN/t_c/poss} Clanmates guiltily. There's no need to explain. Everycat knows what happened.]",
+            "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/look/looks} around at {PRONOUN/t_c/poss} companions guiltily. There's no need to explain. Everycat knows what happened.]",
             "[Still, this is the third time this week {PRONOUN/t_c/subject}{VERB/t_c/'ve/'s} woken up screaming, and if it happens again, {PRONOUN/t_c/subject} just might scare off all the prey left in the territory!]"
         ]
     },
@@ -7172,7 +7172,7 @@
             "y_c, just the cat I was looking for! You know, I've been thinking, and I think I have a proposal for you.",
             "How about, get this, you let me leave the medicine den just a liiiiitle bit early?",
             "I know you want me to rest, but just consider it! I can't keep just lying here while everycat else is hard at work, it just feels wrong.",
-            "How am I supposed to keep up to my Clanmates expectations if I'm just cooped up here? What if they think less of me for not being able to help out like I usually do?",
+            "How am I supposed to keep up to my companions expectations if I'm just cooped up here? What if they think less of me for not being able to help out like I usually do?",
             "Just please, think about it ok? You'd be doing me a favor."
         ]
     },
@@ -10150,7 +10150,7 @@
             "[As soon as t_c sees neutral-r_c, {PRONOUN/t_c/subject} {VERB/t_c/stop/stops} talking and {VERB/t_c/hand/hands} total control of the conversation over to {PRONOUN/neutral-r_c/object}.]",
             "[The most {PRONOUN/t_c/subject} {VERB/t_c/contribute/contributes} to the conversation are a few polite nods and grunts.]",
             "[As soon as neutral-r_c leaves, the light wicks back into t_c's eyes and a huge smile takes back over {PRONOUN/t_c/poss} face.]",
-            "[It seems like knowing this version of {PRONOUN/t_c/object} is a privilege that isn't reserved for all your Clanmates.]"
+            "[It seems like knowing this version of {PRONOUN/t_c/object} is a privilege that isn't reserved for all your companions.]"
         ]
     },
     "brooding_love_3": {
@@ -10169,7 +10169,7 @@
         "intro": [
             "[You and t_c have an hours-long conversation. {PRONOUN/t_c/subject/CAP} {VERB/t_c/make/makes} you laugh over and over again with {PRONOUN/t_c/poss} dry, witty humor.]",
             "How are foxes smarter than c_n apprentices? At least they know how to find the edge of the territory. *Snrk*",
-            "[Your Clanmates watch the two of you like there's a stranger in camp. They mostly know the version of t_c who scowls at {PRONOUN/t_c/poss} paws and doesn't say much.]",
+            "[Your companions watch the two of you like there's a stranger in camp. They mostly know the version of t_c who scowls at {PRONOUN/t_c/poss} paws and doesn't say much.]",
             "[But if they got to know them, they'd see t_c is just a big softy on the inside!]",
             "[A softy who loves making you laugh.]",
             "Wait, wait, wait, I haven't finished my story! You're gonna love the ending ..."
@@ -10423,7 +10423,7 @@
             "I thought you may be here, though, I hoped not... y_c... Are you- are you staying here for the day?",
             "Okay. I'll let your friends know, but- it's not bad to cry and you shouldn't share your grief alone. No cat wants that. You need time, you need space. And that's okay.",
             "I am sorry for your loss. I know they meant so much to you. There's not a lot I can say, to offer comfort. Nor do I want to neglect your grief in favour of strength because that's not what you need right now.",
-            "You don't need me to tell you that it will get better, or to have faith. So I will leave with this, don't shut yourself off, please... Talk to your Clanmates, it's okay. Ask for help. Seek comfort and support.",
+            "You don't need me to tell you that it will get better, or to have faith. So I will leave with this, don't shut yourself off, please... Talk to your companions, it's okay. Ask for help. Seek comfort and support.",
             "I'll leave you with your grief, goodbye, y_c."
         ]
     },
@@ -11852,7 +11852,7 @@
         },
         "intro": [
             "[t_c bristles as you approach, glaring.]",
-            "Leave me alone, y_c. I want nothing to do with someone who kills {PRONOUN/y_c/poss} own Clanmates.",
+            "Leave me alone, y_c. I want nothing to do with someone who kills {PRONOUN/y_c/poss} own companions.",
             "For all I know, you're targeting me next."
         ]
     },
@@ -12462,7 +12462,7 @@
             "min_dislike_50"
         ],
         "intro": [
-            "[t_c doesn't tend to direct {PRONOUN/t_c/poss} menacing towards Clanmates. It almost stings to receive that expression.]"
+            "[t_c doesn't tend to direct {PRONOUN/t_c/poss} menacing towards companions. It almost stings to receive that expression.]"
         ]
     },
     "mixed_neg1_Rr": {
@@ -16450,7 +16450,7 @@
             "from_mate"
         ],
         "intro": [
-            "[You decide to prank your mate, t_c, by claiming that one of your Clanmates made a pass at you.]",
+            "[You decide to prank your mate, t_c, by claiming that one of your companions made a pass at you.]",
             "... What? Is that really true?",
             "[t_c looks genuinely hurt. Whoa ... You weren't expecting that reaction!]",
             "[Maybe t_c isn't actually as unshakable as {PRONOUN/t_c/subject} {VERB/t_c/seem/seems}?]",
@@ -16686,7 +16686,7 @@
         ],
         "intro": [
             "Hello, y_c. Today, we are going to be practicing our scruff shake.",
-            "It's a serious tactic, so be sure to treat it as such. This is our Clanmates' lives and deaths, not a silly game.",
+            "It's a serious tactic, so be sure to treat it as such. This is our companions' lives and deaths, not a silly game.",
             "[You try your best to heed t_c's words ...]",
             "[... But you don't know how {PRONOUN/t_c/subject} {VERB/t_c/don't/doesn't} crack even a hint of a smile when you're shaking {PRONOUN/t_c/object} back and forth by the scruff.]"
         ]
@@ -16797,7 +16797,7 @@
         ],
         "intro": [
             "Look, I know that we don't always see eye-to-eye, but... we're still c_n cats.",
-            "If you ever need a helping paw or anything, just ask. That's what Clanmates are for after all"
+            "If you ever need a helping paw or anything, just ask. That's what companions are for after all"
         ]
     },
     "upstanding_general8": {
@@ -17294,7 +17294,7 @@
         ],
         "intro": [
             "Hello, y_c. Today, we are going to be practicing our scruff shake.",
-            "It's a serious tactic, so be sure to treat it as such. This is our Clanmates' lives and deaths, not a silly game.",
+            "It's a serious tactic, so be sure to treat it as such. This is our companions' lives and deaths, not a silly game.",
             "[You try your best to heed t_c's words ...]",
             "[... But you don't know how {PRONOUN/t_c/subject} {VERB/t_c/don't/doesn't} crack even a hint of a smile when you're shaking {PRONOUN/t_c/object} back and forth by the scruff.]"
         ]
@@ -18208,7 +18208,7 @@
             "Well, that answers my question.",
             "[t_c smashes it against the ground of the nursery. You shriek and scramble to pick up the fragments. Tears begin to flow as you sob, t_c standing coldly above you.]",
             "Believe it or not, y_c, I'm not normally like this. In fact, I think you're the first cat to ever get such a reaction out of me. Sucks, doesn't it?",
-            "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/turn/turns} to walk out of the den. A low chuckle rumbles from {PRONOUN/t_c/object} while you shake with sobs on the ground. You can hear curious Clanmates from outside getting closer and you shrink into yourself-- they can't see you like this.]",
+            "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/turn/turns} to walk out of the den. A low chuckle rumbles from {PRONOUN/t_c/object} while you shake with sobs on the ground. You can hear curious companions from outside getting closer and you shrink into yourself-- they can't see you like this.]",
             "Oh I wonder how it must feel to lose something you care about to a cruel cat. How unfair that is.",
             "I can only begin to imagine."
         ]
@@ -18318,7 +18318,7 @@
             "[They don't look angry to see you. A few cats begin to step forward, chuckling about 'payback' and 'punishment'.]",
             "[Your fur bristles but before one can lunge, t_c skids in front of you and hisses at the attackers. The other cats begin to snarl.]",
             "[They question why t_c is defending you, why {PRONOUN/t_c/subject} dare step forward. t_c snaps at them, the other cats fleeing.]",
-            "Before you say anything, y_c, I'm doing this because if someone hurts you, they're no better. I won't bring myself down to your level and I'll try and prevent my Clanmates from doing the same.",
+            "Before you say anything, y_c, I'm doing this because if someone hurts you, they're no better. I won't bring myself down to your level and I'll try and prevent my companions from doing the same.",
             "Don't get the wrong idea. I wasn't defending you, to be honest, I think you deserve far worse than what you're being dealt. But that's in StarClan's paws. Not mine."
         ]
     },
@@ -18405,7 +18405,7 @@
         },
         "intro": [
             "A respectable warrior of c_n, my flank.",
-            "Go find someone else to bother-- that's if any of our Clanmates will welcome the company of bloody paws."
+            "Go find someone else to bother-- that's if any of our companions will welcome the company of bloody paws."
         ]
     },
     "stable_shunned_you_MedicineCat_01": {
@@ -19258,7 +19258,7 @@
             "newleaf"
         ],
         "intro": [
-            "[You notice t_c out of the corner of your eye, lounging under a tree. None of your Clanmates seem to see {PRONOUN/t_c/object}.]",
+            "[You notice t_c out of the corner of your eye, lounging under a tree. None of your companions seem to see {PRONOUN/t_c/object}.]",
             "Oh, y_c.",
             "Don't mind me. Just visiting...",
             "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/turn/turns} {PRONOUN/t_c/poss} gaze to the clouds.]",
@@ -20534,7 +20534,7 @@
             ]
         },
         "intro": [
-            "Clanmates ignoring you, huh?",
+            "Companions ignoring you, huh?",
             "Get used to it. That's just a little taste of what you're in for when you get here."
         ]
     },
@@ -21002,7 +21002,7 @@
         ],
         "intro": [
             "Don't talk to me, traitor.",
-            "We were supposed to be Clanmates."
+            "We were supposed to be companions."
         ]
     },
     "murderedthem_J3": {
@@ -22095,7 +22095,7 @@
             "It's a shame you were caught, but honestly? You can see now just how little they value you.",
             "Casting you aside for such a little thing like that... It's telling, isn't it? But don't worry, y_c.",
             "[t_c butts {PRONOUN/t_c/poss} head against you in a strange display of affection.]",
-            "This just proves that we're your true Clanmates, doesn't it?"
+            "This just proves that we're your true companions, doesn't it?"
         ]
     },
     "they_df_sh_R4": {
@@ -22115,7 +22115,7 @@
             "... It's hard to be alone, isn't it?",
             "If you want company, I'm here. Everycat talks it up but... Even we get lonely. Even the best of us stick together.",
             "There's strength in numbers. It's not a weakness, either, to be upset about this.",
-            "You can overcome it. Consider it training. And remember, as your true Clanmates, we'll never abandon you."
+            "You can overcome it. Consider it training. And remember, as your true companions, we'll never abandon you."
         ]
     },
     "they_df_sh_R5": {
@@ -22159,7 +22159,7 @@
             "[t_c launches at you again. You find yourself focusing more as the threat of {PRONOUN/t_c/poss} claws becomes more real.]",
             "Eyes on me! Think about my moves, and how to respond! Push out everything else! Put strength into that retaliation! Come on--",
             "[You land a fierce swipe on t_c and {PRONOUN/t_c/subject} {VERB/t_c/back/backs} off with a wild grin.]",
-            "That's what I'm talking about! See? And don't you feel better now? There's no need to worry about whatever nonsense your Clanmates have done.",
+            "That's what I'm talking about! See? And don't you feel better now? There's no need to worry about whatever nonsense your companions have done.",
             "Just clear your mind and remind yourself where you truly belong. We'll never see you differently, no matter what.",
             "Now, let's see you do that again! Faster!"
         ]
@@ -23521,7 +23521,7 @@
             "[You remind t_c of where {PRONOUN/t_c/subject} {VERB/t_c/are/is}, {PRONOUN/t_c/subject} {VERB/t_c/fall/falls} quiet.]",
             "Sorry. I'll do better.",
             "[You ask {PRONOUN/t_c/object} why {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} here- {PRONOUN/t_c/poss} morals don't seem to align with the Dark Forest.]",
-            "I love my Clanmates too much to let anything happen to them... I'd rather learn forbidden fighting moves to keep them safe."
+            "I love my companions too much to let anything happen to them... I'd rather learn forbidden fighting moves to keep them safe."
         ]
     },
     "sweet_trainee_PS2": {
@@ -26583,7 +26583,7 @@
         ],
         "intro": [
             "[t_c pauses as {PRONOUN/t_c/subject} {VERB/t_c/pass/passes} by, hesitant to leave you isolated at the edge of camp.]",
-            "[... That is, until {PRONOUN/t_c/subject} {VERB/t_c/look/looks} out at the rest of {PRONOUN/t_c/poss} Clanmates scattered around the clearing, settling down to share tongues as the sun begins to set. {PRONOUN/t_c/subject/CAP} {VERB/t_c/turn/turns} to face you, {PRONOUN/t_c/poss} eyes narrowing.]",
+            "[... That is, until {PRONOUN/t_c/subject} {VERB/t_c/look/looks} out at the rest of {PRONOUN/t_c/poss} companions scattered around the clearing, settling down to share tongues as the sun begins to set. {PRONOUN/t_c/subject/CAP} {VERB/t_c/turn/turns} to face you, {PRONOUN/t_c/poss} eyes narrowing.]",
             "... Maybe this is for the best."
         ]
     },
@@ -28411,7 +28411,7 @@
             "[You ask if {PRONOUN/t_c/subject} would like a massage just to see if that will help. {PRONOUN/t_c/poss/CAP} eyes widen with glee.]",
             "Seriously? No I- I couldn't ask that of you, it's okay- really? You're serious? Oh thank you y_c, that would be wonderful! I owe you one.",
             "[You laugh and tell {PRONOUN/t_c/object} {PRONOUN/t_c/subject} {VERB/t_c/don't/doesn't} owe you anything, and it's the least you can do. You carefully knead {PRONOUN/t_c/poss} muscles and ask if the pressure is right. The only response you get is a purr.]",
-            "[Clanmates smile at the sight and even r_m joins you and teaches you techniques for t_c's specific condition. It isn't long before t_c falls asleep and the medicine cat bows {PRONOUN/r_m/poss} head gratefully.]",
+            "[Companions smile at the sight and even r_m joins you and teaches you techniques for t_c's specific condition. It isn't long before t_c falls asleep and the medicine cat bows {PRONOUN/r_m/poss} head gratefully.]",
             "[{PRONOUN/r_m/poss/CAP} {VERB/t_c/thank/thanks} you for taking the time to care for your Clanmate and it's the little things like this that make the biggest difference. Sometimes it's just being there for someone. You think of t_c's smile, the glowing grin of joy. You can't help but agree.]"
         ]
     },
@@ -28642,7 +28642,7 @@
             "max_platonic_25"
         ],
         "intro": [
-            "[Your Clanmates once made sure to include you as often as possible. Now, there's not a single cat paying any attention to you.]",
+            "[Your companions once made sure to include you as often as possible. Now, there's not a single cat paying any attention to you.]",
             "[t_c walks right past you without ever looking at you now.]"
         ]
     },
@@ -28717,7 +28717,7 @@
             "[Though {PRONOUN/t_c/subject} {VERB/t_c/try/tries} to ignore your signing, you start to make faces at {PRONOUN/t_c/object} that {PRONOUN/t_c/subject} can't ignore. You watch {PRONOUN/t_c/poss} body shake slightly with the laughter {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} suppressing.]",
             "[Finally t_c gives in with a laugh, and is more open to signing with you about r_c.]",
             "[t_c is grateful by the time you're both done signing about r_c, and {PRONOUN/t_c/subject} {VERB/t_c/offer/offers} a head bunt of appreciation for your efforts.]",
-            "[Perhaps your job is harder without your hearing, but that doesn't mean it's harder to understand your Clanmates.]"
+            "[Perhaps your job is harder without your hearing, but that doesn't mean it's harder to understand your companions.]"
         ]
     },
     "youdarkstar_R7": {
@@ -29161,7 +29161,7 @@
         ],
         "intro": [
             "[Just as your {PRONOUN/t_c/parent} requested when you were a kit, you visit {PRONOUN/t_c/object} after the day's training.]",
-            "[You tell {PRONOUN/t_c/object} about exploring the territory so you know where the borders are, and learning strategies for defusing arguments, and observing your Clanmates to learn more about their dynamics...]",
+            "[You tell {PRONOUN/t_c/object} about exploring the territory so you know where the borders are, and learning strategies for defusing arguments, and observing your companions to learn more about their dynamics...]",
             "[t_c listens closely, smiling in all the right places, though it falters when you talk about r_c-brooding snapping at you when you tried to calm {PRONOUN/r_c-brooding/object} down.]",
             "This sounds exciting, y_c. Make sure you're not getting on anyone's bad side, okay?"
         ]
@@ -34602,7 +34602,7 @@
         "intro": [
             "[t_c chats with you calmly as {PRONOUN/t_c/subject} helps you sort through the herbs in the medicine den. The two of you catching up after some lost time.]",
             "Yes, well, then I told r_a that {PRONOUN/r_a/subject} was being too brash. Of course {PRONOUN/r_a/subject} shrugged it off and continued, only to suffer the consequences later once {PRONOUN/r_a/poss} mentor found out. I swear the youths don't know how to behave nowadays.",
-            "[You chuckle to yourself, getting lost in {PRONOUN/t_c/poss} words... It feels like you're a little kit again. Your parent gossiping with clanmates while you pretended to have a nap. It's nice to know t_c hasn't changed.]"
+            "[You chuckle to yourself, getting lost in {PRONOUN/t_c/poss} words... It feels like you're a little kit again. Your parent gossiping with companions while you pretended to have a nap. It's nice to know t_c hasn't changed.]"
         ]
     },
     "TinyTeddy_stable_theyparent_theyany_youmedicinecat_02": {
@@ -34933,7 +34933,7 @@
             "from_parent"
         ],
         "intro": [
-            "You might be the leader, but I'm still your parent, which means, you won't be able to boss me around as easily as our clanmates.",
+            "You might be the leader, but I'm still your parent, which means, you won't be able to boss me around as easily as our companions.",
             "['As long as you show respect and don't haggle me, I would never in a million moons try to boss you around. Can you imagine what would happen?']",
             "I'd kick your flank, that's what! Pft- Don't worry too much, I'm just joking. I respect you as my kit first and foremost. You being the leader, that's just a position to me. Nothing more or nothing less.",
             "I love you for who you are, not what you are."
@@ -35551,7 +35551,7 @@
         "intro": [
             "[Flowers are springing up all around camp! You jolt as you notice t_c sitting beside a patch of pink ones.]",
             "[The Dark Forest cat looks ghostly as ever, but the muck on {PRONOUN/t_c/poss} paws stands out amid the bright newleaf colors.]",
-            "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/stare/stares} at the flowers like {PRONOUN/t_c/subject}{VERB/t_c/'ve/'s} never seen them before, ignoring your Clanmates even when r_c walks through {PRONOUN/t_c/object}. Then, {PRONOUN/t_c/subject} {VERB/t_c/look/looks} at the nearest den, as if imagining its walls covered in pink petals.]",
+            "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/stare/stares} at the flowers like {PRONOUN/t_c/subject}{VERB/t_c/'ve/'s} never seen them before, ignoring your companions even when r_c walks through {PRONOUN/t_c/object}. Then, {PRONOUN/t_c/subject} {VERB/t_c/look/looks} at the nearest den, as if imagining its walls covered in pink petals.]",
             "[Almost absentmindedly, t_c leans down to bite at the flowers' stems, but of course {PRONOUN/t_c/subject} {VERB/t_c/pass/passes} right through them. {PRONOUN/t_c/subject/CAP} {VERB/t_c/jolt/jolts} and {VERB/t_c/pull/pulls} back, only then noticing you watching.]",
             "[t_c narrows {PRONOUN/t_c/poss} eyes, turns, and walks away. {PRONOUN/t_c/poss/CAP} form fades before {PRONOUN/t_c/subject} {VERB/t_c/reach/reaches} the edge of camp.]"
         ]
@@ -35906,13 +35906,13 @@
             }
         },
         "withme": [
-            "[You tell t_c to stay by your side during the Gathering. If any of {PRONOUN/t_c/poss} former Clanmates cause trouble, or if t_c starts getting overwhelmed or upset, you'll help {PRONOUN/t_c/object} .]",
+            "[You tell t_c to stay by your side during the Gathering. If any of {PRONOUN/t_c/poss} former companions cause trouble, or if t_c starts getting overwhelmed or upset, you'll help {PRONOUN/t_c/object} .]",
             "[t_c closes {PRONOUN/t_c/poss} eyes and nods. For a moment, {PRONOUN/t_c/subject} {VERB/t_c/seem/seems} at a loss for words.]",
             "That...  that means a lot, y_c. Thank you."
         ],
         "ignore": [
             "[It'll be difficult, but you tell t_c that {PRONOUN/t_c/subject} should try {PRONOUN/t_c/poss} best to ignore {PRONOUN/t_c/poss} old Clan. For all t_c knows, the other cats are trying to provoke {PRONOUN/t_c/object} and cause trouble.]",
-            "[{PRONOUN/t_c/poss/CAP} old Clan is part of {PRONOUN/t_c/poss} past. {PRONOUN/t_c/poss/CAP} time as part of it helped to shape who {PRONOUN/t_c/subject} {VERB/t_c/are/is} today, but {PRONOUN/t_c/subject} shouldn't feel tied to it or to {PRONOUN/t_c/poss} former Clanmates' opinions. t_c nods.]",
+            "[{PRONOUN/t_c/poss/CAP} old Clan is part of {PRONOUN/t_c/poss} past. {PRONOUN/t_c/poss/CAP} time as part of it helped to shape who {PRONOUN/t_c/subject} {VERB/t_c/are/is} today, but {PRONOUN/t_c/subject} shouldn't feel tied to it or to {PRONOUN/t_c/poss} former companions' opinions. t_c nods.]",
             "It... it will be hard, but I'll try to focus on that. Thanks, y_c."
         ],
         "dontgo": [
@@ -36269,7 +36269,7 @@
             "I can be patient! Don't worry about me."
         ],
         "everyone": [
-            "[You're Clanmates, for StarClan's sake. Everyone's seen everyone wet, whether from swimming or from the rain.]",
+            "[You're companions, for StarClan's sake. Everyone's seen everyone wet, whether from swimming or from the rain.]",
             "I know! I just feel weird about it. Plus, everyone else looks fine when they're wet, but I...",
             "[t_c motions to {PRONOUN/t_c/self}. {PRONOUN/t_c/subject/CAP} {VERB/t_c/look/looks} no worse than anyone else, but you decide not to argue.]"
         ],
@@ -40188,7 +40188,7 @@
         "intro": [
             "Oh, my kit.... ",
             "You had so much potential... you could have done so much good for c_n.",
-            "[t_c fixes you with a soft, sad stare as your chest tightens with guilt. This is somehow worse than the jeering insults your Clanmates hurl your way.]"
+            "[t_c fixes you with a soft, sad stare as your chest tightens with guilt. This is somehow worse than the jeering insults your companions hurl your way.]"
         ]
     },
     "frommentor_theyshunned_silly_rad1": {
@@ -41347,7 +41347,7 @@
             ]
         },
         "intro": [
-            "[t_c returns from a hunting patrol half-dragging a large fish. {PRONOUN/t_c/subject/CAP} {VERB/t_c/try/tries} not to meet the eyes of {PRONOUN/t_c/poss} impressed Clanmates as {PRONOUN/t_c/subject} {VERB/t_c/heave/heaves} it onto the fresh-kill pile.]",
+            "[t_c returns from a hunting patrol half-dragging a large fish. {PRONOUN/t_c/subject/CAP} {VERB/t_c/try/tries} not to meet the eyes of {PRONOUN/t_c/poss} impressed companions as {PRONOUN/t_c/subject} {VERB/t_c/heave/heaves} it onto the fresh-kill pile.]",
             "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/brush/brushes} off the grit that's accumulated on the fish's still-wet scales, then {VERB/t_c/scurry/scurries} away.]"
         ]
     },
@@ -41442,7 +41442,7 @@
             "[You find t_c near the border, seemingly talking to someone. A rogue or a kittypet, maybe? You drop into a crouch and creep closer.]",
             "Oh, um, things in camp have been all right recently. I've been spending a lot of time with plove-r_c... I mentioned {PRONOUN/plove-r_c/object}, right?",
             "[There's a long pause. t_c nods, as if listening to something, but you don't hear or see anyone else.]",
-            "You should come by! I'd like to show you around... though I wouldn't be able to talk much. I wouldn't know what to say to my Clanmates if they asked who I was talking to, you know?",
+            "You should come by! I'd like to show you around... though I wouldn't be able to talk much. I wouldn't know what to say to my companions if they asked who I was talking to, you know?",
             "Oh, okay! Sorry, I didn't mean to keep you. I'll see you around.",
             "[t_c waits for a moment before turning and trotting back towards camp. What was that all about?]"
         ]
@@ -41882,7 +41882,7 @@
             "Are... are you sure? I don't mean to pressure you...",
             "[You assure t_c that you're up for the challenge. {PRONOUN/t_c/subject/CAP} {VERB/t_c/pass/passes} you a mouthful of feathers to carry to the top of the structure.]",
             "[Carefully, you climb to the bare sections of the entrance. t_c tells you which feathers to arrange where, and a small crowd gathers to watch the two of you work.]",
-            "[After you've finished, you make your way to solid ground. Your Clanmates compliment t_c's decoration skills and your masterful climbing!]"
+            "[After you've finished, you make your way to solid ground. Your companions compliment t_c's decoration skills and your masterful climbing!]"
         ]
     },
     "neurotic_choice_aboutsleeper_SQ50": {
@@ -42140,7 +42140,7 @@
             "[You offer to let r_k-healer shadow you tomorrow. t_c's eyes widen.]",
             "Oh... absolutely! Yes! Okay, I'll go tell {PRONOUN/r_k-healer/object}... {PRONOUN/r_k-healer/subject}{VERB/r_k-healer/'re/'s} going to be so excited.",
             "[The next day, you find r_k-healer and t_c waiting outside of the medicine den first thing in the morning. t_c hovers behind you both as you show r_k-healer your herb supply and describe what each plant does.]",
-            "[Then, the pair watches you treat some of your Clanmates' minor ailments. You even call r_k-healer over to 'help' you bandage a cut on r_w's paw, and r_k-healer is thrilled!]"
+            "[Then, the pair watches you treat some of your companions' minor ailments. You even call r_k-healer over to 'help' you bandage a cut on r_w's paw, and r_k-healer is thrilled!]"
         ]
     },
     "neurotic_youill_SQ2": {
@@ -44479,7 +44479,7 @@
         "intro": [
             "[t_c tries to put {PRONOUN/t_c/poss} weight on {PRONOUN/t_c/poss} sprained leg, but quickly winces and lies back down.]",
             "Ouch! Okay... not quite healed yet.",
-            "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/sigh/sighs} and {VERB/t_c/sigh/sighs} longingly at your Clanmates playing outside.]"
+            "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/sigh/sighs} and {VERB/t_c/sigh/sighs} longingly at your companions playing outside.]"
         ]
     },
     "brokenjaw_sam1": {
@@ -45150,7 +45150,7 @@
 },
         "intro": [
           "Just because you're an apprentice now doesn't mean you can do whatever you want.",
-          "Make sure you're being responsible. Don't stay up too late, respect your senior Clanmates, and listen to m_n.",
+          "Make sure you're being responsible. Don't stay up too late, respect your senior companions, and listen to m_n.",
           "You represent c_n now."
 ]
 },
@@ -45236,7 +45236,7 @@
         "relationship": ["from_your_parent", "from_adopted_parent"],
         "intro": [
           "I heard you're on patrol with neutral-r_w-silly today. Make sure {PRONOUN/neutral-r_w-silly/subject} {VERB/neutral-r_w-silly/don't/doesn't} drag you into any... shenanigans.",
-          "Just because some of our Clanmates never take things seriously doesn't mean you should follow their example."
+          "Just because some of our companions never take things seriously doesn't mean you should follow their example."
 ]
 },
 

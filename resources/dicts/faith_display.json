@@ -35,13 +35,13 @@
         "silly": "This cat entertains {PRONOUN/m_c/poss} companions with exaggerated tales of Dark Forest exploits, blurring the line between fact and fiction.",
         "stable": "You can often find this cat seeking guidance from {PRONOUN/m_c/poss} warrior ancestors down below.",
         "sweet": "This cat seems comforted by the darkness, though most wouldn't expect it from {PRONOUN/m_c/object}.",
-        "unabashed": "This cat often tells {PRONOUN/m_c/poss} Clanmates if they are likely to go to the Dark Forest or not.",
+        "unabashed": "This cat often tells {PRONOUN/m_c/poss} companions if they are likely to go to the Dark Forest or not.",
         "unlawful": "This cat scoffs at the stars. They made these pointless rules, and the Dark Forest are the only ones willing to defy them."
     },
     "-6": {
         "assertive": "This cat knows that the colony would be better off believing what they do.",
         "brooding": "This cat no longer feels guilty for waking up in the Dark Forest each night.",
-        "cool": "Swayed by the power of the Dark Forest, this cat may subtly manipulate Clanmates, hiding {PRONOUN/m_c/poss} true allegiance.",
+        "cool": "Swayed by the power of the Dark Forest, this cat may subtly manipulate companions, hiding {PRONOUN/m_c/poss} true allegiance.",
         "upstanding": "This cat ensures that {PRONOUN/m_c/poss} actions align with the Dark Forest's principles.",
         "introspective": "This cat starts to become more open on the Dark Forest, going out of {PRONOUN/m_c/poss} way to ask for stories and tales, even telling a few {PRONOUN/m_c/self}.",
         "neurotic": "This cat believes the Dark Forest's teachings will help {PRONOUN/m_c/object} gain strength and security for {PRONOUN/m_c/poss} colony, even if the methods make {PRONOUN/m_c/object} uneasy.",
@@ -79,7 +79,7 @@
     },
     "-3": {
         "assertive": "This cat has begun to believe in the ideals of the Dark Forest.",
-        "brooding": "This cat feels understood by the Dark Forest in ways {PRONOUN/m_c/subject} never {VERB/m_c/have/has} by {PRONOUN/m_c/poss} Clanmates.",
+        "brooding": "This cat feels understood by the Dark Forest in ways {PRONOUN/m_c/subject} never {VERB/m_c/have/has} by {PRONOUN/m_c/poss} companions.",
         "cool": "Part of this cat wants to believe in the Dark Forest's teachings as a way to fuel {PRONOUN/m_c/poss} own mystique and cultivate a more dangerous edge.",
         "upstanding": "This cat has a reserved belief in the Dark Forest, taking comfort in the idea of an afterlife for strong warriors.",
         "introspective": "This cat hesitates to move forward with the whispers of the Dark Forest at the back of {PRONOUN/m_c/poss} mind, but {PRONOUN/m_c/subject} {VERB/m_c/push/pushes} forward regardless, curious to what {PRONOUN/m_c/subject}'ll find.",
@@ -114,7 +114,7 @@
         "stable": "This cat views the Dark Forest as mere superstition.",
         "sweet": "This cat seems awkward when the conversation of beliefs comes up, and seems to only half-heartedly agree when the stars are praised.",
         "unabashed": "This cat is upfront about {PRONOUN/m_c/poss} skepticism of the Dark Forest's existence.",
-        "unlawful": "This cat insists that the Dark Forest is just kit-tales to make {PRONOUN/m_c/poss} Clanmates behave."
+        "unlawful": "This cat insists that the Dark Forest is just kit-tales to make {PRONOUN/m_c/poss} companions behave."
     },
     "0": {
         "All": "This cat has no faith in the darkness nor the stars, and would rather stay neutral on the subject."
@@ -130,18 +130,18 @@
         "stable": "This cat is skeptical of the afterlife's existence, but doesn't outright deny the possibility.",
         "sweet": "This cat is more focused on {PRONOUN/m_c/poss} colony than anything, but still respects the stars.",
         "unabashed": "This cat is upfront about {PRONOUN/m_c/poss} skepticism of the afterlife's existence.",
-        "unlawful": "This cat insists that the afterlife is just kit-tales to make {PRONOUN/m_c/poss} Clanmates behave."
+        "unlawful": "This cat insists that the afterlife is just kit-tales to make {PRONOUN/m_c/poss} companions behave."
     },
     "2": {
         "assertive": "This cat is interested in the stars.",
         "brooding": "This cat is starting to wonder if all the fairy tales about {PRONOUN/m_c/poss} warrior ancestors are actually true or not.",
         "cool": "While respectful of the stars' traditions, this cat's faith is purely a way to build {PRONOUN/m_c/poss} image.",
         "upstanding": "While respectful of the stars' role, this cat would rather trust in the guidance of living cats over dead ones.",
-        "introspective": "This cat simply has faith in the stars because of {PRONOUN/m_c/poss} fellow Clanmates' opinions.",
+        "introspective": "This cat simply has faith in the stars because of {PRONOUN/m_c/poss} fellow companions' opinions.",
         "neurotic": "This cat listens to stories about the stars, but doesn't believe {PRONOUN/m_c/poss} ancestors would ever look {PRONOUN/m_c/poss} way.",
         "silly": "This cat finds the idea of warrior ancestors watching them from the stars both comforting and mildly amusing.",
         "stable": "This cat is open to the possibility of the afterlife's existence.",
-        "sweet": "This cat seems eager to listen to stories about the stars from Clanmates, though never brings up {PRONOUN/m_c/poss} beliefs otherwise.",
+        "sweet": "This cat seems eager to listen to stories about the stars from companions, though never brings up {PRONOUN/m_c/poss} beliefs otherwise.",
         "unabashed": "This cat openly admits to a mild curiosity about the stars, but is unsure if {PRONOUN/m_c/subject} truly {VERB/m_c/believe/believes}.",
         "unlawful": "This cat feels unnerved at the thought of something otherworldly backing the structure {PRONOUN/m_c/subject} {VERB/m_c/dislike/dislikes}."
     },
@@ -207,7 +207,7 @@
         "silly": "This cat ponders what kind of pranks {PRONOUN/m_c/subject} {VERB/m_c/could/can} get away with under the guise of 'StarClan's will'.",
         "stable": "You can often find this cat seeking guidance from {PRONOUN/m_c/poss} warrior ancestors.",
         "sweet": "You can sometimes find this cat singing to the stars above, giving {PRONOUN/m_c/poss} ancestors a comforting melody to listen to.",
-        "unabashed": "This cat often tells {PRONOUN/m_c/poss} Clanmates if they are likely to go to StarClan or not.",
+        "unabashed": "This cat often tells {PRONOUN/m_c/poss} companions if they are likely to go to StarClan or not.",
         "unlawful": "You might see this cat leave offerings from {PRONOUN/m_c/poss} stash for {PRONOUN/m_c/poss} ancestors."
     },
     "8": {

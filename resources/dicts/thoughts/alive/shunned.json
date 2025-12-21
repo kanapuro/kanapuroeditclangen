@@ -14,7 +14,7 @@
             "Tries to enjoy the stale prey {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} been granted",
             "Is dreading the future",
             "Is cursing the consequences of {PRONOUN/m_c/poss} actions",
-            "Wants to share tongues with {PRONOUN/m_c/poss} Clanmates again",
+            "Wants to share tongues with {PRONOUN/m_c/poss} companions again",
             "Wonders if {PRONOUN/m_c/subject} could have ever gotten away with it",
             "Plays mossball with {PRONOUN/m_c/self}",
             "Is thinking about {PRONOUN/m_c/poss} decisions",
@@ -35,10 +35,10 @@
             "Wonders if {PRONOUN/m_c/subject}'d be accepted into another Clan",
             "Begs r_c to look at {PRONOUN/m_c/object}, please just look at {PRONOUN/m_c/object}",
             "Wonders how long until {PRONOUN/m_c/subject}'ll be accepted back into the Clan",
-            "Is growing to resent {PRONOUN/m_c/poss} Clanmates",
-            "Will never forget how {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} been treated by {PRONOUN/m_c/poss} own Clanmates",
+            "Is growing to resent {PRONOUN/m_c/poss} companions",
+            "Will never forget how {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} been treated by {PRONOUN/m_c/poss} own companions",
             "Is given a piece of prey that r_c spat in",
-            "Doesn't know what to think about the new side of {PRONOUN/m_c/poss} Clanmates {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} seen",
+            "Doesn't know what to think about the new side of {PRONOUN/m_c/poss} companions {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} seen",
             "Wishes {PRONOUN/m_c/subject} had the courage to become a rogue"
         ]
     },
@@ -99,7 +99,7 @@
             "Feels sticky after sleeping outside",
             "Is thinking about leaving the Clan",
             "Wonders if anycat ever liked {PRONOUN/m_c/object}",
-            "Doesn't care what {PRONOUN/m_c/poss} Clanmates think",
+            "Doesn't care what {PRONOUN/m_c/poss} companions think",
             "Tries to think of a full name for {PRONOUN/m_c/self}",
             "Is feeling sick",
             "Regrets everything",
@@ -150,7 +150,7 @@
             "Is regretting {PRONOUN/m_c/poss} actions",
             "Is hissing about how this wasn't what {PRONOUN/m_c/subject} planned",
             "Knows the Clan will never understand {PRONOUN/m_c/poss} motive",
-            "Is starting to question {PRONOUN/m_c/poss} Clanmates' loyalties",
+            "Is starting to question {PRONOUN/m_c/poss} companions' loyalties",
             "Misses being able to take care of c_n",
             "Thinks about what {PRONOUN/m_c/poss} actions have caused"
         ],
@@ -173,7 +173,7 @@
             "Is starting to miss even the whiniest of patients",
             "Winces when {PRONOUN/m_c/subject} {VERB/m_c/pull/pulls} a thorn out of {PRONOUN/m_c/poss} paw",
             "Recites the names of herbs to {PRONOUN/m_c/self} to stay calm",
-            "Is hoping to receive an omen to explain why {PRONOUN/m_c/subject} did it to {PRONOUN/m_c/poss} Clanmates",
+            "Is hoping to receive an omen to explain why {PRONOUN/m_c/subject} did it to {PRONOUN/m_c/poss} companions",
             "Stares at the stars above with a solemn expression"
         ],
         "main_status_constraint": [
@@ -218,7 +218,7 @@
             "Wasn't caught sneaking out of camp!", 
             "Is watching {PRONOUN/m_c/poss} Clan from the shadows", 
             "Accidentally scared r_c by just walking past",
-            "Feels invisible to {PRONOUN/m_c/poss} Clanmates"
+            "Feels invisible to {PRONOUN/m_c/poss} companions"
         ],
         "main_trait_constraint": [
             "sneaky"

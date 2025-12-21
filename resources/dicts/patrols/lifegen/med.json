@@ -87,11 +87,11 @@
         "min_max_status": {},
         "weight": 20,
         "intro_text": "There is a shortage of a particular herb in the camp. You consider whether you should risk going out to find more.",
-        "decline_text": "You decide not to risk going out, hoping to make do with what you have. Your Clanmates understand your decision and trust your judgement.",
+        "decline_text": "You decide not to risk going out, hoping to make do with what you have. Your companions understand your decision and trust your judgement.",
         "chance_of_success": 40,
         "success_outcomes": [
             {
-                "text": "You decide to venture out and are successful in finding the herb. Your Clanmates appreciate your dedication and commitment to your role.",
+                "text": "You decide to venture out and are successful in finding the herb. Your companions appreciate your dedication and commitment to your role.",
                 "exp": 10,
                 "weight": 20
             }
@@ -263,7 +263,7 @@
         "max_cats": 6,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "The Clan's medicine cats have gone out to fetch herbs, leaving a couple of sick and injured Clanmates in the medicine den. You notice a patient in pain, and you know exactly how to treat them, but you don't want to get in trouble for touching the herbs.",
+        "intro_text": "The Clan's medicine cats have gone out to fetch herbs, leaving a couple of sick and injured companions in the medicine den. You notice a patient in pain, and you know exactly how to treat them, but you don't want to get in trouble for touching the herbs.",
         "decline_text": "You decide to sit back and wait for the unshunned medicine cats to return.",
         "chance_of_success": 50,
         "success_outcomes": [
@@ -275,7 +275,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "Just as you poke your head into the medicine den, the patient lifts their head and notices you. Though half-asleep and in pain, they manage to yell at you to get out, and you flee to return to your nest without any other Clanmates taking notice.",
+                "text": "Just as you poke your head into the medicine den, the patient lifts their head and notices you. Though half-asleep and in pain, they manage to yell at you to get out, and you flee to return to your nest without any other companions taking notice.",
                 "exp": 0,
                 "weight": 20
             }
@@ -493,7 +493,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "After a few minutes of pointless complaining, you tell the medicine cat to shut up. It's a part of the job to mend unruly Clanmates, and it is a mediator's job to settle the arguments.",
+                "text": "After a few minutes of pointless complaining, you tell the medicine cat to shut up. It's a part of the job to mend unruly companions, and it is a mediator's job to settle the arguments.",
                 "exp": 0,
                 "weight": 20
             },

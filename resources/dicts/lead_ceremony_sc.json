@@ -73,7 +73,7 @@
       "tags": [],
       "lead_trait": [],
       "text": [
-        "m_c leaves to speak with StarClan. {PRONOUN/m_c/subject/CAP} {VERB/m_c/close/closes} {PRONOUN/m_c/poss} eyes and {VERB/m_c/are/is} immediately surrounded by {PRONOUN/m_c/poss} loved ones, friends, and Clanmates who have passed on. Stars shine throughout their pelts, and their eyes are warm as they greet the new leader."
+        "m_c leaves to speak with StarClan. {PRONOUN/m_c/subject/CAP} {VERB/m_c/close/closes} {PRONOUN/m_c/poss} eyes and {VERB/m_c/are/is} immediately surrounded by {PRONOUN/m_c/poss} loved ones, friends, and companions who have passed on. Stars shine throughout their pelts, and their eyes are warm as they greet the new leader."
       ]
     },
     "new_clan": {
@@ -1839,7 +1839,7 @@
           ]
         },
         {
-          "text": "m_c looks up as r_c pads towards {PRONOUN/m_c/object}. r_c dips {PRONOUN/m_c/poss} head and offers a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/continue/continues} that {PRONOUN/m_c/poss} Clanmates may push {PRONOUN/m_c/object} to the very edge sometimes, but a leader must remain firm yet fair.",
+          "text": "m_c looks up as r_c pads towards {PRONOUN/m_c/object}. r_c dips {PRONOUN/m_c/poss} head and offers a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/continue/continues} that {PRONOUN/m_c/poss} companions may push {PRONOUN/m_c/object} to the very edge sometimes, but a leader must remain firm yet fair.",
           "virtue": [
             "patience",
             "grace"
@@ -3690,7 +3690,7 @@
       "rank": [],
       "life_giving": [
         {
-          "text": "r_c sniffs that they don't know what sick, twisted turn of events led to you becoming leader of c_n, but rest assured, there will never be a place for you in StarClan. Still, they reluctantly give you a life for [virtue], if only for the good of the Clanmates that they were stolen away from. They stalk back into the crowd muttering curses to your name.",
+          "text": "r_c sniffs that they don't know what sick, twisted turn of events led to you becoming leader of c_n, but rest assured, there will never be a place for you in StarClan. Still, they reluctantly give you a life for [virtue], if only for the good of the companions that they were stolen away from. They stalk back into the crowd muttering curses to your name.",
           "virtue": [
             "morality",
             "righteousness",

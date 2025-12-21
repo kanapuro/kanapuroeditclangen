@@ -1071,7 +1071,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "After searching for what feels like moons, you discover there <i>is</i> a kit in the Unknown Residence... but that kit isn't a resident. Somehow a very-much-alive kit from one of the Clans has managed to slip into this ghostly afterlife, and {PRONOUN/r_k/subject}{VERB/r_k/'ve/'s} been calling to you, thinking the two of you were playing some game {PRONOUN/r_k/subject} {VERB/r_k/have/has} with {PRONOUN/r_k/poss} Clanmates. While you're relieved that the kit is still alive, you can't help but feel disappointed; you were truly hoping you could care for kittens again like you did in life.",
+                "text": "After searching for what feels like moons, you discover there <i>is</i> a kit in the Unknown Residence... but that kit isn't a resident. Somehow a very-much-alive kit from one of the Clans has managed to slip into this ghostly afterlife, and {PRONOUN/r_k/subject}{VERB/r_k/'ve/'s} been calling to you, thinking the two of you were playing some game {PRONOUN/r_k/subject} {VERB/r_k/have/has} with {PRONOUN/r_k/poss} companions. While you're relieved that the kit is still alive, you can't help but feel disappointed; you were truly hoping you could care for kittens again like you did in life.",
                 "exp": 0,
                 "weight": 20,
                 "stat_skill": ["GHOST,1"],

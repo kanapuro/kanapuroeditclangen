@@ -585,7 +585,7 @@
       "clan_wide"
     ],
     "weight": 5,
-    "event_text": "r_c has always seen wandering ghosts here and there. Few stick around, but one has approached with worry. The ghost revealed something they'd stumbled upon - a cold-blooded murder. Horrified, r_c learns that mur_c was killed by one of {PRONOUN/r_c/poss} very own Clanmates... m_c. {PRONOUN/r_c/subject/CAP} informs the Clan immediately, telling that a passing loner had seen it and shared the tale with {PRONOUN/r_c/object}.",
+    "event_text": "r_c has always seen wandering ghosts here and there. Few stick around, but one has approached with worry. The ghost revealed something they'd stumbled upon - a cold-blooded murder. Horrified, r_c learns that mur_c was killed by one of {PRONOUN/r_c/poss} very own companions... m_c. {PRONOUN/r_c/subject/CAP} informs the Clan immediately, telling that a passing loner had seen it and shared the tale with {PRONOUN/r_c/object}.",
     "m_c": {
       "age": [
         "any"
@@ -1235,7 +1235,7 @@
       "skill_trait_required"
     ],
     "weight": 15,
-    "event_text": "r_c sighs. {PRONOUN/r_c/subject/CAP} {VERB/r_c/find/finds} {PRONOUN/r_c/self} unintentionally walking into one of {PRONOUN/r_c/poss} Clanmates' dreams again. It could have been just another boring or nonsensical dream, but r_c is horrified to discover this dream is m_c's recollection of murdering mur_c. {PRONOUN/r_c/subject/CAP} {VERB/r_c/wake/wakes} up in shock, wondering what to do with this new knowledge.",
+    "event_text": "r_c sighs. {PRONOUN/r_c/subject/CAP} {VERB/r_c/find/finds} {PRONOUN/r_c/self} unintentionally walking into one of {PRONOUN/r_c/poss} companions' dreams again. It could have been just another boring or nonsensical dream, but r_c is horrified to discover this dream is m_c's recollection of murdering mur_c. {PRONOUN/r_c/subject/CAP} {VERB/r_c/wake/wakes} up in shock, wondering what to do with this new knowledge.",
     "m_c": {
       "age": [
         "any"
@@ -1443,7 +1443,7 @@
       "any"
     ],
     "weight": 10,
-    "event_text": "m_c misstepped and slipped from a rock, but landed on {PRONOUN/m_c/poss} feet nimbly. {PRONOUN/m_c/poss/CAP} Clanmates comment on the show of dexterity.",
+    "event_text": "m_c misstepped and slipped from a rock, but landed on {PRONOUN/m_c/poss} feet nimbly. {PRONOUN/m_c/poss/CAP} companions comment on the show of dexterity.",
     "m_c": {
       "age": [
         "any"
@@ -2269,7 +2269,7 @@
     "season": ["any"],
     "sub_type": ["accessory"],
     "weight": 20,
-    "event_text": "m_c returned to camp very late. {PRONOUN/m_c/poss/CAP} clanmates smelled the awful scent and moved away from {PRONOUN/m_c/object} . On top of that, m_c's fur was all dirty and {PRONOUN/m_c/subject} {VERB/m_c/were/was} carrying something. All m_c said was that {PRONOUN/m_c/subject} fallen into some black hole.",
+    "event_text": "m_c returned to camp very late. {PRONOUN/m_c/poss/CAP} companions smelled the awful scent and moved away from {PRONOUN/m_c/object} . On top of that, m_c's fur was all dirty and {PRONOUN/m_c/subject} {VERB/m_c/were/was} carrying something. All m_c said was that {PRONOUN/m_c/subject} fallen into some black hole.",
     "new_accessory": ["OLD PENCIL", "OLD BRUSH", "BANANA PEEL", "BROKEN VHS TAPE", "OLD NEWSPAPER", "MUD AND DIRT", "BAUBLES"],
     "m_c":{
       "age": ["adolescent", "young adult", "adult", "senior adult", "senior"],
@@ -5412,7 +5412,7 @@
       "skill_trait_required"
     ],
     "weight": 10,
-    "event_text": "m_c walks into the dreams of {PRONOUN/m_c/poss} Clanmates while everycat sleeps.",
+    "event_text": "m_c walks into the dreams of {PRONOUN/m_c/poss} companions while everycat sleeps.",
     "m_c": {
       "status": [
         "medicine cat"
@@ -5434,7 +5434,7 @@
       "skill_trait_required"
     ],
     "weight": 10,
-    "event_text": "m_c tosses in {PRONOUN/m_c/poss} sleep as {PRONOUN/m_c/poss} dreamself pads through the thoughts of {PRONOUN/m_c/poss} Clanmates, picking up snippets of dream_list/m_c. {PRONOUN/m_c/subject/CAP} slowly {VERB/m_c/blink/blinks} awake, wondering whose dreams {PRONOUN/m_c/subject} walked in.",
+    "event_text": "m_c tosses in {PRONOUN/m_c/poss} sleep as {PRONOUN/m_c/poss} dreamself pads through the thoughts of {PRONOUN/m_c/poss} companions, picking up snippets of dream_list/m_c. {PRONOUN/m_c/subject/CAP} slowly {VERB/m_c/blink/blinks} awake, wondering whose dreams {PRONOUN/m_c/subject} walked in.",
     "m_c": {
       "status": [
         "medicine cat apprentice",
@@ -7528,7 +7528,7 @@
       "war"
     ],
     "weight": 20,
-    "event_text": "m_c's relationships with {PRONOUN/m_c/poss} Clanmates are strained, with some questioning {PRONOUN/m_c/poss} decisions and others relying on {PRONOUN/m_c/object} more heavily than ever.",
+    "event_text": "m_c's relationships with {PRONOUN/m_c/poss} companions are strained, with some questioning {PRONOUN/m_c/poss} decisions and others relying on {PRONOUN/m_c/object} more heavily than ever.",
     "m_c": {
       "status": [
         "leader"
@@ -7671,7 +7671,7 @@
       "clan_wide"
     ],
     "weight": 2,
-    "event_text": "A medicine cat from o_c_n comes comes to c_n, asking for herbs to heal their sick Clanmates. c_n quickly shoos them away, not willing to admit that they already don't have enough to support themselves.",
+    "event_text": "A medicine cat from o_c_n comes comes to c_n, asking for herbs to heal their sick companions. c_n quickly shoos them away, not willing to admit that they already don't have enough to support themselves.",
     "supplies": [
       {
         "type": "all_herb",

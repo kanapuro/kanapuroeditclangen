@@ -59,7 +59,7 @@
   },
   "compassionate": {
     "body": [
-      "Although r_c's grief at the loss of {PRONOUN/r_c/poss} mate is overwhelming, {PRONOUN/r_c/subject} {VERB/r_c/make/makes} sure to tend to {PRONOUN/r_c/poss} Clanmates before indulging in {PRONOUN/r_c/poss} own mourning. Seeing m_c's body, it's all {PRONOUN/r_c/subject} can do not to collapse, but caring for the cats around {PRONOUN/r_c/object} has always brought {PRONOUN/r_c/object} comfort in times of need."
+      "Although r_c's grief at the loss of {PRONOUN/r_c/poss} mate is overwhelming, {PRONOUN/r_c/subject} {VERB/r_c/make/makes} sure to tend to {PRONOUN/r_c/poss} companions before indulging in {PRONOUN/r_c/poss} own mourning. Seeing m_c's body, it's all {PRONOUN/r_c/subject} can do not to collapse, but caring for the cats around {PRONOUN/r_c/object} has always brought {PRONOUN/r_c/object} comfort in times of need."
     ],
     "no_body": []
   },
@@ -87,9 +87,9 @@
   },
   "lonesome": {
     "body": [
-      "r_c doesn't want to trouble {PRONOUN/r_c/poss} Clanmates with {PRONOUN/r_c/poss} grief. Everyone is hurting after m_c's death. r_c waits until {PRONOUN/r_c/subject} {VERB/r_c/are/is} alone, then sits a silent vigil under Silverpelt, holding back {PRONOUN/r_c/poss} wails.",
+      "r_c doesn't want to trouble {PRONOUN/r_c/poss} companions with {PRONOUN/r_c/poss} grief. Everyone is hurting after m_c's death. r_c waits until {PRONOUN/r_c/subject} {VERB/r_c/are/is} alone, then sits a silent vigil under Silverpelt, holding back {PRONOUN/r_c/poss} wails.",
       "r_c had thought that {PRONOUN/r_c/subject} would never feel alone again after m_c entered {PRONOUN/r_c/poss} life. Now, staring at m_c's lifeless body, r_c doesn't know what {PRONOUN/r_c/subject}'ll do, how {PRONOUN/r_c/subject}'ll ever go on from here.",
-      "r_c's Clanmates make sure to spend extra time with {PRONOUN/r_c/object} in the days following m_c's death, sharing their fresh-kill and tongues. One night, r_c even finds extra moss lining {PRONOUN/r_c/poss} bed. Maybe {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} not as alone as {PRONOUN/r_c/subject} always thought {PRONOUN/r_c/subject} {VERB/r_c/were/was}."
+      "r_c's companions make sure to spend extra time with {PRONOUN/r_c/object} in the days following m_c's death, sharing their fresh-kill and tongues. One night, r_c even finds extra moss lining {PRONOUN/r_c/poss} bed. Maybe {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} not as alone as {PRONOUN/r_c/subject} always thought {PRONOUN/r_c/subject} {VERB/r_c/were/was}."
     ],
     "no_body": [
       "If only r_c had proof that m_c was really dead... with no body, the void left by m_c's absence is so much harder to bear. r_c sits motionless in {PRONOUN/r_c/poss} nest, staring at the camp entrance and waiting, hoping, for a familiar face to appear."
@@ -146,7 +146,7 @@
   },
   "thoughtful": {
     "body": [
-      "r_c doesn't want to trouble {PRONOUN/r_c/poss} Clanmates with {PRONOUN/r_c/poss} grief. Everyone is hurting after m_c's death. r_c waits until {PRONOUN/r_c/subject} {VERB/r_c/are/is} alone, then sits a silent vigil under Silverpelt, holding back {PRONOUN/r_c/poss} wails."
+      "r_c doesn't want to trouble {PRONOUN/r_c/poss} companions with {PRONOUN/r_c/poss} grief. Everyone is hurting after m_c's death. r_c waits until {PRONOUN/r_c/subject} {VERB/r_c/are/is} alone, then sits a silent vigil under Silverpelt, holding back {PRONOUN/r_c/poss} wails."
     ],
     "no_body": []
   },

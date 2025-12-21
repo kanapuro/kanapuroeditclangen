@@ -144,7 +144,7 @@
         "thoughts": [
             "Is sternly instructing a patrol about the importance of strength in defending the Clan",
             "Feels a rush of adrenaline at the thought of an upcoming battle",
-            "Impressed {PRONOUN/m_c/poss} Clanmates by scaring off an intruder"
+            "Impressed {PRONOUN/m_c/poss} companions by scaring off an intruder"
         ],
         "main_trait_constraint": [
             "fierce"
@@ -169,7 +169,7 @@
             "Is trying to remember a key detail {PRONOUN/m_c/subject} found concerning",
             "Accidently bumped into r_c, meowing {PRONOUN/m_c/subject} didn't notice {PRONOUN/r_c/object}",
             "Didn't realize it was already night to create a patrol",
-            "Was told {PRONOUN/m_c/subject} already ate {PRONOUN/m_c/poss} prey after accusing Clanmates of stealing it",
+            "Was told {PRONOUN/m_c/subject} already ate {PRONOUN/m_c/poss} prey after accusing companions of stealing it",
             "Doesn't know personal space",
             "Had to be reminded of c_n's name again"
         ],
@@ -209,7 +209,7 @@
             "Shivers at the thought {PRONOUN/m_c/subject} will be leader some day",
             "Was found in {PRONOUN/m_c/poss} nest instead of organizing patrols",
             "Believes {PRONOUN/m_c/poss} leader only picked {PRONOUN/m_c/object} as deputy for a laugh",
-            "Grimaces as Clanmates ask {PRONOUN/m_c/object} for advice",
+            "Grimaces as companions ask {PRONOUN/m_c/object} for advice",
             "Wants to let {PRONOUN/m_c/poss} pelt down",
             "Was sitting out in a thunderstorm, deep in thought",
             "Was overthinking worse case scenarios that would bring end to c_n",
@@ -227,7 +227,7 @@
             "Has the clan's attention despite the leader having called the meeting for a more important matter",
             "Theatrically regales a tale of {PRONOUN/m_c/poss} apprenticeship to wide-eyed kits",
             "Is practicing a leader-like speech",
-            "Boosts the confidence of {PRONOUN/m_c/poss} Clanmates in themselves",
+            "Boosts the confidence of {PRONOUN/m_c/poss} companions in themselves",
             "Is crowing triumphantly about a mundane accomplishment",
             "Tells r_c to lead a patrol because {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} the most stylish today",
             "Organizes the patrols with a funny voice to entertain everycat",
@@ -299,7 +299,7 @@
     {
         "id": "daring_deputy",
         "thoughts": [
-            "Impressed {PRONOUN/m_c/poss} Clanmates by scaring off an intruder",
+            "Impressed {PRONOUN/m_c/poss} companions by scaring off an intruder",
             "Was criticized for leading a patrol into a predator's den without a plan",
             "Is imagining dangerous predators to fight while bored",
             "Took a patrol an alternative route to explore more",
@@ -318,7 +318,7 @@
             "Is enforcing that a disobedient cat go without food for the duration of the day",
             "Wants a hunting patrol to have an abundant of prey in every mouth",
             "Is stern in making sure apprentices' training is flawless to {PRONOUN/m_c/object}",
-            "Is reminding Clanmates there will be direct consequences if the Warrior Code isn't heed",
+            "Is reminding companions there will be direct consequences if the Warrior Code isn't heed",
             "Is giving r_c direct orders"
         ],
         "main_trait_constraint": [
@@ -332,7 +332,7 @@
             "Almost crashed into r_c from having too much energy",
             "Commanded a hunting patrol to catch the biggest and powerful prey in the territories",
             "Is imagining vast lands c_n can live in instead",
-            "Place {PRONOUN/m_c/self} as a barrier to protect {PRONOUN/m_c/poss} Clanmates during a border clash",
+            "Place {PRONOUN/m_c/self} as a barrier to protect {PRONOUN/m_c/poss} companions during a border clash",
             "Took a patrol an alternative route to explore more"
         ],
         "main_trait_constraint": [
@@ -344,13 +344,13 @@
         "thoughts": [
             "Will always put c_n above everything else",
             "Doesn't see how allowing outsiders will improve c_n",
-            "Promised to protect {PRONOUN/m_c/poss} Clanmates with {PRONOUN/m_c/poss} life",
+            "Promised to protect {PRONOUN/m_c/poss} companions with {PRONOUN/m_c/poss} life",
             "Wants to serve {PRONOUN/m_c/poss} leader and continue their teachings",
             "Is defending a Clanmate from being accused of crossing borders into another Clan",
             "Is willing to punish codebreakers",
             "Is giving out clear and detailed reports to {PRONOUN/m_c/poss} leader",
             "Is willing to help r_c, only because {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} a Clanmate",
-            "Orders Clanmates to defend c_n's borders with their lives"
+            "Orders companions to defend c_n's borders with their lives"
         ],
         "main_trait_constraint": [
             "loyal"
@@ -434,7 +434,7 @@
         "thoughts": [
             "Is sternly instructing a patrol about the importance of strength in defending the Clan",
             "Feels a rush of adrenaline at the thought of an upcoming battle",
-            "Impressed {PRONOUN/m_c/poss} Clanmates by scaring off an intruder"
+            "Impressed {PRONOUN/m_c/poss} companions by scaring off an intruder"
         ],
         "main_trait_constraint": [
             "fierce"

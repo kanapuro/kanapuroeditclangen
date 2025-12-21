@@ -701,7 +701,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "Despite your best efforts, you fail to notice any signs of the rival Clan. You return to the c_n camp feeling a bit downcast, but your Clanmates appreciate your effort and reassure you for the future.",
+                "text": "Despite your best efforts, you fail to notice any signs of the rival Clan. You return to the c_n camp feeling a bit downcast, but your companions appreciate your effort and reassure you for the future.",
                 "exp": 0,
                 "weight": 20
             },
@@ -928,7 +928,7 @@
         "max_cats": 2,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "r_w1 and r_w2 invite you to share a meal by the warrior's den. Neither seem to mind that you're still an apprentice. It's a chance to bond and learn more about your clanmates.",
+        "intro_text": "r_w1 and r_w2 invite you to share a meal by the warrior's den. Neither seem to mind that you're still an apprentice. It's a chance to bond and learn more about your companions.",
         "decline_text": "You politely decline the warrior's invitation, deciding to focus on your training instead.",
         "chance_of_success": 70,
         "success_outcomes": [

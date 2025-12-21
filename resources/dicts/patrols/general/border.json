@@ -202,7 +202,7 @@
                 ]
             },
             {
-                "text": "s_c selflessly takes the lion's share of the run as the patrol leads the dog on, exhausting {PRONOUN/s_c/self} almost to the point of danger but leading the dog far away from c_n borders. {PRONOUN/s_c/poss/CAP} Clanmates support {PRONOUN/s_c/object} on the long walk home once it's all over, their purrs mixing with s_c's exhausted pants.",
+                "text": "s_c selflessly takes the lion's share of the run as the patrol leads the dog on, exhausting {PRONOUN/s_c/self} almost to the point of danger but leading the dog far away from c_n borders. {PRONOUN/s_c/poss/CAP} companions support {PRONOUN/s_c/object} on the long walk home once it's all over, their purrs mixing with s_c's exhausted pants.",
                 "exp": 20,
                 "weight": 20,
                 "art": "gen_train_talkingWW",
@@ -396,7 +396,7 @@
                 ]
             },
             {
-                "text": "s_c selflessly throws {PRONOUN/s_c/self} into the fight, and every time the dog tries to grab at {PRONOUN/s_c/poss} Clanmates, {PRONOUN/s_c/subject}{VERB/s_c/'re/'s} there with claws, fur puffed out to twice {PRONOUN/s_c/poss} normal size. With s_c defending them, the patrol drives the dog off, yowling triumphantly.",
+                "text": "s_c selflessly throws {PRONOUN/s_c/self} into the fight, and every time the dog tries to grab at {PRONOUN/s_c/poss} companions, {PRONOUN/s_c/subject}{VERB/s_c/'re/'s} there with claws, fur puffed out to twice {PRONOUN/s_c/poss} normal size. With s_c defending them, the patrol drives the dog off, yowling triumphantly.",
                 "exp": 20,
                 "weight": 20,
                 "art": "gen_border_dogscent_clanmember",
@@ -461,7 +461,7 @@
                 ]
             },
             {
-                "text": "s_c tries to protect {PRONOUN/s_c/poss} Clanmates, but it gets in the way of the attack. Without everyone committed to driving the dog off, the patrol has to fall back, but they do so in good order.",
+                "text": "s_c tries to protect {PRONOUN/s_c/poss} companions, but it gets in the way of the attack. Without everyone committed to driving the dog off, the patrol has to fall back, but they do so in good order.",
                 "exp": 0,
                 "weight": 20,
                 "stat_trait": ["ambitious", "bloodthirsty", "troublesome", "vengeful"],
@@ -636,7 +636,7 @@
                 ]
             },
             {
-                "text": "The patrol paces towards the small dog, claws out, fur up, backed up with the courage of their Clanmates. The dog breaks into a barking fit, but that's their opportunity to attack, covering each other as they push the creature away from their territory.",
+                "text": "The patrol paces towards the small dog, claws out, fur up, backed up with the courage of their companions. The dog breaks into a barking fit, but that's their opportunity to attack, covering each other as they push the creature away from their territory.",
                 "exp": 10,
                 "weight": 5,
                 "art": "gen_angry_cat_warrior",
@@ -708,7 +708,7 @@
         "chance_of_success": 10,
         "success_outcomes": [
             {
-                "text": "The patrol paces towards the small dog, claws out, fur up, backed up with the courage of their Clanmates. The dog breaks into a barking fit, but that's their opportunity to attack, covering each other as they push the creature away from their territory.",
+                "text": "The patrol paces towards the small dog, claws out, fur up, backed up with the courage of their companions. The dog breaks into a barking fit, but that's their opportunity to attack, covering each other as they push the creature away from their territory.",
                 "exp": 10,
                 "weight": 20,
                 "art": "gen_angry_cat_warrior",
@@ -1371,7 +1371,7 @@
                 "other_clan_rep": -1
             },
             {
-                "text": "Boldly, p_l steps right across the border, only to be unceremoniously yanked back by the tail. {PRONOUN/p_l/subject/CAP} {VERB/p_l/look/looks} over {PRONOUN/p_l/poss} shoulder in bewilderment, heart sinking when {PRONOUN/p_l/subject} {VERB/p_l/see/sees} one of {PRONOUN/p_l/poss} Clanmates staring {PRONOUN/p_l/object} down. {PRONOUN/p_l/subject/CAP} would almost rather be looking at a fox right now... How will {PRONOUN/p_l/subject} explain <i>this?</i>",
+                "text": "Boldly, p_l steps right across the border, only to be unceremoniously yanked back by the tail. {PRONOUN/p_l/subject/CAP} {VERB/p_l/look/looks} over {PRONOUN/p_l/poss} shoulder in bewilderment, heart sinking when {PRONOUN/p_l/subject} {VERB/p_l/see/sees} one of {PRONOUN/p_l/poss} companions staring {PRONOUN/p_l/object} down. {PRONOUN/p_l/subject/CAP} would almost rather be looking at a fox right now... How will {PRONOUN/p_l/subject} explain <i>this?</i>",
                 "exp": 0,
                 "weight": 20,
                 "art": "gen_warrior_crouching_perplexed",
@@ -2200,7 +2200,7 @@
                 "other_clan_rep": 1
             },
             {
-                "text": "Before app1 gets the chance to greet the other apprentice, r_c spots {PRONOUN/r_c/poss} friend from o_c_n and chirps a hello. The patrol stops for a chat, and app1 peeps at the other apprentice from behind the cluster of {PRONOUN/app1/poss} Clanmates.",
+                "text": "Before app1 gets the chance to greet the other apprentice, r_c spots {PRONOUN/r_c/poss} friend from o_c_n and chirps a hello. The patrol stops for a chat, and app1 peeps at the other apprentice from behind the cluster of {PRONOUN/app1/poss} companions.",
                 "exp": 10,
                 "weight": 20,
                 "other_clan_rep": 1,
@@ -2255,7 +2255,7 @@
                 ]
             },
             {
-                "text": "app1 greets the other apprentice confidently, and {PRONOUN/app1/poss} Clanmates strike up a conversation with the o_c_n patrol as well. app1 tells the other apprentice all about {PRONOUN/app1/poss} mastery of some of the trickiest battle moves and the most advanced hunting strategies. The other apprentice rolls their eyes, unimpressed with app1's braggadocio, and the o_c_n patrol moves on.",
+                "text": "app1 greets the other apprentice confidently, and {PRONOUN/app1/poss} companions strike up a conversation with the o_c_n patrol as well. app1 tells the other apprentice all about {PRONOUN/app1/poss} mastery of some of the trickiest battle moves and the most advanced hunting strategies. The other apprentice rolls their eyes, unimpressed with app1's braggadocio, and the o_c_n patrol moves on.",
                 "exp": 0,
                 "weight": 40,
                 "stat_trait": [ "bloodthirsty", "fierce", "daring", "competitive", "shameless", "arrogant", "oblivious", "troublesome", "confident", "flamboyant", "bold" ],
@@ -2366,7 +2366,7 @@
                 ]
             },
             {
-                "text": "app1 raises {PRONOUN/app1/poss} hackles, staring down the other apprentice until they spit a challenge back. Tempers flare, and the patrols size each other up. It doesn't take much for the o_c_n patrol to decide c_n has put a paw wrong and leap across the border with claws unsheathed and teeth bared. s_c breaks up the skirmish, convincing {PRONOUN/s_c/poss} Clanmates not to waste all the medicine cat's herbs on a petty dispute.",
+                "text": "app1 raises {PRONOUN/app1/poss} hackles, staring down the other apprentice until they spit a challenge back. Tempers flare, and the patrols size each other up. It doesn't take much for the o_c_n patrol to decide c_n has put a paw wrong and leap across the border with claws unsheathed and teeth bared. s_c breaks up the skirmish, convincing {PRONOUN/s_c/poss} companions not to waste all the medicine cat's herbs on a petty dispute.",
                 "exp": 0,
                 "weight": 40,
                 "art": "gen_battle_app_other_clan",
@@ -2401,7 +2401,7 @@
                 ]
             },
             {
-                "text": "o_c_n came looking for a fight, and app1 is eager to give it to them. The rest of {PRONOUN/app1/poss} patrol has no choice but to back {PRONOUN/app1/object} up; they can't let an apprentice get shredded. The skirmish rages until most of them are bloodied and panting - neither patrol wants to admit defeat, but if things escalate any further, they might be carrying their Clanmates home for a vigil.",
+                "text": "o_c_n came looking for a fight, and app1 is eager to give it to them. The rest of {PRONOUN/app1/poss} patrol has no choice but to back {PRONOUN/app1/object} up; they can't let an apprentice get shredded. The skirmish rages until most of them are bloodied and panting - neither patrol wants to admit defeat, but if things escalate any further, they might be carrying their companions home for a vigil.",
                 "exp": 0,
                 "weight": 10,
                 "art": "gen_battle_app_other_clan",
@@ -3327,7 +3327,7 @@
 "art": "gen_flower_date_warrior_other_clan"
 },
 {
-    "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when an o_c_n dawn patrol catches them together on the border. n_c:0's Clanmates are enraged and, despite n_c:0's wails of protest, pounce on p_l, clawing {PRONOUN/p_l/object} within a mouse-length of {PRONOUN/p_l/poss} life. n_c:0, horrified by {PRONOUN/n_c:0/poss} Clanmates' actions, flees the territory.",
+    "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when an o_c_n dawn patrol catches them together on the border. n_c:0's companions are enraged and, despite n_c:0's wails of protest, pounce on p_l, clawing {PRONOUN/p_l/object} within a mouse-length of {PRONOUN/p_l/poss} life. n_c:0, horrified by {PRONOUN/n_c:0/poss} companions' actions, flees the territory.",
     "exp": 0,
     "weight": 10,
     "other_clan_rep": -5,
@@ -3344,8 +3344,8 @@
 ],
     "history_text":
                 {
-                    "scar": "m_c was scarred by {PRONOUN/m_c/poss} mate's Clanmates.",
-                    "reg_death": "m_c died from injuries inflicted by {PRONOUN/m_c/poss} mate's Clanmates."
+                    "scar": "m_c was scarred by {PRONOUN/m_c/poss} mate's companions.",
+                    "reg_death": "m_c died from injuries inflicted by {PRONOUN/m_c/poss} mate's companions."
                 }
             ,
     "relationships": [
@@ -3377,7 +3377,7 @@
 "art": "gen_battle_warrior_other_clan"
 },
 {
-    "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when an o_c_n dawn patrol catches them together on the border. n_c:0's Clanmates are enraged. Though n_c:0 tries pull them off p_l, the o_c_n warriors leave p_l cold on the ground. n_c:0 flees, howling in grief for {PRONOUN/n_c:0/poss} lost love.",
+    "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when an o_c_n dawn patrol catches them together on the border. n_c:0's companions are enraged. Though n_c:0 tries pull them off p_l, the o_c_n warriors leave p_l cold on the ground. n_c:0 flees, howling in grief for {PRONOUN/n_c:0/poss} lost love.",
     "exp": 0,
     "weight": 10,
     "dead_cats": [ "p_l" ],
@@ -3391,7 +3391,7 @@
     "history_text":
                 {
                     "cats": [ "p_l" ],
-                    "reg_death": "m_c was killed by {PRONOUN/m_c/poss} mate's Clanmates."
+                    "reg_death": "m_c was killed by {PRONOUN/m_c/poss} mate's companions."
                 },
     "relationships": [
 {
@@ -3464,7 +3464,7 @@
 
 	"antag_success_outcomes": [
 		{
-            "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when a c_n dawn patrol finds them. p_l tries to calm {PRONOUN/p_l/poss} Clanmates, but it's futile. They pounce on n_c:0, and though p_l tries to defend {PRONOUN/n_c:0/object}, n_c:0 is too grievously injured in the fray.",
+            "text": "As they discuss running away together, p_l and n_c:0 lose track of time together and only realize the sun is rising when a c_n dawn patrol finds them. p_l tries to calm {PRONOUN/p_l/poss} companions, but it's futile. They pounce on n_c:0, and though p_l tries to defend {PRONOUN/n_c:0/object}, n_c:0 is too grievously injured in the fray.",
             "exp": 0,
             "weight": 10,
             "dead_cats": [ "n_c:0" ],
@@ -3478,7 +3478,7 @@
             "history_text":
                         {
                             "cats": [ "n_c:0" ],
-                            "reg_death": "m_c was killed by {PRONOUN/m_c/poss} mate's Clanmates."
+                            "reg_death": "m_c was killed by {PRONOUN/m_c/poss} mate's companions."
                         },
             "relationships": [
         {
@@ -3589,7 +3589,7 @@
         ],
         "history": [
 {
-        "reg_death": "m_c died in a fight with {PRONOUN/m_c/poss} mate's Clanmates."
+        "reg_death": "m_c died in a fight with {PRONOUN/m_c/poss} mate's companions."
 }
         ],
         "new_cat": [

@@ -3,15 +3,15 @@
         "id": "mediator_gen",
         "thoughts": [
             "Is feeling a sense of pride after mediating a difficult argument",
-            "Wishes {PRONOUN/m_c/poss} Clanmates would just talk to each other",
+            "Wishes {PRONOUN/m_c/poss} companions would just talk to each other",
             "Is upset over a recent negotiation with a rival Clan",
             "Negotiates an herb trade with another Clan",
             "Is negotiating with a kittypet to make use of the herbs in their Twoleg garden",
-            "Is dismayed at how quickly {PRONOUN/m_c/poss} Clanmates get into arguments",
+            "Is dismayed at how quickly {PRONOUN/m_c/poss} companions get into arguments",
             "Feels exhausted after mediating so many arguments",
             "Feels pride for {PRONOUN/m_c/poss} work",
             "Is mediating a couple's relationship",
-            "Is mediating a long time friendship between two Clanmates",
+            "Is mediating a long time friendship between two companions",
             "Is feeling frustrated after a failed negotiation",
             "Is feeling exhausted from resolving petty arguments",
             "Wants to solve a dispute with another Clan",
@@ -20,14 +20,14 @@
             "Is proud of how well {PRONOUN/m_c/subject} {VERB/m_c/are/is} doing as a mediator",
             "Accidentally made an argument worse",
             "Is proud of getting through a difficult mediation session",
-            "Feels exhausted from {PRONOUN/m_c/poss} Clanmates' bickering",
+            "Feels exhausted from {PRONOUN/m_c/poss} companions' bickering",
             "Is listening to both sides of an argument",
             "Is feeling a bit underappreciated for {PRONOUN/m_c/poss} mediation",
             "Is wondering if {PRONOUN/m_c/subject} made the right decision in becoming a mediator",
             "Is relieved {PRONOUN/m_c/subject} broke up an argument before it started",
             "Is hoping the Clan can stay peaceful",
             "Is contemplating teaching the Clan communication skills",
-            "Is mediating a small disagreement between two Clanmates",
+            "Is mediating a small disagreement between two companions",
             "Wonders if c_n considers {PRONOUN/m_c/object} to be a good mediator"
         ]
     },
@@ -109,7 +109,7 @@
     {
         "id": "cold_mediator",
         "thoughts": [
-            "Is judging two Clanmates for their foolish argument",
+            "Is judging two companions for their foolish argument",
             "Wishes to break up a sickeningly lovey-dovey couple",
             "Is sitting back and watching an argument take place"
         ],

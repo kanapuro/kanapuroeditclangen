@@ -23,7 +23,7 @@
             "Has the foul taste of bitter herbs in {PRONOUN/m_c/poss} mouth",
             "Wonders if {PRONOUN/m_c/subject} could borrow some catmint from the other Clans",
             "Is happy that {PRONOUN/m_c/subject} chose life as a medicine cat",
-            "Is proud of {PRONOUN/m_c/poss} ability to care for {PRONOUN/m_c/poss} Clanmates"
+            "Is proud of {PRONOUN/m_c/poss} ability to care for {PRONOUN/m_c/poss} companions"
         ]
     },
     {
@@ -283,7 +283,7 @@
     {
         "id": "confident_medicine_cat",
         "thoughts": [
-            "Is proud of {PRONOUN/m_c/poss} ability to care for {PRONOUN/m_c/poss} Clanmates",
+            "Is proud of {PRONOUN/m_c/poss} ability to care for {PRONOUN/m_c/poss} companions",
             "Does not doubt {PRONOUN/m_c/self} while treating a cat"
         ],
         "main_trait_constraint": [
@@ -333,7 +333,7 @@
     {
         "id": "lonesome_medicine_cat",
         "thoughts": [
-            "Wishes {PRONOUN/m_c/poss} Clanmates could understand {PRONOUN/m_c/poss} struggles",
+            "Wishes {PRONOUN/m_c/poss} companions could understand {PRONOUN/m_c/poss} struggles",
             "Wishes there were more medicine cats in the Clan",
             "Wonders why the warriors won't share prey with {PRONOUN/m_c/object}",
             "Wishes {PRONOUN/m_c/subject} could make friends with someone",

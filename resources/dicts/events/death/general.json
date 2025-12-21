@@ -6206,7 +6206,7 @@
             "no_body"
         ],
         "weight": 20,
-        "event_text": "m_c was burnt alive while trying to save {PRONOUN/m_c/poss} Clanmates from a fire.",
+        "event_text": "m_c was burnt alive while trying to save {PRONOUN/m_c/poss} companions from a fire.",
         "m_c": {
             "status": [
                 "leader"
@@ -6229,7 +6229,7 @@
                 "cats": [
                     "m_c"
                 ],
-                "lead_death": "{VERB/m_c/were/was} killed in a fire trying to save {PRONOUN/m_c/poss} Clanmates"
+                "lead_death": "{VERB/m_c/were/was} killed in a fire trying to save {PRONOUN/m_c/poss} companions"
             }
         ]
     },

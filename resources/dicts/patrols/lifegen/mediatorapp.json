@@ -518,7 +518,7 @@
         "max_cats": 6,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "Two Clanmates are having an argument in the clearing, and though you're not allowed to train as a mediator during your punishment, you can't help but listen in, trying to think about how you might solve their problem given the chance.",
+        "intro_text": "Two companions are having an argument in the clearing, and though you're not allowed to train as a mediator during your punishment, you can't help but listen in, trying to think about how you might solve their problem given the chance.",
         "decline_text": "You turn away, deciding to mind your business.",
         "chance_of_success": 40,
         "success_outcomes": [

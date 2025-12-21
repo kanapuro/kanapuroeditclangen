@@ -308,7 +308,7 @@
             "I swear, your secrets are safe with me ... hehehe."
         ],
         "madeup": [
-            "Hmph. And so what if I did? Is it such a crime for me to want to add some entertainment to my Clanmates' lives?",
+            "Hmph. And so what if I did? Is it such a crime for me to want to add some entertainment to my companions' lives?",
             "C'mon, you can't deny you love a little gossip now and then!"
         ]
     },
@@ -3205,7 +3205,7 @@
             "min_dislike_50"
         ],
         "intro": [
-            "Look, I'd rather be eating a toad right now than speaking to you, but... we're still Clanmates, and Clanmates should at least try and tolerate one another, right?",
+            "Look, I'd rather be eating a toad right now than speaking to you, but... we're still companions, and companions should at least try and tolerate one another, right?",
             "So... here.",
             "[t_c tosses a mouse at your paws and watches you expectantly. It seems like {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} waiting for a response.]"
         ],
@@ -3232,8 +3232,8 @@
         ],
         "insult": [
             "[t_c growls and snatches the mouse straight out of your paws.]",
-            "I don't know what your deal is, but c_n can't afford to have its Clanmates at each other's throats. Pull yourself together and stop acting like a kit.",
-            "I'd hate to see you drive more of your Clanmates away."
+            "I don't know what your deal is, but c_n can't afford to have its companions at each other's throats. Pull yourself together and stop acting like a kit.",
+            "I'd hate to see you drive more of your companions away."
         ]
     },
     "upstanding_choice3": {
@@ -3645,7 +3645,7 @@
         },
         "YouHelp": [
             "[t_c needs your help, this is an urgent matter that requires your assistance, for the sake of the Clan! You get off your paws and begin to question the cats around you. Some more helpful than others.]",
-            "[After endless rounds of asking your Clanmates, t_c approaches you out of break and tired. Much to {PRONOUN/t_c/poss} surprise, you look the same.]",
+            "[After endless rounds of asking your companions, t_c approaches you out of break and tired. Much to {PRONOUN/t_c/poss} surprise, you look the same.]",
             "Thank you for helping me, y_c. Looks like some others are also asking around. You should see r_m, {PRONOUN/r_m/subject}{VERB/r_m/'re/'s} like a kitten with a mossball.",
             "StarClan, where is d_n? It's like {PRONOUN/d_n/subject} just up and disappeared-",
             "[As if on cue, d_n enters the camp with a mouse in {PRONOUN/d_n/poss} jaw. Beside {PRONOUN/d_n/object} is l_n, who looks relaxed until {PRONOUN/l_n/subject} {VERB/l_n/see/sees} the utter disarray the camp is in.]",
@@ -3708,9 +3708,9 @@
             "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/flop/flops} down next to you and position {PRONOUN/t_c/self} to match your pose.]",
             "[Silence hangs in the air for a second as {PRONOUN/t_c/subject} {VERB/t_c/think/thinks} to {PRONOUN/t_c/self}, eyes fixated on the sky as {PRONOUN/t_c/poss} brain formulates an opinion.]",
             "I hate the fact that you're right. This is actually really comfortable... Cheers to that y_c.",
-            "[You both lay down together and have a light-hearted talk, both smiling and giggling. You both couldn't care less how your Clanmates stare at you. They just don't get it.]",
-            "Ha! Don't pay attention to them y_c, they're just jealous of our coolness! They'll never admit it, but I have no doubt when some of our Clanmates are alone, they'll try it themselves.",
-            "[You snicker at the thought knowing that t_c is absolutely right, some of your Clanmates will absolutely be trying this out later.]"
+            "[You both lay down together and have a light-hearted talk, both smiling and giggling. You both couldn't care less how your companions stare at you. They just don't get it.]",
+            "Ha! Don't pay attention to them y_c, they're just jealous of our coolness! They'll never admit it, but I have no doubt when some of our companions are alone, they'll try it themselves.",
+            "[You snicker at the thought knowing that t_c is absolutely right, some of your companions will absolutely be trying this out later.]"
         ],
         "NowYouLackConfidence": [
             "Judging by the lack of confidence in your statement, I'm going to leave you to it. I mean, have fun, but...",
@@ -3966,7 +3966,7 @@
         "regret_idont": [
             "No shame in that at all. Respectable choice, really.",
             "Just don't get caught if you do it again. I'd hate to see you kicked out for something like this. Those star-blind fools will know in the end...",
-            "But what your Clanmates don't know in life won't hurt them."
+            "But what your companions don't know in life won't hurt them."
         ]
     },
     "strange_choice_1": {
@@ -5320,7 +5320,7 @@
             "[t_c doesn't meet your eyes as {PRONOUN/t_c/subject} {VERB/t_c/turn/turns} away.]"
         ],
         "agree": [
-            "[Yes, it's dislike-r_m's responsibility to care for your sick and injured Clanmates, but you agree that {PRONOUN/dislike-r_m/subject} {VERB/dislike-r_m/aren't/isn't} always the most diligent about it.]",
+            "[Yes, it's dislike-r_m's responsibility to care for your sick and injured companions, but you agree that {PRONOUN/dislike-r_m/subject} {VERB/dislike-r_m/aren't/isn't} always the most diligent about it.]",
             "[{PRONOUN/dislike-r_m/subject/CAP}{VERB/dislike-r_m/'re/'s} too distracted by {PRONOUN/dislike-r_m/poss} own problems, and you'd believe it if someone said {PRONOUN/dislike-r_m/subject} {VERB/dislike-r_m/aren't/isn't} as careful with patients {PRONOUN/dislike-r_m/subject} {VERB/dislike-r_m/don't/doesn't} care as much about.]",
             "[t_c looks relieved.]",
             "I'm so glad. I thought I might be the only one to think that.",
@@ -5449,7 +5449,7 @@
         },
         "intro": [
             "[t_c is allowed to take prey from the fresh-kill pile, but only after the rest of the Clan has eaten their fill. Still, {PRONOUN/t_c/subject} {VERB/t_c/seem/seems} incredibly uncomfortable approaching the pile when any other cat is watching.]",
-            "[This evening, your Clanmates have already turned in for the night. You're sitting alone in the center of camp when a bush rustles at the edge of camp.]",
+            "[This evening, your companions have already turned in for the night. You're sitting alone in the center of camp when a bush rustles at the edge of camp.]",
             "[t_c slinks out of the shadows and is halfway to the fresh-kill pile when {PRONOUN/t_c/subject} {VERB/t_c/spot/spots} you. {PRONOUN/t_c/subject/CAP} {VERB/t_c/freeze/freezes}, eyes wide and gleaming in the dim light.]"
         ],
         "intro_choices": {
@@ -6459,13 +6459,13 @@
             "[You press your face against {PRONOUN/t_c/inposs}, hoping to give {PRONOUN/t_c/object} some comfort.]"
         ],
         "firm": [
-            "[You say that neutral-r_w-sweet would never say such a thing, and that t_c shouldn't think like that about {PRONOUN/t_c/poss} Clanmates. Everycat in c_n wants {PRONOUN/t_c/object} to take as much time as {PRONOUN/t_c/subject} {VERB/t_c/need/needs}.]",
+            "[You say that neutral-r_w-sweet would never say such a thing, and that t_c shouldn't think like that about {PRONOUN/t_c/poss} companions. Everycat in c_n wants {PRONOUN/t_c/object} to take as much time as {PRONOUN/t_c/subject} {VERB/t_c/need/needs}.]",
             "Sorry. You're right. Please don't tell neutral-r_w-sweet I said that... I swear I don't think I think poorly of everycat, really! I just...",
             "[t_c seems on the verge of a breakdown. You reassure {PRONOUN/t_c/object} and press against {PRONOUN/t_c/poss} side, then stay there until {PRONOUN/t_c/subject} {VERB/t_c/calm/calms} down.]"
         ],
         "annoyed": [
-            "[You tell t_c that it's incredibly annoying how {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} always assuming the worst of {PRONOUN/t_c/poss} Clanmates. neutral-r_w-sweet is one of the kindest cats in the Clan, and {PRONOUN/neutral-r_w-sweet/subject}'d never complain about t_c needing time to grieve.]",
-            "[Cats will give t_c a pass now, since {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} clearly having a rough time, but once {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} feeling better, thinking that everycat's out to get {PRONOUN/t_c/object} will only irritate {PRONOUN/t_c/poss} Clanmates.]",
+            "[You tell t_c that it's incredibly annoying how {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} always assuming the worst of {PRONOUN/t_c/poss} companions. neutral-r_w-sweet is one of the kindest cats in the Clan, and {PRONOUN/neutral-r_w-sweet/subject}'d never complain about t_c needing time to grieve.]",
+            "[Cats will give t_c a pass now, since {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} clearly having a rough time, but once {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} feeling better, thinking that everycat's out to get {PRONOUN/t_c/object} will only irritate {PRONOUN/t_c/poss} companions.]",
             "[t_c buries {PRONOUN/t_c/poss} head under {PRONOUN/t_c/poss} paws. {PRONOUN/t_c/subject/CAP} {VERB/t_c/sniffle/sniffles}, but {VERB/t_c/don't/doesn't} say anything more.]"
         ],
         "undermine": [

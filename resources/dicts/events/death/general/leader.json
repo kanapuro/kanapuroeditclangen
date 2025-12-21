@@ -712,9 +712,9 @@
             "Leaf-bare",
             "no_body"
         ],
-        "death_text": "m_c was burnt alive while trying to save {PRONOUN/m_c/poss} Clanmates from a fire.",
+        "death_text": "m_c was burnt alive while trying to save {PRONOUN/m_c/poss} companions from a fire.",
         "history_text": {
-            "lead_death": "{VERB/m_c/were/was} killed in a fire trying to save {PRONOUN/m_c/poss} Clanmates"
+            "lead_death": "{VERB/m_c/were/was} killed in a fire trying to save {PRONOUN/m_c/poss} companions"
         },
         "cat_trait": [
             "altruistic",

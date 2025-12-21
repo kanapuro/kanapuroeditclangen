@@ -2711,7 +2711,7 @@ class Events:
 
                 if game.clan.deputy.personality.trait == 'bloodthirsty':
                     text = f'{game.clan.deputy.name} has become the new leader. ' \
-                           f'They stare down at their Clanmates with unsheathed claws, ' \
+                           f'They stare down at their companions with unsheathed claws, ' \
                            f'promising a new era for the Clans.'
                 else:
                     c = random.choice([1, 2, 3])
@@ -4011,7 +4011,7 @@ class Events:
                 cat.shunned = 0
                 cat.forgiven = 1
                 if cat.ID == game.clan.your_cat.ID:
-                    text = "A Clan meeting is called one day, and your Clanmates vote to forgive you for what you did."
+                    text = "A Clan meeting is called one day, and your companions vote to forgive you for what you did."
                 else:
                     text = random.choice([
                         f"After showing genuine remorse and guilt, {cat.name} has been forgiven and welcomed back into {game.clan.name}Clan, though some are quicker to forgive than others.",

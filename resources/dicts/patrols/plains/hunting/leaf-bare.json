@@ -338,7 +338,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "A storm descends, sudden and violent, putting an end to any other thoughts but survival. As the cats huddle together, desperately trying to conserve warmth, no one notices that r_c has stopped responding. At some point in the storm, {PRONOUN/r_c/poss} life slips away, and {PRONOUN/r_c/poss} distraught Clanmates are left to carry {PRONOUN/r_c/poss} body home.",
+                "text": "A storm descends, sudden and violent, putting an end to any other thoughts but survival. As the cats huddle together, desperately trying to conserve warmth, no one notices that r_c has stopped responding. At some point in the storm, {PRONOUN/r_c/poss} life slips away, and {PRONOUN/r_c/poss} distraught companions are left to carry {PRONOUN/r_c/poss} body home.",
                 "exp": 0,
                 "weight": 10,
                 "dead_cats": [
@@ -1866,7 +1866,7 @@
                 ]
             },
             {
-                "text": "s_c swiftly follows the scent to its origin; a burrow of hibernating squirrels, of course. {PRONOUN/s_c/subject/CAP} {VERB/s_c/think/thinks} for a short time, then {VERB/s_c/direct/directs} {PRONOUN/s_c/poss} Clanmates into different positions, before walking on top of the burrow and slamming {PRONOUN/s_c/poss} paws down repeatedly. That wakes the squirrels, who rush out and right into the waiting paws of the patrol.",
+                "text": "s_c swiftly follows the scent to its origin; a burrow of hibernating squirrels, of course. {PRONOUN/s_c/subject/CAP} {VERB/s_c/think/thinks} for a short time, then {VERB/s_c/direct/directs} {PRONOUN/s_c/poss} companions into different positions, before walking on top of the burrow and slamming {PRONOUN/s_c/poss} paws down repeatedly. That wakes the squirrels, who rush out and right into the waiting paws of the patrol.",
                 "exp": 30,
                 "weight": 20,
                 "stat_skill": [

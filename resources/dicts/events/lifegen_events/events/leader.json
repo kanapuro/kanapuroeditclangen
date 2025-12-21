@@ -34,7 +34,7 @@
         "Sometimes, you wish you could ask the other leaders for advice on the challenges of managing a Clan.",
         "You wonder if the other warriors wish you had chosen them as your deputy.",
         "You wonder if d_n will consider you a good predecessor, or one who left behind trouble for {PRONOUN/d_n/object} to clean up.",
-        "You stay up until dawn trying to make a decision, weighing the opinions of your Clanmates and trying to find an option that will make everycat happy.",
+        "You stay up until dawn trying to make a decision, weighing the opinions of your companions and trying to find an option that will make everycat happy.",
         "You remind d_n that {PRONOUN/d_n/subject}{VERB/d_n/'re/'s} always allowed to give you feedback on your leadership.",
         "You join a border patrol, but let d_n lead.",
         "You're glad for y_m's company in the sometimes-lonely leader's den.",
@@ -49,7 +49,7 @@
     "leader unabashed": [],
     "leader unlawful": [],
     "leader rare": [
-        "You find r_a sitting in thought at the edge of camp. Curious, you approach {PRONOUN/r_a/object}, inquiring about {PRONOUN/r_a/poss} training. {PRONOUN/r_a/subject/CAP} {VERB/r_a/confess/confesses} {PRONOUN/r_a/poss} worries, wondering if {PRONOUN/r_a/poss} mentor is really the right fit for {PRONOUN/r_a/object}. You sit silently for a moment before advising {PRONOUN/r_a/object} that, no matter what, you are all Clanmates. You are certain that {PRONOUN/r_a/poss} mentor is doing their best to train {PRONOUN/r_a/object} well, but if it comes to it, you can always find a better mentor for {PRONOUN/r_a/object}. The apprentice purrs gratefully, happy that {PRONOUN/r_a/subject} could confide in you, before scampering off with renewed energy.",
+        "You find r_a sitting in thought at the edge of camp. Curious, you approach {PRONOUN/r_a/object}, inquiring about {PRONOUN/r_a/poss} training. {PRONOUN/r_a/subject/CAP} {VERB/r_a/confess/confesses} {PRONOUN/r_a/poss} worries, wondering if {PRONOUN/r_a/poss} mentor is really the right fit for {PRONOUN/r_a/object}. You sit silently for a moment before advising {PRONOUN/r_a/object} that, no matter what, you are all companions. You are certain that {PRONOUN/r_a/poss} mentor is doing their best to train {PRONOUN/r_a/object} well, but if it comes to it, you can always find a better mentor for {PRONOUN/r_a/object}. The apprentice purrs gratefully, happy that {PRONOUN/r_a/subject} could confide in you, before scampering off with renewed energy.",
         "You catch r_m's eye, confused as {PRONOUN/r_m/subject} quickly {VERB/r_m/turn/turns} away, bristling. It seems like {PRONOUN/r_m/subject}{VERB/r_m/'re/'s} trying to avoid you. Why? What has StarClan told {PRONOUN/r_m/object}?",
         "You wonder if d_n is really the right cat to be your successor.",
         "You pray that r_w knows where {PRONOUN/r_w/poss} loyalties lie after watching {PRONOUN/r_w/object} sneak out of camp in the middle of the night.",

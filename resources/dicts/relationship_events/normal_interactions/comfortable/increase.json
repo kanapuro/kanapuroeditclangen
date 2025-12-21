@@ -41,7 +41,7 @@
 		"intensity": "low",
 		"interactions": [
 			"m_c is asking r_c to check {PRONOUN/m_c/object} for ticks.",
-			"m_c tells r_c stories about former Clanmates while being checked for ticks.",
+			"m_c tells r_c stories about former companions while being checked for ticks.",
 			"m_c appreciates r_c's diligence when checking {PRONOUN/m_c/object} for ticks.",
 			"r_c knows just the right herb to soothe m_c's aching bones.",
 			"r_c is always so patient when m_c approaches {PRONOUN/r_c/object} with pain.",
@@ -150,7 +150,7 @@
 			"r_c is being quite considerate with m_c.",
 			"r_c took time out of {PRONOUN/r_c/poss} day to help m_c with a difficult task.",
 			"r_c saved extra nest bedding for m_c.",
-			"r_c brought m_c and other Clanmates warm bedding for a cold night.",
+			"r_c brought m_c and other companions warm bedding for a cold night.",
 			"r_c complimented m_c on something nobody else did.",
 			"r_c took the time to help m_c work through a technique {PRONOUN/m_c/subject} {VERB/m_c/are/is} struggling with."
 		],
@@ -288,7 +288,7 @@
 			"m_c overhears r_c saying something nice about {PRONOUN/m_c/object}.",
 			"m_c has had a lot of good dreams about r_c lately.",
 			"Whenever r_c's name is mentioned, m_c relaxes.",
-			"m_c's Clanmates notice that {PRONOUN/m_c/subject} {VERB/m_c/talk/talks} a lot about r_c.",
+			"m_c's companions notice that {PRONOUN/m_c/subject} {VERB/m_c/talk/talks} a lot about r_c.",
 			"r_c compliments m_c on something {PRONOUN/m_c/subject} {VERB/m_c/were/was} self-conscious about.",
 			"m_c associates {PRONOUN/m_c/poss} favorite smell with r_c."
 		]

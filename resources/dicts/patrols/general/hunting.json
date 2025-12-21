@@ -1231,7 +1231,7 @@
         "weight": 10
       },
       {
-        "text": "s_c drops into the perfect hunter's crouch and slowly creeps closer. {PRONOUN/s_c/subject/CAP} suddenly {VERB/s_c/hiss/hisses} loudly, scaring the rat away and startling {PRONOUN/s_c/poss} Clanmates. s_c explains crossly that the rat was carrying a foul, sickly-sweet scent on its breath. It would have poisoned any cat that bit it.",
+        "text": "s_c drops into the perfect hunter's crouch and slowly creeps closer. {PRONOUN/s_c/subject/CAP} suddenly {VERB/s_c/hiss/hisses} loudly, scaring the rat away and startling {PRONOUN/s_c/poss} companions. s_c explains crossly that the rat was carrying a foul, sickly-sweet scent on its breath. It would have poisoned any cat that bit it.",
         "exp": 30,
         "weight": 20,
         "stat_skill": ["CLEVER,3", "HUNTER,2", "SENSE,1"]
@@ -1580,7 +1580,7 @@
     "chance_of_success": 50,
     "success_outcomes": [
         {
-            "text": "{PRONOUN/p_l/poss/CAP} judgment is accurate - these hunting grounds are excellent, p_l will have to bring {PRONOUN/p_l/poss} Clanmates back here another day.",
+            "text": "{PRONOUN/p_l/poss/CAP} judgment is accurate - these hunting grounds are excellent, p_l will have to bring {PRONOUN/p_l/poss} companions back here another day.",
             "exp": 25,
             "weight": 10,
             "prey": ["large"]
@@ -2433,7 +2433,7 @@
             "prey": ["large"]
         },
         {
-            "text": "This is what Clanmates do - this is what a Clan is <i>for</i>. Nodding to each other, the patrol heads out, determined to back each other up. That's what ends up making all the difference, and their hunt goes flawlessly.",
+            "text": "This is what companions do - this is what a Clan is <i>for</i>. Nodding to each other, the patrol heads out, determined to back each other up. That's what ends up making all the difference, and their hunt goes flawlessly.",
             "exp": 30,
             "weight": 10,
             "relationships": [
@@ -2768,7 +2768,7 @@
     "chance_of_success": 50,
     "success_outcomes": [
         {
-            "text": "Does it somehow make the conditions ideal? No. Does having their Clanmates there to coordinate with absolutely net them more prey than they'd have been able to do in smaller patrols? Yes.",
+            "text": "Does it somehow make the conditions ideal? No. Does having their companions there to coordinate with absolutely net them more prey than they'd have been able to do in smaller patrols? Yes.",
             "exp": 30,
             "weight": 10,
             "relationships": [
@@ -2858,7 +2858,7 @@
     "chance_of_success": 50,
     "success_outcomes": [
         {
-            "text": "It's nice, catching up with Clanmates they might not see every day as they all hunt. Nothing earth-shattering. Just nice.",
+            "text": "It's nice, catching up with companions they might not see every day as they all hunt. Nothing earth-shattering. Just nice.",
             "exp": 30,
             "weight": 10,
             "relationships": [

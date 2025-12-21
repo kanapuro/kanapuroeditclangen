@@ -655,7 +655,7 @@ class RoleScreen(Screens):
             output = (
                 f"{self.the_cat.name} is a <b>medicine cat apprentice</b>, training to become a full medicine cat. "
                 f"Kits can be made medicine cat apprentices at six moons of age, where they will learn how to "
-                f"heal their Clanmates and commune with the stars. Medicine cat apprentices are typically chosen "
+                f"heal their companions and commune with the stars. Medicine cat apprentices are typically chosen "
                 f"for their interest in healing and/or their connecting to the stars. Apprentices take the suffix "
                 f"-paw, to represent the path their paws take towards adulthood."
             )

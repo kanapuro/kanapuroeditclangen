@@ -150,7 +150,7 @@
             "y_c. We have something to discuss.",
             "You've been avoiding patrols lately. Don't even try to deny it.",
             "I know you don't like to take things seriously, but this is reality. We are warriors. Face it. Or don't.",
-            "But just know that your lack of initiative could cost your Clanmates shelter, food, warmth and safety. Are you willing to risk it?",
+            "But just know that your lack of initiative could cost your companions shelter, food, warmth and safety. Are you willing to risk it?",
             "[t_c glowers at you, {PRONOUN/t_c/poss} expression unnervingly cold. StarClan, you forgot how scary {PRONOUN/t_c/subject} can be when {PRONOUN/t_c/subject} {VERB/t_c/need/needs} to ...]"
         ]
     },
@@ -1531,7 +1531,7 @@
         ],
         "intro": [
             "*Sigh* Y'know, y_c, sometimes I wonder if I'm really cut out for this ...",
-            "I'm supposed to be out on the battlefield fighting alongside my Clanmates! Not ... organizing patrols and negotiating territory!",
+            "I'm supposed to be out on the battlefield fighting alongside my companions! Not ... organizing patrols and negotiating territory!",
             "On the worst nights, I wonder why l_n even chose me to succeed {PRONOUN/l_n/object} ... This responsibility was never something I signed up for!",
             "If I could do it all over again, would I even have accepted the position at all?"
         ]
@@ -1800,7 +1800,7 @@
         ],
         "intro": [
             "Some cats criticize me for being too reckless in my decision making ... fox-dung, I say!",
-            "Of course I value the lives of all my Clanmates, but if there's one thing I value more, it's the principles and virtues that make this Clan what it is.",
+            "Of course I value the lives of all my companions, but if there's one thing I value more, it's the principles and virtues that make this Clan what it is.",
             "Strength, courage, honor, skill ... These are all things that are too precious to forsake. And if something comes by to threaten those things, you bet I'm gonna fight back with everything I've got to protect them!",
             "That's what being a warrior is all about. Not cowering like a kittypet and letting others take what's rightfully ours, just to save a few drops of blood from being spilled."
         ]
@@ -2313,7 +2313,7 @@
             "Just ... had a bad day, is all ...",
             "*Sigh* y_c, have you ever felt like you're not enough for anyone?",
             "Usually, when it comes to making a decision, I never hesitate. Whatever the obstacle, I'll run headfirst into it, no questions asked.",
-            "But, today, on patrol, I didn't listen to the leader, and accidentally ran straight into an enemy trap. Luckily, r_w was there to keep everycat safe, but because of me, my Clanmates could've been hurt, or worse.",
+            "But, today, on patrol, I didn't listen to the leader, and accidentally ran straight into an enemy trap. Luckily, r_w was there to keep everycat safe, but because of me, my companions could've been hurt, or worse.",
             "I just feel like such a failure. A liability. I can't help the way I am, but what if everycat's better off without me?",
             "[You offer t_c words of reassurance, but {PRONOUN/t_c/subject} {VERB/t_c/seem/seems} troubled beyond comforting.]",
             "[Still, you sit with {PRONOUN/t_c/object} through the night, hoping to stabilize {PRONOUN/t_c/object} through whatever storm {PRONOUN/t_c/subject} might be weathering right now.]"
@@ -4229,7 +4229,7 @@
         ],
         "intro": [
             "I wonder if the cats who gave l_n {PRONOUN/l_n/poss} nine lives made requests.",
-            "All of your Clanmates having such high expectations of you already sounds hard enough... I can't imagine knowing the stars themselves are watching with expectations, too.",
+            "All of your companions having such high expectations of you already sounds hard enough... I can't imagine knowing the stars themselves are watching with expectations, too.",
             "I hope l_n stays around for a really long time. I'm not ready for that pressure yet."
         ]
     },
@@ -4424,7 +4424,7 @@
         },
         "intro": [
             "Just to double check, you and that kittypet to the edge of the territory are just friends? Yes, I'm aware and no, I'm not mad. You're allowed to have connections outside the Clan, in fact I think it's a good thing.",
-            "However, your loyalty is to this Clan and your clanmates is first and foremost. If you wish to follow your friend into another life, then by all means, that is your choice to make. But you cannot live a paw in each world. It puts yourself, them and c_n at risk.",
+            "However, your loyalty is to this Clan and your companions is first and foremost. If you wish to follow your friend into another life, then by all means, that is your choice to make. But you cannot live a paw in each world. It puts yourself, them and c_n at risk.",
             "I just want you to be safe as well as your friend. o_c_n has been lurking around there recently and I worry some warriors might not be as accepting of others as we are. You should tell your friend and find a different place to converse.",
             "I'm sure they would be alright to visit here. But that's their call to make. Look after them and look after yourself, y_c. If you ever need to talk to me about... This topic... just ask, I'm always here to help."
         ]
@@ -4560,7 +4560,7 @@
         ],
         "intro": [
             "[It can be difficult to stay quiet while hunting with all the snow on the ground.]",
-            "[Most of your Clanmates have to focus on finding the softer, less crunchy sections to walk across, but t_c effortlessly finds the quietest paths.]",
+            "[Most of your companions have to focus on finding the softer, less crunchy sections to walk across, but t_c effortlessly finds the quietest paths.]",
             "[Even when {PRONOUN/t_c/subject} {VERB/t_c/stray/strays} across the louder patches of snow, {PRONOUN/t_c/poss} pawsteps are almost silent.]"
         ]
     },
@@ -5562,7 +5562,7 @@
             ]
         },
         "intro": [
-            "[t_c paces around the camp, checking in on {PRONOUN/t_c/poss} Clanmates with a smile.]",
+            "[t_c paces around the camp, checking in on {PRONOUN/t_c/poss} companions with a smile.]",
             "[First {PRONOUN/t_c/subject} {VERB/t_c/check/checks} on the kits, next the apprentices and then the warriors.]",
             "[You watch as {PRONOUN/t_c/poss} whiskers twitch calmly as {PRONOUN/t_c/subject} {VERB/t_c/report/reports} back to the leader with {PRONOUN/t_c/poss} tail held high.]"
         ]
@@ -5955,7 +5955,7 @@
         ],
         "join": [
             "[You nod and t_c leaves, but when the patrol gathers later that day you sneak over to join them. None of the other patrol members realize you're not supposed to be there.]",
-            "[The patrol is a success, and while you catch the scent of dogs by the o_c_n border, you don't encounter them. Your Clanmates commend your vigilance!]",
+            "[The patrol is a success, and while you catch the scent of dogs by the o_c_n border, you don't encounter them. Your companions commend your vigilance!]",
             "[When you return to camp, though, you notice t_c watching you. {PRONOUN/t_c/poss/CAP} expression seems almost... hurt, but {PRONOUN/t_c/subject} {VERB/t_c/turn/turns} away before you can meet {PRONOUN/t_c/poss} eyes.]"
         ]
     },

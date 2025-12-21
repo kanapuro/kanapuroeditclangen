@@ -53,7 +53,7 @@
         "weight": 20,
         "interactions": [
             "m_c thanks StarClan for {PRONOUN/m_c/poss} meal.",
-            "m_c gazes up at the stars, trying to guess which ones are {PRONOUN/m_c/poss} fallen Clanmates.",
+            "m_c gazes up at the stars, trying to guess which ones are {PRONOUN/m_c/poss} fallen companions.",
             "m_c thinks about StarClan.",
             "m_c finds a strangely sparkly feather in {PRONOUN/m_c/poss} nest and wonders if it's a sign.",
 	        "m_c is feeling especially spiritual today."
@@ -153,7 +153,7 @@
         "weight": 20,
         "interactions": [
             "m_c grows more confident in {PRONOUN/m_c/poss} belief in the Dark Forest.",
-            "While {PRONOUN/m_c/poss} Clanmates pray to StarClan, m_c gives thanks to a force much darker.",
+            "While {PRONOUN/m_c/poss} companions pray to StarClan, m_c gives thanks to a force much darker.",
             "m_c's faith in the Dark Forest grows.",
             "m_c finds more comfort in the wasteland of the Dark Forest than the supposed paradise of StarClan.",
             "m_c feels thankful for the power that the Dark Forest promises."
@@ -187,7 +187,7 @@
         "interactions": [
             "The Dark Forest starts to scare m_c more than it intrigues {PRONOUN/m_c/object}.",
             "m_c turns away from a Dark Forest warrior in {PRONOUN/m_c/poss} dreams.",
-            "m_c asks a few of {PRONOUN/m_c/poss} Clanmates why they look up to StarClan so much.",
+            "m_c asks a few of {PRONOUN/m_c/poss} companions why they look up to StarClan so much.",
             "m_c starts to wonder why the darkness used to be so appealing to {PRONOUN/m_c/object}.",
             "m_c has been feeling more grounded lately."
         ],
@@ -804,9 +804,9 @@
         "faith_effect": 0.5,
         "interactions": [
             "m_c was worried that StarClan's silence was somehow {PRONOUN/m_c/poss} fault, but r_c assured m_c it has nothing to do with {PRONOUN/m_c/object}.",
-            "m_c feels awful after accidentally giving one of {PRONOUN/m_c/poss} clanmates the wrong herb. r_c assures {PRONOUN/m_c/object} that no cat is perfect and mistakes are just learning opportunities in disguise.",
-            "m_c and r_c pray for one of their sick clanmates together.",
-            "m_c and r_c are relieved when one of their sick clanmates finally starts getting better."
+            "m_c feels awful after accidentally giving one of {PRONOUN/m_c/poss} companions the wrong herb. r_c assures {PRONOUN/m_c/object} that no cat is perfect and mistakes are just learning opportunities in disguise.",
+            "m_c and r_c pray for one of their sick companions together.",
+            "m_c and r_c are relieved when one of their sick companions finally starts getting better."
         ],
         "m_c": {
             "affected": true,
@@ -1013,7 +1013,7 @@
         "faith_effect": -0.5,
         "weight": 10,
         "interactions": [
-            "To m_c, it feels like StarClan has turned their backs on {PRONOUN/m_c/object}, just like {PRONOUN/m_c/poss} Clanmates have.",
+            "To m_c, it feels like StarClan has turned their backs on {PRONOUN/m_c/object}, just like {PRONOUN/m_c/poss} companions have.",
             "m_c desperately pleads StarClan to show that they understand {PRONOUN/m_c/poss} actions, but the stars remain silent.",
             "One clear night, m_c asks StarClan if they forgive {PRONOUN/m_c/object}. {PRONOUN/m_c/subject/CAP}{VERB/m_c/swear/swears} {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} never seen the clouds come in so quickly."
         ],
@@ -1438,7 +1438,7 @@
         "weight": 10,
         "season": ["leafbare"],
         "interactions": [
-            "m_c jokingly decides to 'fish' during leafbare, hoping to get a laugh out of {PRONOUN/m_c/poss} Clanmates. When {PRONOUN/m_c/subject} '{VERB/m_c/try/tries}' to fish, the ice cracks under {PRONOUN/m_c/poss} paws, and {PRONOUN/m_c/subject} {VERB/m_c/leap/leaps} back onto solid ground before {PRONOUN/m_c/subject} can plunge into the frigid water. Clearly, this is StarClan telling {PRONOUN/m_c/object} not to be fishing during leafbare! {PRONOUN/m_c/subject/CAP} {VERB/m_c/thank/thanks} StarClan for the reminder."
+            "m_c jokingly decides to 'fish' during leafbare, hoping to get a laugh out of {PRONOUN/m_c/poss} companions. When {PRONOUN/m_c/subject} '{VERB/m_c/try/tries}' to fish, the ice cracks under {PRONOUN/m_c/poss} paws, and {PRONOUN/m_c/subject} {VERB/m_c/leap/leaps} back onto solid ground before {PRONOUN/m_c/subject} can plunge into the frigid water. Clearly, this is StarClan telling {PRONOUN/m_c/object} not to be fishing during leafbare! {PRONOUN/m_c/subject/CAP} {VERB/m_c/thank/thanks} StarClan for the reminder."
         ],
         "m_c": {
             "min_max_faith": [5, 9],

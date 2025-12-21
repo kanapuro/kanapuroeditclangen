@@ -993,7 +993,7 @@
   },
   {
     "interaction_type": "provoke",
-    "event_text": "At the Gathering, m_c insults o_c_n den-weaving techniques - they're all simple loops, instead of c_n's loop-and-twist woven nests. o_c_n's leader doesn't seem as devastated as expected. Next time, m_c will have to workshop {PRONOUN/m_c/poss} insults with {PRONOUN/m_c/poss} Clanmates.",
+    "event_text": "At the Gathering, m_c insults o_c_n den-weaving techniques - they're all simple loops, instead of c_n's loop-and-twist woven nests. o_c_n's leader doesn't seem as devastated as expected. Next time, m_c will have to workshop {PRONOUN/m_c/poss} insults with {PRONOUN/m_c/poss} companions.",
     "rel_change": 0,
     "m_c": {
       "trait": [
@@ -1113,7 +1113,7 @@
   },
   {
     "interaction_type": "befriend",
-    "event_text": "During the Gathering, m_c asks after o_c_n's young cats. o_c_n's leader lets a long silence pass before icily suggesting m_c concern {PRONOUN/m_c/self} with {PRONOUN/m_c/poss} own Clanmates.",
+    "event_text": "During the Gathering, m_c asks after o_c_n's young cats. o_c_n's leader lets a long silence pass before icily suggesting m_c concern {PRONOUN/m_c/self} with {PRONOUN/m_c/poss} own companions.",
     "rel_change": -1,
     "m_c": {},
     "player_clan_temper": [
@@ -1947,7 +1947,7 @@
   },
   {
     "interaction_type": "antagonize",
-    "event_text": "m_c brainstorms all night before the Gathering with {PRONOUN/m_c/poss} rudest Clanmates to develop the perfect insult. Once at the Gathering, m_c suddenly can't remember a single idea they came up with. Something about... o_c_n needing the bones removed from their fresh-kill, maybe? Even o_c_n's leader seems disappointed in m_c.",
+    "event_text": "m_c brainstorms all night before the Gathering with {PRONOUN/m_c/poss} rudest companions to develop the perfect insult. Once at the Gathering, m_c suddenly can't remember a single idea they came up with. Something about... o_c_n needing the bones removed from their fresh-kill, maybe? Even o_c_n's leader seems disappointed in m_c.",
     "rel_change": 0,
     "m_c": {
       "trait": [
@@ -2273,7 +2273,7 @@
   },
   {
     "interaction_type": "appease",
-    "event_text": "m_c uses {PRONOUN/m_c/poss} speech at the Gathering to discuss peace and forgiveness through gritted teeth. No cat believes m_c, not even {PRONOUN/m_c/poss} own Clanmates.",
+    "event_text": "m_c uses {PRONOUN/m_c/poss} speech at the Gathering to discuss peace and forgiveness through gritted teeth. No cat believes m_c, not even {PRONOUN/m_c/poss} own companions.",
     "rel_change": 0,
     "m_c": {
       "trait": [
@@ -2513,7 +2513,7 @@
   },
   {
     "interaction_type": "appease",
-    "event_text": "At the Gathering, m_c reveals to o_c_n's leader that one of the o_c_n warriors who died in a recent conflict came to m_c and spoke to {PRONOUN/m_c/object} about peace. o_c_n's leader is furious m_c would presume to speak for one of their dead Clanmates.",
+    "event_text": "At the Gathering, m_c reveals to o_c_n's leader that one of the o_c_n warriors who died in a recent conflict came to m_c and spoke to {PRONOUN/m_c/object} about peace. o_c_n's leader is furious m_c would presume to speak for one of their dead companions.",
     "rel_change": -5,
     "m_c": {
       "skill": [

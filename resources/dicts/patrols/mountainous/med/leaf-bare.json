@@ -1224,7 +1224,7 @@
         "chance_of_success": 20,
         "success_outcomes": [
             {
-                "text": "p_l's paw-pads nearly freeze from trying to dig up burdock in the cold, but somehow {PRONOUN/p_l/subject} {VERB/p_l/manage/manages} it. It's worth all the effort and misery since {PRONOUN/p_l/subject} know how crucial these fresh herbs could be for the Clan, {PRONOUN/p_l/poss} Clanmates purring at the sight of the dirty roots.",
+                "text": "p_l's paw-pads nearly freeze from trying to dig up burdock in the cold, but somehow {PRONOUN/p_l/subject} {VERB/p_l/manage/manages} it. It's worth all the effort and misery since {PRONOUN/p_l/subject} know how crucial these fresh herbs could be for the Clan, {PRONOUN/p_l/poss} companions purring at the sight of the dirty roots.",
                 "exp": 10,
                 "weight": 20,
                 "herbs": [
@@ -1261,7 +1261,7 @@
                 ]
             },
             {
-                "text": "It's very difficult, especially with the plant's leafy top-half gone until newleaf, but p_l somehow manages to find a burdock plant and bring its roots home. Laying the thin roots out in a neat pile in the herb stores makes p_l's entire body thrum with a contented purr, and {PRONOUN/p_l/poss} Clanmates smile, appreciating their hardworking medicine cat.",
+                "text": "It's very difficult, especially with the plant's leafy top-half gone until newleaf, but p_l somehow manages to find a burdock plant and bring its roots home. Laying the thin roots out in a neat pile in the herb stores makes p_l's entire body thrum with a contented purr, and {PRONOUN/p_l/poss} companions smile, appreciating their hardworking medicine cat.",
                 "exp": 10,
                 "weight": 5,
                 "herbs": [
@@ -1789,7 +1789,7 @@
         "chance_of_success": 20,
         "success_outcomes": [
             {
-                "text": "It's miserable work, scraping away snowy pawful by awful, cold pawful. However, p_l manages to find a patch of wilted, soggy, but still green daisies to harvest leaves from. {PRONOUN/p_l/poss/CAP} Clanmates purr at the sight of the mushy green leaves, having spent just as much energy digging for them as p_l.",
+                "text": "It's miserable work, scraping away snowy pawful by awful, cold pawful. However, p_l manages to find a patch of wilted, soggy, but still green daisies to harvest leaves from. {PRONOUN/p_l/poss/CAP} companions purr at the sight of the mushy green leaves, having spent just as much energy digging for them as p_l.",
                 "exp": 10,
                 "weight": 20,
                 "herbs": [
@@ -2359,7 +2359,7 @@
             ]
         },
         "weight": 20,
-        "intro_text": "The cold of leaf-bare might have killed off a lot of greenery, but p_l knows that the dandelions are only playing dead. If {PRONOUN/p_l/subject} can get {PRONOUN/p_l/poss} paws on a plant, the roots will still hold fresh, milky-white sap, or even stinky bulbs. {PRONOUN/p_l/subject/CAP} bring along a patrol of shivering Clanmates - more paws will make light work of digging through the snow.",
+        "intro_text": "The cold of leaf-bare might have killed off a lot of greenery, but p_l knows that the dandelions are only playing dead. If {PRONOUN/p_l/subject} can get {PRONOUN/p_l/poss} paws on a plant, the roots will still hold fresh, milky-white sap, or even stinky bulbs. {PRONOUN/p_l/subject/CAP} bring along a patrol of shivering companions - more paws will make light work of digging through the snow.",
         "decline_text": "They're stopped before they leave camp - these warriors are needed elsewhere. p_l's expedition will have to wait.",
         "chance_of_success": 20,
         "success_outcomes": [
@@ -2971,7 +2971,7 @@
                 ]
             },
             {
-                "text": "Sometimes, p_l finds {PRONOUN/p_l/self} near giddy with gratitude for evergreens, plants that scoff at leaf-bare and grow in spite of it. It's not an effect of the plant - juniper calms, not induces euphoria - just the relief of still having a fresh herb source in leaf-bare, and the warmth of having {PRONOUN/p_l/poss} Clanmates there to help {PRONOUN/p_l/object} gather it.",
+                "text": "Sometimes, p_l finds {PRONOUN/p_l/self} near giddy with gratitude for evergreens, plants that scoff at leaf-bare and grow in spite of it. It's not an effect of the plant - juniper calms, not induces euphoria - just the relief of still having a fresh herb source in leaf-bare, and the warmth of having {PRONOUN/p_l/poss} companions there to help {PRONOUN/p_l/object} gather it.",
                 "exp": 10,
                 "weight": 5,
                 "herbs": [

@@ -735,7 +735,7 @@ class Cat:
                             "Lashes out at any cat who asks if they're okay after r_c's death",
                             "Took a long walk on their own to mourn r_c in private",
                             "Is busying themselves with too much work to forget about r_c's death",
-                            "Does their best to console their clanmates about r_c's death",
+                            "Does their best to console their companions about r_c's death",
                             "Takes a part of r_c's nest to put with their own, clinging to their fading scent",
                             "Sleeps in r_c's nest tonight",
                             "Defensively states that they don't need any comfort about r_c's death"

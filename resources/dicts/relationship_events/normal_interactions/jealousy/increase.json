@@ -7,7 +7,7 @@
 			"m_c notices one of {PRONOUN/m_c/poss} friends laughing with r_c.",
 			"m_c wants to asks a Clanmate to eat with {PRONOUN/m_c/object}, but they're busy with r_c.",
 			"A Clanmate that m_c wanted to get to know better is already friends with r_c.",
-			"m_c thinks Clanmates talk more highly of r_c than {PRONOUN/m_c/object}.",
+			"m_c thinks companions talk more highly of r_c than {PRONOUN/m_c/object}.",
 			"m_c suspects that r_c gets special treatment.",
 			"m_c sees a Clanmate complimenting r_c and feels a pang of envy.",
 			"m_c wishes that a Clanmate liked {PRONOUN/m_c/object} as much as they like r_c.",
@@ -22,7 +22,7 @@
 		"id": "jel_inc_med1",
 		"interactions": [
 			"m_c thinks the prey r_c is biting into on the other side of camp looks delicious.",
-			"m_c notices that r_c makes other Clanmates laugh more than {PRONOUN/m_c/subject} {VERB/m_c/do/does}.",
+			"m_c notices that r_c makes other companions laugh more than {PRONOUN/m_c/subject} {VERB/m_c/do/does}.",
 			"m_c worries that the Clan trusts r_c more than {PRONOUN/m_c/object}.",
 			"m_c thinks that r_c stole one of {PRONOUN/m_c/poss} ideas.",
 			"The Clan likes one of r_c's suggestions, but it was just m_c's reworded.",
@@ -123,7 +123,7 @@
 			"r_c gets all the praise that m_c wishes {PRONOUN/m_c/subject} got.",
 			"r_c was told {PRONOUN/r_c/subject} {VERB/r_c/are/is} growing bigger than m_c.",
 			"r_c is better at moss-ball than m_c.",
-			"The older Clanmates always believe r_c over m_c.",
+			"The older companions always believe r_c over m_c.",
 			"m_c is upset that r_c always wins in their games.",
 			"m_c whines and cries when r_c gets more attention than {PRONOUN/m_c/subject}."
 		],
@@ -227,7 +227,7 @@
 			"m_c doesn't get why r_c gets more praise for doing the same thing everyone else does.",
 			"m_c can't stand hearing about how helpful r_c is.",
 			"m_c gets hit with waves of envy whenever r_c is laughing with friends.",
-			"m_c can't understand why Clanmates like r_c so much.",
+			"m_c can't understand why companions like r_c so much.",
 			"m_c notices that r_c always gets better fresh-kill to eat.",
 			"A Clanmate tells m_c that r_c's stories are better.",
 			"m_c knows that r_c would be saved before {PRONOUN/m_c/object} during an emergency.",
@@ -243,7 +243,7 @@
 		"interactions": [
 			"m_c sees r_c lazing about in the sunshine and is resentful at how little {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} expected to contribute.",
 			"m_c doesn't get why r_c gets big, juicy prey just because of {PRONOUN/r_c/poss} age.",
-			"m_c doesn't like that Clanmates trust r_c more just because {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} older."
+			"m_c doesn't like that companions trust r_c more just because {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} older."
 		],
 		"main_status_constraint": [
 			"mediator apprentice",

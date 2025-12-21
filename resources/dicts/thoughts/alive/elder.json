@@ -348,7 +348,7 @@
         "id": "confident_elder",
         "thoughts": [
             "Is proud of all {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} achieved",
-            "Offers advice to {PRONOUN/m_c/poss} Clanmates",
+            "Offers advice to {PRONOUN/m_c/poss} companions",
             "Brags about all {PRONOUN/m_c/poss} past achievements",
             "Tells <i>another</i> story about {PRONOUN/m_c/self}"
         ],
@@ -411,7 +411,7 @@
         "thoughts": [
             "Is glad {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} served c_n for so long",
             "Is proud to have stuck by {PRONOUN/m_c/poss} own beliefs all {PRONOUN/m_c/poss} life",
-            "Reminds {PRONOUN/m_c/poss} Clanmates to follow their hearts"
+            "Reminds {PRONOUN/m_c/poss} companions to follow their hearts"
         ],
         "main_age_constraint": [
             "senior adult",
@@ -597,7 +597,7 @@
         "thoughts": [
             "Insists other cats eat before {PRONOUN/m_c/object}",
             "Smiles as {PRONOUN/m_c/subject} {VERB/m_c/reminisce/reminisces} about the past",
-            "Is always telling younger Clanmates of gentle stories instead of those rooted in the battlefield",
+            "Is always telling younger companions of gentle stories instead of those rooted in the battlefield",
             "Feels awkward having others take care of them instead of the other way around"
         ],
         "main_age_constraint": [
@@ -765,7 +765,7 @@
         "id": "righteous_elder",
         "thoughts": [
             "Gives unsolicited advice due to {PRONOUN/m_c/poss} own morals",
-            "Advises {PRONOUN/m_c/poss} Clanmates to stick to what they believe is right"
+            "Advises {PRONOUN/m_c/poss} companions to stick to what they believe is right"
         ],
         "main_age_constraint": [
             "senior adult",
@@ -860,7 +860,7 @@
             "Isn't afraid to berate rule-breakers",
             "Is sure {PRONOUN/m_c/subject} didn't break the rules this much when <i>{PRONOUN/m_c/subject}</i> was younger",
             "Believes the leader is being too soft with the younger warriors",
-            "Is always calling out young Clanmates tendency to break the rules",
+            "Is always calling out young companions tendency to break the rules",
             "Has a meticulous way of structuring {PRONOUN/m_c/poss} nest that drive the apprentices mad"
         ],
         "main_age_constraint": [
@@ -995,7 +995,7 @@
         "id": "camp_elder",
         "thoughts": [
             "Still enjoys helping out around camp",
-            "Is teaching {PRONOUN/m_c/poss} Clanmates the art of building a waterproof den!",
+            "Is teaching {PRONOUN/m_c/poss} companions the art of building a waterproof den!",
             "Helps the warriors to reinforce the camp walls"
         ],
         "main_age_constraint": [
@@ -1536,7 +1536,7 @@
     {
         "id": "deaf_gen_retired_to_alive_gen",
         "thoughts": [
-            "Idly feels the thumps of {PRONOUN/m_c/poss} Clanmates' paw steps on the ground",
+            "Idly feels the thumps of {PRONOUN/m_c/poss} companions' paw steps on the ground",
             "Has learned to feel vibrations through the ground",
             "Is teaching r_c tail signals",
             "Tries to read r_c's posture",

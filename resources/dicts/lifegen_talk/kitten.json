@@ -2699,7 +2699,7 @@
             "tg_c!!!",
             "Where ... What ...",
             "Uh ...",
-            "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/look/looks} around at {PRONOUN/t_c/poss} Clanmates guiltily. There's no need to explain. Everycat knows what happened.]",
+            "[{PRONOUN/t_c/subject/CAP} {VERB/t_c/look/looks} around at {PRONOUN/t_c/poss} companions guiltily. There's no need to explain. Everycat knows what happened.]",
             "[Still, this is the third time this week {PRONOUN/t_c/subject}{VERB/t_c/'ve/'s} woken up screaming, and if it happens again, {PRONOUN/t_c/subject} just might scare off all the prey left on the territory!]"
         ]
     },
@@ -3887,7 +3887,7 @@
         "intro": [
             "Welcome to warrior training, y_c. First thing's first, let's fix that posture. Head up! Tail straight! Chin- lift that chin. Great!",
             "Now, show me your happy face. Good! Now your sad face. Eggcellent! Now, show me angry! No! More anger, bare those teeth.",
-            "Think of me as a scary warrior who's about to attack your Clanmates, you wouldn't want that, would you? YES! Perfect, pull those ears back a little more, and- wow, you actually look pretty scary.",
+            "Think of me as a scary warrior who's about to attack your companions, you wouldn't want that, would you? YES! Perfect, pull those ears back a little more, and- wow, you actually look pretty scary.",
             "Second task, as a warrior you must always know how to defend yourself- HEY! Did you just swipe at me- don't knock me over, I didn't say fight yet!"
         ]
     },
@@ -8959,7 +8959,7 @@
         },
         "intro": [
             "[t_c is staring at your paws. After an uncomfortable moment you ask why.]",
-            "I heard your Clanmates haven't forgiven you for the blood on your paws. No matter how you try to wash it off it's still there.",
+            "I heard your companions haven't forgiven you for the blood on your paws. No matter how you try to wash it off it's still there.",
             "[Your paws are clean of blood. You made sure of that. A glance down confirms that they have nothing but Dark Forest mud speckled on them.]",
             "... It's still there. I can see it. You haven't forgiven yourself. Maybe you never will.",
             "How do you expect them to?"
@@ -8985,11 +8985,11 @@
         },
         "intro": [
             "[There's an innocence even to kittens inhabiting the Dark Forest. t_c is no exception.]",
-            "So... Your Clanmates aren't playing with you anymore? That's mean. Why?",
+            "So... Your companions aren't playing with you anymore? That's mean. Why?",
             "[Given where t_c is... There's no need to be subtle. You softly tell {PRONOUN/t_c/object} what you've done.]",
             "And they don't like you anymore for that? That's weird. And mean! It's okay y_c, I'll still be your friend! I'll always be here when you visit!",
             "Nothing you do changes how cool you are! I wish I got to be as big and tough as you. But then-- I wouldn't let anyone be mean to me!",
-            "If I meet your Clanmates I'll give them a good swipe! The one you taught me!"
+            "If I meet your companions I'll give them a good swipe! The one you taught me!"
         ]
     },
     "they_df_sh_kit_R4": {
@@ -9038,7 +9038,7 @@
             ]
         },
         "intro": [
-            "[Despite your living Clanmates avoiding you, your Clanmates here in the Dark Forest haven't changed at all.]",
+            "[Despite your living companions avoiding you, your companions here in the Dark Forest haven't changed at all.]",
             "[Here comes t_c now, pelt filthy from playing in the foul muck.]",
             "y_c, come play with us! Well - the older cats are saying it's 'training'--",
             "[t_c makes a funny face at the word.]",
@@ -10981,7 +10981,7 @@
         },
         "intro": [
             "[t_c gets excited everytime you come to visit {PRONOUN/t_c/object}.]",
-            "[{PRONOUN/t_c/poss/CAP} Clanmates must be especially cruel if {PRONOUN/t_c/subject} {VERB/t_c/have/has} to turn to the dead for companionship.]"
+            "[{PRONOUN/t_c/poss/CAP} companions must be especially cruel if {PRONOUN/t_c/subject} {VERB/t_c/have/has} to turn to the dead for companionship.]"
         ]
     },
     "they_deaf_shunned_J3": {
@@ -12714,7 +12714,7 @@
             "Why are they all so mad at you, y_c?",
             "[t_c catches you off-guard, {PRONOUN/t_c/poss} tiny pelt sticky with muck as {PRONOUN/t_c/subject} {VERB/t_c/press/presses} in closer to you.]",
             "You've seen the way they look at you, right?",
-            "I thought Clanmates were supposed to stick together forever and ever.",
+            "I thought companions were supposed to stick together forever and ever.",
             "But now you're here with me, and I would never act like that! I promise!"
         ]
     },
@@ -13971,13 +13971,13 @@
         "tell": [
             "[It's hard to tell when a cat wants to talk to you! You remind t_c that it's okay to try to talk to someone when the other cat is busy. They'll let t_c know that they can't chat right now!]",
             "Yeah, but... but then they might be mad at me, right?",
-            "[You assure t_c that no cat will be mad at {PRONOUN/t_c/object} for something like that. Your Clanmates want to talk to t_c, too, but they just sometimes have other things to do!]",
+            "[You assure t_c that no cat will be mad at {PRONOUN/t_c/object} for something like that. Your companions want to talk to t_c, too, but they just sometimes have other things to do!]",
             "Okay. I'll... try to remember that."
         ],
         "relaxed": [
             "[You tell t_c to watch the other cat to see if they look stressed. They're probably less likely to want to chat then.]",
             "Oh... but telling what faces mean is hard. How do I know if they're stressed?",
-            "[You sit with t_c and point out the expressions of your Clanmates, teaching the kitten how to interpret them. At the end, t_c seems a bit overwhelmed, but thanks you.]"
+            "[You sit with t_c and point out the expressions of your companions, teaching the kitten how to interpret them. At the end, t_c seems a bit overwhelmed, but thanks you.]"
         ],
         "nojob": [
             "[You tell t_c to watch the other cat for a while to see if they're doing a task. If they spend more time idly chatting or relaxing, they'd probably be up to talk!]",
@@ -15453,7 +15453,7 @@
             "[While play-fighting with t_c, you accidentally barrel into the nursery wall, ripping a hole in the woven vines.]",
             "[You instantly run up to the damage, trying your best with your inexperienced little paws to patch it back up before any queens come inside and notice.]",
             "What are you doing? You can't fix the wall. I'll just tell the warriors.",
-            "No, why would they be mad? It's their job to fix it! You don't need to be scared of your own Clanmates."
+            "No, why would they be mad? It's their job to fix it! You don't need to be scared of your own companions."
         ]
     },
     "fearless_kit_J2": {
@@ -16018,7 +16018,7 @@
         "intro": [
             "Umm...",
             "You're a StarClan cat, right? What are you doing here?",
-            "[You explain to t_c that you're just watching over your living Clanmates, like all StarClan cats do.]",
+            "[You explain to t_c that you're just watching over your living companions, like all StarClan cats do.]",
             "... Okay. But, um... Could you go watch some other cat?",
             "I don't like it when other cats stare at me."
         ]
@@ -16120,7 +16120,7 @@
         },
         "tags": [],
         "intro": [
-            "[Some of the kits, when they see you, react with surprise or confusion - much differently than they do when they see their living Clanmates.]",
+            "[Some of the kits, when they see you, react with surprise or confusion - much differently than they do when they see their living companions.]",
             "... What do you want?",
             "[t_c isn't one of them.]"
         ]

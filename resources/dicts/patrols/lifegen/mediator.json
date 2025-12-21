@@ -267,12 +267,12 @@
         "max_cats": 6,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "Despite your leader barring you from doing your job as a mediator, two Clanmates stalk up to you one day, tails twitching. They ask you for your thoughts on a disagreement they've been having, and you wonder whether they really value your opinion.",
+        "intro_text": "Despite your leader barring you from doing your job as a mediator, two companions stalk up to you one day, tails twitching. They ask you for your thoughts on a disagreement they've been having, and you wonder whether they really value your opinion.",
         "decline_text": "You turn them away. Your Clan has made it very clear that they don't see you as equal-- why should you solve their problems for them?",
         "chance_of_success": 40,
         "success_outcomes": [
             {
-                "text": "You decide to listen to your Clanmates' problem, and once they've begun to see each other's point of view, you ask why they chose to come to you, given your situation. They say that they still respect your opinion as a mediator, despite everything, and you can't help but feel some fondness for the both of them.",
+                "text": "You decide to listen to your companions' problem, and once they've begun to see each other's point of view, you ask why they chose to come to you, given your situation. They say that they still respect your opinion as a mediator, despite everything, and you can't help but feel some fondness for the both of them.",
                 "exp": 10,
                 "weight": 20
             }
@@ -485,7 +485,7 @@
         ],
         "fail_outcomes": [
             {
-                "text": "You wander around StarClan asking your starry Clanmates if something-- <i>anything</i>-- has been bugging them lately. To your disappointment, every cat is as happy as can be. No fun!",
+                "text": "You wander around StarClan asking your starry companions if something-- <i>anything</i>-- has been bugging them lately. To your disappointment, every cat is as happy as can be. No fun!",
                 "exp": 0,
                 "weight": 20
             },

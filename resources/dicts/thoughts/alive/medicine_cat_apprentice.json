@@ -209,9 +209,9 @@
     {
         "id": "loving_medicine_cat_apprentice",
         "thoughts": [
-            "Couldn't stand the sight of seeing beloved Clanmates limping towards the medicine den",
+            "Couldn't stand the sight of seeing beloved companions limping towards the medicine den",
             "Gave a soft lick to a  wound, hoping it'll heal faster",
-            "Often reassures others that {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} alright not sleeping to keep sick Clanmates company",
+            "Often reassures others that {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} alright not sleeping to keep sick companions company",
             "To not drop dead {PRONOUN/m_c/self}, was told to tend to {PRONOUN/m_c/poss} health as well",
             "Randomly checks up on r_c's health",
             "Shivers cold at the thought of an unexpected sickness hurting the Clan",
@@ -241,12 +241,12 @@
     {
         "id": "arrogant_medicine_cat_apprentice",
         "thoughts": [
-            "Smugly believes {PRONOUN/m_c/subject} can deny helping Clanmates {PRONOUN/m_c/subject} dislikes",
+            "Smugly believes {PRONOUN/m_c/subject} can deny helping companions {PRONOUN/m_c/subject} dislikes",
             "Thinks that since {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} a medicine apprentice, {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} better than the other apprentices",
             "Knows c_n is more blessed by StarClan than any other Clan",
             "Spits at another apprentice that {PRONOUN/m_c/subject} {VERB/m_c/do/does}n't have to follow the Warrior Code",
             "Wonders if there are any future omens about {PRONOUN/m_c/object}",
-            "Brags to {PRONOUN/m_c/poss} Clanmates that they're alive because {PRONOUN/m_c/subject} {VERB/m_c/hoards/hoard} the herbs",
+            "Brags to {PRONOUN/m_c/poss} companions that they're alive because {PRONOUN/m_c/subject} {VERB/m_c/hoards/hoard} the herbs",
             "Wishes herbs were closer to the camp so {PRONOUN/m_c/subject} didn't have to travel SO far!"
         ],
         "main_trait_constraint": [
@@ -273,8 +273,8 @@
             "Quickly tries to heal injuries so cats can leave {PRONOUN/m_c/object} alone",
             "Ventured out of camp to gather herbs without telling anyone",
             "Only leaves the medicine den to grab prey before slinking back inside",
-            "Has Clanmates surprised that {PRONOUN/m_c/subject} even have a mentor to talk to",
-            "Prefers the company of herbs and medical berries more than {PRONOUN/m_c/subject} own Clanmates"
+            "Has companions surprised that {PRONOUN/m_c/subject} even have a mentor to talk to",
+            "Prefers the company of herbs and medical berries more than {PRONOUN/m_c/subject} own companions"
         ],
         "main_trait_constraint": [
             "lonesome"
@@ -283,7 +283,7 @@
     {
         "id": "strange_medicine_cat_apprentice",
         "thoughts": [
-            "Told {PRONOUN/m_c/poss} Clanmates {PRONOUN/m_c/subject} could see dead StarClan cats dancing",
+            "Told {PRONOUN/m_c/poss} companions {PRONOUN/m_c/subject} could see dead StarClan cats dancing",
             "Was taste-testing berries",
             "Proposes dragging the Moonstone to the medicine den",
             "Asks {PRONOUN/m_c/poss} mentor if cats reincarnate as snails",
@@ -296,7 +296,7 @@
     {
         "id": "childish_medicine_cat_apprentice",
         "thoughts": [
-            "Is telling jokes to sick Clanmates to brighten their day",
+            "Is telling jokes to sick companions to brighten their day",
             "Covers {PRONOUN/m_c/self} with sticks and plants",
             "Sheepishly asks {PRONOUN/m_c/poss} mentor which herbs would rub out a skunk scent. No reason.",
             "Jokingly told r_c {PRONOUN/r_c/subject} will grow antlers from eating berries",

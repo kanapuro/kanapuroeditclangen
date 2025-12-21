@@ -18,7 +18,7 @@
         ],
         "progress_events": {
             "moon1": [
-                "Even the trees look dry. The cats of c_n cart moss between camp and their water source, bringing back vital liquid to their youngest and oldest Clanmates. But there are murmurs of discontented gossip - what will they do if their water dries up?",
+                "Even the trees look dry. The cats of c_n cart moss between camp and their water source, bringing back vital liquid to their youngest and oldest companions. But there are murmurs of discontented gossip - what will they do if their water dries up?",
                 "The prey that cats bring back to the fresh-kill pile is beginning to look weak. Difficult to say what's taking its toll - the heat, or the difficulty of finding water.",
                 "med_name feels the crunch of leaf litter so dry it shatters under {PRONOUN/med_name/poss} footsteps. {PRONOUN/med_name/subject/CAP} {VERB/med_name/swallow/swallows} {PRONOUN/med_name/poss} concern - drought cannot be fought by the Clan's warriors, but med_name can stock the medicine cat den with remedies against heat stroke and exhaustion."
             ],
@@ -380,7 +380,7 @@
                 "To rebuild their shattered camp and their shattered lives, the Clan must clear out the wreckage of their old home. But it is its own sort of death to process, the loss of their home, their safety, their innocence."
             ],
             "moon2": [
-                "Stiff from sleeping in a messy pile of disorganized Clanmates, c_n nevertheless attacks the task ahead with purpose, as one bringing in new brambles, weaving new walls, and plucking fur from fresh-kill to line their new nests.",
+                "Stiff from sleeping in a messy pile of disorganized companions, c_n nevertheless attacks the task ahead with purpose, as one bringing in new brambles, weaving new walls, and plucking fur from fresh-kill to line their new nests.",
                 "The camp is beginning to take shape again, and dep_name is reassured by the spirited discussions that they're having to mediate between the warriors claiming nest spots.",
                 "They can do this. c_n will rise from this stronger, better prepared, they will take what happened and ensure it can never take their home from them again. As the brambles are brought in for the rising camp walls, there's hope on the horizon."
             ]

@@ -289,7 +289,7 @@
     "m_c": {
       "status": ["exiled"],
       "trait": [ "bloodthirsty", "vengeful", "fierce", "cold" ],
-      "new_thought": "Spits at {PRONOUN/m_c/poss} Clanmates' retreating tails",
+      "new_thought": "Spits at {PRONOUN/m_c/poss} companions' retreating tails",
       "relationships": [
         {
           "cats_from": ["m_c"],
@@ -797,7 +797,7 @@
     "rep_change": -1,
     "m_c": {
       "status": ["lost"],
-      "new_thought": "Doesn't understand why {PRONOUN/m_c/poss} old Clanmates want to hurt {PRONOUN/m_c/object}",
+      "new_thought": "Doesn't understand why {PRONOUN/m_c/poss} old companions want to hurt {PRONOUN/m_c/object}",
       "relationships": [
         {
           "cats_from": ["m_c"],
@@ -816,7 +816,7 @@
     "rep_change": -1,
     "m_c": {
       "status": ["lost"],
-      "new_thought": "Doesn't understand why {PRONOUN/m_c/poss} old Clanmates want to hurt {PRONOUN/m_c/object}",
+      "new_thought": "Doesn't understand why {PRONOUN/m_c/poss} old companions want to hurt {PRONOUN/m_c/object}",
       "relationships": [
         {
           "cats_from": ["m_c"],
@@ -835,7 +835,7 @@
     "rep_change": 0,
     "m_c": {
       "status": ["lost"],
-      "new_thought": "Wonders if {PRONOUN/m_c/poss} Clanmates have forgotten about {PRONOUN/m_c/object}"
+      "new_thought": "Wonders if {PRONOUN/m_c/poss} companions have forgotten about {PRONOUN/m_c/object}"
     }
   },
   {

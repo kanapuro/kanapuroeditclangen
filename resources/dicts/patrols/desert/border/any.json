@@ -260,7 +260,7 @@
                 ]
             },
             {
-                "text": "s_c selflessly takes the lion's share of the run the patrol leads the dog on, exhausting {PRONOUN/s_c/self} almost to the point of danger but leading the dog far away from c_n borders. {PRONOUN/s_c/poss/CAP} Clanmates support {PRONOUN/s_c/object} on the long walk home once it's all over, their purrs mixing with s_c's exhausted pants.",
+                "text": "s_c selflessly takes the lion's share of the run the patrol leads the dog on, exhausting {PRONOUN/s_c/self} almost to the point of danger but leading the dog far away from c_n borders. {PRONOUN/s_c/poss/CAP} companions support {PRONOUN/s_c/object} on the long walk home once it's all over, their purrs mixing with s_c's exhausted pants.",
                 "exp": 20,
                 "weight": 20,
                 "stat_trait": [
@@ -501,7 +501,7 @@
                 ]
             },
             {
-                "text": "s_c selflessly throw {PRONOUN/s_c/self} into the fight, and every time the dog tries to grab at {PRONOUN/s_c/poss} Clanmates, {PRONOUN/s_c/subject}{VERB/s_c/'re/'s} there with unsheathed claws, fur puffed out to twice {PRONOUN/s_c/poss} normal size. With s_c defending them, the patrol drives the dog off, yowling triumphantly.",
+                "text": "s_c selflessly throw {PRONOUN/s_c/self} into the fight, and every time the dog tries to grab at {PRONOUN/s_c/poss} companions, {PRONOUN/s_c/subject}{VERB/s_c/'re/'s} there with unsheathed claws, fur puffed out to twice {PRONOUN/s_c/poss} normal size. With s_c defending them, the patrol drives the dog off, yowling triumphantly.",
                 "exp": 20,
                 "weight": 20,
                 "stat_trait": [
@@ -555,7 +555,7 @@
                 ]
             },
             {
-                "text": "s_c tries to protect {PRONOUN/s_c/poss} Clanmates, but too much defense gets in the way of actually attacking the dog. Without everyone committed to driving the dog off, the patrol has to fall back, but they do so in good order.",
+                "text": "s_c tries to protect {PRONOUN/s_c/poss} companions, but too much defense gets in the way of actually attacking the dog. Without everyone committed to driving the dog off, the patrol has to fall back, but they do so in good order.",
                 "exp": 0,
                 "weight": 20,
                 "stat_trait": [
@@ -875,7 +875,7 @@
                 ]
             },
             {
-                "text": "The patrol paces towards the small dog, claws out, fur up, backed up with the courage of their Clanmates. The dog breaks into a barking fit, but that's their opportunity to attack, covering each other as they push the creature away from their territory.",
+                "text": "The patrol paces towards the small dog, claws out, fur up, backed up with the courage of their companions. The dog breaks into a barking fit, but that's their opportunity to attack, covering each other as they push the creature away from their territory.",
                 "exp": 10,
                 "weight": 5,
                 "relationships": [
@@ -973,7 +973,7 @@
         "chance_of_success": 10,
         "success_outcomes": [
             {
-                "text": "The patrol paces towards the small dog, claws out, fur up, backed up with the courage of their Clanmates. The dog breaks into a barking fit, but that's their opportunity to attack, covering each other as they push the creature away from their territory.",
+                "text": "The patrol paces towards the small dog, claws out, fur up, backed up with the courage of their companions. The dog breaks into a barking fit, but that's their opportunity to attack, covering each other as they push the creature away from their territory.",
                 "exp": 10,
                 "weight": 20,
                 "relationships": [

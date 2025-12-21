@@ -757,7 +757,7 @@
             "normal adult": [1, 6]
         },
         "weight": 20,
-        "intro_text": "Bringing a motley assortment of Clanmates along with {PRONOUN/p_l/object}, p_l heads out on an herb-gathering patrol, searching for the evergreen, ever-reliable horsetail to harvest for the herb stores.",
+        "intro_text": "Bringing a motley assortment of companions along with {PRONOUN/p_l/object}, p_l heads out on an herb-gathering patrol, searching for the evergreen, ever-reliable horsetail to harvest for the herb stores.",
         "decline_text": "{PRONOUN/p_l/subject/CAP}{VERB/p_l/'re/'s} stopped before {PRONOUN/p_l/subject} {VERB/p_l/leave/leaves} camp - these warriors are needed elsewhere. p_l's expedition will have to wait.",
         "chance_of_success": 30,
         "success_outcomes": [
@@ -1072,7 +1072,7 @@
         "chance_of_success": 60,
         "success_outcomes": [
             {
-                "text": "Even though there's nothing different about this place, other than the serenity it was chosen for, p_l always feels that the grief and love {PRONOUN/p_l/poss} Clanmates express here has seeped into every corner. {PRONOUN/p_l/subject/CAP} {VERB/p_l/tidy/tidies} the grounds, collecting rosemary as {PRONOUN/p_l/subject} {VERB/p_l/work/works}. It feels appropriate for the plant to grow here, when its herbs are used to hide the scent of death.",
+                "text": "Even though there's nothing different about this place, other than the serenity it was chosen for, p_l always feels that the grief and love {PRONOUN/p_l/poss} companions express here has seeped into every corner. {PRONOUN/p_l/subject/CAP} {VERB/p_l/tidy/tidies} the grounds, collecting rosemary as {PRONOUN/p_l/subject} {VERB/p_l/work/works}. It feels appropriate for the plant to grow here, when its herbs are used to hide the scent of death.",
                 "exp": 10,
                 "weight": 20,
                 "herbs": ["rosemary"],
@@ -1122,7 +1122,7 @@
         "chance_of_success": 60,
         "success_outcomes": [
             {
-                "text": "Even though there's nothing different about this place, other than the serenity it was chosen for, p_l always feels that the grief and love their Clanmates express here has seeped into every corner. {PRONOUN/p_l/subject/CAP} {VERB/p_l/tidy/tidies} the grounds, collecting rosemary as {PRONOUN/p_l/subject} {VERB/p_l/work/works}. It feels appropriate for the plant to grow here, when its herbs are used to hide the scent of death.",
+                "text": "Even though there's nothing different about this place, other than the serenity it was chosen for, p_l always feels that the grief and love their companions express here has seeped into every corner. {PRONOUN/p_l/subject/CAP} {VERB/p_l/tidy/tidies} the grounds, collecting rosemary as {PRONOUN/p_l/subject} {VERB/p_l/work/works}. It feels appropriate for the plant to grow here, when its herbs are used to hide the scent of death.",
                 "exp": 10,
                 "weight": 20,
                 "herbs": ["rosemary"],

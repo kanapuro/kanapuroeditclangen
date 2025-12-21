@@ -163,7 +163,7 @@
         "min_max_status": {},
         "weight": 20,
         "intro_text": "During a hunting patrol, you spot a large, plump squirrel. However, it's close to the o_c_n border, and crossing it could lead to a skirmish.",
-        "decline_text": "You decide to respect the border and leave the squirrel. Your Clanmates commend your respect for the Warrior Code.",
+        "decline_text": "You decide to respect the border and leave the squirrel. Your companions commend your respect for the Warrior Code.",
         "chance_of_success": 40,
         "success_outcomes": [
             {
@@ -515,7 +515,7 @@
                 ]
             },
             {
-                "text": "You volunteer and follow d_n,  r_w1, and r_w2 to the edge of the territory, but the patrol is derailed when you notice the scent of a dog crossing the border. Aware of your proficiency with tracking, d_n tells r_w1 and r_w2 to finish the patrol while you track the dog with {PRONOUN/d_n/object}. You successfully follow the scent trail through the territory until, to your relief, it crosses back over the border. Your Clanmates are grateful that you took the effort to make sure the territory was safe.",
+                "text": "You volunteer and follow d_n,  r_w1, and r_w2 to the edge of the territory, but the patrol is derailed when you notice the scent of a dog crossing the border. Aware of your proficiency with tracking, d_n tells r_w1 and r_w2 to finish the patrol while you track the dog with {PRONOUN/d_n/object}. You successfully follow the scent trail through the territory until, to your relief, it crosses back over the border. Your companions are grateful that you took the effort to make sure the territory was safe.",
                 "exp": 10,
                 "weight": 20,
                 "stat_skill": [
@@ -566,7 +566,7 @@
                 ]
             },
             {
-                "text": "You join the patrol but feel especially jumpy today, and keep getting startled by the wind or your Clanmates' pawsteps. d_n, who's leading the patrol, repeatedly asks you to settle down. Unfortunately, you can't seem to calm your nerves, putting the rest of the group on edge.",
+                "text": "You join the patrol but feel especially jumpy today, and keep getting startled by the wind or your companions' pawsteps. d_n, who's leading the patrol, repeatedly asks you to settle down. Unfortunately, you can't seem to calm your nerves, putting the rest of the group on edge.",
                 "exp": 0,
                 "weight": 20,
                 "stat_trait": [
@@ -668,7 +668,7 @@
                 "weight": 20
             },
             {
-                "text": "You start to remove the piece of prey, but stop when you realize it looks like you're digging through the pile. Will your Clanmates think you're trying to take the best prey for yourself? You pause, frozen in thought. After a moment, r_w walks by, looks at you in confusion, and removes the stale prey {PRONOUN/r_w/self}.",
+                "text": "You start to remove the piece of prey, but stop when you realize it looks like you're digging through the pile. Will your companions think you're trying to take the best prey for yourself? You pause, frozen in thought. After a moment, r_w walks by, looks at you in confusion, and removes the stale prey {PRONOUN/r_w/self}.",
                 "exp": 0,
                 "weight": 20,
                 "stat_trait": [
@@ -1279,14 +1279,14 @@
         "chance_of_success": 50,
         "success_outcomes": [
             {
-                "text": "You leap onto the path, snagging a bird with your claws- your Clanmates are impressed with your catch.",
+                "text": "You leap onto the path, snagging a bird with your claws- your companions are impressed with your catch.",
                 "exp": 10,
                 "weight": 20
             }
         ],
         "fail_outcomes": [
             {
-                "text": "You leap towards the path, but miss the landing slamming into one of the boards- scaring all the birds away. Your Clanmates are happy you're okay but are unimpressed by your fall.",
+                "text": "You leap towards the path, but miss the landing slamming into one of the boards- scaring all the birds away. Your companions are happy you're okay but are unimpressed by your fall.",
                 "exp": 0,
                 "weight": 20
             }
