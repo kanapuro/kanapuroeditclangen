@@ -158,8 +158,6 @@ class ProfileScreen(Screens):
         "resources/images/conditions_tab_backdrop.png"
     ).convert_alpha()
 
-    # Keep track of current tabs open. Can be used to keep tabs open when pages are switched, and
-    # helps with exiting the screen
     open_tab = None
 
     def __init__(self, name=None):
@@ -217,6 +215,7 @@ class ProfileScreen(Screens):
         self.exile_return_button = None
         self.page = 0
         self.max_pages = 1
+        self.page_by_cat = {}
         self.clear_accessories = None
         self.delete_accessory = None
         self.search_bar_image = None
@@ -229,7 +228,6 @@ class ProfileScreen(Screens):
         self.search_inventory = []
         self.faith_text = None
 
-        # LG: all accs
         self.cat_inventory = []
 
     def handle_event(self, event):
@@ -3465,14 +3463,26 @@ class ProfileScreen(Screens):
 
         previous_open_tab = self.open_tab
 
+        # If we're closing the accessories tab, remember the current page for this cat
+        if previous_open_tab == 'accessories' and self.the_cat is not None:
+            try:
+                self.page_by_cat[self.the_cat.ID] = self.page
+            except Exception:
+                # if something unexpected happens, silently ignore and continue
+                pass
+
         self.close_current_tab()
-        self.page = 0
 
 
         if previous_open_tab == 'accessories':
             pass
         else:
             self.open_tab = "accessories"
+            # restore last page for this cat if present
+            if self.the_cat is not None:
+                self.page = self.page_by_cat.get(self.the_cat.ID, 0)
+            else:
+                self.page = 0
             rect = ui_scale(pygame.Rect((0, 0), (620, 157)))
             rect.bottomleft = ui_scale_offset((89, 0))
             self.backstory_background = pygame_gui.elements.UIImage(
@@ -3568,8 +3578,7 @@ class ProfileScreen(Screens):
         self.cat_list_buttons = {}
         self.accessory_buttons = {}
         self.accessories_list = []
-        start_index = self.page * 18
-        end_index = start_index + 18
+        # start_index/end_index will be calculated after we know how many pages there are
 
         # correcting duplicates
         acc_list = []
@@ -3592,11 +3601,19 @@ class ProfileScreen(Screens):
                     new_inv.append(ac)
         self.max_pages = math.ceil(inventory_len/18)
         
+        # ensure page is within available range
+        if self.page >= self.max_pages:
+            self.page = max(0, self.max_pages - 1)
+
         if (self.max_pages == 1 or self.max_pages == 0):
             self.previous_page_button.disable()
             self.next_page_button.disable()
         if self.page == 0:
             self.previous_page_button.disable()
+        # calculate slice indices now that page has been clamped
+        start_index = self.page * 18
+        end_index = start_index + 18
+
         if self.cat_inventory:
             for a, accessory in enumerate(new_inv[start_index:min(end_index, inventory_len)], start = start_index):
                 if self.search_bar.get_text() in ["", "search"] or self.search_bar.get_text().lower() in accessory.lower():
