@@ -446,23 +446,21 @@ class PatrolScreen(Screens):
             self.elements["add_six"].enable()
             self.elements["random"].enable()
 
-            # making sure meds don't get the option for other patrols
-            if any(
-                (
-                    cat.status in ["medicine cat", "medicine cat apprentice"]
-                    for cat in self.current_patrol
-                )
-            ):
-                self.patrol_type = "med"
-            else:
-                if self.patrol_type == "med":
-                    self.patrol_type = "general"
+            has_healer = any(
+                cat.status in ["medicine cat", "medicine cat apprentice"]
+                for cat in self.current_patrol
+            )
 
             if game.switches['patrol_category'] == 'clangen':
                 self.elements['paw'].enable()
                 self.elements['mouse'].enable()
                 self.elements['claws'].enable()
-                self.elements['herb'].enable()
+                if has_healer:
+                    self.elements['herb'].enable()
+                else:
+                    self.elements['herb'].disable()
+                    if self.patrol_type == 'med':
+                        self.patrol_type = 'general'
             else:
                 self.elements['paw'].disable()
                 self.elements['mouse'].disable()
@@ -472,11 +470,6 @@ class PatrolScreen(Screens):
             # clearing the text before displaying new text
             self.elements['info'].kill()
 
-            if self.patrol_type != 'med' and self.current_patrol:
-                self.elements['herb'].disable()
-                if self.patrol_type == 'med':
-                    self.patrol_type = 'general'
-            
             if game.switches["patrol_category"] == "lifegen":
                 text = "lifegen"
             elif game.switches["patrol_category"] == "df":
@@ -496,13 +489,7 @@ class PatrolScreen(Screens):
                 elif self.patrol_type == 'hunting':
                     text = 'hunting'
                 elif self.patrol_type == 'med':
-                    if self.current_patrol:
-                        text = 'herb gathering'
-                        self.elements['mouse'].disable()
-                        self.elements['claws'].disable()
-                        self.elements['paw'].disable()
-                    else:
-                        text = 'herb gathering'
+                    text = 'herb gathering'
                 else:
                     text = ""
 

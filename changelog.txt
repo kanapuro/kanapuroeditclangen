@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Medicine cats can now participate in all patrols (genemod inspired).
+- devcontainers-contrib -> devcontainers-extra
 - Background music fixes.
 - Fixed pylint issues. Twice. Three times. Four times. Five times.
 - Added a setting to make all crimes (affair/murder) succeed, including taking all leaders lives and recieving no injury or getting caught.

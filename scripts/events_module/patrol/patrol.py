@@ -325,12 +325,8 @@ class Patrol:
                     possible_patrols.extend(self.generate_patrol_events(self.OTHER_CLAN_ALLIES))
                     possible_patrols.extend(self.generate_patrol_events(self.OTHER_CLAN_HOSTILE))
 
-        # this next one is needed for Classic specifically
-        patrol_type = (
-            "med"
-            if ["medicine cat", "medicine cat apprentice"] in self.patrol_status_list
-            else patrol_type
-        )
+        # Allow medicine cats to join any patrol type instead of forcing herb patrols.
+        # Keep the caller's chosen patrol_type so med cats can accompany normal patrols.
         patrol_size = len(self.patrol_cats)
         reputation = game.clan.reputation  # reputation with outsiders
         other_clan = self.other_clan
