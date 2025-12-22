@@ -978,7 +978,7 @@ class Patrol():
                         text = " ".join(modify)
                         break
 
-        text = text.replace('o_c_n', str(other_clan_name) + 'Clan')
+        text = text.replace('o_c_n', str(other_clan_name))
 
         clan_name = game.clan.name
         s = 0
@@ -1000,7 +1000,7 @@ class Patrol():
                         text = " ".join(modify)
                         break
 
-        text = text.replace('c_n', str(game.clan.name) + 'Clan')
+        text = text.replace('c_n', str(game.clan.name))
 
         # Prey lists for forest random prey patrols
         fst_tinyprey_singlular = ['shrew', 'robin', 'vole', 'dormouse', 'blackbird',

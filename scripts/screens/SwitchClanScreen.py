@@ -190,7 +190,11 @@ class SwitchClanScreen(Screens):
             clan_age = ""
             try:
                 # LIFEGEN: grabbing mc names for QOL display -------------------
-                clan_json_path = f"{get_save_dir()}/{clan}clan.json"
+                clan_json_path = f"{get_save_dir()}/{clan}.json"
+                # Fallback to old format if new format doesn't exist
+                if not os.path.exists(clan_json_path):
+                    clan_json_path = f"{get_save_dir()}/{clan}clan.json"
+                
                 if os.path.exists(clan_json_path):
                     with open(clan_json_path, "r") as read_file:
                         clan_json = ujson.loads(read_file.read())
@@ -240,7 +244,7 @@ class SwitchClanScreen(Screens):
                         ),
                         (ui_scale_value(200), item_height),
                     ),
-                    clan + "Clan",
+                    clan,
                     get_button_dict(
                         ButtonStyles.DROPDOWN,
                         (

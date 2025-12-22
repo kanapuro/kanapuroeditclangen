@@ -138,6 +138,11 @@
             "Allow first cousins to be mates and have romantic interactions",
             "Allows cats with the same grandparents but different parents to become mates.",
             false
+        ],
+        "pregnancy": [
+            "Allow pregnancy and kitting",
+            "Enable or disable pregnancy in the colony. When disabled, cats will not become pregnant or give birth to kits.",
+            true
         ]
     },
     "freshkill_tactics":{

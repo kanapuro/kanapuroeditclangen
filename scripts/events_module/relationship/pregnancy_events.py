@@ -64,6 +64,10 @@ class Pregnancy_Events:
         if not clan:
             return
 
+        # Check if pregnancy is enabled in clan settings
+        if not clan.clan_settings.get("pregnancy", True):
+            return
+
         if not Pregnancy_Events.biggest_family:
             Pregnancy_Events.set_biggest_family()
 

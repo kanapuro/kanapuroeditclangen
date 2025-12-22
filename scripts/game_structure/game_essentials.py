@@ -278,6 +278,42 @@ class Game:
                 write_file.flush()
                 os.fsync(write_file.fileno())
 
+    def _migrate_clan_saves(self):
+        """Migrate old save files from {clan}clan.json to {clan}.json format.
+        This ensures backwards compatibility with old saves while supporting the new naming scheme.
+        
+        Safe handling for clan names that end with 'clan' (e.g., 'CraneClan'):
+        - Only migrates files where the corresponding clan folder exists
+        - This prevents accidentally removing 'clan' from intentional naming like 'CraneClan'
+        """
+        save_dir = get_save_dir()
+        if not os.path.exists(save_dir):
+            return
+
+        # Get list of clan folders to determine valid clan names
+        clan_folders = [f.name for f in os.scandir(save_dir) if f.is_dir()]
+
+        # Iterate through all files in the saves directory
+        for item in os.scandir(save_dir):
+            if not item.is_file() or not item.name.endswith("clan.json"):
+                continue
+
+            # Extract potential clan name by removing 'clan.json' suffix
+            potential_clan_name = item.name[:-9]  # Remove 'clan.json' (9 chars)
+            
+            # Only migrate if:
+            # 1. A folder with this exact name exists (meaning this was the old naming)
+            # 2. The new file doesn't already exist
+            if potential_clan_name in clan_folders:
+                new_file_path = os.path.join(save_dir, f"{potential_clan_name}.json")
+                
+                if not os.path.exists(new_file_path):
+                    try:
+                        shutil_move(item.path, new_file_path)
+                        print(f"Migrated save: {item.name} -> {potential_clan_name}.json")
+                    except Exception as e:
+                        print(f"Warning: Could not migrate {item.name}: {e}")
+
     def read_clans(self):
         """with open(get_save_dir() + '/clanlist.txt', 'r') as read_file:
             clan_list = read_file.read()
@@ -293,6 +329,9 @@ class Game:
         # We will get the list of clans from the saves folder
         # each Clan has its own folder, and the name of the folder is the name of the clan
         # so we can just get a list of all the folders in the saves folder
+
+        # First, migrate old save files if they exist
+        self._migrate_clan_saves()
 
         # First, we need to make sure the saves folder exists
         if not os.path.exists(get_save_dir()):

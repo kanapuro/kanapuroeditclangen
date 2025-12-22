@@ -347,7 +347,7 @@ class MoonplaceScreen(Screens):
         for i in range(len(text)):
             text[i] = re.sub(r"\{(.*?)\}", lambda x: pronoun_repl(x, process_text_dict, False), text[i])
 
-        text = [t1.replace("c_n", game.clan.name + "Clan") for t1 in text]
+        text = [t1.replace("c_n", game.clan.name) for t1 in text]
         text = [t1.replace("y_c", str(you.name)) for t1 in text]
         text = [t1.replace("t_c", str(cat.name)) for t1 in text]
 
@@ -728,7 +728,7 @@ class MoonplaceScreen(Screens):
                 other_clan = choice(game.clan.all_clans)
                 if not other_clan:
                     return ""
-                text = text.replace("o_c_n", str(other_clan.name) + "Clan")
+                text = text.replace("o_c_n", str(other_clan.name))
 
             #their mate
             if "t_m" in text:

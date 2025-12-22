@@ -448,7 +448,8 @@ class Condition_Events:
             "RATBITE": ["weak leg"],
             "LEGBITE": ["weak leg"],
             "TOETRAP": ["weak leg"],
-            "HINDLEG": ["weak leg"],
+              "HINDLEG": ["weak leg"],
+              "BURNPAWS": ["weak leg"],
         }
         
         scarless_conditions = [

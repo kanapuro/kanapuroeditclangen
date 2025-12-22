@@ -1729,7 +1729,7 @@ class MurderScreen(Screens):
 
         other_clan = choice(game.clan.all_clans)
         ceremony_txt = ceremony_txt.replace('c_n', game.clan.name)
-        ceremony_txt = ceremony_txt.replace("o_c_n", str(other_clan.name) + "Clan")
+        ceremony_txt = ceremony_txt.replace("o_c_n", str(other_clan.name))
     
         medcats = []
         for cat in Cat.all_cats_list:

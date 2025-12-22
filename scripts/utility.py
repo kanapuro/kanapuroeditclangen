@@ -1273,6 +1273,11 @@ def filter_relationship_type(
     if not filter_types:
         return True
 
+    # If any cat in the group is None, the relationship cannot be evaluated
+    # (this protects against callers that may have unresolved/invalid cat refs)
+    if any(g is None for g in group):
+        return False
+
     # keeping this list here just for quick reference of what tags are handled here
     possible_rel_types = [
         "siblings",
@@ -2174,7 +2179,7 @@ def history_text_adjust(text,
         text = text.replace("o_c_n", str(other_clan_name))
 
     if "c_n" in text:
-        text = text.replace("c_n", str(game.clan.name) + "Clan")
+        text = text.replace("c_n", str(game.clan.name))
     if "r_c" in text and other_cat_rc:
         text = selective_replace(text, "r_c", str(other_cat_rc.name))
     return text
@@ -2231,7 +2236,7 @@ def ongoing_event_text_adjust(Cat, text, clan=None, other_clan_name=None):
         else:
             clan_name = str(game.clan.name)
 
-    text = text.replace("c_n", clan_name + "Clan")
+    text = text.replace("c_n", clan_name)
 
     return text
 
@@ -2407,7 +2412,7 @@ def event_text_adjust(
                         text = " ".join(modify)
                         break
 
-        text = text.replace('o_c_n', str(other_clan_name) + 'Clan')
+        text = text.replace('o_c_n', str(other_clan_name))
 
     # clan_name
     if "c_n" in text:
@@ -2434,7 +2439,7 @@ def event_text_adjust(
                         text = " ".join(modify)
                         break
 
-        text = text.replace('c_n', str(clan_name) + 'Clan')
+        text = text.replace('c_n', str(clan_name))
 
     # prey lists
     text = adjust_prey_abbr(text)
@@ -2488,7 +2493,7 @@ def leader_ceremony_text_adjust(
     if extra_lives:
         text = text.replace("[life_num]", str(extra_lives))
 
-    text = text.replace("c_n", str(game.clan.name) + "Clan")
+    text = text.replace("c_n", str(game.clan.name))
 
     return text
 
@@ -2505,7 +2510,7 @@ def ceremony_text_adjust(
     living_parents=(),
     dead_parents=(),
 ):
-    clanname = str(game.clan.name + "Clan")
+    clanname = str(game.clan.name)
 
     random_honor = random_honor
     random_living_parent = None
@@ -4204,13 +4209,13 @@ def lifegen_text_adjust(Cat, text, cat, cat_dict, r_c_allowed, o_c_allowed):
     if o_c_allowed is True:
         if "o_c_n" in text:
             if "o_c_n" in other_dict:
-                text = re.sub(r'(?<!\/)o_c_n(?!\/)', str(other_dict["o_c_n"].name) + "Clan", text)
+                text = re.sub(r'(?<!\/)o_c_n(?!\/)', str(other_dict["o_c_n"].name), text)
             else:
                 other_clan = choice(game.clan.all_clans)
                 if not other_clan:
                     return ""
                 other_dict["o_c_n"] = other_clan
-                text = re.sub(r'(?<!\/)o_c_n(?!\/)', str(other_clan.name) + "Clan", text)
+                text = re.sub(r'(?<!\/)o_c_n(?!\/)', str(other_clan.name), text)
     # Warring Clan
     if "w_cClan" in text:
         if "at_war" in game.clan.war:

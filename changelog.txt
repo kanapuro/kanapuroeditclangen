@@ -1,4 +1,7 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Removed "clan" from the end of most words.
+- Removed "clan" from end of save files while allowing migration of said files.
+- Fixed crash associated with filter_relationship_type
 - Added changelog.
 - Replaced all instances of "clanmate" with "companion".
 - Accessory Retention - When you click off the accessory page, it saves your page so you can return to it quickly!

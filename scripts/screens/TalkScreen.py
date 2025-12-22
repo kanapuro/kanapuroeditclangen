@@ -1910,7 +1910,7 @@ class TalkScreen(Screens):
         for i in range(len(text)):
             text[i] = re.sub(r"\{(.*?)\}", lambda x: pronoun_repl(x, process_text_dict, False), text[i])
         
-        text = [t1.replace("c_n", game.clan.name + "Clan") for t1 in text]
+        text = [t1.replace("c_n", game.clan.name) for t1 in text]
         text = [t1.replace("y_c", str(you.name)) for t1 in text]
         text = [t1.replace("t_c", str(cat.name)) for t1 in text]
 

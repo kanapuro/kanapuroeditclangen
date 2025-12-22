@@ -788,7 +788,7 @@ class History:
                 if other_cat:
                     discoverer = str(other_cat.name)
                 if "clan_discovery" in murder_history:
-                    discoverer = game.clan.name + "Clan"
+                    discoverer = game.clan.name
 
                 murder_history["revelation_text"] = murder_history["revelation_text"].replace('[victim]',
                                                                                               str(victim.name))

@@ -245,8 +245,9 @@ class AffairScreen(Screens):
                 choice(self.mu_txt['success']), affair_cat)
             game.cur_events_list.insert(0, Single_Event(ceremony_txt))
             if randint(1, game.config["affair_success_pregnancy_chance"]) == 1:
-                Pregnancy_Events.handle_zero_moon_pregnant(
-                    game.clan.your_cat, affair_cat, game.clan)
+                if game.clan.clan_settings.get("pregnancy", True):
+                    Pregnancy_Events.handle_zero_moon_pregnant(
+                        game.clan.your_cat, affair_cat, game.clan)
         else:
             ceremony_txt = self.adjust_txt(
                 choice(self.mu_txt['fail']), affair_cat)

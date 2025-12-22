@@ -1418,7 +1418,7 @@ class Patrol:
                         text = " ".join(modify)
                         break
 
-        text = text.replace("o_c_n", str(other_clan_name) + "Clan")
+        text = text.replace("o_c_n", str(other_clan_name))
 
         clan_name = game.clan.name
         s = 0
@@ -1440,7 +1440,7 @@ class Patrol:
                         text = " ".join(modify)
                         break
 
-        text = text.replace("c_n", str(game.clan.name) + "Clan")
+        text = text.replace("c_n", str(game.clan.name))
 
         text, senses, list_type, _ = find_special_list_types(text)
         if list_type:

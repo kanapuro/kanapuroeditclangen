@@ -344,7 +344,7 @@ class DeleteCheck(UIWindow):
         self.reloadscreen = reloadscreen
 
         self.delete_check_message = UITextBoxTweaked(
-            f"Do you wish to delete {str(self.clan_name + 'Clan')}? This is permanent and cannot be undone.",
+            f"Do you wish to delete {str(self.clan_name)}? This is permanent and cannot be undone.",
             ui_scale(pygame.Rect((20, 20), (260, -1))),
             line_spacing=1,
             object_id="#text_box_30_horizcenter",
@@ -383,12 +383,15 @@ class DeleteCheck(UIWindow):
             if event.ui_element == self.delete_it_button:
                 rempath = get_save_dir() + "/" + self.clan_name
                 shutil.rmtree(rempath)
-                if os.path.exists(rempath + "clan.json"):
+                # Try new format first, then old format
+                if os.path.exists(rempath + ".json"):
+                    os.remove(rempath + ".json")
+                elif os.path.exists(rempath + "clan.json"):
                     os.remove(rempath + "clan.json")
                 elif os.path.exists(rempath + "clan.txt"):
                     os.remove(rempath + "clan.txt")
                 else:
-                    print("No clan.json/txt???? Clan prolly wasnt initalized kekw")
+                    print("No .json/clan.json/txt???? Clan prolly wasnt initalized kekw")
                 self.kill()
                 self.reloadscreen("switch clan screen")
 
@@ -409,7 +412,7 @@ class GameOver(UIWindow):
             resizable=False,
         )
         self.set_blocking(True)
-        self.clan_name = str(game.clan.name + "Clan")
+        self.clan_name = str(game.clan.name)
         self.last_screen = last_screen
         self.game_over_message = UITextBoxTweaked(
             f"{self.clan_name} has died out. For now, this is where their story ends. Perhaps it's time to tell a new "
@@ -1922,7 +1925,7 @@ class PickPath(UIWindow):
                          resizable=False)
         self.set_blocking(True)
         game.switches['window_open'] = True
-        self.clan_name = str(game.clan.name + 'Clan')
+        self.clan_name = str(game.clan.name)
         self.last_screen = last_screen
         self.pick_path_message = UITextBoxTweaked(
             f"You have an important decision to make...",
@@ -2029,7 +2032,7 @@ class DeathScreen(UIWindow):
                          resizable=False)
         self.set_blocking(True)
         game.switches['window_open'] = True
-        self.clan_name = str(game.clan.name + 'Clan')
+        self.clan_name = str(game.clan.name)
         self.last_screen = last_screen
         self.pick_path_message = UITextBoxTweaked(
             f"<b>You are dead.</b>\nWhat will you do now?",
@@ -2200,7 +2203,7 @@ class DeputyScreen(UIWindow):
                         resizable=False)
         self.set_blocking(True)
         game.switches['window_open'] = True
-        self.clan_name = str(game.clan.name + 'Clan')
+        self.clan_name = str(game.clan.name)
         self.last_screen = last_screen
         self.pick_path_message = UITextBoxTweaked(
             f"<b>You need to choose a deputy.</b>\nWho will it be?",
@@ -2259,7 +2262,7 @@ class NameKitsWindow(UIWindow):
                          resizable=False)
         self.set_blocking(True)
         game.switches['window_open'] = True
-        self.clan_name = str(game.clan.name + 'Clan')
+        self.clan_name = str(game.clan.name)
         self.last_screen = last_screen
         self.pick_path_message = UITextBoxTweaked(
             f"<b>You have kits!</b>\nWhat will you name them?",
@@ -2323,7 +2326,7 @@ class MateScreen(UIWindow):
                          resizable=False)
         self.set_blocking(True)
         game.switches['window_open'] = True
-        self.clan_name = str(game.clan.name + 'Clan')
+        self.clan_name = str(game.clan.name)
         self.last_screen = last_screen
         self.mates = game.switches['new_mate']
         self.pick_path_message = UITextBoxTweaked(
@@ -2390,7 +2393,7 @@ class RetireScreen(UIWindow):
                          resizable=False)
         self.set_blocking(True)
         game.switches['window_open'] = True
-        self.clan_name = str(game.clan.name + 'Clan')
+        self.clan_name = str(game.clan.name)
         self.last_screen = last_screen
         game.switches['retire'] = False
         game.switches['retire_reject'] = False
@@ -2648,7 +2651,7 @@ class SelectFocusClans(UIWindow):
         n = 0
         for clan in game.clan.all_clans:
             self.texts[clan.name] = pygame_gui.elements.UITextBox(
-                clan.name + "clan",
+                clan.name,
                 ui_scale(pygame.Rect(107, n * 27 + 38, -1, 25)),
                 object_id="#text_box_30_horizleft_pad_0_8",
                 container=self,

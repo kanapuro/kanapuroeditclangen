@@ -900,7 +900,7 @@ class Clan:
         if game.clan.game_mode in ["expanded", "cruel season"]:
             self.save_freshkill_pile(game.clan)
 
-        game.safe_save(f"{get_save_dir()}/{self.name}clan.json", clan_data)
+        game.safe_save(f"{get_save_dir()}/{self.name}.json", clan_data)
 
         if os.path.exists(get_save_dir() + f"/{self.name}clan.txt") & (self.name != 'current'):
             os.remove(get_save_dir() + f"/{self.name}clan.txt")
@@ -936,8 +936,13 @@ class Clan:
 
         version_info = None
         if os.path.exists(
+            get_save_dir() + "/" + game.switches["clan_list"][0] + ".json"
+        ):
+            version_info = self.load_clan_json()
+        elif os.path.exists(
             get_save_dir() + "/" + game.switches["clan_list"][0] + "clan.json"
         ):
+            # Fallback for old save format
             version_info = self.load_clan_json()
         elif os.path.exists(
             get_save_dir() + "/" + game.switches["clan_list"][0] + "clan.txt"
@@ -1154,8 +1159,14 @@ class Clan:
             return
 
         game.switches["error_message"] = "There was an error loading the clan.json - json error"
+        
+        # Try new format first, then fallback to old format
+        clan_file_path = get_save_dir() + "/" + game.switches["clan_list"][0] + ".json"
+        if not os.path.exists(clan_file_path):
+            clan_file_path = get_save_dir() + "/" + game.switches["clan_list"][0] + "clan.json"
+        
         with open(
-            get_save_dir() + "/" + game.switches["clan_list"][0] + "clan.json",
+            clan_file_path,
             "r",
             encoding="utf-8",
         ) as read_file:  # pylint: disable=redefined-outer-name
