@@ -31,7 +31,7 @@ class MiscEvents():
         if other_clan:
             other_clan_name = f'{other_clan.name}Clan'
 
-        possible_events = GenerateEvents.possible_short_events(cat.status, cat.age, "misc_events")
+        possible_events = GenerateEvents.possible_short_events("misc_events")
         acc_checked_events = []
         for event in possible_events:
             if (ceremony and "ceremony" not in event.tags) or (not ceremony and "ceremony" in event.tags):
@@ -62,8 +62,7 @@ class MiscEvents():
                     break
 
         #print('misc event', cat.ID)
-        final_events = GenerateEvents.filter_possible_short_events(acc_checked_events, cat, other_cat, war, enemy_clan, other_clan,
-                                                                   alive_kits, murder_reveal=reveal)
+        final_events = GenerateEvents.filter_possible_short_events(Cat, acc_checked_events, cat, other_cat, other_clan, True, 1)
 
         # ---------------------------------------------------------------------------- #
         #                                    event                                     #
@@ -92,7 +91,7 @@ class MiscEvents():
             difference = 1
             change_clan_relations(other_clan, difference=difference)
 
-        event_text = event_text_adjust(Cat, misc_event.event_text, cat, other_cat, other_clan_name, murder_reveal=reveal, victim=victim)
+        event_text = event_text_adjust(Cat, misc_event.event_text, main_cat=cat, random_cat=other_cat, other_clan=other_clan_name)
         
         if event_text:
             # Add event text to the relationship log if two cats are involved
@@ -155,7 +154,7 @@ class MiscEvents():
             if "clan_discovery" in misc_event.tags:
                 History.get_murders(cat)["is_murderer"][murder_index]["clan_discovery"] = True
             # Reveal murder
-            History.reveal_murder(cat, other_cat, Cat, victim, murder_index)
+            History.reveal_murder(cat, other_cat, Cat, victim, murder_index, shunned="shunned" in misc_event.tags)
             
     @staticmethod
     def handle_relationship_changes(cat, misc_event, other_cat):
@@ -227,12 +226,13 @@ class MiscEvents():
             acc_list.extend(Pelt.plant_accessories)
         if "COLLAR" in possible_accs:
             acc_list.extend(Pelt.collars)
-        if "TOY" in possible_accs:
-            acc_list.extend(Pelt.toy_accessories)
-        if "BLANKIE" in possible_accs:
-            acc_list.extend(Pelt.blankie_accessories)
-        if "FLAG" in possible_accs:
-            acc_list.extend(Pelt.flag_accessories)
+        # TODO: These attributes don't exist in Pelt class
+        # if "TOY" in possible_accs:
+        #     acc_list.extend(Pelt.toy_accessories)
+        # if "BLANKIE" in possible_accs:
+        #     acc_list.extend(Pelt.blankie_accessories)
+        # if "FLAG" in possible_accs:
+        #     acc_list.extend(Pelt.flag_accessories)
         for acc in possible_accs:
             if acc not in ["WILD", "PLANT", "COLLAR", "TOY", "BLANKIE", "FLAG"]:
                 acc_list.append(acc)

@@ -472,12 +472,12 @@ class HandleShortEvents:
                         acc_list.remove(acc)
 
         if acc_list:
-            # self.main_cat.pelt.accessory = random.choice(acc_list)
-            # clangen ^^
-            # lifegen vv
             new_acc = random.choice(acc_list)
-            self.main_cat.pelt.accessories.append(new_acc)
-            self.main_cat.pelt.inventory.append(new_acc)
+            self.main_cat.pelt.accessory = new_acc
+            if new_acc not in self.main_cat.pelt.accessories:
+                self.main_cat.pelt.accessories.append(new_acc)
+            if new_acc not in self.main_cat.pelt.inventory:
+                self.main_cat.pelt.inventory.append(new_acc)
 
     def handle_transition(self):
         """

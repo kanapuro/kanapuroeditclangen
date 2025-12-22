@@ -6,7 +6,7 @@ from scripts.cat.cats import Cat
 from scripts.cat.history import History
 from scripts.cat.pelts import Pelt
 from scripts.conditions import medical_cats_condition_fulfilled, get_amount_cat_for_one_medic
-from scripts.utility import event_text_adjust, get_med_cats, change_relationship_values, change_clan_relations, \
+from scripts.utility import event_text_adjust, get_alive_status_cats, change_relationship_values, change_clan_relations, \
     history_text_adjust
 from scripts.game_structure.game_essentials import game
 from scripts.events_module.scar_events import Scar_Events
@@ -218,9 +218,8 @@ class Condition_Events():
                     other_clan = game.clan.all_clans[0]
                     other_clan_name = f'{other_clan.name}Clan'
 
-                possible_events = GenerateEvents.possible_short_events(cat.status, cat.age, "injury")
-                final_events = GenerateEvents.filter_possible_short_events(possible_events, cat, other_cat, war,
-                                                                           enemy_clan, other_clan, alive_kits)
+                possible_events = GenerateEvents.possible_short_events("injury")
+                final_events = GenerateEvents.filter_possible_short_events(Cat, possible_events, cat, other_cat, other_clan, True, 1)
 
                 if len(final_events) > 0:
                     injury_event = random.choice(final_events)
@@ -239,7 +238,7 @@ class Condition_Events():
                         Condition_Events.handle_relationship_changes(cat, injury_event, other_cat)
 
                     #print(injury_event.event_text)
-                    text = event_text_adjust(Cat, injury_event.event_text, cat, other_cat, other_clan_name)
+                    text = event_text_adjust(Cat, injury_event.event_text, main_cat=cat, random_cat=other_cat, other_clan=other_clan_name)
 
                     if game.clan.game_mode == "classic":
                         if "scar" in injury_event.tags and len(cat.pelt.scars) < 4:
@@ -508,7 +507,7 @@ class Condition_Events():
                 # choose event string
                 random_index = int(random.random() * len(possible_string_list))
                 event = possible_string_list[random_index]
-                event = event_text_adjust(Cat, event, cat, other_cat=None)
+                event = event_text_adjust(Cat, event, main_cat=cat, random_cat=None)
                 event_list.append(event)
                 game.herb_events_list.append(event)
 
@@ -577,7 +576,7 @@ class Condition_Events():
                     print(f'WARNING: {injury} does not have an injury death string, placeholder used')
                     event = "m_c was killed by their injuries."
 
-                event = event_text_adjust(Cat, event, cat)
+                event = event_text_adjust(Cat, event, main_cat=cat)
 
                 if cat.status == 'leader':
                     history_text = event.replace(str(cat.name), " ")
@@ -606,7 +605,7 @@ class Condition_Events():
                     except KeyError:
                         print(f"WARNING: {injury} couldn't be found in the healed strings dict! placeholder string was used.")
                         event = f"m_c's injury {injury} has healed"
-                event = event_text_adjust(Cat, event, cat, other_cat=None)
+                event = event_text_adjust(Cat, event, main_cat=cat, random_cat=None)
                 
                 game.herb_events_list.append(event)
                     
@@ -624,7 +623,7 @@ class Condition_Events():
                     # choose event string and ensure Clan's med cat number aligns with event text
                     random_index = random.randrange(0, len(possible_string_list))
                     
-                    med_list = get_med_cats(Cat)
+                    med_list = get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"])
                     #If the cat is a med cat, don't conister them as one for the event. 
                     if cat in med_list:
                         med_list.remove(cat)
@@ -639,7 +638,7 @@ class Condition_Events():
                         random_index = 2
         
                     event = possible_string_list[random_index]
-                    event = event_text_adjust(Cat, event, cat, other_cat=med_cat)  # adjust the text
+                    event = event_text_adjust(Cat, event, main_cat=cat, random_cat=med_cat)  # adjust the text
                 if event is not None:
                     event_list.append(event)
                 continue
@@ -706,7 +705,7 @@ class Condition_Events():
 
                 # choose event string and ensure Clan's med cat number aligns with event text
                 random_index = int(random.random() * len(possible_string_list))
-                med_list = get_med_cats(Cat)
+                med_list = get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"])
                 med_cat = None
                 has_parents = False
                 if cat.parent1 is not None and cat.parent2 is not None:
@@ -740,7 +739,7 @@ class Condition_Events():
                     if med_cat == cat:
                         random_index = 1
                 event = possible_string_list[random_index]
-                event = event_text_adjust(Cat, event, cat, other_cat=med_cat)  # adjust the text
+                event = event_text_adjust(Cat, event, main_cat=cat, random_cat=med_cat)  # adjust the text
                 event_list.append(event)
                 continue
 
@@ -895,7 +894,7 @@ class Condition_Events():
 
                     # choose event string and ensure Clan's med cat number aligns with event text
                     random_index = int(random.random() * len(possible_string_list))
-                    med_list = get_med_cats(Cat)
+                    med_list = get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"])
                     if len(med_list) == 0:
                         if random_index == 0:
                             random_index = 1
@@ -910,7 +909,7 @@ class Condition_Events():
                     print(f"WARNING: {condition} couldn't be found in the risk strings! placeholder string was used")
                     event = "m_c's condition has gotten worse."
 
-                event = event_text_adjust(Cat, event, cat, other_cat=med_cat)  # adjust the text
+                event = event_text_adjust(Cat, event, main_cat=cat, random_cat=med_cat)  # adjust the text
                 event_list.append(event)
 
                 # we add the condition to this game switch, this is so we can ensure it's skipped over for this moon

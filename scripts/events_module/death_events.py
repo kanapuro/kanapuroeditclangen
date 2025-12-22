@@ -3,7 +3,7 @@ import random
 from scripts.cat.cats import Cat, INJURIES
 from scripts.cat.history import History
 from scripts.events_module.generate_events import GenerateEvents
-from scripts.utility import event_text_adjust, change_clan_relations, change_relationship_values, get_alive_kits, \
+from scripts.utility import event_text_adjust, change_clan_relations, change_relationship_values, get_alive_status_cats, \
     history_text_adjust
 from scripts.game_structure.game_essentials import game
 from scripts.event_class import Single_Event
@@ -33,11 +33,9 @@ class Death_Events():
             other_clan = game.clan.all_clans[0]
             other_clan_name = f'{other_clan.name}Clan'
 
-        possible_short_events = GenerateEvents.possible_short_events(cat.status, cat.age, "death")
+        possible_short_events = GenerateEvents.possible_short_events("death")
 
-        final_events = GenerateEvents.filter_possible_short_events(possible_short_events, cat, other_cat, war,
-                                                                                 enemy_clan,
-                                                                                 other_clan, alive_kits, murder=murder)
+        final_events = GenerateEvents.filter_possible_short_events(Cat, possible_short_events, cat, other_cat, other_clan, True, 1)
 
         # ---------------------------------------------------------------------------- #
         #                                  kill cats                                   #
@@ -47,7 +45,7 @@ class Death_Events():
         except IndexError:
             print('WARNING: no death events found for', cat.name)
             return
-        death_text = event_text_adjust(Cat, death_cause.event_text, cat, other_cat, other_clan_name)
+        death_text = event_text_adjust(Cat, death_cause.event_text, main_cat=cat, random_cat=other_cat, other_clan=other_clan_name)
         additional_event_text = ""
 
         # assign default history
@@ -61,7 +59,7 @@ class Death_Events():
         murder_unrevealed_history = None
         if murder:
             if "kit_manipulated" in death_cause.tags:
-                kit = Cat.fetch_cat(random.choice(get_alive_kits(Cat)))
+                kit = Cat.fetch_cat(random.choice(get_alive_status_cats(Cat, ["kitten"])))
                 involved_cats.append(kit.ID)
                 change_relationship_values([other_cat.ID],
                                            [kit],
@@ -122,7 +120,7 @@ class Death_Events():
             additional_event_text += cat.die(body)
             death_history = history_text_adjust(death_history, other_clan_name, game.clan)
 
-        History.add_death(cat, death_history, other_cat=other_cat, extra_text=murder_unrevealed_history)
+        History.add_death(cat, death_history, other_cat=other_cat)
 
         # give death history to other cat and kill them if they die
         if "multi_death" in death_cause.tags:

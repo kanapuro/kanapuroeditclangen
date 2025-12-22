@@ -1086,14 +1086,8 @@ class Events:
         for abbrev in process_text_dict.keys():
             abbrev_cat = process_text_dict[abbrev]
             
-            # DEBUG
-            print(f"DEBUG: Processing abbrev {abbrev} for cat {abbrev_cat.ID} ({abbrev_cat.name})")
-            print(f"  Pronouns: {abbrev_cat.pronouns}")
-            print(f"  Pronouns length: {len(abbrev_cat.pronouns) if abbrev_cat.pronouns else 0}")
-            
             # Check and fix pronouns if empty
             if not abbrev_cat.pronouns or len(abbrev_cat.pronouns) == 0:
-                print(f"  ERROR: Empty pronouns! Setting default...")
                 abbrev_cat.pronouns = [{"subject": "they", "object": "them", "poss": "their", "inposs": "theirs", "self": "themself", "conju": 1}]
             
             # Now choose a pronoun

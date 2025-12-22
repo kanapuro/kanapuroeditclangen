@@ -997,7 +997,6 @@ class PatrolOutcome():
         # Now, it's time to generate the new cat
         # This is a bit of a pain, but I can't re-write this function
         new_cats = create_new_cat(Cat,
-                                Relationship,
                                 new_name=new_name,
                                 loner=cat_type in ["loner", "rogue"],
                                 kittypet=cat_type == "kittypet",

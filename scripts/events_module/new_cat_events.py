@@ -46,13 +46,7 @@ class NewCatEvents:
                 if name_change == 1 or backstory == 'former Clancat':
                     event_text = event_text + f" They decide to keep their name."
                 elif name_change == 2 and backstory != 'former Clancat':
-                    outside_cat.name = Name(outside_cat.status, 
-                                            colour=outside_cat.pelt.colour,
-                                            eyes=outside_cat.pelt.eye_colour,
-                                            pelt=outside_cat.pelt.name,
-                                            tortiepattern=outside_cat.pelt.tortiepattern,
-                                            biome=game.clan.biome)
-                    
+                    outside_cat.name = Name(status=outside_cat.status, cat=outside_cat)
                     event_text = event_text + f" They decide to take a new name, {outside_cat.name}."
                 outside_cat.thought = "Is looking around the camp with wonder"
                 involved_cats = [outside_cat.ID]
@@ -76,10 +70,8 @@ class NewCatEvents:
         # ---------------------------------------------------------------------------- #
         #                                cat creation                                  #
         # ---------------------------------------------------------------------------- #
-        possible_events = GenerateEvents.possible_short_events(cat.status, cat.age, "new_cat")
-        final_events = GenerateEvents.filter_possible_short_events(possible_events, cat, other_cat, war,
-                                                                        enemy_clan,
-                                                                        other_clan, alive_kits)
+        possible_events = GenerateEvents.possible_short_events("new_cat")
+        final_events = GenerateEvents.filter_possible_short_events(Cat, possible_events, cat, other_cat, other_clan, True, 1)
         if not final_events:
             print('ERROR: no new cat moon events available')
             return
@@ -267,8 +259,8 @@ class NewCatEvents:
             difference = 1
             change_clan_relations(other_clan, difference=difference)
 
-        event_text = event_text_adjust(Cat, new_cat_event.event_text, cat, other_cat, other_clan_name,
-                                       new_cat=created_cats[0])
+        event_text = event_text_adjust(Cat, new_cat_event.event_text, main_cat=cat, random_cat=other_cat, other_clan=other_clan_name,
+                                       new_cats=created_cats)
 
         types = ["misc"]
         if "other_clan" in new_cat_event.tags:

@@ -12,7 +12,7 @@ from scripts.event_class import Single_Event
 from scripts.cat_relations.relationship import Relationship
 from scripts.events_module.relationship.romantic_events import Romantic_Events
 from scripts.events_module.relationship.welcoming_events import Welcoming_Events
-from scripts.events_module.relationship.group_events import Group_Events
+from scripts.events_module.relationship.group_events import GroupEvents
 
 class Relation_Events():
     """All relationship events."""
@@ -179,7 +179,7 @@ class Relation_Events():
             possible_interaction_cats = Relation_Events.cats_with_relationship_constraints(cat,
                                                                                            Relation_Events.GROUP_TYPES[chosen_type]["constraint"])
 
-        interacted_cat_ids = Group_Events.start_interaction(cat, possible_interaction_cats)
+        interacted_cat_ids = GroupEvents.start_interaction(cat, possible_interaction_cats)
         for id in interacted_cat_ids:
             inter_cat = Cat.all_cats[id]
             Relation_Events.trigger_event(inter_cat)
@@ -206,7 +206,7 @@ class Relation_Events():
             return
 
         for new_cat in new_cats:
-            same_age_cats = get_cats_same_age(new_cat)
+            same_age_cats = get_cats_same_age(Cat, new_cat)
             alive_cats = [i for i in new_cat.all_cats.values() if not i.dead and not i.outside]
             number = game.config["new_cat"]["cat_amount_welcoming"]
 

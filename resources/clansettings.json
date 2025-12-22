@@ -70,6 +70,11 @@
             "Enable all accessories",
             "All cats will have all accessories available in their inventory",
             false
+        ],
+        "player_crimes_success": [
+            "All player-directed crimes succeed",
+            "When enabled, all player-directed murders and affairs will automatically succeed. For players who want guaranteed outcomes.",
+            false
         ]
     },
     "role": {

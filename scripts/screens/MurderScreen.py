@@ -1192,7 +1192,13 @@ class MurderScreen(Screens):
         print(f"  SUCCESS? {r < max(5, chance + r2)}")
         print("="*50 + "\n")
 
-        murdered = r < max(5, chance + r2)
+        # Check for guaranteed success clan setting
+        if game.clan.clan_settings.get("player_crimes_success", False):
+            murdered = True
+            print(f"DEBUG: Guaranteed success enabled - murder succeeds regardless of roll")
+        else:
+            murdered = r < max(5, chance + r2)
+        
         you = game.clan.your_cat
         cat_to_murder = self.cat_to_murder
 
@@ -1479,9 +1485,14 @@ class MurderScreen(Screens):
 
         all_leader_lives = False
 
-        if cat_to_murder.status == "leader":
-            if leaddeath < leader_death_chance + 1:
+        # Check for guaranteed success clan setting
+        if game.clan.clan_settings.get("player_crimes_success", False):
+            if cat_to_murder.status == "leader":
                 all_leader_lives = True
+        else:
+            if cat_to_murder.status == "leader":
+                if leaddeath < leader_death_chance + 1:
+                    all_leader_lives = True
 
 
         risk = randint(1,100)
@@ -1494,11 +1505,16 @@ class MurderScreen(Screens):
         injury = False
         death = False
 
-        if risk < risk_chance + 1:
-            injury = True
+        # Check for guaranteed success clan setting
+        if game.clan.clan_settings.get("player_crimes_success", False):
+            injury = False
+            death = False
+        else:
+            if risk < risk_chance + 1:
+                injury = True
 
-        if deathrisk < death_chance + 1 and not injury:
-            death = True
+            if deathrisk < death_chance + 1 and not injury:
+                death = True
         
         if death and not injury:
             if you.status == "leader":
@@ -1796,11 +1812,15 @@ class MurderScreen(Screens):
         # discovery_num = 1
         # ^^ shun debug
 
+        # Check for guaranteed success clan setting
         discovered = False
-        if discovery_num < (discover_chance + 1):
-            discovered = True
-        else:
+        if game.clan.clan_settings.get("player_crimes_success", False):
             discovered = False
+        else:
+            if discovery_num < (discover_chance + 1):
+                discovered = True
+            else:
+                discovered = False
             
         if discovered:
             if accomplice and accompliced:

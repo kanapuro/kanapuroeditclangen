@@ -286,6 +286,10 @@ class AffairScreen(Screens):
 
     def is_success(self, affair_cat):
         """Calculates affair success rate based on relationships"""
+        # Check for guaranteed success clan setting
+        if game.clan.clan_settings.get("player_crimes_success", False):
+            return True
+            
         chance = game.config["affair_success_chance"]
         for i in game.clan.your_cat.mates:
             if Cat.fetch_cat(i).relationships.get(game.clan.your_cat.ID).romantic_love > 50:

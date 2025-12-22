@@ -8,7 +8,7 @@ from scripts.utility import event_text_adjust
 from scripts.cat.cats import Cat
 from scripts.event_class import Single_Event
 from scripts.clan_resources.freshkill import (
-    Freshkill_Pile,
+    FreshkillPile,
     MAL_PERCENTAGE ,
     STARV_PERCENTAGE,
     FRESHKILL_ACTIVE,
@@ -42,7 +42,7 @@ class Freshkill_Events():
 
         # get all events for a certain status of a cat
         cat_nutrition = nutrition_info[cat.ID]
-        possible_events = GenerateEvents.possible_short_events(cat.status, cat.age, "nutrition")
+        possible_events = GenerateEvents.possible_short_events("nutrition")
 
         # get the other needed information and values to create a event
         possible_other_cats = [i for i in Cat.all_cats.values() if not (i.dead or i.outside) and i.ID != cat.ID]
@@ -70,14 +70,14 @@ class Freshkill_Events():
             chosen_event = (random.choice(final_events))
 
             # set up all the text's
-            death_text = event_text_adjust(Cat, chosen_event.event_text, cat, other_cat, other_clan_name)
+            death_text = event_text_adjust(Cat, chosen_event.event_text, main_cat=cat, random_cat=other_cat, other_clan=other_clan_name)
             history_text = 'this should not show up - history text'
 
             # give history to cat if they die
             if cat.status != "leader" and chosen_event.history_text[0] is not None:
-                history_text = event_text_adjust(Cat, chosen_event.history_text[0], cat, other_cat, other_clan_name)
+                history_text = event_text_adjust(Cat, chosen_event.history_text[0], main_cat=cat, random_cat=other_cat, other_clan=other_clan_name)
             elif cat.status == "leader" and chosen_event.history_text[1] is not None:
-                history_text = event_text_adjust(Cat, chosen_event.history_text[1], cat, other_cat, other_clan_name)
+                history_text = event_text_adjust(Cat, chosen_event.history_text[1], main_cat=cat, random_cat=other_cat, other_clan=other_clan_name)
 
             if cat.status == "leader":
                 game.clan.leader_lives -= 1
@@ -138,12 +138,12 @@ class Freshkill_Events():
             return
 
         chosen_event = (random.choice(final_events))
-        event_text = event_text_adjust(Cat, chosen_event.event_text, cat, other_cat, other_clan_name)
+        event_text = event_text_adjust(Cat, chosen_event.event_text, main_cat=cat, random_cat=other_cat, other_clan=other_clan_name)
         types = ["health"]
         game.cur_events_list.append(Single_Event(event_text, types, [cat.ID]))
 
     @staticmethod
-    def handle_amount_freshkill_pile(freshkill_pile: Freshkill_Pile, living_cats: list) -> None:
+    def handle_amount_freshkill_pile(freshkill_pile: FreshkillPile, living_cats: list) -> None:
         """
         Handles events (eg. a fox is attacking the camp), which are related to the freshkill pile.
         This function should only be called if the game is in 'expanded' or 'cruel season' mode.
@@ -202,7 +202,7 @@ class Freshkill_Events():
             while other_cat.ID == cat.ID:
                 other_cat = random.choice(living_cats)
 
-        possible_events = GenerateEvents.possible_short_events(cat.status, cat.age, "freshkill_pile")
+        possible_events = GenerateEvents.possible_short_events("freshkill_pile")
         possible_tasks = []
         for tag_type in EVENT_WEIGHT_TYPE:
             possible_tasks.extend(tag_type * EVENT_WEIGHT_TYPE[tag_type])
@@ -243,7 +243,7 @@ class Freshkill_Events():
 
         # get the event and trigger certain things
         chosen_event = (random.choice(final_events))
-        event_text = event_text_adjust(Cat, chosen_event.event_text, cat, other_cat)
+        event_text = event_text_adjust(Cat, chosen_event.event_text, main_cat=cat, random_cat=other_cat)
         Freshkill_Events.handle_history_death(chosen_event,cat,other_cat)
 
         # if a food is stolen, remove the food
@@ -352,11 +352,11 @@ class Freshkill_Events():
             history_normal = None
             history_leader = None
             if event.history_text[0] is not None:
-                scar_text = event_text_adjust(Cat, event.history_text[0], cat, other_cat)
+                scar_text = event_text_adjust(Cat, event.history_text[0], main_cat=cat, random_cat=other_cat)
             if event.history_text[1] is not None:
-                history_normal = event_text_adjust(Cat, event.history_text[1], cat, other_cat)
+                history_normal = event_text_adjust(Cat, event.history_text[1], main_cat=cat, random_cat=other_cat)
             elif event.history_text[2] is not None:
-                history_leader = event_text_adjust(Cat, event.history_text[2], cat, other_cat)
+                history_leader = event_text_adjust(Cat, event.history_text[2], main_cat=cat, random_cat=other_cat)
 
             if cat.status == "leader":
                 History.add_possible_history(cat, event.injury, death_text=history_leader, scar_text=scar_text,
@@ -382,9 +382,9 @@ class Freshkill_Events():
             history_normal = None
             history_leader = None
             if event.history_text[0] is not None:
-                history_normal = event_text_adjust(Cat, event.history_text[0], cat, other_cat)
+                history_normal = event_text_adjust(Cat, event.history_text[0], main_cat=cat, random_cat=other_cat)
             if event.history_text[1] is not None:
-                history_leader = event_text_adjust(Cat, event.history_text[1], cat, other_cat)
+                history_leader = event_text_adjust(Cat, event.history_text[1], main_cat=cat, random_cat=other_cat)
 
             if cat.status == "leader":
                 game.clan.leader_lives -= 1

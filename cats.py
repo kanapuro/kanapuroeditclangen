@@ -320,16 +320,13 @@ class Cat:
         # load_existing_name is needed so existing cats don't get their names changed/fixed for no reason
         if self.pelt is not None:
             self.name = Name(
-                status,
-                prefix,
-                suffix,
-                self.pelt.colour,
-                self.pelt.eye_colour,
-                self.pelt.name,
-                self.pelt.tortiepattern,
+                status=status,
+                prefix=prefix,
+                suffix=suffix,
                 biome=biome,
                 specsuffix_hidden=self.specsuffix_hidden,
                 load_existing_name=loading_cat,
+                cat=self,
             )
         else:
             self.name = Name(
@@ -362,7 +359,7 @@ class Cat:
         :return: None
         """
         self.ID = ID
-        self.name = Name(status, prefix=prefix, suffix=suffix)
+        self.name = Name(status=status, prefix=prefix, suffix=suffix)
         self.parent1 = None
         self.parent2 = None
         self.adoptive_parents = []
