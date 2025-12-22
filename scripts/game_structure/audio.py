@@ -217,9 +217,9 @@ class MusicManager:
         elif biome == "Plains":
             new_playlist = self.playlists["plains_playlist"]
         elif biome == "Mountainous":
-            new_playlist = self.playlists["beach_playlist"]
-        elif biome == "Beach":
             new_playlist = self.playlists["mountainous_playlist"]
+        elif biome == "Beach":
+            new_playlist = self.playlists["beach_playlist"]
 
         return new_playlist
 

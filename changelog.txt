@@ -1,7 +1,8 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Background music fixes.
 - Fixed pylint issues. Twice. Three times. Four times. Five times.
 - Added a setting to make all crimes (affair/murder) succeed, including taking all leaders lives and recieving no injury or getting caught.
-- Added "Realistic litters" and the ability to enable/disable litters.
+- Added "Realistic litters" and the ability to enable/disable pregnancy/births.
 - Removed "clan" from the end of most words.
 - Removed "clan" from end of save files while allowing migration of said files.
 - Fixed crash associated with filter_relationship_type
