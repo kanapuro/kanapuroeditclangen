@@ -2335,7 +2335,7 @@
           ]
         },
         {
-          "text": "Stepping lightly through the mist, r_c stops a limb-length away from m_c. {PRONOUN/r_c/subject} urges m_c to not poison {PRONOUN/m_c/self} and {PRONOUN/m_c/poss} Clan with petty grudges, and offers a life for [virtue].",
+          "text": "Stepping lightly through the mist, r_c stops a limb-length away from m_c. {PRONOUN/r_c/subject/CAP} urges m_c to not poison {PRONOUN/m_c/self} and {PRONOUN/m_c/poss} Clan with petty grudges, and offers a life for [virtue].",
           "virtue": ["acceptance", "certainty", "clear judgement", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "forgiveness", "friendship", "instincts", "mercy", "unity"]
         },
         {

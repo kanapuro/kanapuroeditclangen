@@ -385,7 +385,7 @@
 			"m_c purposefully tripped r_c.",
             "m_c growls at r_c to get out of {PRONOUN/m_c/poss} way.",
 			"m_c snaps at r_c's annoying antics.",
-            "m_c snarls at r_c when asked to play. {PRONOUN/m_c/subject} will not spend {PRONOUN/m_c/poss} time playing stupid games."
+            "m_c snarls at r_c when asked to play. {PRONOUN/m_c/subject/CAP} will not spend {PRONOUN/m_c/poss} time playing stupid games."
 		],
 		"main_status_constraint": [
 			"kitten",
