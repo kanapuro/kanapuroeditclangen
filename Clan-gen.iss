@@ -1,11 +1,11 @@
-; Clan-gen Installer Script
+; KanapuroEdit Installer Script
 
-#define ApplicationBaseName "Clan-gen"
-#define ApplicationFullName "Clan-gen (fan edit) by Sablesteel"
+#define ApplicationBaseName "KanapuroEdit"
+#define ApplicationFullName "KanapuroEdit"
 
-; Update this line to the date of the latest Clan-gen (fan edit) by Sablesteel release 
+; Update this line to the date of the latest KanapuroEdit release 
 ; (or choose your own version-numbering scheme)
-#define ApplicationVersion "2022.08.10"
+#define ApplicationVersion "0.1.0.4"
 
 #define ApplicationURL "https://sablesteel.itch.io/clan-gen-fan-edit"
 

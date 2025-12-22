@@ -1,3 +1,24 @@
+<strong>v0.1.0.4-KanapuroEdit: </strong>
+- Added changelog.
+- Replaced all instances of "clanmate" with "companion".
+- Accessory Retention - When you click off the accessory page, it saves your page so you can return to it quickly!
+- Fixed crash related to it/its and custom pronouns.
+
+<strong>v0.1.0.3-KanapuroEdit: </strong>
+- Updates ElderStoryScreen.py: Completely patched elder-story-related crashes. Yay!
+
+<strong>v0.1.0.2-KanapuroEdit: </strong>
+- Updates ui_elements.py: Fixes rare crash when opening audio settings page that occurred while testing mobile compatibility on Microsoft remote desktop.
+
+<strong>v0.1.0.1-KanapuroEdit: </strong>
+- Resolves crash that occurs when you open the history tab of a leader who is killed nine times and does not die. Band-aid patch!
+
+<strong>v0.1.0.0-KanapuroEdit: </strong>
+- Branch created.
+- Changed inheritence.py, names.json/game settings, patrol.py, utility.py, cats.py, and some event scripts!
+
+---
+
 <strong>v0.7.6: </strong>
 
 Changes/Additions:
