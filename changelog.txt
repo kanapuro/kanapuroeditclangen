@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Added "Realistic litters" and the ability to enable/disable litters.
 - Removed "clan" from the end of most words.
 - Removed "clan" from end of save files while allowing migration of said files.
 - Fixed crash associated with filter_relationship_type

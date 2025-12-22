@@ -143,6 +143,15 @@
             "Allow pregnancy and kitting",
             "Enable or disable pregnancy in the colony. When disabled, cats will not become pregnant or give birth to kits.",
             true
+        ],
+        "bigger_litters": [
+            "Realistic litters",
+            "Increase the size of litters, with higher chances of larger families. This will also increase the chances of stillborn kits.",
+            false,
+            [
+                "pregnancy",
+                true
+            ]
         ]
     },
     "freshkill_tactics":{

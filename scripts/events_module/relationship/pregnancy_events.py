@@ -557,6 +557,7 @@ class Pregnancy_Events:
         # if function reaches this point, having kits is possible
         return True
 
+    @staticmethod
     def check_intersex_parents(cat: Cat,
                                second_parent: Cat,
                                same_sex_adoption: bool):
@@ -872,7 +873,24 @@ class Pregnancy_Events:
         #############################
 
         #### GENERATE THE KITS ######
-        for kit in range(kits_amount):
+        # Determine if any kits will be stillborn based on litter size
+        stillborn_chance = 0
+        if kits_amount <= 2:
+            stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("small", 0)
+        elif kits_amount == 3:
+            stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("three", 0)
+        elif kits_amount <= 5:
+            stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("mid", 0)
+        elif kits_amount == 6:
+            stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("big", 0)
+        else:  # 7+
+            stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("large", 0)
+        
+        for kit_index in range(kits_amount):
+            # Check for stillbirth before creating the kit
+            if stillborn_chance > 0 and random.random() < stillborn_chance:
+                continue  # Skip this kit - it will be stillborn
+            
             if not cat:
                 # No parents provided, give a blood parent - this is an adoption.
                 if not blood_parent:
@@ -1045,46 +1063,45 @@ class Pregnancy_Events:
     @staticmethod
     def get_amount_of_kits(cat):
         """Get the amount of kits which will be born."""
+        # Check if bigger litters setting is enabled
+        use_modded = game.clan.clan_settings.get("bigger_litters", False)
+        
         min_kits = game.config["pregnancy"]["min_kits"]
-        min_kit = [min_kits] * game.config["pregnancy"]["one_kit_possibility"][
-            cat.age
-        ]
-        two_kits = [min_kits + 1] * game.config["pregnancy"]["two_kit_possibility"][
-            cat.age
-        ]
-        three_kits = [min_kits + 2] * game.config["pregnancy"]["three_kit_possibility"][
-            cat.age
-        ]
-        four_kits = [min_kits + 3] * game.config["pregnancy"]["four_kit_possibility"][
-            cat.age
-        ]
-        five_kits = [min_kits + 4] * game.config["pregnancy"]["five_kit_possibility"][
-            cat.age
-        ]
-        six_kits = [min_kits + 5] * game.config["pregnancy"]["six_kit_possibility"][
-            cat.age
-        ]
-        seven_kits = [min_kits + 6] * game.config["pregnancy"]["seven_kit_possibility"][
-            cat.age
-        ]
-        eight_kits = [min_kits + 7] * game.config["pregnancy"]["eight_kit_possibility"][
-            cat.age
-        ]
-        nine_kits = [min_kits + 8] * game.config["pregnancy"]["nine_kit_possibility"][
-            cat.age
-        ]
-        ten_kits = [min_kits + 9] * game.config["pregnancy"]["ten_kit_possibility"][
-            cat.age
-        ]
-        eleven_kits = [min_kits + 10] * game.config["pregnancy"]["eleven_kit_possibility"][
-            cat.age
-        ]
-        max_kits = [game.config["pregnancy"]["max_kits"]] * game.config["pregnancy"][
-            "max_kit_possibility"
-        ][cat.age]
-        amount = choice(
-            min_kit + two_kits + three_kits + four_kits + five_kits + six_kits + seven_kits + eight_kits + nine_kits + ten_kits + eleven_kits + max_kits
-        )
+        
+        if use_modded:
+            # Use modded (bigger litter) configuration
+            one_kit = [min_kits] * game.config["pregnancy"]["one_kit_modded"][cat.age]
+            two_kits = [min_kits + 1] * game.config["pregnancy"]["two_kit_modded"][cat.age]
+            three_kits = [min_kits + 2] * game.config["pregnancy"]["three_kit_modded"][cat.age]
+            four_kits = [min_kits + 3] * game.config["pregnancy"]["four_kit_modded"][cat.age]
+            five_kits = [min_kits + 4] * game.config["pregnancy"]["five_kit_modded"][cat.age]
+            six_kits = [min_kits + 5] * game.config["pregnancy"]["six_kit_modded"][cat.age]
+            
+            # In modded mode, jump to 9 kits (skip 7-8)
+            nine_kits = [min_kits + 8] * game.config["pregnancy"]["nine_kit_modded"][cat.age]
+            max_kits = [game.config["pregnancy"]["max_kits"]] * game.config["pregnancy"]["max_kit_modded"][cat.age]
+            
+            amount = choice(
+                one_kit + two_kits + three_kits + four_kits + five_kits + six_kits + nine_kits + max_kits
+            )
+        else:
+            # Use standard configuration
+            min_kit = [min_kits] * game.config["pregnancy"]["one_kit_possibility"][cat.age]
+            two_kits = [min_kits + 1] * game.config["pregnancy"]["two_kit_possibility"][cat.age]
+            three_kits = [min_kits + 2] * game.config["pregnancy"]["three_kit_possibility"][cat.age]
+            four_kits = [min_kits + 3] * game.config["pregnancy"]["four_kit_possibility"][cat.age]
+            five_kits = [min_kits + 4] * game.config["pregnancy"]["five_kit_possibility"][cat.age]
+            six_kits = [min_kits + 5] * game.config["pregnancy"]["six_kit_possibility"][cat.age]
+            seven_kits = [min_kits + 6] * game.config["pregnancy"]["seven_kit_possibility"][cat.age]
+            eight_kits = [min_kits + 7] * game.config["pregnancy"]["eight_kit_possibility"][cat.age]
+            nine_kits = [min_kits + 8] * game.config["pregnancy"]["nine_kit_possibility"][cat.age]
+            ten_kits = [min_kits + 9] * game.config["pregnancy"]["ten_kit_possibility"][cat.age]
+            eleven_kits = [min_kits + 10] * game.config["pregnancy"]["eleven_kit_possibility"][cat.age]
+            max_kits = [game.config["pregnancy"]["max_kits"]] * game.config["pregnancy"]["max_kit_possibility"][cat.age]
+            
+            amount = choice(
+                min_kit + two_kits + three_kits + four_kits + five_kits + six_kits + seven_kits + eight_kits + nine_kits + ten_kits + eleven_kits + max_kits
+            )
 
         return amount
 
@@ -1183,9 +1200,19 @@ class Pregnancy_Events:
         """Returns a chance based on different values."""
         # Now that the second parent is determined, we can calculate the balanced chance for kits
         # get the chance for pregnancy
-        inverse_chance = game.config["pregnancy"]["primary_chance_unmated"]
-        if len(first_parent.mates) > 0 and not affair:
-            inverse_chance = game.config["pregnancy"]["primary_chance_mated"]
+        # Check if bigger litters setting is enabled
+        use_modded = clan.clan_settings.get("bigger_litters", False)
+        
+        if use_modded:
+            # Use modded (lower) pregnancy chances for bigger litters balance
+            inverse_chance = game.config["pregnancy"]["modded_primary_chance_unmated"]
+            if len(first_parent.mates) > 0 and not affair:
+                inverse_chance = game.config["pregnancy"]["modded_primary_chance_mated"]
+        else:
+            # Use standard pregnancy chances
+            inverse_chance = game.config["pregnancy"]["primary_chance_unmated"]
+            if len(first_parent.mates) > 0 and not affair:
+                inverse_chance = game.config["pregnancy"]["primary_chance_mated"]
 
         # SETTINGS
         # - decrease inverse chance if only mated pairs can have kits

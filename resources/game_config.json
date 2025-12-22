@@ -177,12 +177,31 @@
             "max_kit_possibility": {"young adult": 1, "adult": 1, "senior adult": 0, "senior": 0},
 		"min_kits": 1,
 		"max_kits": 6,
+		"modded_primary_chance_mated": 50,
+		"modded_primary_chance_unmated": 100,
+		"one_kit_modded": {"young adult": 64, "adult": 4, "senior adult": 8, "senior": 64},
+		"two_kit_modded": {"young adult": 128, "adult": 8, "senior adult": 16, "senior": 128},
+		"three_kit_modded": {"young adult": 128, "adult": 16, "senior adult": 32, "senior": 128},
+		"four_kit_modded": {"young adult": 128, "adult": 16, "senior adult": 32, "senior": 64},
+		"five_kit_modded": {"young adult": 64, "adult": 16, "senior adult": 32, "senior": 32},
+		"six_kit_modded": {"young adult": 32, "adult": 8, "senior adult": 16, "senior": 16},
+		"nine_kit_modded": {"young adult": 8, "adult": 2, "senior adult": 3, "senior": 4},
+		"max_kit_modded": {"young adult": 1, "adult": 1, "senior adult": 1, "senior": 1},
+		"stillborn_chances": {
+			"small": 0.05,
+			"three": 0.15,
+			"mid": 0.25,
+			"big": 0.35,
+			"large": 0.45
+		},
 		"comment": [
 			"primary mated - 1/chance for kits, relationship and other factors will influence this chance",
 			"primary unmated - 1/chance for kits, relationship and other factors will influence this chance",
 			"The kit number is incremental. It is 1-6 as default so if you change these numbers, you should probably keep this in mind.",
 			"As in, your max kits number should probably be 5 more than the min kits number.",
-			"But that's not required - just makes more sense that way with how the litters are generated."
+			"But that's not required - just makes more sense that way with how the litters are generated.",
+			"modded_* - Bigger litter settings used when 'bigger_litters' clan setting is enabled",
+			"stillborn_chances - Probability a kit is stillborn by litter size category: small (1-2), three (3), mid (4-5), big (6), large (7+)"
 		]
 	},
 	"cat_generation": {
