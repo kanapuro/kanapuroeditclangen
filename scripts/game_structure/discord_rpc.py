@@ -15,7 +15,7 @@ from scripts.game_structure.game_essentials import game
 
 status_dict = {
     "start screen": "At the start screen",
-    "make clan screen": "Making a Clan",
+    "make clan screen": "Making a colony",
     "mediation screen": "Mediating a dispute",
     "patrol screen": "On a patrol",
     "profile screen": "Viewing a cat's profile",
@@ -93,7 +93,7 @@ class _DiscordRPC(threading.Thread):
             try:
                 state_text = status_dict[game.switches["cur_screen"]]
             except KeyError:
-                state_text = "Leading the Clan"
+                state_text = "Leading the colony"
 
             try:
                 img_str = (f"{game.clan.biome}_{game.clan.current_season.replace('-', '')}_"
@@ -124,7 +124,7 @@ class _DiscordRPC(threading.Thread):
                     small_image="discord",
                     small_text=f"Managing {cats_amount} cats",
                     start=self._start_time,
-                    buttons=[{"label": "Join The Server", "url": "https://discord.gg/lifegen"}],
+                    buttons=[{"label": "Join The Server", "url": "https://discord.gg/pB3XnFqenm"}],
                 )
             except BaseException:  # pylint: disable=broad-except
                 print("Discord rpc had issue updating, disabling...")
