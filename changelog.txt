@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed pylint issues. Twice. Three times. Four times. Five times.
 - Added a setting to make all crimes (affair/murder) succeed, including taking all leaders lives and recieving no injury or getting caught.
 - Added "Realistic litters" and the ability to enable/disable litters.
 - Removed "clan" from the end of most words.
