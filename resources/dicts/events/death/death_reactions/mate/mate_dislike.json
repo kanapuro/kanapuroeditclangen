@@ -106,7 +106,7 @@
   },
   "lonesome": {
     "body": [
-	"m_c was never the perfect mate, but r_c can't help but feel a twinge of anxiety looking at {PRONOUN/m_c/poss} body. {PRONOUN/r_c/subject} {VERB/r_c/huddle/huddles} close as {PRONOUN/r_c/subject} {VERB/r_c/realize/realizes} {PRONOUN/r_c/poss} future is no longer bonded."
+	"m_c was never the perfect mate, but r_c can't help but feel a twinge of anxiety looking at {PRONOUN/m_c/poss} body. {PRONOUN/r_c/subject/CAP} {VERB/r_c/huddle/huddles} close as {PRONOUN/r_c/subject} {VERB/r_c/realize/realizes} {PRONOUN/r_c/poss} future is no longer bonded."
     ],
     "no_body": [
 
@@ -118,7 +118,7 @@
   },
   "loyal": {
     "body": [
-	"m_c was never the perfect mate, but r_c can't help but feel a twinge of anxiety looking at {PRONOUN/m_c/poss} body. {PRONOUN/r_c/subject} {VERB/r_c/huddle/huddles} close as {PRONOUN/r_c/subject} {VERB/r_c/realize/realizes} {PRONOUN/r_c/poss} future is no longer bonded."
+	"m_c was never the perfect mate, but r_c can't help but feel a twinge of anxiety looking at {PRONOUN/m_c/poss} body. {PRONOUN/r_c/subject/CAP} {VERB/r_c/huddle/huddles} close as {PRONOUN/r_c/subject} {VERB/r_c/realize/realizes} {PRONOUN/r_c/poss} future is no longer bonded."
     ],
     "no_body": [
 
@@ -126,7 +126,7 @@
   },
   "nervous": {
     "body": [
-	"m_c was never the perfect mate, but r_c can't help but feel a twinge of anxiety looking at {PRONOUN/m_c/poss} body. {PRONOUN/r_c/subject} {VERB/r_c/huddle/huddles} close as {PRONOUN/r_c/subject} {VERB/r_c/realize/realizes} {PRONOUN/r_c/poss} future is no longer bonded."
+	"m_c was never the perfect mate, but r_c can't help but feel a twinge of anxiety looking at {PRONOUN/m_c/poss} body. {PRONOUN/r_c/subject/CAP} {VERB/r_c/huddle/huddles} close as {PRONOUN/r_c/subject} {VERB/r_c/realize/realizes} {PRONOUN/r_c/poss} future is no longer bonded."
     ],
     "no_body": [
 
