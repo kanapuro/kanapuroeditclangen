@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Added credits category for megamerge and lgmmke (kanapuroedit).
 - Medicine cats can now participate in all patrols (genemod inspired).
 - devcontainers-contrib -> devcontainers-extra
 - Background music fixes.

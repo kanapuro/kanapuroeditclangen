@@ -62,6 +62,7 @@ class SettingsScreen(Screens):
 
     info_text = {
         "welcome": "",
+        "mod_contribs": [],
         "ogs": "",
         "contribs": [],
         "thanks": "",
@@ -75,6 +76,19 @@ class SettingsScreen(Screens):
         credits_text = ujson.load(f)
     for string in credits_text["text"]:
         if string == "{credits}":
+            info_text_index = "ogs"
+        elif string == "{mod_contrib}":
+            info_text_index = "mod_contribs"
+            mod_contribs = credits_text.get("mod_contrib", {})
+            if isinstance(mod_contribs, dict):
+                for category, contributors in mod_contribs.items():
+                    entries = []
+                    if isinstance(contributors, dict):
+                        for contributor, contrib_tooltip in contributors.items():
+                            entries.append({"name": contributor, "tooltip": contrib_tooltip})
+                    info_text[info_text_index].append(
+                        {"category": category, "entries": entries}
+                    )
             info_text_index = "ogs"
         elif string == "{contrib}":
             # removing the previous newline
@@ -521,6 +535,87 @@ class SettingsScreen(Screens):
             manager=MANAGER,
             anchors={"centerx": "centerx"},
         )
+
+        credits_top_anchor = self.checkboxes_text["info_text_box"]
+
+        if self.info_text["mod_contribs"]:
+            self.checkboxes_text["info_text_mod_header"] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((0, 20), (400, 40))),
+                "Mod Credits",
+                {
+                    "normal": get_button_dict(ButtonStyles.ROUNDED_RECT, (400, 40))["normal"]
+                },
+                object_id="@buttonstyles_icon",
+                container=self.checkboxes_text["info_container"],
+                manager=MANAGER,
+                anchors={
+                    "centerx": "centerx",
+                    "top_target": credits_top_anchor,
+                },
+            )
+            self.checkboxes_text["info_text_mod_header"].disable()
+            mod_anchor = self.checkboxes_text["info_text_mod_header"]
+            mod_rows = [-200, 0, 200]
+
+            for group_index, group in enumerate(self.info_text["mod_contribs"]):
+                group_key = f"info_text_mod_group_{group_index}"
+                self.checkboxes_text[group_key] = UISurfaceImageButton(
+                    ui_scale(pygame.Rect((0, 20), (400, 30))),
+                    group.get("category", ""),
+                    {
+                        "normal": get_button_dict(ButtonStyles.ROUNDED_RECT, (400, 30))["normal"]
+                    },
+                    object_id="@buttonstyles_rounded_rect",
+                    container=self.checkboxes_text["info_container"],
+                    manager=MANAGER,
+                    anchors={
+                        "centerx": "centerx",
+                        "top_target": mod_anchor,
+                    },
+                )
+                self.checkboxes_text[group_key].disable()
+                mod_anchor = self.checkboxes_text[group_key]
+
+                contributors = group.get("entries") or []
+                if contributors:
+                    final_row_mod = len(contributors) % 3
+                    for i, entry in enumerate(contributors):
+                        position = (
+                            0
+                            if final_row_mod == 1 and i == len(contributors) - 1
+                            else mod_rows[i % 3],
+                            10 if i < 3 else 0,
+                        )
+                        tip_key = f"mod_tip{group_index}_{i}"
+                        self.tooltip[tip_key] = UIImageButton(
+                            ui_scale(
+                                pygame.Rect(
+                                    position,
+                                    (200, 26),
+                                )
+                            ),
+                            entry.get("name", ""),
+                            object_id="#blank_button_dark"
+                            if self.toggled_theme == "dark"
+                            else "#blank_button",
+                            container=self.checkboxes_text["info_container"],
+                            manager=MANAGER,
+                            tool_tip_text=entry.get("tooltip") or None,
+                            starting_height=2,
+                            sound_id=None,
+                            anchors={
+                                "centerx": "centerx",
+                                "top_target": self.checkboxes_text[group_key]
+                                if i < 3
+                                else self.tooltip[f"mod_tip{group_index}_{i - 3}"],
+                            },
+                        )
+                    mod_anchor = self.tooltip[
+                        f"mod_tip{group_index}_{len(contributors) - 1}"
+                    ]
+
+            credits_top_anchor = mod_anchor
+
         self.checkboxes_text["info_text_credits"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((0, 20), (400, 40))),
             "Credits",
@@ -530,7 +625,7 @@ class SettingsScreen(Screens):
             manager=MANAGER,
             anchors={
                 "centerx": "centerx",
-                "top_target": self.checkboxes_text["info_text_box"],
+                "top_target": credits_top_anchor,
             },
         )
         self.checkboxes_text["info_text_original"] = pygame_gui.elements.UITextBox(

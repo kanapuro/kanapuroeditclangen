@@ -5,6 +5,7 @@
         "This is a fan-made generator for the <i>Warrior Cats</i> book series by Erin Hunter.",
         "",
         "You're welcome to use the characters and sprites generated in this program, as long as you don't claim the sprites as your own creations or sell them for any reason.",
+        "{mod_contrib}",
         "{credits}",
         "<b>Original creator:</b> <i>just-some-cat.tumblr.com (anju)</i>",
         "",
@@ -22,6 +23,37 @@
         "Code is licensed under <a href=https://www.mozilla.org/en-US/MPL/2.0/>Mozilla Public License Version 2.0</a>",
         "Art is licensed under <a href=https://creativecommons.org/licenses/by-nc/4.0/legalcode>CC-BY-NC 4.0</a> "
     ],
+    "mod_contrib": {
+        "KanapuroEdit": {
+            "Kanapuro": "KanapuroEdit merger and maintainer",
+            "chinchbug": "GeneMod author"
+        },
+        "Sel's Mega Merge": {
+            "Sel": "Original Mega Merge author and maintainer",
+            "Nausiia": "Background sprite edits: https://discord.com/channels/1003759225522110524/1226201018010959872",
+            "Beetle7151": "Semi-realistic tints, more skills, more eyes, & more accessories: https://discord.com/channels/1003759225522110524/1213670660447014932, https://discord.com/channels/1003759225522110524/1216553817378914425, https://discord.com/channels/1003759225522110524/1172013724597501983, https://discord.com/channels/1003759225522110524/1158147194029867109",
+            "Gerob": "More personalities + traits (modified) & thoughts: https://discord.com/channels/1003759225522110524/1189240780401954916",
+            "Dinofelisdruid": "Intersex + more nonbinary cats & traits: https://discord.com/channels/1003759225522110524/1176620783653621770, https://discord.com/channels/1003759225522110524/1235266417738252379",
+            "Snailto0th": "Super soft shaders: https://discord.com/channels/1003759225522110524/1212508652490199080",
+            "Maggiethemink": "Torties + white patches: https://discord.com/channels/1003759225522110524/1204352226181644360",
+            "A.corn": "DoublePatches: https://discord.com/channels/1003759225522110524/1172843487226515538",
+            "Ohdanomi": "Accessories & accessory events: https://discord.com/channels/1003759225522110524/1097978303350054992",
+            "Snowstar837": "Inheritable physical traits: https://discord.com/channels/1003759225522110524/1258224367314272277",
+            "Coffeedot": "More information/more cat descriptors: https://discord.com/channels/1003759225522110524/1212668667314311179",
+            "Eragonarose": "Forest of curiosities, accesory mod & colors of nature: https://discord.com/channels/1003759225522110524/1187676970029436929, https://discord.com/channels/1003759225522110524/1213941721377931315",
+            "Anatlanticatlas": "Many markings: https://discord.com/channels/1003759225522110524/1232796723601080492",
+            "Krisilly": "Simple dark patches: https://discord.com/channels/1003759225522110524/1206744379688091758",
+            "Dragofoxy": "Many traits: https://discord.com/channels/1003759225522110524/1216180193706901524",
+            "Towhee": "Naturalistic eyes expansion: https://discord.com/channels/1003759225522110524/1265450428410237030",
+            "Shiningstar1122": "Mega colors mod & sprite edits: https://discord.com/channels/1003759225522110524/1271945747457376296",
+            "Shattered7466": "Sprites/Patterns: https://discordapp.com/channels/1003759225522110524/1025570515609468989, https://discord.com/channels/1003759225522110524/1011543712502915092",
+            "Cholerajasna": "Cat customizer: https://discord.com/channels/1003759225522110524/1315489607332401172",
+            "Galaxyneonlight": "VoitheX mod - colors & white patch variants: https://discord.com/channels/1003759225522110524/1138797435548860428",
+            "Apothe0sis_": "Patrols + more: https://discord.com/channels/1003759225522110524/1290539309694193755",
+            "Ratvortex": "Meaner ClanGen: https://discord.com/channels/1003759225522110524/1286100028653436940",
+            "Rosedew57": "Random accessories: https://discord.com/channels/1003759225522110524/1102404284013879397"
+        }
+    },
     "contrib": {
         "<SENIORS>": "SENIOR DEVELOPERS BELOW HERE",
         "anju": "-Senior Dev-<br>Creating the Original Game- Old Base Code (Clan creation, Clan screen, Timeskip, Mates and kits, StarClan), Base Sprites & Pelts, Patrol Arts, New Sprite Revisions, Shaders",
