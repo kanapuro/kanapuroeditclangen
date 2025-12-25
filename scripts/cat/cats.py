@@ -1,6 +1,13 @@
 from __future__ import annotations
+<<<<<<< Updated upstream
 from random import choice, randint, sample, random, choices, getrandbits, randrange
 from typing import Dict, List, Any
+=======
+
+import bisect
+import itertools
+import logging
+>>>>>>> Stashed changes
 import os.path
 import itertools
 import sys
@@ -12,11 +19,17 @@ from ..events_module.generate_events import GenerateEvents
 
 import ujson
 
+logger = logging.getLogger(__name__)
+
 from .names import Name
 from .pelts import Pelt
+<<<<<<< Updated upstream
 from scripts.conditions import Illness, Injury, PermanentCondition, get_amount_cat_for_one_medic, \
     medical_cats_condition_fulfilled
 import bisect
+=======
+from .phenotype import Phenotype
+>>>>>>> Stashed changes
 
 from scripts.utility import get_med_cats, get_personality_compatibility, event_text_adjust, update_sprite, \
     leader_ceremony_text_adjust
@@ -25,6 +38,12 @@ from scripts.cat_relations.relationship import Relationship
 from scripts.game_structure import image_cache
 from scripts.event_class import Single_Event
 from .thoughts import Thoughts
+<<<<<<< Updated upstream
+=======
+from scripts.cat.history import History
+from scripts.cat.personality import Personality
+from scripts.cat.skills import CatSkills
+>>>>>>> Stashed changes
 from scripts.cat_relations.inheritance import Inheritance
 
 
@@ -111,6 +130,7 @@ class Cat():
 
     grief_strings = {}
 
+<<<<<<< Updated upstream
     def __init__(self,
                  prefix=None,
                  gender=None,
@@ -129,6 +149,48 @@ class Cat():
                  loading_cat=False,  # Set to true if you are loading a cat at start-up.
                  **kwargs
                  ):
+=======
+    def __init__(
+        self,
+        prefix=None,
+        gender=None,
+        status="newborn",
+        backstory="clanborn",
+        parent1=None,
+        parent2=None,
+        adoptive_parents=None,
+        suffix=None,
+        specsuffix_hidden=False,
+        ID=None,
+        moons=None,
+        example=False,
+        faded=False,
+        skill_dict=None,
+        pelt: Pelt = None,
+        genotype=None,
+        loading_cat=False,  # Set to true if you are loading a cat at start-up.
+        **kwargs,
+    ):
+        """Initialise the cat.
+
+        :param prefix: Cat's prefix (e.g. Fire- for Fireheart)
+        :param gender: Cat's gender, default None
+        :param status: Cat's age range, default "newborn"
+        :param backstory: Cat's origin, default "clanborn"
+        :param parent1: ID of parent 1, default None
+        :param parent2: ID of parent 2, default None
+        :param suffix: Cat's suffix (e.g. -heart for Fireheart)
+        :param specsuffix_hidden: Whether cat has a special suffix (-kit, -paw, etc.), default False
+        :param ID: Cat's unique ID, default None
+        :param moons: Cat's age, default None
+        :param example: If cat is an example cat, default False
+        :param faded: If cat is faded, default False
+        :param skill_dict: TODO find a good definition for this
+        :param pelt: Body details, default None
+        :param loading_cat: If loading a cat rather than generating a new one, default False
+        :param kwargs: TODO what are the possible args here? ["biome", ]
+        """
+>>>>>>> Stashed changes
 
         # This must be at the top. It's a smaller list of things to init, which is only for faded cats
         self.history = None
@@ -171,18 +233,132 @@ class Cat():
         self._experience = None
         self._moons = None
 
+        # Control whether genetics should influence sprite rendering for this cat.
+        self.sprite_from_genetics = kwargs.pop("sprite_from_genetics", not loading_cat)
+
         # Public attributes
         self.gender = gender
         self.status = status
         self.backstory = backstory
-        self.age = None
+        self._age = None  # Initialize _age before any property assignments
         self.skills = CatSkills(skill_dict=skill_dict)
         self.personality = Personality(trait="troublesome", lawful=0, aggress=0,
                                        stable=0, social=0)
         self.parent1 = parent1
         self.parent2 = parent2
+<<<<<<< Updated upstream
         self.adoptive_parents = []
         self.pelt = pelt if pelt else Pelt()
+=======
+        self.adoptive_parents = adoptive_parents if adoptive_parents else []
+        
+        # GENETICS GENERATION - Using Genemerge's full Phenotype system
+        kittypet = backstory in ['kittypet1', 'kittypet2', 'kittypet3'] or status == 'kittypet'
+        gene_config = game.config.get('genetics_config', {})
+        gene_config.update(game.config.get('april_fools_genes', {}))
+        ban_genes = game.settings.get("ban problem genes", False)
+
+        # Phenotype in Genemerge extends Genotype, so it's the complete genetics object
+        self.phenotype = None
+        self.genotype = None
+
+        try:
+            # If loading an existing cat without saved genotype, do NOT generate random genetics.
+            if loading_cat and not genotype:
+                # Leave phenotype/genotype as None to avoid nonsense genetics on legacy saves.
+                pass
+            else:
+                pheno = Phenotype(gene_config, ban_genes)
+
+                # Load or generate alleles
+                if genotype:
+                    pheno.fromJSON(genotype)
+                    # CRITICAL: Re-calculate phenotype display properties after loading genetics
+                    # This ensures spritecolour, maincolour, etc. are set correctly
+                    try:
+                        pheno.PhenotypeOutput(getattr(pheno, "white_pattern", []), chimera=getattr(pheno, "chimera", False))
+                    except Exception:
+                        pass
+                    try:
+                        pheno.EyeColourName()
+                    except Exception:
+                        pass
+                elif parent1 or parent2:
+                    parent1_obj = Cat.all_cats.get(parent1) if parent1 else None
+                    parent2_obj = Cat.all_cats.get(parent2) if parent2 else None
+                    parent1_pheno = getattr(parent1_obj, 'phenotype', None) if parent1_obj else None
+                    parent2_pheno = getattr(parent2_obj, 'phenotype', None) if parent2_obj else None
+                    try:
+                        if parent1_pheno and parent2_pheno:
+                            pheno.KitGenerator(parent1_pheno, parent2_pheno)
+                        elif parent1_pheno:
+                            pheno.KitGenerator(parent1_pheno)
+                        elif parent2_pheno:
+                            pheno.KitGenerator(parent2_pheno)
+                        else:
+                            if not loading_cat:
+                                if kittypet:
+                                    pheno.AltGenerator(special=self.gender)
+                                else:
+                                    pheno.Generator(special=self.gender)
+                    except Exception:
+                        if not loading_cat:
+                            try:
+                                if kittypet:
+                                    pheno.AltGenerator(special=self.gender)
+                                else:
+                                    pheno.Generator(special=self.gender)
+                            except Exception:
+                                pass
+                else:
+                    # New cats only: allow random generation
+                    if not loading_cat:
+                        try:
+                            if kittypet:
+                                pheno.AltGenerator(special=self.gender)
+                            else:
+                                pheno.Generator(special=self.gender)
+                        except Exception:
+                            pass
+
+                # Assign phenotype and expose as genotype for compatibility with UI/logic
+                if 'pheno' in locals():
+                    self.phenotype = pheno
+                    self.genotype = pheno
+
+                    # Finalization (non-fatal)
+                    try:
+                        pheno.PhenotypeOutput(pheno.white_pattern)
+                    except Exception:
+                        pass
+                    try:
+                        pheno.SpriteInfo(moons if moons else 0)
+                    except Exception:
+                        pass
+
+                    # Loaded cats with explicit genotype should allow sprites to follow genetics
+                    if loading_cat and genotype:
+                        self.sprite_from_genetics = True
+
+                    # FORCE sprite cache invalidation after genetics are finalized
+                    self._sprite = None
+        except Exception as e:
+            print("Warning: Genetics setup error:", str(e))
+        
+        # Create pelt - ensure phenotype is passed correctly (keyword args)
+        if pelt:
+            self.pelt = pelt
+        else:
+            try:
+                # Provide phenotype (and genotype for compatibility) to Pelt
+                self.pelt = Pelt(genotype=self.phenotype, phenotype=self.phenotype)
+            except TypeError:
+                # Older signature fallback
+                self.pelt = Pelt(phenotype=self.phenotype)
+        
+        # Link phenotype↔pelt and apply genetics to appearance for new cats
+        self.apply_genetics_to_pelt()
+>>>>>>> Stashed changes
         self.former_mentor = []
         self.patrol_with_mentor = 0
         self.apprentice = []
@@ -244,11 +420,12 @@ class Cat():
 
         # age and status
         if status is None and moons is None:
-            self.age = choice(self.ages)
+            self._age = choice(self.ages)
         elif moons is not None:
             self.moons = moons
             if moons > 300:
                 # Out of range, always elder
+<<<<<<< Updated upstream
                 self.age = 'senior'
             elif moons == 0:
                 self.age = 'newborn'
@@ -257,18 +434,44 @@ class Cat():
                 for key_age in self.age_moons.keys():
                     if moons in range(self.age_moons[key_age][0], self.age_moons[key_age][1] + 1):
                         self.age = key_age
+=======
+                self._age = "senior"
+            elif moons == 0 or moons == -1:
+                self._age = "newborn"
+            else:
+                # In range
+                for key_age in self.age_moons.keys():
+                    if moons in range(
+                        self.age_moons[key_age][0], self.age_moons[key_age][1] + 1
+                    ):
+                        self._age = key_age
+>>>>>>> Stashed changes
         else:
             if status == 'newborn':
-                self.age = 'newborn'
+                self._age = 'newborn'
             elif status == 'kitten':
-                self.age = 'kitten'
+                self._age = 'kitten'
             elif status == 'elder':
+<<<<<<< Updated upstream
                 self.age = 'senior'
             elif status in ['apprentice', 'mediator apprentice', 'medicine cat apprentice']:
                 self.age = 'adolescent'
             else:
                 self.age = choice(['young adult', 'adult', 'adult', 'senior adult'])
             self.moons = randint(self.age_moons[self.age][0], self.age_moons[self.age][1])
+=======
+                self._age = 'senior'
+            elif status in [
+                'apprentice', 'mediator apprentice',
+                'medicine cat apprentice', "queen's apprentice"
+                ]:
+                self._age = 'adolescent'
+            else:
+                self._age = choice(["young adult", "adult", "adult", "senior adult"])
+            self.moons = randint(
+                self.age_moons[self._age][0], self.age_moons[self._age][1]
+            )
+>>>>>>> Stashed changes
 
         # backstory
         if self.backstory is None:
@@ -375,7 +578,238 @@ class Cat():
 
         if self.ID not in ["0", None]:
             Cat.insert_cat(self)
+        
+        # Generate sprite immediately for new cats (ensures proper display without reload)
+        # Only if sprites are loaded (sprites.size exists and is valid)
+        if not loading_cat and not self.faded and not example:
+            try:
+                from scripts.cat.sprites import sprites
+                if sprites.size and isinstance(sprites.size, (int, float)) and sprites.size > 0:
+                    update_sprite(self)
+            except Exception:
+                pass  # Sprites not ready yet, will generate on first access
 
+<<<<<<< Updated upstream
+=======
+    def init_faded(self, ID, status, prefix, suffix, moons, **kwargs):
+        """Perform faded-specific initialization
+
+        :param ID: Cat ID
+        :param status: Cat status
+        :param prefix: Cat's prefix
+        :param suffix: Cat's suffix
+        :param moons: Age in moons
+        :param kwargs:
+
+        :return: None
+        """
+        self.ID = ID
+        self.parent1 = None
+        self.parent2 = None
+        self.adoptive_parents = []
+        self.mates = []
+        self.status = status
+        self.pronouns = []  # Needs to be set as a list
+        self.moons = moons
+        self.dead_for = 0
+        self.dead = True
+        self.outside = False
+        self.exiled = False
+        self.inheritance = None  # This should never be used, but just for safety
+        self.name = Name(prefix=prefix, suffix=suffix, cat=self)
+        if "df" in kwargs:
+            self.df = kwargs["df"]
+        else:
+            self.df = False
+
+        self.init_moons_age(moons)
+
+        self.set_faded()  # Sets the faded sprite and faded tag (self.faded = True)
+        return True
+
+    def apply_genetics_to_pelt(self):
+        """Apply phenotype→pelt mapping via Pelt, consistently and defensively."""
+        try:
+            if not self.phenotype or not self.pelt:
+                return
+            # Prime phenotype helpers, then delegate to Pelt
+            pheno = self.phenotype
+            pheno._pelt = self.pelt
+            try:
+                pheno.PhenotypeOutput(getattr(pheno, "white_pattern", None), chimera=getattr(pheno, "chimera", False))
+            except Exception as e:
+                pass
+            try:
+                pheno.SpriteInfo(self.moons if isinstance(getattr(self, "moons", 0), int) else 0)
+            except Exception as e:
+                pass
+            try:
+                pheno.EyeColourName()
+            except Exception as e:
+                pass
+            if hasattr(self.pelt, "_sync_from_phenotype"):
+                self.pelt._sync_from_phenotype()
+        except Exception as e:
+            import traceback
+            print(f"ERROR in apply_genetics_to_pelt: {e}")
+            traceback.print_exc()
+
+    def init_moons_age(self, moons):
+        """
+        Gets the correct life stage for associated moons
+
+        :param moons: Age in moons
+        :return: None
+        """
+        if moons > 300:
+            # Out of range, always elder
+            self._age = "senior"
+        elif moons == 0:
+            self._age = "newborn"
+        else:
+            # In range
+            for key_age in self.age_moons.keys():
+                if moons in range(
+                    self.age_moons[key_age][0], self.age_moons[key_age][1] + 1
+                ):
+                    self._age = key_age
+
+    def init_generate_cat(self, skill_dict):
+        """
+        Used to roll a new cat
+        :param skill_dict: TODO what is a skill dict exactly
+        :return: None
+        """
+        # trans cat chances
+        nonbiney_list = ["nonbinary", "genderfluid", "demigirl", "demiboy", "genderfae", "genderfaun", "bigender", "genderqueer", "agender", "???", "deminonbinary", "trigender", "genderflux", "polygender"]
+        enby_masc = ["trans male" , "demiboy", "genderfaun", "trans masc"]
+        enby_fem = ["trans female" , "demigirl", "genderfae", "trans femme"]
+        self.genderalign = self.gender
+        trans_chance = randint(0, 20)
+        nb_chance = randint(0, 25)
+
+        # GENDER IDENTITY
+        if self.gender == "female" and not self.status in ['newborn', 'kitten']:
+            if trans_chance == 1:
+                binary_chance = randint(1,10)
+                if binary_chance > 2:
+                    self.genderalign = "trans male"
+                else:
+                    self.genderalign = choice(enby_masc)
+            elif nb_chance == 1:
+                self.genderalign = choice(nonbiney_list)
+            else:
+                self.genderalign = self.gender
+        elif self.gender == "male" and not self.status in ['newborn', 'kitten']:
+            if trans_chance == 1:
+                binary_chance = randint(1,10)
+                if binary_chance > 2:
+                    self.genderalign = "trans female"
+                else:
+                    self.genderalign = choice(enby_fem)
+            elif nb_chance == 1:
+                self.genderalign = choice(nonbiney_list)
+            else:
+                self.genderalign = self.gender
+        elif self.gender == "intersex" and not self.status in ['newborn', 'kitten']:
+            if trans_chance == 1:
+                binary_chance = randint(1,10)
+                if binary_chance > 2:
+                    self.genderalign = choice(["trans female", "trans male"])
+                else:
+                    self.genderalign = choice(enby_fem + enby_masc)
+            elif nb_chance == 1:
+                intergenderchance = randint(1,2)
+                if intergenderchance == 1:
+                    self.genderalign = "intergender"
+                else:
+                    self.genderalign = choice(nonbiney_list)
+            else:
+                self.genderalign = self.gender
+        else:
+            self.genderalign = self.gender
+            
+        if not game.settings["they them default"]:
+            #woke be upon ye
+            #binaries
+            bonus_they = randint(1,3)
+            bonus_hershey = randint(1,10)
+            if self.genderalign == "female" or self.genderalign in enby_fem:
+                self.pronouns = [self.default_pronouns[1].copy()]
+                if self.genderalign in enby_fem and bonus_they == 1:
+                    self.pronouns.append(self.default_pronouns[0].copy())
+                elif bonus_hershey == 1:
+                    self.pronouns.append(self.default_pronouns[2].copy())
+            elif self.genderalign == "male" or self.genderalign in enby_masc:
+                self.pronouns = [self.default_pronouns[2].copy()]
+                if self.genderalign in enby_masc and bonus_they == 1:
+                    self.pronouns.append(self.default_pronouns[0].copy())
+                elif bonus_hershey == 1:
+                    self.pronouns.append(self.default_pronouns[1].copy())
+            else:
+                neo_chance = randint(1,3)
+                if neo_chance == 1:
+                    self.pronouns = [self.default_pronouns[randint(3,51)].copy()]
+                else:
+                    self.pronouns = [self.default_pronouns[0].copy()]
+            
+            second_set = randint(1,10)
+            queer_list = nonbiney_list + ["trans male", "trans female", "intergender"]
+            if self.genderalign in queer_list:
+                second_set = randint(1,5)
+            if second_set == 1:
+                self.pronouns.append(self.default_pronouns[randint(3,51)].copy())
+                    
+                
+
+        # APPEARANCE
+        # Only generate random pelt if no genetics/phenotype provided
+        if not hasattr(self, 'phenotype') or self.phenotype is None:
+            self.pelt = Pelt.generate_new_pelt(
+                self.gender,
+                [Cat.fetch_cat(i) for i in (self.parent1, self.parent2) if i],
+                self.age,
+            )
+
+        # Personality
+        self.personality = Personality(kit_trait=self.is_baby())
+
+        # experience and current patrol status
+        if self.age in ["young", "newborn"]:
+            self.experience = 0
+        elif self.age in ["adolescent"]:
+            m = self.moons
+            self.experience = 0
+            while m > Cat.age_moons["adolescent"][0]:
+                ran = game.config["graduation"]["base_app_timeskip_ex"]
+                exp = choice(
+                    list(range(ran[0][0], ran[0][1] + 1))
+                    + list(range(ran[1][0], ran[1][1] + 1))
+                )
+                self.experience += exp + 3
+                m -= 1
+        elif self.age in ["young adult", "adult"]:
+            self.experience = randint(
+                Cat.experience_levels_range["prepared"][0],
+                Cat.experience_levels_range["proficient"][1],
+            )
+        elif self.age in ["senior adult"]:
+            self.experience = randint(
+                Cat.experience_levels_range["competent"][0],
+                Cat.experience_levels_range["expert"][1],
+            )
+        elif self.age in ["senior"]:
+            self.experience = randint(
+                Cat.experience_levels_range["competent"][0],
+                Cat.experience_levels_range["master"][1],
+            )
+        else:
+            self.experience = 0
+
+        if not skill_dict:
+            self.skills = CatSkills.generate_new_catskills(self.status, self.moons)
+
+>>>>>>> Stashed changes
     def __repr__(self):
         return "CAT OBJECT:" + self.ID
     
@@ -2841,17 +3275,37 @@ class Cat():
         for key_age in self.age_moons.keys():
             if self._moons in range(self.age_moons[key_age][0], self.age_moons[key_age][1] + 1):
                 updated_age = True
-                self.age = key_age
+                self._age = key_age
+                self._sprite = None  # Invalidate sprite cache when age changes
         try:
+<<<<<<< Updated upstream
             if not updated_age and self.age is not None:
                 self.age = "senior"
+=======
+            if self.moons == -1:
+                self._age = "newborn"
+                self._sprite = None
+            elif not updated_age and self._age is not None:
+                self._age = "senior"
+                self._sprite = None
+>>>>>>> Stashed changes
         except AttributeError:
             print("ERROR: cat has no age attribute! Cat ID: " + self.ID)
         
     @property
+    def age(self):
+        return self._age if hasattr(self, '_age') else None
+
+    @age.setter
+    def age(self, value):
+        self._age = value
+        self._sprite = None  # Invalidate sprite cache when age is set
+
+    @property
     def sprite(self):
-        # Update the sprite
-        update_sprite(self)
+        # Lazy update: only regenerate if _sprite is None
+        if self._sprite is None:
+            update_sprite(self)
         return self._sprite
 
     @sprite.setter
@@ -2909,6 +3363,11 @@ class Cat():
                 "no_retire": self.no_retire,
                 "no_mates": self.no_mates,
                 "exiled": self.exiled,
+<<<<<<< Updated upstream
+=======
+                "driven_out": self.driven_out,
+                "genotype": self.phenotype.toJSON() if self.phenotype and hasattr(self.phenotype, 'toJSON') else None,
+>>>>>>> Stashed changes
                 "pelt_name": self.pelt.name,
                 "pelt_color": self.pelt.colour,
                 "pelt_length": self.pelt.length,
@@ -2928,6 +3387,7 @@ class Cat():
                 "tortie_base": self.pelt.tortiebase,
                 "tortie_color": self.pelt.tortiecolour,
                 "tortie_pattern": self.pelt.tortiepattern,
+                "pelt_variant": self.pelt.variant,
                 "skin": self.pelt.skin,
                 "tint": self.pelt.tint,
                 "skill_dict": self.skills.get_skill_dict(),

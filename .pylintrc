@@ -1,4 +1,36 @@
-[MAIN]
+[MASTER]
+
+# Keep analysis fast and scoped to this workspace
+ignore-paths=
+    ../Genemerge Source,
+    ../Genemod Source,
+    ../DADM Source,
+    ../Lifegen Source,
+    ../!ClanGen
+
+[MESSAGES CONTROL]
+# Disable high-noise messages common in merged mods
+disable=
+    logging-fstring-interpolation,
+    logging-not-lazy,
+    fixme,
+    redefined-builtin,
+    redefined-outer-name,
+    cell-var-from-loop,
+    unspecified-encoding,
+    consider-using-with,
+    consider-using-f-string,
+    f-string-without-interpolation
+
+[REPORTS]
+output-format=colorized
+
+[FORMAT]
+max-line-length=120
+
+[BASIC]
+# Don’t force docstrings on all functions during active merge work
+docstring-min-length=0[MAIN]
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
 # 3 compatible code, which means that the block might have code that exists

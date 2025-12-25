@@ -80,6 +80,24 @@
             "Randomize relationship values when creating Clan",
             "Clan founder cats will start the game with established relationships.",
             true
+<<<<<<< Updated upstream
+=======
+        ],
+        "ban problem genes": [
+            "Hide genes directly associated with health issues.",
+            "Newly generated cats will not have genes that are directly correlated with permanent conditions.",
+            false
+        ],
+        "filter genes": [
+            "Filter genotypes",
+            "Most wildtype genes will be hidden on the genotype section.",
+            false
+        ],
+        "they them default": [
+            "Use they/them as default pronouns",
+            "If this setting is on new cats will generate with they/them pronouns, regardless of gender.",
+            false
+>>>>>>> Stashed changes
         ]
     },
     "..": "these are special. they do not have a display name or a tooltip",

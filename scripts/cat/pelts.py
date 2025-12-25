@@ -1,4 +1,12 @@
+<<<<<<< Updated upstream
 from random import choice
+=======
+import random
+from random import choice, randint
+from re import sub
+
+import logging
+>>>>>>> Stashed changes
 from scripts.cat.sprites import sprites
 import random
 from re import sub
@@ -136,6 +144,7 @@ class Pelt():
 
     """Holds all appearence information for a cat. """
     def __init__(self,
+<<<<<<< Updated upstream
                  name:str="SingleColour",
                  length:str="short",
                  colour:str="WHITE",
@@ -161,7 +170,59 @@ class Pelt():
                  senior_sprite:int=None,
                  para_adult_sprite:int=None,
                  reverse:bool=False,
+=======
+                 genotype=None,
+                 phenotype=None,
+                 name: str = "SingleColour",
+                 length: str = "short",
+                 colour: str = "WHITE",
+                 white_patches: str = None,
+                 eye_color: str = "BLUE",
+                 eye_colour2: str = None,
+                 tortiebase: str = None,
+                 tortiecolour: str = None,
+                 pattern: str = None,
+                 tortiepattern: str = None,
+                 vitiligo: str = None,
+                 points: str = None,
+                 physical_trait_1:str=None,
+                 physical_trait_2:str=None,
+                 physical_trait_3:str=None,
+                 physical_trait_4:str=None,
+                 physical_trait_hidden:str=None,
+                 physical_trait_hidden_2:str=None,
+                 physical_trait_hidden_3:str=None,
+                 physical_trait_hidden_4:str=None,
+                 accessory: str = None,
+                 paralyzed: bool = False,
+                 opacity: int = 100,
+                 scars: list = None,
+                 tint: str = "none",
+                 skin: str = "BLACK",
+                 white_patches_tint: str = "none",
+                 kitten_sprite: int = None,
+                 adol_sprite: int = None,
+                 adult_sprite: int = None,
+                 senior_sprite: int = None,
+                 para_adult_sprite: int = None,
+                 reverse: bool = False,
+                 accessories:list=None,
+                 inventory:list=[],
+                fur_texture:str=None,
+                build:str=None,
+                height:str=None,
+                variant:str=None,
+>>>>>>> Stashed changes
                  ) -> None:
+        # Store genetics if provided (for Genemod compatibility)
+        self.genotype = genotype
+        self.phenotype = phenotype
+        
+        # Store which sprite variant was chosen (Ster, Silly, Dance, Mimi)
+        # This is set once and persists across sprite updates to ensure consistency
+        self.variant = variant
+        
+        # Use phenotype for appearance if genetics provided, otherwise use traditional values
         self.name = name
         self.colour = colour
         self.white_patches = white_patches
@@ -196,6 +257,394 @@ class Pelt():
         
         self.reverse = reverse
         self.skin = skin
+<<<<<<< Updated upstream
+=======
+        self.fur_texture = fur_texture if fur_texture is not None else choice(["soft", "curly", "rough", "silky", "sleek", "wavy", "sparse", "tangled", "fuzzy", "spiky"])
+        self.build = build if build is not None else choice(["stocky", "slender", "lithe", "wiry", "muscular", "lanky", "delicate", "hunched", "hefty", "burly", "bulky", "plump", "brawny", "stout", "broad", "chubby", "fat", "stocky", "chunky", "big-boned"])
+        self.height = height if height is not None else choice(["petite", "short", "average", "average", "tall", "towering"])
+
+        # Genemod effect fields
+        self.lykoi = None  # Sparse fur texture
+        self.satin = None  # Shiny coat
+        self.bleach = None  # Faded appearance
+        self.ghosting = None  # Ghost stripes/pattern
+        self.grizzle = None  # Grizzled pattern overlay
+        self.smoke = None  # Smoke overlay effect
+        self.bimetal = None  # Bimetallic colouring
+        self.karpati = None  # Karpati effect (winter coat)
+        self.salmiak = None  # Salmiak modifier
+        self.caramel = None  # Caramel modifier
+        self.hairless = None  # Hairless skin effect
+        self.donskoy = None  # Donskoy effect
+        self.furpoint = None  # Fur-pointed effect
+        self.somatic_base = None  # Somatic mutation location (leftface, rightface, tail)
+        self.somatic_gene = None  # Which gene is somatically mutated
+        self.somatic_allele = None  # The allele expression
+
+        # When phenotype exists, align pelt to it using safe buckets
+        try:
+            if self.phenotype:
+                self._sync_from_phenotype()
+        except Exception:
+            pass
+
+    def _sync_from_phenotype(self):
+        ph = self.phenotype
+        log = logging.getLogger(__name__)
+
+        def map_len(v: str, cur: str) -> str:
+            return {
+                "longhaired": "long",
+                "mediumhaired": "medium",
+                "shorthaired": "short",
+                "hairless": "short",
+                "fur-pointed": "short",
+            }.get(v, cur)
+
+        def map_eye(c: str, fb: str) -> str:
+            if not c:
+                return fb
+            u = c.upper()
+            if any(k in u for k in ("PINK", "ROSE", "MAGENTA")):
+                return "PINK"
+            if any(k in u for k in ("AMBER", "COPPER", "CITRINE", "TOPAZ", "AUBURN", "BRASS")):
+                return "AMBER"
+            if any(k in u for k in ("GOLD", "YELLOW", "HONEY", "BUTTER")):
+                return "GOLD"
+            if any(k in u for k in ("HAZEL", "BROWN", "CHESTNUT", "SEPIA", "RUSSET")):
+                return "HAZEL"
+            if any(k in u for k in ("GREEN", "OLIVE", "MOSS", "PERIDOT", "MINT")):
+                return "GREEN"
+            if any(k in u for k in ("CYAN", "AQUA", "TEAL", "TURQUOISE")):
+                return "CYAN"
+            if "VIOLET" in u or "PERIWINKLE" in u:
+                return "VIOLET"
+            if "GREY" in u or "GRAY" in u:
+                return "GREY"
+            if any(k in u for k in ("BLUE", "AZURE", "CERULEAN", "SAPPHIRE")):
+                return "BLUE"
+            return fb
+
+        def map_colour(c: str, cur: str) -> str:
+            s = (c or "").lower()
+            if "white" in s or "albino" in s:
+                return "WHITE"
+            if "palegrey" in s or "pale grey" in s or "pale gray" in s:
+                return "PALEGREY"
+            if "darkgrey" in s or "dark grey" in s or "dark gray" in s or "charcoal" in s:
+                return "DARKGREY"
+            if any(k in s for k in ("blue", "grey", "gray", "dove", "silver", "slate")):
+                return "GREY"
+            if "paleginger" in s or "pale ginger" in s:
+                return "PALEGINGER"
+            if "darkginger" in s or "dark ginger" in s or "auburn" in s:
+                return "DARKGINGER"
+            if any(k in s for k in ("cream", "ivory", "apricot", "beige", "buff")):
+                return "CREAM"
+            if any(k in s for k in ("red", "flame", "copper", "ginger", "orange")):
+                return "GINGER"
+            if "golden-brown" in s or "goldenbrown" in s:
+                return "GOLDEN-BROWN"
+            if "golden" in s or "honey" in s or "amber" in s:
+                return "GOLDEN"
+            if "lightbrown" in s or "light brown" in s or "tan" in s or "fawn" in s:
+                return "LIGHTBROWN"
+            if "darkbrown" in s or "dark brown" in s:
+                return "DARKBROWN"
+            if "chocolate" in s or "cinnamon" in s:
+                return "CHOCOLATE"
+            if "sienna" in s:
+                return "SIENNA"
+            if any(k in s for k in ("lilac", "lavender", "frost")):
+                return "LILAC"
+            if "brown" in s or "sepia" in s:
+                return "BROWN"
+            if "black" in s or "ebony" in s or "sable" in s:
+                return "BLACK"
+            if "ghost" in s:
+                return "GHOST"
+            return cur or "BROWN"
+
+        def map_white(white: list, grade: int):
+            if not white:
+                return None
+            if "W" in white:
+                return "FULLWHITE"
+            if grade >= 4:
+                return "ANY"
+            if grade == 3:
+                return "PANTS"
+            if grade == 2:
+                return "BELLY"
+            if grade == 1:
+                return "TOES"
+            return None
+
+        def map_points(p: str):
+            t = (p or "").lower()
+            if not t:
+                return None
+            if "mink" in t:
+                return "MINKPOINT"
+            if "sepia" in t:
+                return "SEPIAPOINT"
+            if "mocha" in t or "burmocha" in t:
+                return "MINKPOINT"
+            return "COLOURPOINT"
+
+        def map_pattern(tabby: str, tortie: str) -> str:
+            if tortie.strip():
+                return "Calico" if getattr(ph, "whitegrade", 0) >= 1 else "Tortie"
+            t = (tabby or "").lower()
+            if any(k in t for k in ("marble", "blotched", "classic")):
+                return "Classic"
+            if any(k in t for k in ("rosetted", "braided", "leopard", "bengal")):
+                return "Rosette"
+            if "broken mackerel" in t or "pinstripe" in t:
+                return "Pinstripetabby"
+            if any(k in t for k in ("mackerel", "lynx")):
+                return "Mackerel"
+            if "agouti" in t:
+                return "Agouti"
+            if "sokoke" in t or "servaline" in t:
+                return "Sokoke"
+            if "masked" in t:
+                return "Masked"
+            if "singlestripe" in t or ("single" in t and "stripe" in t):
+                return "Singlestripe"
+            if "brindle" in t:
+                return "Brindle"
+            if "wolf" in t:
+                return "Wolf"
+            if "wildcat" in t:
+                return "Wildcat"
+            if "ocelot" in t:
+                return "Ocelot"
+            if "clouded" in t:
+                return "Clouded"
+            if "cheetah" in t:
+                return "Cheetah"
+            if "dalmatian" in t:
+                return "Dalmatian"
+            if any(k in t for k in ("ticked", "tick")):
+                return "Ticked"
+            if any(k in t for k in ("spot", "speckled")):
+                return "Spots"
+            if "ghost-patterned" in t or "ghost" in t:
+                return "Ghosttabby"
+            return "SingleColour"
+
+        # Ensure phenotype helpers ran
+        try:
+            ph.PhenotypeOutput(ph.white_pattern, chimera=ph.chimera)
+        except Exception:
+            pass
+        try:
+            ph.SpriteInfo(0)
+        except Exception:
+            pass
+        try:
+            ph.EyeColourName()
+        except Exception:
+            pass
+
+        # Apply mappings
+        self.length = map_len(getattr(ph, "length", ""), self.length)
+        self.colour = map_colour(getattr(ph, "spritecolour", None) or getattr(ph, "maincolour", None), self.colour)
+        base_pat = map_pattern(getattr(ph, "tabby", ""), getattr(ph, "tortie", ""))
+        self.name = base_pat
+        
+        # Apply sprite variant (ster, silly, dance, mimi) for visual variety
+        # Skip variants for tortie/calico as they have their own mask system
+        if base_pat not in ["Tortie", "Calico", "TwoColour"]:
+            # If variant already chosen (from load or previous sync), use saved choice
+            # Otherwise, pick one now
+            if self.variant:
+                variant_choice_name = self.variant
+            else:
+                # Pick variant for first time, then save it
+                variant_choice = randint(0, 4)
+                variant_prefixes = ["", "Ster", "Silly", "Dance", "Mimi"]
+                base_pat_lower = base_pat[0].lower() + base_pat[1:] if base_pat else ""
+                variant_choice_name = variant_prefixes[variant_choice] + base_pat_lower
+                # Only save variant if it exists in sprites_names
+                if variant_choice_name in Pelt.sprites_names:
+                    self.variant = variant_choice_name
+            
+            # Apply the chosen variant if it exists
+            if variant_choice_name in Pelt.sprites_names:
+                self.name = variant_choice_name
+        # Pattern key used for tortie masks (lowercase sprite key)
+        base_key = {
+            "Classic": "classic",
+            "Mackerel": "mackerel",
+            "Pinstripetabby": "pinstripetabby",
+            "Rosette": "rosette",
+            "Agouti": "agouti",
+            "Sokoke": "sokoke",
+            "Ticked": "ticked",
+            "Spots": "speckled",
+            "Ghosttabby": "ghosttabby",
+            "Masked": "masked",
+            "Singlestripe": "singlestripe",
+            "Brindle": "brindle",
+            "Wolf": "wolf",
+            "Wildcat": "wildcat",
+            "Ocelot": "ocelot",
+            "Clouded": "clouded",
+            "Cheetah": "cheetah",
+            "Dalmatian": "dalmatian",
+            "SingleColour": "single",
+        }.get(base_pat, "single")
+        self.pattern = base_key
+        white_patch = map_white(getattr(ph, "white", []), getattr(ph, "whitegrade", 0))
+        self.white_patches = white_patch if white_patch else None
+        self.points = map_points(getattr(ph, "point", ""))
+
+        lefteye = map_eye(getattr(ph, "lefteye", ""), self.eye_colour)
+        righteye = map_eye(getattr(ph, "righteye", ""), lefteye)
+        self.eye_colour = lefteye
+        self.eye_colour2 = righteye if righteye != lefteye else None
+
+        # Map underbase colors from eumelanin/pheomelanin genetics
+        try:
+            eumelanin = getattr(ph, "eumelanin", ["", ""])
+            pheomelanin = getattr(ph, "pheomelanin", ["", ""])
+            underbase = "none"
+            
+            # Eumelanin dilute (blue) affects underbase
+            if isinstance(eumelanin, (list, tuple)) and len(eumelanin) > 0:
+                if eumelanin[0] == "bl":
+                    underbase = "dilute"
+                elif eumelanin[0] == "B":
+                    underbase = "full"
+            
+            self.underbase = underbase
+        except Exception:
+            self.underbase = "none"
+
+        # Map physical trait borders (ear folds, rex, etc.)
+        try:
+            border = "normal"
+            physical_traits = [
+                getattr(ph, f"physical_trait_{i}", None)
+                for i in range(1, 9)
+            ]
+            
+            # Check for ear fold or special ear traits
+            physical_str = " ".join(str(t).lower() for t in physical_traits if t)
+            
+            if "fold" in physical_str or "curl" in physical_str:
+                border = "fold"
+            elif "rex" in physical_str or "wirehair" in physical_str:
+                border = "rex"
+            elif "big" in physical_str and ("ear" in physical_str or "ears" in physical_str):
+                border = "big"
+            else:
+                border = "normal"
+            
+            self.border = border
+        except Exception:
+            self.border = "normal"
+
+        # Tortie normalization
+        if getattr(ph, "tortie", "").strip():
+            tortie_pat = getattr(ph, "tortiepattern", None)
+            if isinstance(tortie_pat, list):
+                tortie_pat = tortie_pat[0] if tortie_pat else "Single"
+            if not isinstance(tortie_pat, str) or not tortie_pat:
+                tortie_pat = "Single"
+            self.tortiepattern = tortie_pat
+            self.tortiecolour = self.colour or "WHITE"
+            base_source = map_pattern(getattr(ph, "tabby", ""), "")
+            self.tortiebase = base_source.lower() if isinstance(base_source, str) else "single"
+            self.name = "Calico" if white_patch else "Tortie"
+        else:
+            self.tortiepattern = None
+            self.tortiecolour = None
+            self.tortiebase = None
+
+        # Map bobtail genetics to visible tail type
+        bobtail_nr = getattr(ph, "bobtailnr", 0)
+        if bobtail_nr and bobtail_nr > 0:
+            # Map genetics bobtail values to lineart sprite indices
+            # bobtailnr: 1=no tail, 2=stubby pom-pom, 3=short, 4=longer short, 5=somewhat shortened
+            if bobtail_nr == 1:
+                # No tail - set accessory to force special lineart if available
+                pass  # Currently no dedicated notail lineart, would need custom sprite
+            elif bobtail_nr <= 3:
+                # Stubby/short tails - these should show visibly shorter
+                pass  # Lineart doesn't currently have bobtail variants, would need custom sprites
+        
+        # Map genemod effect genes to sprite layers
+        # Lykoi (sparse fur)
+        lykoi_gene = getattr(ph, "lykoi", ["Ly", "Ly"])
+        if isinstance(lykoi_gene, list) and lykoi_gene[0] == "ly":
+            self.lykoi = "lykoi"
+        
+        # Satin (shiny coat)
+        satin_gene = getattr(ph, "satin", ["St", "St"])
+        if isinstance(satin_gene, list) and satin_gene[0] == "st":
+            self.satin = "satin"
+        
+        # Bleach (faded/bleached appearance)
+        bleach_gene = getattr(ph, "bleach", ["Lb", "Lb"])
+        if isinstance(bleach_gene, list) and bleach_gene[0] == "lb":
+            self.bleach = "bleach"
+        
+        # Ghosting (ghost stripes/pattern)
+        ghosting_gene = getattr(ph, "ghosting", ["gh", "gh"])
+        if isinstance(ghosting_gene, list) and ghosting_gene[0] == "Gh":
+            self.ghosting = "ghosting"
+        
+        # Grizzle (grizzled pattern overlay)
+        # Check for grizzle in phenotype tabtype
+        if "grizzle" in str(getattr(ph, "tabtype", "")).lower():
+            self.grizzle = "grizzle"
+        
+        # Smoke (smoke overlay effect)
+        silvergold = getattr(ph, "silvergold", "")
+        if silvergold and "smoke" in str(silvergold).lower():
+            self.smoke = "smoke"
+        
+        # Bimetallic effect
+        if silvergold and "bimetallic" in str(silvergold).lower():
+            self.bimetal = "bimetal"
+        
+        # Karpati effect and salmiak modifier
+        karpati_str = str(getattr(ph, "karpati", "")).lower()
+        if "karpati" in karpati_str:
+            self.karpati = "karpati"
+            if "salmiak" in karpati_str:
+                self.salmiak = "salmiak"
+        
+        # Caramel modifier
+        if getattr(ph, "caramel", "") == 'caramel':
+            self.caramel = "caramel"
+        
+        # Length-based effects
+        length = getattr(ph, "length", "")
+        if length == "hairless":
+            self.hairless = "hairless"
+        elif length == "fur-pointed":
+            self.furpoint = "furpoint"
+        
+        # Somatic mutations (random mutations affecting specific body parts)
+        somatic = getattr(ph, "somatic", {})
+        if isinstance(somatic, dict) and somatic:
+            self.somatic_base = somatic.get("base")  # e.g., "Somatic/leftface"
+            self.somatic_gene = somatic.get("gene")  # e.g., "dilute"
+            self.somatic_allele = somatic.get("allele")  # e.g., "d"
+        
+        # Debug trace for unmapped cases
+        try:
+            if (getattr(ph, "tabby", "") and self.name == "SingleColour"):
+                log.debug("Phenotype tabby '%s' fell back to SingleColour", getattr(ph, "tabby", ""))
+            if (getattr(ph, "spritecolour", None) and self.colour == "BROWN"):
+                log.debug("Phenotype colour '%s' mapped to fallback BROWN", getattr(ph, "spritecolour", None))
+        except Exception:
+            pass
+>>>>>>> Stashed changes
 
     @staticmethod
     def generate_new_pelt(gender:str, parents:tuple=(), age:str="adult"):

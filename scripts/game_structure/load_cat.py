@@ -68,6 +68,60 @@ def json_load():
                         eye_colour=cat["eye_colour"],
                         loading_cat=True)
 
+<<<<<<< Updated upstream
+=======
+            # moving clangen accs over to accessories + inventory
+            if "accessories" not in cat:
+                cat["accessories"] = []
+            if "inventory" not in cat:
+                cat["inventory"] = []
+            if cat["accessory"] is not None:
+                cat["accessories"].append(cat["accessory"])
+                cat["inventory"].append(cat["accessory"])
+                cat["accessory"] = None
+            
+            # converting old accessories 
+            if "LADYBUG" in cat["inventory"]:
+                cat["inventory"].remove("LADYBUG")
+                cat["inventory"].append("LADYBUGS")
+            if "CHIMES" in cat["inventory"]:
+                cat["inventory"].remove("CHIMES")
+                cat["inventory"].append("CELESTIALCHIMES")
+            if "RAINCOAT" in cat["inventory"]:
+                cat["inventory"].remove("RAINCOAT")
+                cat["inventory"].append("YELLOWRAINCOAT")
+
+            if "LADYBUG" in cat["accessories"]:
+                cat["accessories"].remove("LADYBUG")
+                cat["accessories"].append("LADYBUGS")
+            if "CHIMES" in cat["accessories"]:
+                cat["accessories"].remove("CHIMES")
+                cat["accessories"].append("CELESTIALCHIMES")
+            if "RAINCOAT" in cat["accessories"]:
+                cat["accessories"].remove("RAINCOAT")
+                cat["accessories"].append("YELLOWRAINCOAT")
+
+            # Load genotype data if present (for genetics system)
+            genotype_data = cat.get("genotype", None)
+            
+            new_cat = Cat(
+                ID=cat["ID"],
+                prefix=cat["name_prefix"],
+                suffix=cat["name_suffix"],
+                specsuffix_hidden=(
+                    cat["specsuffix_hidden"] if "specsuffix_hidden" in cat else False
+                ),
+                gender=cat["gender"],
+                status=cat["status"],
+                parent1=cat["parent1"],
+                parent2=cat["parent2"],
+                moons=cat["moons"],
+                eye_colour=cat["eye_colour"],
+                genotype=genotype_data,
+                loading_cat=True,
+            )
+            
+>>>>>>> Stashed changes
             if cat["eye_colour"] == "BLUE2":
                 cat["eye_colour"] = "COBALT"
             if cat["eye_colour"] in ["BLUEYELLOW", "BLUEGREEN"]:
@@ -81,6 +135,8 @@ def json_load():
                     cat["eye_colour2"] = "COBALT"
 
             new_cat.pelt = Pelt(
+                genotype=new_cat.phenotype,
+                phenotype=new_cat.phenotype,
                 name=cat["pelt_name"],
                 length=cat["pelt_length"],
                 colour=cat["pelt_color"],
@@ -101,6 +157,7 @@ def json_load():
                 tortiebase=cat["tortie_base"],
                 tortiecolour=cat["tortie_color"],
                 tortiepattern=cat["tortie_pattern"],
+                variant=cat["pelt_variant"] if "pelt_variant" in cat else None,
                 pattern=cat["pattern"],
                 skin=cat["skin"],
                 tint=cat["tint"] if "tint" in cat else "none",
@@ -112,7 +169,21 @@ def json_load():
             # Runs a bunch of apperence-related convertion of old stuff.
             new_cat.pelt.check_and_convert(convert)
 
+<<<<<<< Updated upstream
              # converting old specialty saves into new scar parameter
+=======
+            # Ensure genetics (if present) drive current pelt appearance after load
+            # This re-syncs pelt appearance with loaded/regenerated genetics
+            try:
+                if new_cat.phenotype:
+                    new_cat.apply_genetics_to_pelt()
+            except Exception as e:
+                import traceback
+                print(f"WARNING: Failed to apply genetics to pelt for {new_cat.name}: {e}")
+                traceback.print_exc()
+
+            # converting old specialty saves into new scar parameter
+>>>>>>> Stashed changes
             if "specialty" in cat or "specialty2" in cat:
                 if cat["specialty"] is not None:
                     new_cat.pelt.scars.append(cat["specialty"])

@@ -2317,6 +2317,111 @@ class Events:
                     Single_Event(event, "health", involved_cats))
                 # game.health_events_list.append(event)
                 break
+<<<<<<< Updated upstream
+=======
+    
+    def exile_or_forgive(self, cat):
+        """ a shunned cat becoming exiled, or being forgiven"""
+        resource_dir = "resources/dicts/events/lifegen_events/"
+        with open(f"{resource_dir}ceremonies.json",
+                  encoding="ascii") as read_file:
+            self.b_txt = ujson.loads(read_file.read())
+        if cat.shunned > 2:
+            involved_cats = []
+            involved_cats.append(cat.ID)
+
+            if game.clan.your_cat.ID == cat.ID:
+                fate = random.randint(1, int((game.config["shunned_cat"]["exile_chance"][cat.age]) * 1.75))
+            else:
+                fate = random.randint(1, int(game.config["shunned_cat"]["exile_chance"][cat.age]))
+
+            if fate != 1:
+                # forgiven
+                cat.shunned = 0
+                cat.forgiven = 1
+                if cat.ID == game.clan.your_cat.ID:
+                    text = "A Clan meeting is called one day, and your companions vote to forgive you for what you did."
+                else:
+                    leader_name = game.clan.leader.name if game.clan.leader else "The leader"
+                    text = random.choice([
+                        f"After showing genuine remorse and guilt, {cat.name} has been forgiven and welcomed back into {game.clan.name}Clan, though some are quicker to forgive than others.",
+                        f"{leader_name} has chosen to lift the shun on {cat.name}, but will be watching them closely."])\
+
+                murder_history = History.get_murders(cat)
+                history = None
+                old_status = ""
+                if "is_murderer" in murder_history:
+                    history = murder_history["is_murderer"]
+                if history:
+                    if "demoted_from" in history[-1] and history[-1]["demoted_from"]:
+                        old_status = history[-1]["demoted_from"]
+
+                if old_status != "":
+                    if old_status == cat.status:
+                        print("Warning: demoted_from is", cat.name,"'s current status?")
+                        print(old_status, "=", cat.status)
+                    else:
+                        name_insert = ""
+                        if cat.ID == game.clan.your_cat.ID:
+                            name_insert = "you"
+                        else:
+                            name_insert = cat.name
+                        text += f" The Clan decides to let {name_insert} return as a {old_status}."
+                        if old_status == "leader":
+                            old_leader = Cat.fetch_cat(game.clan.leader) if game.clan.leader else None
+                            old_deputy =  Cat.fetch_cat(game.clan.deputy) if game.clan.deputy else None
+
+                            if old_deputy:
+                                old_deputy.status_change("warrior")
+                            if old_leader:
+                                old_leader.status_change("deputy")
+                            game.clan.deputy = old_leader
+                            game.clan.leader = cat
+                            cat.status_change(old_status)
+
+                            try:
+                                game.clan.leader_lives = history[-1]["remaining_lives"]
+                            except:
+                                print("No remaining lives specified. 9 given.")
+                        elif old_status == "deputy":
+                            old_deputy =  Cat.fetch_cat(game.clan.deputy) if game.clan.deputy else None
+                            if old_deputy:
+                                old_deputy.status_change("warrior")
+                            game.clan.deputy = cat
+                            cat.status_change(old_status)
+
+                        else:
+                            cat.status_change(old_status)
+            else:
+                # exile/runaway
+                if not int(random.random() * 10) and cat.ID != game.clan.your_cat.ID:
+                    game.clan.add_to_outside(cat)
+                    cat.status_change("former Clancat")
+                    text = f"{cat.name} runs away in the middle of the night, sick of being treated so terribly."
+                else:
+                    cat.exile()
+                    text = f"The Clan takes a vote and agrees they feel unsafe around {cat.name}. {cat.name} is exiled."
+
+            game.cur_events_list.insert(0, Single_Event(text, ["alert", "misc"], involved_cats))
+
+    def generate_faith_events(self, cat):
+        """ yay """
+        if (
+            cat.outside or
+            cat.dead or
+            cat.moons < 1
+        ):
+            return
+        
+        random_cat = get_random_moon_cat(Cat, main_cat=cat)
+
+        handle_short_events.handle_event(event_type="faith",
+                                            main_cat=cat,
+                                            random_cat=random_cat,
+                                            sub_type=[],
+                                            freshkill_pile=game.clan.freshkill_pile)
+        
+>>>>>>> Stashed changes
 
     def coming_out(self, cat):
         """turnin' the kitties trans..."""

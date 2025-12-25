@@ -35,5 +35,34 @@
         "Twolegs",
         "ujson",
         "verdana"
+<<<<<<< Updated upstream
     ]
+=======
+    ],
+
+    "python.formatting.provider": "autopep8",
+    
+    // Exclude other mod folders from Python analysis and linting
+    "python.analysis.exclude": [
+        "../Genemerge Source/**",
+        "../Genemod Source/**",
+        "../DADM Source/**",
+        "../Lifegen Source/**",
+        "../!ClanGen/**"
+    ],
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    // Respect .pylintrc and also ignore external folders via args (belt & suspenders)
+    "python.linting.pylintArgs": [
+        "--ignore=../Genemerge Source,../Genemod Source,../DADM Source,../Lifegen Source,../!ClanGen"
+    ],
+    
+    // Keep files visible but don't analyze them for problems
+    "files.watcherExclude": {
+        "../Genemerge Source/**": true,
+        "../Genemod Source/**": true,
+        "../DADM Source/**": true,
+        "../Lifegen Source/**": true
+    }
+>>>>>>> Stashed changes
 }

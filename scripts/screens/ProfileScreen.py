@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: ascii -*-
 import os
+<<<<<<< Updated upstream
 from random import choice
 
 import pygame
@@ -24,6 +25,55 @@ from re import sub
 from scripts.game_structure.image_button import UIImageButton, UITextBoxTweaked
 from scripts.game_structure.game_essentials import game, MANAGER
 from scripts.clan_resources.freshkill import FRESHKILL_ACTIVE
+=======
+import math
+from random import choice, randint
+from re import sub
+
+import pygame
+import pygame_gui
+import ujson
+
+from .Screens import Screens
+from ..cat.history import History
+from ..game_structure.screen_settings import MANAGER
+from ..game_structure.windows import ChangeCatName, KillCat, ChangeCatToggles
+from ..housekeeping.datadir import get_save_dir
+from ..ui.generate_box import get_box, BoxStyles
+from ..ui.generate_button import ButtonStyles, get_button_dict
+from ..ui.get_arrow import get_arrow
+from ..ui.icon import Icon
+
+from scripts.events_module.relationship.pregnancy_events import Pregnancy_Events
+from scripts.utility import (
+    event_text_adjust,
+    ui_scale,
+    ACC_DISPLAY,
+    process_text,
+    chunks,
+    get_text_box_theme,
+    ui_scale_dimensions,
+    shorten_text_to_fit,
+    ui_scale_offset,
+    adjust_list_text,
+    pronoun_repl,
+    format_genes_output,
+    get_alive_cats,
+    get_cluster,
+)
+from scripts.cat.cats import Cat, BACKSTORIES
+from scripts.cat.pelts import Pelt
+from scripts.cat.skills import SkillPath
+from scripts.cat.sprites import sprites
+from scripts.clan_resources.freshkill import FRESHKILL_ACTIVE
+from scripts.game_structure import image_cache
+from scripts.game_structure.game_essentials import game
+from scripts.game_structure.ui_elements import (
+    UIImageButton,
+    UITextBoxTweaked,
+    UISurfaceImageButton,
+)
+>>>>>>> Stashed changes
 
 
 # ---------------------------------------------------------------------------- #
@@ -122,6 +172,7 @@ class ProfileScreen(Screens):
         self.sub_tab_1 = None
         self.backstory_background = None
         self.history_text_box = None
+        self.genetic_text_box = None
         self.conditions_tab_button = None
         self.condition_container = None
         self.left_conditions_arrow = None
@@ -345,12 +396,39 @@ class ProfileScreen(Screens):
                     if self.save_text:
                         self.save_text.kill()
                     self.help_button.kill()
+<<<<<<< Updated upstream
                 self.open_sub_tab = 'life events'
+=======
+                elif self.open_sub_tab == "genetics":
+                    if hasattr(self, 'genetic_text_box') and self.genetic_text_box:
+                        self.genetic_text_box.kill()
+                self.open_sub_tab = "life events"
+>>>>>>> Stashed changes
                 self.toggle_history_sub_tab()
             elif event.ui_element == self.sub_tab_2:
                 if self.open_sub_tab == 'life events':
                     self.history_text_box.kill()
+<<<<<<< Updated upstream
                 self.open_sub_tab = 'user notes'
+=======
+                elif self.open_sub_tab == "genetics":
+                    if hasattr(self, 'genetic_text_box') and self.genetic_text_box:
+                        self.genetic_text_box.kill()
+                self.open_sub_tab = "user notes"
+>>>>>>> Stashed changes
+                self.toggle_history_sub_tab()
+            elif event.ui_element == self.sub_tab_3:
+                if self.open_sub_tab == "life events":
+                    self.history_text_box.kill()
+                elif self.open_sub_tab == "user notes":
+                    self.notes_entry.kill()
+                    self.display_notes.kill()
+                    if self.edit_text:
+                        self.edit_text.kill()
+                    if self.save_text:
+                        self.save_text.kill()
+                    self.help_button.kill()
+                self.open_sub_tab = "genetics"
                 self.toggle_history_sub_tab()
             elif event.ui_element == self.fav_tab:
                 game.switches['favorite_sub_tab'] = None
@@ -804,6 +882,35 @@ class ProfileScreen(Screens):
         # NEWLINE ----------
         output += "\n"
 
+        # Sex details (from genetics if available)
+        sex_str = None
+        can_birth = None
+        try:
+            if hasattr(the_cat, 'genotype') and the_cat.genotype and hasattr(the_cat.genotype, 'sex'):
+                sex_str = the_cat.genotype.sex
+                # Determine birth capability from sexgene
+                if hasattr(the_cat.genotype, 'sexgene') and the_cat.genotype.sexgene:
+                    can_birth = ('Y' not in the_cat.genotype.sexgene)
+        except Exception:
+            sex_str = None
+            can_birth = None
+
+        if sex_str is None:
+            if the_cat.gender == "female":
+                sex_str = "molly"
+                can_birth = True
+            elif the_cat.gender == "male":
+                sex_str = "tom"
+                can_birth = False
+            elif the_cat.gender == "intersex":
+                sex_str = "intersex"
+                can_birth = None
+
+        if sex_str:
+            output += f"sex: {sex_str}\n"
+        if can_birth is not None:
+            output += f"can birth: {'yes' if can_birth else 'no'}\n"
+
         # LEADER LIVES:
         # Optional - Only shows up for leaders
         if not the_cat.dead and 'leader' in the_cat.status:
@@ -1064,6 +1171,101 @@ class ProfileScreen(Screens):
 
         elif self.open_sub_tab == 'user notes':
             self.toggle_user_notes_tab()
+
+        elif self.open_sub_tab == "genetics":
+            self.toggle_genetics_tab()
+            self.update_disabled_buttons_and_text()
+
+    def toggle_genetics_tab(self):
+        """Opens the Genetics portion of the History Tab"""
+        self.genelist = ""
+        
+        # Check if the cat has genetics
+        if not hasattr(self.the_cat, 'phenotype') or self.the_cat.phenotype is None:
+            self.genelist = "This cat does not have genetic data."
+        else:
+            try:
+                # Link pelt to phenotype so customizations show in display
+                if hasattr(self.the_cat, 'pelt') and self.the_cat.pelt:
+                    self.the_cat.phenotype._pelt = self.the_cat.pelt
+                
+                # Display main phenotype description
+                white_pattern = getattr(self.the_cat.phenotype, 'white_pattern', None)
+                chimera = getattr(self.the_cat, 'chimerapheno', None)
+                # Prefer passing the cat's sex, not gender identity
+                display_sex = None
+                try:
+                    s = getattr(self.the_cat, 'sex', None)
+                    if isinstance(s, str):
+                        s_low = s.lower()
+                        if 'tom' in s_low:
+                            display_sex = 'male'
+                        elif 'molly' in s_low:
+                            display_sex = 'female'
+                        else:
+                            display_sex = s
+                except Exception:
+                    display_sex = None
+
+                # Prime phenotype for eye + sprite naming consistency
+                try:
+                    moons_val = getattr(self.the_cat, 'moons', 0) or 0
+                    self.the_cat.phenotype.SpriteInfo(moons_val)
+                except Exception:
+                    pass
+                try:
+                    self.the_cat.phenotype.EyeColourName()
+                except Exception:
+                    pass
+
+                phenotype_output = str(self.the_cat.phenotype.PhenotypeOutput(white_pattern, gender=display_sex, chimera=chimera))
+                self.genelist = phenotype_output + "\n"
+                
+                # Add gene detail from phenotype (formatted for readability)
+                if hasattr(self.the_cat.phenotype, 'ShowGenes'):
+                    filter_genes = game.settings.get("filter genes", False)
+                    raw_genes = self.the_cat.phenotype.ShowGenes(filter_genes)
+                    genes_output = format_genes_output(raw_genes)
+                    self.genelist += genes_output + "\n"
+                
+                # Add somatic mutations if present
+                if hasattr(self.the_cat.phenotype, 'FormatSomatic'):
+                    somatic_output = self.the_cat.phenotype.FormatSomatic()
+                    if somatic_output:
+                        self.genelist += somatic_output
+                
+                # If chimera, add chimera genetics
+                if chimera:
+                    self.genelist += "\n\n[CHIMERA]\n"
+                    chimera_white = getattr(chimera, 'white_pattern', None)
+                    # Try to sync chimera eyes too for consistency
+                    try:
+                        moons_val = getattr(self.the_cat, 'moons', 0) or 0
+                        chimera.SpriteInfo(moons_val)
+                        chimera.EyeColourName()
+                    except Exception:
+                        pass
+                    chimera_pheno = str(chimera.PhenotypeOutput(chimera_white, gender=display_sex, chimera=chimera))
+                    self.genelist += chimera_pheno + "\n"
+                    
+                    if hasattr(chimera, 'ShowGenes'):
+                        chimera_raw = chimera.ShowGenes(filter_genes)
+                        chimera_genes = format_genes_output(chimera_raw)
+                        self.genelist += chimera_genes
+                        
+            except Exception as e:
+                import traceback
+                error_msg = traceback.format_exc()
+                self.genelist = f"Error displaying genetics:\n{str(e)}\n\nDetails:\n{error_msg}"
+                print(f"Genetics display error: {error_msg}")
+        
+        self.genetic_text_box = UITextBoxTweaked(
+            self.genelist,
+            ui_scale(pygame.Rect((100, 473), (600, 149))),
+            object_id="#text_box_26_horizleft_pad_10_14",
+            line_spacing=1,
+            manager=MANAGER,
+        )
 
     def get_all_history_text(self):
         """Generates a string with all important history information."""
@@ -1897,6 +2099,7 @@ class ProfileScreen(Screens):
             if self.open_sub_tab == 'life events':
                 self.sub_tab_1.disable()
                 self.sub_tab_2.enable()
+                self.sub_tab_3.enable()
                 self.history_text_box.kill()
                 self.history_text_box = UITextBoxTweaked(self.get_all_history_text(),
                                                          scale(pygame.Rect((200, 946), (1200, 298))),
@@ -1924,6 +2127,7 @@ class ProfileScreen(Screens):
             elif self.open_sub_tab == 'user notes':
                 self.sub_tab_1.enable()
                 self.sub_tab_2.disable()
+                self.sub_tab_3.enable()
                 if self.history_text_box:
                     self.history_text_box.kill()
                     self.no_moons.kill()
@@ -1977,10 +2181,33 @@ class ProfileScreen(Screens):
                         tool_tip_text='edit text', manager=MANAGER
                     )
 
+<<<<<<< Updated upstream
                     self.display_notes = UITextBoxTweaked(self.user_notes,
                                                           scale(pygame.Rect((200, 946), (1200, 298))),
                                                           object_id="#text_box_26_horizleft_pad_10_14",
                                                           line_spacing=1, manager=MANAGER)
+=======
+                    self.display_notes = UITextBoxTweaked(
+                        self.user_notes,
+                        ui_scale(pygame.Rect((100, 473), (600, 149))),
+                        object_id="#text_box_26_horizleft_pad_10_14",
+                        line_spacing=1,
+                        manager=MANAGER,
+                    )
+            elif self.open_sub_tab == "genetics":
+                self.sub_tab_1.enable()
+                self.sub_tab_2.enable()
+                self.sub_tab_3.disable()
+                if self.history_text_box:
+                    self.history_text_box.kill()
+                    self.history_text_box = None
+                if hasattr(self, "no_moons") and self.no_moons:
+                    self.no_moons.kill()
+                    self.no_moons = None
+                if hasattr(self, "show_moons") and self.show_moons:
+                    self.show_moons.kill()
+                    self.show_moons = None
+>>>>>>> Stashed changes
 
         # Conditions Tab
         elif self.open_tab == 'conditions':
@@ -2029,9 +2256,45 @@ class ProfileScreen(Screens):
             elif self.open_sub_tab == 'life events':
                 if self.history_text_box:
                     self.history_text_box.kill()
+<<<<<<< Updated upstream
                 self.show_moons.kill()
                 self.no_moons.kill()
 
+=======
+                if hasattr(self, "show_moons") and self.show_moons:
+                    self.show_moons.kill()
+                if hasattr(self, "no_moons") and self.no_moons:
+                    self.no_moons.kill()
+            elif self.open_sub_tab == "genetics":
+                if hasattr(self, "genetic_text_box") and self.genetic_text_box:
+                    self.genetic_text_box.kill()
+                    self.genetic_text_box = None
+        elif self.open_tab == "accessories":
+            self.backstory_background.kill()
+            for i in self.cat_list_buttons:
+                self.cat_list_buttons[i].kill()
+            for i in self.accessory_buttons:
+                self.accessory_buttons[i].kill()
+            self.next_page_button.kill()
+            self.previous_page_button.kill()
+            self.clear_accessories.kill()
+            self.delete_accessory.kill()
+            self.search_bar_image.kill()
+            self.search_bar.kill()
+        elif self.open_tab == "faith":
+            self.backstory_background.kill()
+            self.faith_bar.kill()
+            self.faith_text.kill()
+        elif self.open_tab == 'your tab':
+            if self.have_kits_button:
+                self.have_kits_button.kill()
+            if self.request_apprentice_button:
+                self.request_apprentice_button.kill()
+            if self.gift_accessory_button:
+                self.gift_accessory_button.kill()
+            if self.your_faith_button:
+                self.your_faith_button.kill()
+>>>>>>> Stashed changes
         elif self.open_tab == 'conditions':
             self.left_conditions_arrow.kill()
             self.right_conditions_arrow.kill()
