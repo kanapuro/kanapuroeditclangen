@@ -1,4 +1,7 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Player characters now forced to be selected on LifeGen patrols, like the date screen.
+- Queens, elders, and mediators can now patrol. There are settings to enable/disable randomized selections of these three! They will be debuffed on hunting and border patrols, and buffed/unaffected on herb gathering and training patrols.
+- Bugfixes!
 - Added credits category for megamerge and lgmmke (kanapuroedit).
 - Medicine cats can now participate in all patrols (genemod inspired).
 - devcontainers-contrib -> devcontainers-extra

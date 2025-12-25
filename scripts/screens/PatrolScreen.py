@@ -191,6 +191,9 @@ class PatrolScreen(Screens):
                     self.current_patrol.remove(self.selected_cat)
                 elif len(self.current_patrol) < self.max_cats:
                     self.current_patrol.append(self.selected_cat)
+                    # Auto-default to herb patrol when medicine cat is added
+                    if self.selected_cat.status in ["medicine cat", "medicine cat apprentice"] and game.switches['patrol_category'] == 'clangen':
+                        self.patrol_type = 'med'
                 self.update_cat_images_buttons()
                 self.update_button()
         elif event.ui_element == self.elements["add_remove_cat"]:
@@ -198,19 +201,33 @@ class PatrolScreen(Screens):
                 self.current_patrol.remove(self.selected_cat)
             else:
                 self.current_patrol.append(self.selected_cat)
+                # Auto-default to herb patrol when medicine cat is added
+                if self.selected_cat.status in ["medicine cat", "medicine cat apprentice"] and game.switches['patrol_category'] == 'clangen':
+                    self.patrol_type = 'med'
             self.update_cat_images_buttons()
             self.update_button()
         elif event.ui_element == self.elements["add_one"]:
             if len(self.current_patrol) < 6:
+                # Filter out cats based on settings
+                excluded_statuses = []
                 if not game.clan.clan_settings["random med cat"]:
-                    able_no_med = [
+                    excluded_statuses.extend(["medicine cat", "medicine cat apprentice"])
+                if not game.clan.clan_settings.get("random elder", False):
+                    excluded_statuses.append("elder")
+                if not game.clan.clan_settings.get("random mediator", False):
+                    excluded_statuses.extend(["mediator", "mediator apprentice"])
+                if not game.clan.clan_settings.get("random queen", False):
+                    excluded_statuses.extend(["queen", "queen's apprentice"])
+                
+                if excluded_statuses:
+                    able_filtered = [
                         cat
                         for cat in self.able_cats
-                        if cat.status not in ["medicine cat", "medicine cat apprentice"]
+                        if cat.status not in excluded_statuses
                     ]
-                    if len(able_no_med) == 0:
-                        able_no_med = self.able_cats
-                    self.selected_cat = choice(able_no_med)
+                    if len(able_filtered) == 0:
+                        able_filtered = self.able_cats
+                    self.selected_cat = choice(able_filtered)
                 else:
                     if self.able_cats:
                         self.selected_cat = choice(self.able_cats)
@@ -222,30 +239,52 @@ class PatrolScreen(Screens):
             self.update_button()
         elif event.ui_element == self.elements["add_three"]:
             if len(self.current_patrol) <= 3:
+                # Filter out cats based on settings
+                excluded_statuses = []
                 if not game.clan.clan_settings["random med cat"]:
-                    able_no_med = [
+                    excluded_statuses.extend(["medicine cat", "medicine cat apprentice"])
+                if not game.clan.clan_settings.get("random elder", False):
+                    excluded_statuses.append("elder")
+                if not game.clan.clan_settings.get("random mediator", False):
+                    excluded_statuses.extend(["mediator", "mediator apprentice"])
+                if not game.clan.clan_settings.get("random queen", False):
+                    excluded_statuses.extend(["queen", "queen's apprentice"])
+                
+                if excluded_statuses:
+                    able_filtered = [
                         cat
                         for cat in self.able_cats
-                        if cat.status not in ["medicine cat", "medicine cat apprentice"]
+                        if cat.status not in excluded_statuses
                     ]
-                    if len(able_no_med) < 3:
-                        able_no_med = self.able_cats
-                    self.current_patrol += sample(able_no_med, k=3)
+                    if len(able_filtered) < 3:
+                        able_filtered = self.able_cats
+                    self.current_patrol += sample(able_filtered, k=3)
                 else:
                     self.current_patrol += sample(self.able_cats, k=3)
             self.update_cat_images_buttons()
             self.update_button()
         elif event.ui_element == self.elements["add_six"]:
             if len(self.current_patrol) == 0:
+                # Filter out cats based on settings
+                excluded_statuses = []
                 if not game.clan.clan_settings["random med cat"]:
-                    able_no_med = [
+                    excluded_statuses.extend(["medicine cat", "medicine cat apprentice"])
+                if not game.clan.clan_settings.get("random elder", False):
+                    excluded_statuses.append("elder")
+                if not game.clan.clan_settings.get("random mediator", False):
+                    excluded_statuses.extend(["mediator", "mediator apprentice"])
+                if not game.clan.clan_settings.get("random queen", False):
+                    excluded_statuses.extend(["queen", "queen's apprentice"])
+                
+                if excluded_statuses:
+                    able_filtered = [
                         cat
                         for cat in self.able_cats
-                        if cat.status not in ["medicine cat", "medicine cat apprentice"]
+                        if cat.status not in excluded_statuses
                     ]
-                    if len(able_no_med) < 6:
-                        able_no_med = self.able_cats
-                    self.current_patrol += sample(able_no_med, k=6)
+                    if len(able_filtered) < 6:
+                        able_filtered = self.able_cats
+                    self.current_patrol += sample(able_filtered, k=6)
                 else:
                     self.current_patrol += sample(self.able_cats, k=6)
             self.update_cat_images_buttons()
@@ -500,22 +539,35 @@ class PatrolScreen(Screens):
                 manager=MANAGER,
             )
 
-            able_no_med = [
-                cat
-                for cat in self.able_cats
-                if cat.status not in ["medicine cat", "medicine cat apprentice"]
-            ]
-            if game.clan.clan_settings["random med cat"]:
-                able_no_med = self.able_cats
-            if len(able_no_med) == 0:
-                able_no_med = self.able_cats
+            # Filter out cats based on settings for random selection buttons
+            excluded_statuses = []
+            if not game.clan.clan_settings["random med cat"]:
+                excluded_statuses.extend(["medicine cat", "medicine cat apprentice"])
+            if not game.clan.clan_settings.get("random elder", False):
+                excluded_statuses.append("elder")
+            if not game.clan.clan_settings.get("random mediator", False):
+                excluded_statuses.extend(["mediator", "mediator apprentice"])
+            if not game.clan.clan_settings.get("random queen", False):
+                excluded_statuses.extend(["queen", "queen's apprentice"])
+            
+            if excluded_statuses:
+                able_filtered = [
+                    cat
+                    for cat in self.able_cats
+                    if cat.status not in excluded_statuses
+                ]
+            else:
+                able_filtered = self.able_cats
+            
+            if len(able_filtered) == 0:
+                able_filtered = self.able_cats
 
-            if len(self.current_patrol) >= self.max_cats or len(able_no_med) < 1:
+            if len(self.current_patrol) >= self.max_cats or len(able_filtered) < 1:
                 self.elements['add_one'].disable()
                 self.elements["random"].disable()
-            if len(self.current_patrol) > 3 or len(able_no_med) < 3 or (self.max_cats - len(self.current_patrol) < 3):
+            if len(self.current_patrol) > 3 or len(able_filtered) < 3 or (self.max_cats - len(self.current_patrol) < 3):
                 self.elements['add_three'].disable()
-            if len(self.current_patrol) > 0 or len(able_no_med) < 6  or (self.max_cats - len(self.current_patrol) < 6):
+            if len(self.current_patrol) > 0 or len(able_filtered) < 6  or (self.max_cats - len(self.current_patrol) < 6):
                 self.elements['add_six'].disable()
                 # Update the availability of the tab buttons
             if self.patrol_screen == "patrol_cats":
@@ -1067,18 +1119,19 @@ class PatrolScreen(Screens):
             for the_cat in Cat.all_cats_list:
                 if the_cat.ID == game.clan.your_cat.ID:
                     if "1" not in game.switches['patrolled'] and not the_cat.dead and the_cat.in_camp and the_cat.status not in [
-                    'elder', 'kitten', 'mediator', 'mediator apprentice', 'queen', "queen's apprentice", "newborn"
+                    'kitten', "queen's apprentice", "newborn"
                         ] and not the_cat.outside and the_cat not in self.current_patrol and not the_cat.not_working() and the_cat.shunned == 0:
                         self.able_cats.append(the_cat)
                 elif not the_cat.dead and the_cat.in_camp and the_cat.ID not in game.patrolled and the_cat.status not in [
-                    'elder', 'kitten', 'mediator', 'mediator apprentice', 'queen', "queen's apprentice", "newborn"
+                    'kitten', "queen's apprentice", "newborn"
                 ] and not the_cat.outside and the_cat not in self.current_patrol and not the_cat.not_working() and the_cat.shunned == 0:
                     self.able_cats.append(the_cat)
 
         elif game.switches["patrol_category"] == "lifegen":
             the_cat = game.clan.your_cat
-            if (not the_cat.outside or (the_cat.outside and the_cat.dead)) and not the_cat.moons <= 0 and the_cat not in self.current_patrol and not the_cat.not_working() and "2" not in game.switches['patrolled']:
-                self.able_cats.append(game.clan.your_cat)
+            if (not the_cat.outside or (the_cat.outside and the_cat.dead)) and not the_cat.moons <= 0 and not the_cat.not_working() and "2" not in game.switches['patrolled']:
+                if the_cat not in self.current_patrol:
+                    self.current_patrol.insert(0, the_cat)
 
         elif game.switches["patrol_category"] == "date":
             you = game.clan.your_cat

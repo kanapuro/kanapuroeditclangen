@@ -910,19 +910,6 @@ class Patrol:
     def calculate_success(self, success_outcome: PatrolOutcome, fail_outcome: PatrolOutcome) -> Tuple[PatrolOutcome, bool]:
         """Returns both the chosen event, and a boolean that's True if success, and False is fail."""
     
-        # ===== DEBUG CODE =====
-        print(f"\n=== DEBUG: calculate_success called ===")
-        print(f"Patrol cats count: {len(self.patrol_cats)}")
-        for i, cat in enumerate(self.patrol_cats):
-            print(f"  Cat {i}: ID={cat.ID}, Name={cat.name}")
-            print(f"    Has skills attr? {hasattr(cat, 'skills')}")
-            if hasattr(cat, 'skills'):
-                print(f"    Skills object: {cat.skills}")
-            else:
-                print(f"    ERROR: No skills attribute! All attrs: {[a for a in dir(cat) if not a.startswith('__')]}")
-        print("=== END DEBUG ===\n")
-        # ===== END DEBUG =====
-    
         patrol_size = len(self.patrol_cats)
         total_exp = sum([x.experience for x in self.patrol_cats if hasattr(x, 'experience')])
         gm_modifier = game.config["patrol_generation"][
@@ -994,7 +981,35 @@ class Patrol:
                 ]
             # ---
 
-            skill_updates += f"{kitty.name} updated chance to {success_chance} | "
+            # Status-based modifiers for queens, elders, and mediators
+            is_combat_hunting = any(ptype in self.patrol_event.types 
+                                   for ptype in ['hunting', 'border'])
+            is_herb_training = any(ptype in self.patrol_event.types 
+                                  for ptype in ['herb_gathering', 'med_cat', 'training'])
+            
+            status_modifier_applied = False
+            if kitty.status == "elder":
+                if is_combat_hunting:
+                    success_chance -= 10  # Elders struggle with hunting/combat
+                    skill_updates += f"{kitty.name} (elder -10 combat/hunting) -> {success_chance} | "
+                    status_modifier_applied = True
+                elif is_herb_training:
+                    success_chance += 5  # Elders excel at teaching and herb knowledge
+                    skill_updates += f"{kitty.name} (elder +5 herb/training) -> {success_chance} | "
+                    status_modifier_applied = True
+            elif kitty.status in ["mediator", "mediator apprentice"]:
+                if is_combat_hunting:
+                    success_chance -= 5  # Mediators less experienced in combat/hunting
+                    skill_updates += f"{kitty.name} (mediator -5 combat/hunting) -> {success_chance} | "
+                    status_modifier_applied = True
+            elif kitty.status in ["queen", "queen's apprentice"]:
+                if is_combat_hunting:
+                    success_chance -= 10  # Queens/expectant cats struggle with physical patrols
+                    skill_updates += f"{kitty.name} (queen -10 combat/hunting) -> {success_chance} | "
+                    status_modifier_applied = True
+            
+            if not status_modifier_applied:
+                skill_updates += f"{kitty.name} updated chance to {success_chance} | "
         if game.switches["patrol_category"] == 'date':
             c = random.randint(1,100)
             success_chance = 40
