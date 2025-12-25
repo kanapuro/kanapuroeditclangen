@@ -166,7 +166,7 @@ class Game:
     }
 
     # Init Settings
-    with open("resources/gamesettings.json", "r") as read_file:
+    with open("resources/gamesettings.json", "r", encoding="utf-8") as read_file:
         _settings = ujson.loads(read_file.read())
 
     for setting, values in _settings["__other"].items():
@@ -202,10 +202,10 @@ class Game:
         self.keyspressed = []
         self.switch_screens = False
 
-        with open(f"resources/game_config.json", "r") as read_file:
+        with open(f"resources/game_config.json", "r", encoding="utf-8") as read_file:
             self.config = ujson.loads(read_file.read())
 
-        with open(f"resources/prey_config.json", "r") as read_file:
+        with open(f"resources/prey_config.json", "r", encoding="utf-8") as read_file:
             self.prey_config = ujson.loads(read_file.read())
 
         if self.config["fun"]["april_fools"]:
@@ -244,13 +244,13 @@ class Game:
             i = 0
             while True:
                 # Attempt to write to temp file
-                with open(temp_file_path, "w") as write_file:
+                with open(temp_file_path, "w", encoding="utf-8") as write_file:
                     write_file.write(_data)
                     write_file.flush()
                     os.fsync(write_file.fileno())
 
                 # Read the entire file back in
-                with open(temp_file_path, "r") as read_file:
+                with open(temp_file_path, "r", encoding="utf-8") as read_file:
                     _read_data = read_file.read()
 
                 if _data != _read_data:
@@ -273,7 +273,7 @@ class Game:
                 return
         else:
             os.makedirs(dir_name, exist_ok=True)
-            with open(path, "w") as write_file:
+            with open(path, "w", encoding="utf-8") as write_file:
                 write_file.write(_data)
                 write_file.flush()
                 os.fsync(write_file.fileno())
@@ -346,7 +346,7 @@ class Game:
         # so we can load it automatically
 
         if os.path.exists(get_save_dir() + "/clanlist.txt"):
-            with open(get_save_dir() + "/clanlist.txt", "r") as f:
+            with open(get_save_dir() + "/clanlist.txt", "r", encoding="utf-8") as f:
                 loaded_clan = f.read().strip().splitlines()
                 if loaded_clan:
                     loaded_clan = loaded_clan[0]
@@ -411,7 +411,7 @@ class Game:
         """Load settings that user has saved from previous use"""
 
         try:
-            with open(get_save_dir() + "/settings.json", "r") as read_file:
+            with open(get_save_dir() + "/settings.json", "r", encoding='utf-8') as read_file:
                 settings_data = ujson.loads(read_file.read())
         except FileNotFoundError:
             return

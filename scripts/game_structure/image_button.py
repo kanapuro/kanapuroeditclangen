@@ -11,6 +11,13 @@ class UIImageButton(pygame_gui.elements.UIButton):
     """Subclass of pygame_gui's button class. This allows for auto-scaling of the
         button image."""
 
+    def __init__(self, *args, **kwargs):
+        self.normal_image = None
+        self.hovered_image = None
+        self.selected_image = None
+        self.disabled_image = None
+        super().__init__(*args, **kwargs)
+
     def _set_any_images_from_theme(self):
         changed = False
         normal_image = None

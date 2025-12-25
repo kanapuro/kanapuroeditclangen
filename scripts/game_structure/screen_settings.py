@@ -61,7 +61,7 @@ def set_display_mode(
     if fullscreen is None:
         fullscreen = game.settings["fullscreen"]
 
-    with open("resources/screen_config.json", "r") as read_config:
+    with open("resources/screen_config.json", "r", encoding="utf-8") as read_config:
         screen_config = ujson.load(read_config)
 
     if source_screen is not None:

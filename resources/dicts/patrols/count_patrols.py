@@ -71,24 +71,23 @@ def get_patrol_details(path):
             DETAILS["MIN_" + str(p_["min_cats"])] = {p_["patrol_id"]}
 
 
-def check_patrol_sprites():
+def check_patrol_sprites(patrol_id):
     explicit_sprite = False
     needs_sprite = False
     available_sprite = False
 
     path = "resources/images/patrol_art/"
 
-    if ID in EXPLICIT_PATROL_ART:
+    if EXPLICIT_PATROL_ART and patrol_id in EXPLICIT_PATROL_ART:
         explicit_sprite = True
 
-    image_name = ID
+    image_name = patrol_id
     # this stays false until an acceptable image is found
     image_found = False
 
     # looking for exact patrol ID
     exists = file_exists(f"{path}{image_name}.png")
     if exists:
-        has_patrol_sprite.append(ID)
         image_found = True
         available_sprite = True
         SPRITES_USED.append(image_name)
@@ -171,15 +170,15 @@ if 'patrol sprite' in task.casefold():
     has_patrol_sprite = []
     needs_patrol_sprite = []
 
-    for ID in ALL_PATROLS:
-        explicit, available, need = check_patrol_sprites()
+    for patrol_id in ALL_PATROLS:
+        explicit, available, need = check_patrol_sprites(patrol_id)
 
         if explicit:
-            explicit_art.append(ID)
+            explicit_art.append(patrol_id)
         if available:
-            has_patrol_sprite.append(ID)
+            has_patrol_sprite.append(patrol_id)
         elif need:
-            needs_patrol_sprite.append(ID)
+            needs_patrol_sprite.append(patrol_id)
 
 # We can do a lot with these sets we have just generated! For example:
 

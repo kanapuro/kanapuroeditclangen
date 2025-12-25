@@ -412,6 +412,7 @@ class Thoughts:
         :param darkforest: Whether or not dead cats go to Ascenders (false) or Parasites (true)
         """
         base_path = f"resources/dicts/thoughts/ondeath"
+        spec_dir = "/starclan"  # default value
         if darkforest is False:
             spec_dir = "/starclan"
         elif darkforest:
@@ -438,6 +439,7 @@ class Thoughts:
 
     def new_death_thought(self, darkforest, isoutside):
         base_path = f"resources/dicts/thoughts/ondeath"
+        spec_dir = "/starclan"  # default value
         if isoutside:
             spec_dir = "/unknownresidence"
         elif darkforest is False:

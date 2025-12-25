@@ -266,6 +266,13 @@ class UIImageButton(pygame_gui.elements.UIButton):
         sound_id=None,
     ):
         self.sound_id = sound_id
+        # Initialize image attributes before calling super() to avoid AttributeError
+        # These will be properly set in _set_any_images_from_theme during parent init
+        if not hasattr(self, 'normal_image'):
+            self.normal_image = None
+            self.hovered_image = None
+            self.selected_image = None
+            self.disabled_image = None
         super().__init__(
             relative_rect=relative_rect,
             text=text,

@@ -3887,7 +3887,7 @@ class Cat:
         # SPEAKER, CLEVER, COOPERATIVE ?, INSIGHTFUL, MEDIATOR, STORY, LORE
         # also their relationship with the chosen cat
 
-        with open("resources/dicts/elder_stories.json", 'r') as r:
+        with open("resources/dicts/elder_stories.json", 'r', encoding="utf-8") as r:
             possible_stories = ujson.loads(r.read())
 
         cat_effects = {}

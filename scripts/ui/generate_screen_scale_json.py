@@ -20,8 +20,36 @@ def _multiply_numbers(data, multiplier):
         result = {}
         blacklist = ["prototype", "line_spacing", "colours"]
         for key, value in data.items():
+            # keep certain keys untouched
             if key in blacklist:
                 result[key] = value
+                continue
+
+            # coerce shape_corner_radius to a single value to satisfy theme validation
+            if key == "shape_corner_radius":
+                try:
+                    # handle list of numbers: pick first after scaling
+                    if isinstance(value, list) and value:
+                        scaled = _multiply_numbers(value, multiplier)
+                        # ensure primitive
+                        first_val = scaled[0]
+                        # write as string to match other theme entries
+                        result[key] = str(first_val)
+                        continue
+                    # handle comma-separated string: pick first number after scaling
+                    if isinstance(value, str) and "," in value:
+                        # scale all numbers in the string
+                        scaled_str = _multiply_numbers_in_string(value, multiplier)
+                        # pick first number
+                        first_token = scaled_str.split(",")[0].strip()
+                        result[key] = first_token
+                        continue
+                except Exception:
+                    # if anything goes wrong, fall back to normal processing
+                    pass
+
+                # default processing for single numeric/string values
+                result[key] = _multiply_numbers(value, multiplier)
             else:
                 result[key] = _multiply_numbers(value, multiplier)
         return result
@@ -33,7 +61,7 @@ def _multiply_numbers(data, multiplier):
 
 
 def generate_screen_scale(input_file, output_file, multiplier):
-    with open(input_file, "r") as readfile:
+    with open(input_file, "r", encoding="utf-8") as readfile:
         data = json.load(readfile)
 
     modified_data = _multiply_numbers(data, multiplier)
@@ -43,5 +71,5 @@ def generate_screen_scale(input_file, output_file, multiplier):
 
         p = Path(output_file)
         os.makedirs(p.parent, exist_ok=True)
-    with open(os.path.abspath(output_file), "w") as writefile:
+    with open(os.path.abspath(output_file), "w", encoding="utf-8") as writefile:
         json.dump(modified_data, writefile, indent=4)

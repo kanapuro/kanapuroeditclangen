@@ -250,6 +250,7 @@ class MiscEvents():
     @staticmethod
     def handle_murder_self_reveals(cat):
         ''' Handles reveals for murders where the murderer reveals themself '''
+        murderer_guilty = False  # default value
         if cat.personality.lawfulness > 8:
             murderer_guilty = random.choice([True, False])
         chance_of_reveal = 120
@@ -262,7 +263,7 @@ class MiscEvents():
         chance_roll = random.randint(0, chance_of_reveal)
         print(chance_roll)
 
-        return bool(chance_roll = 1)
+        return bool(chance_roll == 1)
 
     @staticmethod
     def handle_murder_witness_reveals(cat, other_cat):

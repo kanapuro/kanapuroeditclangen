@@ -173,8 +173,7 @@ class Events:
         # Calling of "one_moon" functions.
         resource_dir = "resources/dicts/events/disasters/"
         disaster_text = {}
-        with open(f"{resource_dir}forest.json",
-                  encoding="ascii") as read_file:
+        with open(f"{resource_dir}forest.json", encoding="utf-8") as read_file:
             disaster_text = ujson.loads(read_file.read())
         if not game.clan.disaster and random.randint(1,50) == 1:
             for clan_cat in game.clan.clan_cats:
@@ -254,8 +253,8 @@ class Events:
                 insert = adjust_list_text(ghost_names)
 
             if len(Cat.dead_cats) > 1 and insert:
-                event = f"The past moon, {insert} have taken their place in the stars. {game.clan.name} mourns their " \
-                        f"loss, and their companions will miss where they had been in their lives. Moments of their " \
+                event = f"The past moon, {insert} have taken their place in StarClan. {game.clan.name}Clan mourns their " \
+                        f"loss, and their Clanmates will miss where they had been in their lives. Moments of their " \
                         f"lives are shared in stories around the circle of mourners as those that were closest to them " \
                         f"take them to their final resting place."
     
@@ -303,8 +302,8 @@ class Events:
 
             elif insert:
                 event = (
-                    f"The past moon, {insert} has taken their place in the stars. {game.clan.name} mourns their "
-                    f"loss, and their companions will miss the spot they took up in their lives. Moments of their "
+                    f"The past moon, {insert} has taken their place in StarClan. {game.clan.name}Clan mourns their "
+                    f"loss, and their Clanmates will miss the spot they took up in their lives. Moments of their "
                     f"life are shared in stories around the circle of mourners as those that were closest to them "
                     f"take them to their final resting place."
                 )
@@ -397,14 +396,11 @@ class Events:
         game.just_died.clear()
 
         resource_dir = "resources/dicts/events/lifegen_events/"
-        with open(f"{resource_dir}ceremonies.json",
-                  encoding="ascii") as read_file:
+        with open(f"{resource_dir}ceremonies.json", encoding="utf-8") as read_file:
             self.b_txt = ujson.loads(read_file.read())
-        with open(f"{resource_dir}events.json",
-                  encoding="ascii") as read_file:
+        with open(f"{resource_dir}events.json", encoding="utf-8") as read_file:
             self.c_txt = ujson.loads(read_file.read())
-        with open(f"{resource_dir}df.json",
-                  encoding="ascii") as read_file:
+        with open(f"{resource_dir}df.json", encoding="utf-8") as read_file:
             self.df_txt = ujson.loads(read_file.read())
         if not game.clan.your_cat.dead and game.clan.your_cat.status != 'exiled' and not game.clan.your_cat.outside:
             if game.clan.your_cat.moons == 0:
@@ -500,8 +496,7 @@ class Events:
     def generate_dialogue_focus(self):
         """Handles dialogue focus for each moon, generating conditional focuses for specific events (war, starving) or random chance focuses (valentines, quality of leadership)"""
         resource_dir = "resources/dicts/"
-        with open(f"{resource_dir}dialogue_focuses.json",
-                encoding="ascii") as read_file:
+        with open(f"{resource_dir}dialogue_focuses.json", encoding="utf-8") as read_file:
             dialogue_focuses = ujson.loads(read_file.read())
         
         # Handle lost focus for conditional focuses that have no set duration
@@ -1071,7 +1066,7 @@ class Events:
 
         text = re.sub(r"\{(.*?)\}", lambda x: pronoun_repl(x, process_text_dict, False), text)
 
-        text = text.replace("c_n", str(game.clan.name))
+        text = text.replace("c_n", str(game.clan.name) + "Clan")
         if "w_c" in text:
             if game.clan.war.get("at_war", True):
                 text = text.replace("w_c", str(game.clan.war["enemy"]))
@@ -1082,26 +1077,13 @@ class Events:
         text = lifegen_text_adjust(Cat, text, game.clan.your_cat, self.cat_dict, r_c_allowed=True, o_c_allowed=True)
 
         process_text_dict = self.cat_dict.copy()
-        
         for abbrev in process_text_dict.keys():
             abbrev_cat = process_text_dict[abbrev]
-            
-            # Check and fix pronouns if empty
-            if not abbrev_cat.pronouns or len(abbrev_cat.pronouns) == 0:
-                abbrev_cat.pronouns = [{"subject": "they", "object": "them", "poss": "their", "inposs": "theirs", "self": "themself", "conju": 1}]
-            
-            # Now choose a pronoun
-            if abbrev_cat.pronouns and len(abbrev_cat.pronouns) > 0:
-                process_text_dict[abbrev] = (abbrev_cat, random.choice(abbrev_cat.pronouns))
-            else:
-                # Fallback to default pronouns
-                default_pronoun = {"subject": "they", "object": "them", "poss": "their", "inposs": "theirs", "self": "themself", "conju": 1}
-                process_text_dict[abbrev] = (abbrev_cat, default_pronoun)
-                print(f"WARNING: Cat {abbrev_cat.ID} ({abbrev_cat.name}) has empty pronouns list!")
+            process_text_dict[abbrev] = (abbrev_cat, random.choice(abbrev_cat.pronouns))
 
         text = re.sub(r"\{(.*?)\}", lambda x: pronoun_repl(x, process_text_dict, False), text)
 
-        text = text.replace("c_n", str(game.clan.name))
+        text = text.replace("c_n", str(game.clan.name) + "Clan")
         if "w_c" in text:
             if game.clan.war.get("at_war", True):
                 text = text.replace("w_c", str(game.clan.war["enemy"]))
@@ -1125,22 +1107,20 @@ class Events:
         
         all_events = {}
         if game.clan.your_cat.status != 'exiled' and game.clan.your_cat.status != 'newborn' or (game.clan.your_cat.status == "newborn" and game.clan.your_cat.dead):
-            with open(f"{resource_dir}{game.clan.your_cat.status}.json",
-                    encoding="ascii") as read_file:
+            with open(f"{resource_dir}{game.clan.your_cat.status}.json", encoding="utf-8") as read_file:
                 all_events = ujson.loads(read_file.read())
         
         if game.clan.your_cat.status not in ["newborn", "kitten"] and game.clan.your_cat.shunned == 0 and not game.clan.your_cat.dead:
-            with open(f"{resource_dir}general_no_kit.json", encoding="ascii") as read_file:
+            with open(f"{resource_dir}general_no_kit.json", encoding="utf-8") as read_file:
                 general_no_kit_events = ujson.loads(read_file.read())
 
-        with open(f"{resource_dir}general.json",
-                encoding="ascii") as read_file:
+        with open(f"{resource_dir}general.json", encoding="utf-8") as read_file:
             general_events = ujson.loads(read_file.read())
 
         status = game.clan.your_cat.status
         if game.clan.your_cat.status == 'elder' and game.clan.your_cat.moons < 100:
             status = "young elder"
-            with open(f"{resource_dir}{status}.json", encoding="ascii") as read_file:
+            with open(f"{resource_dir}{status}.json", encoding="utf-8") as read_file:
                 all_events = ujson.loads(read_file.read())
 
         possible_events = []
@@ -1235,7 +1215,7 @@ class Events:
                 add_on_mentor = " no mentor" if not game.clan.your_cat.mentor else ""
                 ceremony_txt = random.choice(self.b_txt[f"{game.clan.your_cat.status} ceremony{add_on_lead}{add_on_mentor}"])
 
-            ceremony_txt = ceremony_txt.replace('c_n', str(game.clan.name))
+            ceremony_txt = ceremony_txt.replace('c_n', str(game.clan.name) + "Clan")
             ceremony_txt = ceremony_txt.replace('y_c', str(game.clan.your_cat.name))
             if game.clan.leader and not game.clan.leader.dead and not game.clan.leader.outside:
                 ceremony_txt = re.sub(r'(?<!\/)l_n(?!\/)', str(game.clan.leader.name), ceremony_txt)
@@ -1285,7 +1265,7 @@ class Events:
             else:
                 ceremony_txt = random.choice(self.b_txt[game.clan.your_cat.status + '_ceremony_no_mentor'])
         
-        ceremony_txt = ceremony_txt.replace('c_n', str(game.clan.name))
+        ceremony_txt = ceremony_txt.replace('c_n', str(game.clan.name) + "Clan")
         ceremony_txt = ceremony_txt.replace('y_c', str(game.clan.your_cat.name))
         
         if game.clan.leader and not game.clan.leader.dead and not game.clan.leader.outside:
@@ -1298,8 +1278,7 @@ class Events:
 
         random_honor = None
         resource_dir = "resources/dicts/events/ceremonies/"
-        with open(f"{resource_dir}ceremony_traits.json",
-                encoding="ascii") as read_file:
+        with open(f"{resource_dir}ceremony_traits.json", encoding="utf-8") as read_file:
             TRAITS = ujson.loads(read_file.read())
         try:
             random_honor = random.choice(TRAITS[game.clan.your_cat.personality.trait])
@@ -1316,7 +1295,7 @@ class Events:
         
     def generate_elder_ceremony(self):
         ceremony_txt = random.choice(self.b_txt['elder_ceremony'])
-        ceremony_txt = ceremony_txt.replace('c_n', str(game.clan.name))
+        ceremony_txt = ceremony_txt.replace('c_n', str(game.clan.name) + "Clan")
         ceremony_txt = ceremony_txt.replace('y_c', str(game.clan.your_cat.name))
         if game.clan.leader and not game.clan.leader.dead and not game.clan.leader.outside:
             ceremony_txt = re.sub(r'(?<!\/)l_n(?!\/)', str(game.clan.leader.name), ceremony_txt)
@@ -1339,8 +1318,7 @@ class Events:
             if 'request apprentice' in game.switches:
                 game.switches['request apprentice'] = False
             resource_dir = "resources/dicts/events/lifegen_events/"
-            with open(f"{resource_dir}ceremonies.json",
-                    encoding="ascii") as read_file:
+            with open(f"{resource_dir}ceremonies.json", encoding="utf-8") as read_file:
                 self.d_txt = ujson.loads(read_file.read())
             ceremony_txt = random.choice(self.d_txt['gain_app ' + game.clan.your_cat.status])
             if game.clan.leader and not game.clan.leader.dead and not game.clan.leader.outside:
@@ -1385,8 +1363,7 @@ class Events:
         elif 'accept' in game.switches and game.switches['accept']:
             try:
                 resource_dir = "resources/dicts/events/lifegen_events/"
-                with open(f"{resource_dir}ceremonies.json",
-                        encoding="ascii") as read_file:
+                with open(f"{resource_dir}ceremonies.json", encoding="utf-8") as read_file:
                     self.d_txt = ujson.loads(read_file.read())
                 try:
                     ceremony_txt = random.choice(self.d_txt["gain_mate " + game.clan.your_cat.status.replace(" ", "") + " " + Cat.all_cats[game.clan.your_cat.mates[-1]].status.replace(" ", "")])
@@ -1409,8 +1386,7 @@ class Events:
         elif 'reject' in game.switches and game.switches['reject']:
             try:
                 resource_dir = "resources/dicts/events/lifegen_events/"
-                with open(f"{resource_dir}mate_lifegen.json",
-                        encoding="ascii") as read_file:
+                with open(f"{resource_dir}mate_lifegen.json", encoding="utf-8") as read_file:
                     self.f_txt = ujson.loads(read_file.read())
                 r = random.randint(1,3)
                 if r == 1:
@@ -1834,8 +1810,8 @@ class Events:
                 game.cur_events_list.append(
                     Single_Event(
                         f"{cat.name} had chosen to use their skills and experience to heal "
-                        f"and commune with the spirits. A meeting is called, and they "
-                        f"become the Colony's newest medicine cat. ", "ceremony",
+                        f"and commune with StarClan. A meeting is called, and they "
+                        f"become the Clan's newest medicine cat. ", "ceremony",
                         cat.ID))
                 cat.status_change("medicine cat")
         if game.clan.clan_settings['become_queen']:
@@ -2577,7 +2553,7 @@ class Events:
 
     def load_war_resources(self):
         resource_dir = "resources/dicts/events/"
-        with open(f"{resource_dir}war.json", encoding="ascii") as read_file:
+        with open(f"{resource_dir}war.json", encoding="utf-8") as read_file:
             self.WAR_TXT = ujson.loads(read_file.read())
 
     def check_war(self):
@@ -2671,7 +2647,7 @@ class Events:
 
         event = random.choice(war_events)
         event = ongoing_event_text_adjust(
-            Cat, event, other_clan_name=f"{enemy_clan.name}", clan=game.clan
+            Cat, event, other_clan_name=f"{enemy_clan.name}Clan", clan=game.clan
         )
         game.cur_events_list.append(Single_Event(event, "other_clans"))
 
@@ -2705,7 +2681,7 @@ class Events:
 
                 if game.clan.deputy.personality.trait == 'bloodthirsty':
                     text = f'{game.clan.deputy.name} has become the new leader. ' \
-                           f'They stare down at their companions with unsheathed claws, ' \
+                           f'They stare down at their Clanmates with unsheathed claws, ' \
                            f'promising a new era for the Clans.'
                 else:
                     c = random.choice([1, 2, 3])
@@ -2998,7 +2974,7 @@ class Events:
             return
 
         resource_dir = "resources/dicts/events/ceremonies/"
-        with open(f"{resource_dir}ceremony-master.json", encoding="ascii") as read_file:
+        with open(f"{resource_dir}ceremony-master.json", encoding="utf-8") as read_file:
             self.CEREMONY_TXT = ujson.loads(read_file.read())
 
         self.ceremony_id_by_tag = {}
@@ -3196,8 +3172,7 @@ class Events:
         random_honor = None
         if promoted_to in ['warrior', 'mediator', 'medicine cat', "queen"]:
             resource_dir = "resources/dicts/events/ceremonies/"
-            with open(f"{resource_dir}ceremony_traits.json",
-                    encoding="ascii") as read_file:
+            with open(f"{resource_dir}ceremony_traits.json", encoding="utf-8") as read_file:
                 TRAITS = ujson.loads(read_file.read())
             try:
                 random_honor = random.choice(TRAITS[cat.personality.trait])
@@ -3743,8 +3718,7 @@ class Events:
 
         resource_dir = "resources/dicts/events/disasters/"
         disaster_text = {}
-        with open(f"{resource_dir}forest.json",
-                  encoding="ascii") as read_file:
+        with open(f"{resource_dir}forest.json", encoding="utf-8") as read_file:
             disaster_text = ujson.loads(read_file.read())
         
         current_disaster = disaster_text.get(game.clan.disaster)
@@ -3805,15 +3779,14 @@ class Events:
                         else:
                             History.add_death(cat, death_text=current_disaster["collateral_damage"]["deaths"]["history_text"]["reg_death"])
                         cat.die()
-                        death_text = random.choice(current_disaster["collateral_damage"]["deaths"]["death_text"]).replace("m_c", str(cat.name)).replace("c_n", str(game.clan.name))
+                        death_text = random.choice(current_disaster["collateral_damage"]["deaths"]["death_text"]).replace("m_c", str(cat.name)).replace("c_n", str(game.clan.name) + "Clan")
                         game.cur_events_list.insert(0,
                             Single_Event(death_text, "birth_death", cat.ID))
 
     def handle_second_disaster(self):
         resource_dir = "resources/dicts/events/disasters/"
         disaster_text = {}
-        with open(f"{resource_dir}forest.json",
-                encoding="ascii") as read_file:
+        with open(f"{resource_dir}forest.json", encoding="utf-8") as read_file:
             disaster_text = ujson.loads(read_file.read())
         current_disaster = disaster_text.get(game.clan.second_disaster)
         current_moon = game.clan.second_disaster_moon
@@ -3988,8 +3961,7 @@ class Events:
     def exile_or_forgive(self, cat):
         """ a shunned cat becoming exiled, or being forgiven"""
         resource_dir = "resources/dicts/events/lifegen_events/"
-        with open(f"{resource_dir}ceremonies.json",
-                  encoding="ascii") as read_file:
+        with open(f"{resource_dir}ceremonies.json", encoding="utf-8") as read_file:
             self.b_txt = ujson.loads(read_file.read())
         if cat.shunned > 2:
             involved_cats = []
@@ -4005,7 +3977,7 @@ class Events:
                 cat.shunned = 0
                 cat.forgiven = 1
                 if cat.ID == game.clan.your_cat.ID:
-                    text = "A Clan meeting is called one day, and your companions vote to forgive you for what you did."
+                    text = "A Clan meeting is called one day, and your Clanmates vote to forgive you for what you did."
                 else:
                     text = random.choice([
                         f"After showing genuine remorse and guilt, {cat.name} has been forgiven and welcomed back into {game.clan.name}Clan, though some are quicker to forgive than others.",
@@ -4236,7 +4208,7 @@ class Events:
                             f"announcement that {random_cat.name} will be the Clan's new deputy.",
                             # pylint: disable=line-too-long
                             f"{random_cat.name} has been chosen as the new deputy. They pray to "  # pylint: disable=line-too-long
-                            f"the stars that they are the right choice for the Clan.",  # pylint: disable=line-too-long
+                            f"StarClan that they are the right choice for the Clan.",  # pylint: disable=line-too-long
                             f"{random_cat.name} has been chosen as the new deputy. Although"  # pylint: disable=line-too-long
                             f"they are nervous, they put on a brave front and look forward to serving"  # pylint: disable=line-too-long
                             f"the Clan.",

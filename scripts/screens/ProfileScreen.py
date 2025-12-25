@@ -3439,7 +3439,7 @@ class ProfileScreen(Screens):
         
     def get_faith_text(self, faith):
         faith_dict = {}
-        with open("resources/dicts/faith_display.json", "r") as read_file:
+        with open("resources/dicts/faith_display.json", "r", encoding="utf-8") as read_file:
             faith_dict = ujson.loads(read_file.read())
             cluster1, cluster2 = get_cluster(self.the_cat.personality.trait)
 

@@ -33,13 +33,13 @@ class Sprites:
 
     def load_tints(self):
         try:
-            with open("sprites/dicts/tint.json", "r") as read_file:
+            with open("sprites/dicts/tint.json", "r", encoding="utf-8") as read_file:
                 self.cat_tints = ujson.loads(read_file.read())
         except IOError:
             print("ERROR: Reading Tints")
 
         try:
-            with open("sprites/dicts/white_patches_tint.json", "r") as read_file:
+            with open("sprites/dicts/white_patches_tint.json", "r", encoding="utf-8") as read_file:
                 self.white_patches_tints = ujson.loads(read_file.read())
         except IOError:
             print("ERROR: Reading White Patches Tints")
@@ -1455,7 +1455,7 @@ class Sprites:
         """
         symbol = self.sprites.get(symbol)
         if symbol is None:
-            logger.warning("%s is not a known Clan symbol! Using default.")
+            logger.warning("%s is not a known Clan symbol! Using default.", symbol)
             symbol = self.sprites[self.clan_symbols[0]]
 
         recolored_symbol = copy(symbol)
