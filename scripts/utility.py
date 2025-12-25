@@ -901,13 +901,13 @@ def create_new_cat(
         else:
             # grab starting names and accs for loners/kittypets
             if kittypet:
-                name = choice(names.names_dict["loner_names"])
+                name = choice(names.single_names_list) if names.single_names_list else choice(names.names_dict["normal_prefixes"])
                 if bool(getrandbits(1)):
                     accessory = choice(Pelt.collars)
             elif loner and bool(
                 getrandbits(1)
-            ):  # try to give name from full loner name list
-                name = choice(names.names_dict["loner_names"])
+            ):  # try to give name from single names list
+                name = choice(names.single_names_list) if names.single_names_list else choice(names.names_dict["normal_prefixes"])
             else:
                 name = choice(
                     names.names_dict["normal_prefixes"]

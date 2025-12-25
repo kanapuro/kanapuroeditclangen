@@ -1909,7 +1909,14 @@ class EventLoading(UIWindow):
         while not self.end_animation:
             i = (i + 1) % (len(self.frames))
 
-            self.animated_image.set_image(self.frames[i])
+            try:
+                # Check if pygame display is still initialized before converting
+                if pygame.display.get_surface() is not None:
+                    self.animated_image.set_image(self.frames[i])
+            except (pygame.error, AttributeError):
+                # Display was closed or image element was destroyed
+                break
+            
             time.sleep(0.125)
 
     def kill(self):

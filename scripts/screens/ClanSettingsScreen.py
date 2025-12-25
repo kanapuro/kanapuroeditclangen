@@ -111,6 +111,19 @@ class ClanSettingsScreen(Screens):
         if event.ui_element in self.checkboxes.values():
             for key, value in self.checkboxes.items():
                 if value == event.ui_element:
+                    # Prevent disabling the last enabled name type
+                    name_type_settings = ["warrior_names", "ancient_names", "single_names", "syllable_names"]
+                    if key in name_type_settings and game.clan.clan_settings.get(key, False):
+                        # Only one name type is enabled; prevent toggling it off
+                        enabled_name_types = sum(
+                            1 for setting in name_type_settings 
+                            if game.clan.clan_settings.get(setting, False)
+                        )
+                        if enabled_name_types == 1:
+                            # Don't toggle, but refresh to show disabled state
+                            self.refresh_checkboxes()
+                            return
+                    
                     game.clan.switch_setting(key)
                     self.settings_changed = True
                     # self.update_save_button()
@@ -482,6 +495,13 @@ class ClanSettingsScreen(Screens):
             checkbox.kill()
         self.checkboxes = {}
 
+        # Count enabled name type settings to prevent all from being disabled
+        name_type_settings = ["warrior_names", "ancient_names", "single_names", "syllable_names"]
+        enabled_name_types = sum(
+            1 for setting in name_type_settings 
+            if game.clan.clan_settings.get(setting, False)
+        )
+
         n = 0
         for code, desc in settings_dict[self.sub_menu].items():
             if game.clan.clan_settings[code]:
@@ -499,12 +519,17 @@ class ClanSettingsScreen(Screens):
                     != desc[3][1]
                 )
 
+            # Disable name type setting if it's the only one enabled (prevent game-breaking deselection)
+            if code in name_type_settings and enabled_name_types == 1 and game.clan.clan_settings.get(code, False):
+                disabled = True
+
             self.checkboxes[code] = UIImageButton(
                 ui_scale(pygame.Rect((x_val, n * 39), (34, 34))),
                 "",
                 object_id=box_type,
                 container=self.checkboxes_text["container_" + self.sub_menu],
-                tool_tip_text=desc[1],
+                tool_tip_text=desc[1] if not disabled or code not in name_type_settings else 
+                    f"{desc[1]} This is the only enabled name type; at least one must be enabled.",
             )
 
             if disabled:
