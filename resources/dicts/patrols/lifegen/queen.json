@@ -1051,7 +1051,7 @@
         "max_cats": 1,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "You could've sworn you heard soft meowing nearby, as if there were kits in the Unknown Residence too.",
+        "intro_text": "You could've sworn you heard soft meowing nearby, as if there were kits forced to wander endlessly too.",
         "decline_text": "You shake your head, and convince yourself that you're just hearing things.",
         "chance_of_success": 50,
         "success_outcomes": [
@@ -1064,14 +1064,14 @@
                 ]
             },
             {
-                "text": "Perhaps you are just hearing things, but you decide to follow your gut and approach where you think the meowing is coming from. Well, you discover that you are not going crazy, and find an Unknown Residence kitten who ventured too far from the dens. Tsking, you guide them back to safety.",
+                "text": "Perhaps you are just hearing things, but you decide to follow your gut and approach where you think the meowing is coming from. Well, you discover that you are not going crazy, and find a wandering kitten who ventured too far from the dens. Tsking, you guide them back to safety.",
                 "exp": 0,
                 "weight": 20
             }
         ],
         "fail_outcomes": [
             {
-                "text": "After searching for what feels like moons, you discover there <i>is</i> a kit in the Unknown Residence... but that kit isn't a resident. Somehow a very-much-alive kit from one of the Clans has managed to slip into this ghostly afterlife, and {PRONOUN/r_k/subject}{VERB/r_k/'ve/'s} been calling to you, thinking the two of you were playing some game {PRONOUN/r_k/subject} {VERB/r_k/have/has} with {PRONOUN/r_k/poss} companions. While you're relieved that the kit is still alive, you can't help but feel disappointed; you were truly hoping you could care for kittens again like you did in life.",
+                "text": "After searching for what feels like moons, you discover there <i>is</i> a kit wandering... but that kit isn't a resident. Somehow a very-much-alive kit from one of the Clans has managed to slip into this ghostly afterlife, and {PRONOUN/r_k/subject}{VERB/r_k/'ve/'s} been calling to you, thinking the two of you were playing some game {PRONOUN/r_k/subject} {VERB/r_k/have/has} with {PRONOUN/r_k/poss} companions. While you're relieved that the kit is still alive, you can't help but feel disappointed; you were truly hoping you could care for kittens again like you did in life.",
                 "exp": 0,
                 "weight": 20,
                 "stat_skill": ["GHOST,1"],

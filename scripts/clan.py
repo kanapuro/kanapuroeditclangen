@@ -480,7 +480,7 @@ class Clan:
                 kittypet=True if status == "kittypet" else False,
                 outside=True,
                 backstory=random_backstory,
-                thought="Wanders the Unknown Residence"
+                thought="Wanders endlessly"
                 )
             ur_cats[0].history.beginning = None
             ur_cats[0].dead_for = randint(20,100)
@@ -665,7 +665,7 @@ class Clan:
 
     def add_to_unknown(self, cat):
         """
-        Places dead cat into the unknown residence.
+        Places dead cat into the unknown wandering.
         It should not be removed from the list of cats in the clan
         :param cat: cat object
         """

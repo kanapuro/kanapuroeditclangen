@@ -1231,7 +1231,7 @@
         "min_max_status": {},
         "weight": 20,
         "intro_text": "There's a certain thrill to wandering around areas unknown to you. As you approach the borders of the other afterlives, your curiosity gets to the best of you.",
-        "decline_text": "They say curiosity kills the cat, and quite frankly, you don't want to die again. So, you swallow back your pride and return to the Unknown Residence.",
+        "decline_text": "They say curiosity kills the cat, and quite frankly, you don't want to die again. So, you swallow back your pride and return to endless wandering.",
         "chance_of_success": 50,
         "success_outcomes": [
             {

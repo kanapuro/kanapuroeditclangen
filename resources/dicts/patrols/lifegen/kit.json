@@ -1112,12 +1112,12 @@
         "max_cats": 1,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "This Unknown Residence place is so boring! You miss all of the c_n cats, they were much more fun than this. You decide to go exploring.",
+        "intro_text": "Wandering endlessly is so boring! You miss all of the c_n cats, they were much more fun than this. You decide to go exploring.",
         "decline_text": "rur_c calls out for you, warning you not to go further. Realizing you are caught trying to wander, you grumble and reluctantly go back.",
         "chance_of_success": 50,
         "success_outcomes": [
             {
-                "text": "You eventually settle down to observe a flock of geese. One of them unexpectedly takes flight, and without thinking, you leap up to chase after it - something that, in life, would have sent you crashing into the ground. This time, though, you find yourself soaring through the air just like the goose! Thrilled with this newly-discovered ability, you quickly abandon the wild goose chase in favor of flying anywhere you can think of. Maybe the Unknown Residence isn't so boring after all.",
+                "text": "You eventually settle down to observe a flock of geese. One of them unexpectedly takes flight, and without thinking, you leap up to chase after it - something that, in life, would have sent you crashing into the ground. This time, though, you find yourself soaring through the air just like the goose! Thrilled with this newly-discovered ability, you quickly abandon the wild goose chase in favor of flying anywhere you can think of. Maybe wandering endlessly isn't so boring after all.",
                 "exp": 0,
                 "weight": 20
             }

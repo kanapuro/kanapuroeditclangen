@@ -110,10 +110,10 @@ class SkillPath(Enum):
         "caretaker of the greens"
     ) 
     UNKNOWN = (
-        "intrigued about the Unknown Residence",
-        "Unknown Residence accord",
-        "deep Unknown Residence bond",
-        "unshakable Unknown Residence link"
+        "intrigued about wanderers",
+        "wanderer accord",
+        "deep wanderer bond",
+        "unshakable wanderer link"
     ) 
     WAKEFUL = (
         "never settles down",
@@ -493,7 +493,7 @@ class Skill:
         SkillPath.GHOST: "ghosts",
         SkillPath.DARK: "dark forest",
         SkillPath.GARDENER: "gardener",
-        SkillPath.UNKNOWN: "unknown residence",
+        SkillPath.UNKNOWN: "wanderer",
         SkillPath.WAKEFUL: "awake",
         SkillPath.DELIVERER: "delivery",
         SkillPath.DECORATOR: "decorator",

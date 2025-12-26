@@ -830,7 +830,7 @@ class ListScreen(Screens):
 
     def get_ur_cats(self):
         """
-        grabs unknown residence cats
+        grabs wanderer cats
         """
         self.current_group = "ur"
         self.death_status = "dead"
