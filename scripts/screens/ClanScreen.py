@@ -21,7 +21,9 @@ from scripts.utility import (
     ui_scale,
     ui_scale_dimensions,
     get_current_season,
+    ui_scale_value,
 )
+from scripts.game_structure.screen_settings import MANAGER
 from .Screens import Screens
 from ..ui.generate_button import ButtonStyles, get_button_dict
 
@@ -42,6 +44,10 @@ class ClanScreen(Screens):
         self.nursery_label = None
         self.elder_den_label = None
         self.med_den_label = None
+        self._dragging_cat_id = None
+        self._drag_offset = (0, 0)
+        self._cat_button_by_id = {}
+        self._dragging_btn = None
         self.leader_den_label = None
         self.warrior_den_label = None
         self.layout = None
@@ -105,6 +111,100 @@ class ClanScreen(Screens):
                 game.save_settings(self)
                 game.switches["saved_clan"] = True
                 self.update_buttons_and_text()
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+            mouse_pos = event.pos
+            for btn in reversed(self.cat_buttons):
+                try:
+                    abs_rect = btn.get_abs_rect()
+                except Exception:
+                    continue
+                if abs_rect.collidepoint(mouse_pos):
+                    cat_id = btn.return_cat_id()
+                    if cat_id is not None:
+                        try:
+                            self._dragging_cat_id = int(cat_id)
+                        except Exception:
+                            self._dragging_cat_id = cat_id
+                        self._dragging_btn = btn
+                        self._drag_offset = (
+                            mouse_pos[0] - abs_rect.x,
+                            mouse_pos[1] - abs_rect.y,
+                        )
+                        print(f"Right-click drag start on cat {self._dragging_cat_id} via UI rect")
+                    break
+            # Fallback: hit-test using scaled placement + manager offset
+            if self._dragging_cat_id is None and MANAGER is not None:
+                offx = MANAGER.offset[0] if MANAGER.offset else 0
+                offy = MANAGER.offset[1] if MANAGER.offset else 0
+                for x in reversed(game.clan.clan_cats):
+                    try:
+                        c = Cat.all_cats[x]
+                    except Exception:
+                        continue
+                    if c.dead or not c.in_camp or c.exiled or c.outside:
+                        continue
+                    base_rect = pygame.Rect(tuple(c.placement), (50, 50))
+                    scaled_rect = ui_scale(base_rect)
+                    scaled_rect.x += offx
+                    scaled_rect.y += offy
+                    if scaled_rect.collidepoint(mouse_pos):
+                        self._dragging_cat_id = x
+                        # find btn by id
+                        self._dragging_btn = self._cat_button_by_id.get(x)
+                        if self._dragging_btn is None:
+                            for b in reversed(self.cat_buttons):
+                                try:
+                                    if b.return_cat_id() == x:
+                                        self._dragging_btn = b
+                                        break
+                                except Exception:
+                                    continue
+                        self._drag_offset = (
+                            mouse_pos[0] - scaled_rect.x,
+                            mouse_pos[1] - scaled_rect.y,
+                        )
+                        print(f"Right-click drag start on cat {x} via placement fallback")
+                        break
+        elif event.type == pygame.MOUSEMOTION:
+            if self._dragging_cat_id is not None:
+                print(f"Mouse motion; dragging cat {self._dragging_cat_id}")
+                btn = self._dragging_btn or self._cat_button_by_id.get(self._dragging_cat_id)
+                if btn is not None:
+                    new_abs_pos = (
+                        event.pos[0] - self._drag_offset[0],
+                        event.pos[1] - self._drag_offset[1],
+                    )
+                    rel_pos = (
+                        new_abs_pos[0] - (MANAGER.offset[0] if MANAGER and MANAGER.offset else 0),
+                        new_abs_pos[1] - (MANAGER.offset[1] if MANAGER and MANAGER.offset else 0),
+                    )
+                    # Move using relative coordinates within UI root
+                    btn.image.set_relative_position((int(rel_pos[0]), int(rel_pos[1])))
+                    btn.button.set_relative_position((int(rel_pos[0]), int(rel_pos[1])))
+                    # Also try absolute positioning for safety
+                    try:
+                        btn.image.set_position((int(new_abs_pos[0]), int(new_abs_pos[1])))
+                        btn.button.set_position((int(new_abs_pos[0]), int(new_abs_pos[1])))
+                    except Exception:
+                        pass
+                    unscaled_pos = (
+                        int(round(rel_pos[0] / ui_scale_value(1))),
+                        int(round(rel_pos[1] / ui_scale_value(1))),
+                    )
+                    try:
+                        Cat.all_cats[self._dragging_cat_id].placement = unscaled_pos
+                    except Exception:
+                        pass
+                    # Debug current rect for verification
+                    try:
+                        r = btn.get_abs_rect()
+                        print(f"Dragging cat {self._dragging_cat_id} to rel {rel_pos} (abs rect {r})")
+                    except Exception:
+                        pass
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 3:
+            self._dragging_cat_id = None
+            self._dragging_btn = None
+            self._drag_offset = (0, 0)
 
     def screen_switches(self):
         super().screen_switches()
@@ -127,6 +227,7 @@ class ClanScreen(Screens):
 
         # Creates and places the cat sprites.
         self.cat_buttons = []  # To contain all the buttons.
+        self._cat_button_by_id = {}
 
         # We have to convert the positions to something pygame_gui buttons will understand
         # This should be a temp solution. We should change the code that determines positions.
@@ -183,6 +284,8 @@ class ClanScreen(Screens):
                             starting_height=i,
                         )
                     )
+                    # Track by id for hit-testing and movement
+                    self._cat_button_by_id[x] = self.cat_buttons[-1]
                 except Exception as e:
                     print(
                         f"ERROR: placing {Cat.all_cats[x].name}'s sprite on Clan page"
