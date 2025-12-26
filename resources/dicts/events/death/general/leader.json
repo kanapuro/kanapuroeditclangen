@@ -122,9 +122,9 @@
             "Leaf-fall",
             "Leaf-bare"
         ],
-        "death_text": "m_c failed to interpret a warning sign from StarClan, and lost a life as a result.",
+        "death_text": "m_c failed to interpret a warning sign from the stars, and lost a life as a result.",
         "history_text": {
-            "lead_death": "failed to interpret a warning from StarClan"
+            "lead_death": "failed to interpret a warning from the stars"
         },
         "cat_negate_skill": [
             "CLEVER,2",
@@ -810,7 +810,7 @@
             "Leaf-fall",
             "Leaf-bare"
         ],
-        "death_text": "m_c caught greencough, and died more than once, despite the efforts of StarClan.",
+        "death_text": "m_c caught greencough, and died more than once, despite the efforts of the colony.",
         "history_text": {
             "lead_death": "contracted greencough"
         }
@@ -835,7 +835,7 @@
             "Leaf-fall",
             "Leaf-bare"
         ],
-        "death_text": "m_c caught whitecough, and died more than once, despite the efforts of StarClan.",
+        "death_text": "m_c caught whitecough, and died more than once, despite the efforts of the colony.",
         "history_text": {
             "lead_death": "contracted whitecough"
         }
@@ -860,7 +860,7 @@
             "Leaf-fall",
             "Leaf-bare"
         ],
-        "death_text": "m_c caught yellowcough, and died more than once, despite the efforts of StarClan.",
+        "death_text": "m_c caught yellowcough, and died more than once, despite the efforts of the colony.",
         "history_text": {
             "lead_death": "contracted yellowcough"
         }
@@ -946,7 +946,7 @@
             "Leaf-fall",
             "Leaf-bare"
         ],
-        "death_text": "Despite StarClan's efforts, m_c's body just couldn't continue. {PRONOUN/m_c/poss/CAP} remaining lives were taken by old age.",
+        "death_text": "Despite the colony's efforts, m_c's body just couldn't continue. {PRONOUN/m_c/poss/CAP} remaining lives were taken by old age.",
         "history_text": {
             "lead_death": "died of old age"
         }

@@ -1219,7 +1219,7 @@
       ],
       "life_giving": [
         {
-          "text": "Overconfidence can blind even the most loyal of StarClan-loving cats. And that is just what r_c is counting on as the cruel life of [virtue] burns through m_c's mind.",
+          "text": "Overconfidence can blind even the most loyal of star-loving cats. And that is just what r_c is counting on as the cruel life of [virtue] burns through m_c's mind.",
           "virtue": [
             "ambition",
             "bravery",
@@ -1372,7 +1372,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c laughs at poor, pious m_c, so out of place in the gloom of the forest, and gives a life for [virtue]. As m_c staggers in pain, r_c mockingly asks if {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} still faithful to StarClan, even in this twisted wood, but {PRONOUN/r_c/subject} {VERB/r_c/bound/bounds} away before any answer can be given.",
+          "text": "r_c laughs at poor, pious m_c, so out of place in the gloom of the forest, and gives a life for [virtue]. As m_c staggers in pain, r_c mockingly asks if {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} still faithful to the stars, even in this twisted wood, but {PRONOUN/r_c/subject} {VERB/r_c/bound/bounds} away before any answer can be given.",
           "virtue": [
             "strength",
             "ferocity",
@@ -2527,7 +2527,7 @@
       ],
       "life_giving": [
         {
-          "text": "While such antics would be frowned upon by StarClan, r_c and the Dark Forest welcome the newest troublemaker with open arms. r_c gives a life for [virtue], encouraging m_c to take {PRONOUN/m_c/poss} plots to new heights.",
+          "text": "While such antics would be frowned upon by the stars, r_c and the Dark Forest welcome the newest troublemaker with open arms. r_c gives a life for [virtue], encouraging m_c to take {PRONOUN/m_c/poss} plots to new heights.",
           "virtue": [
             "ambition",
             "bravery",
@@ -2903,7 +2903,7 @@
       ],
       "life_giving": [
         {
-          "text": "So long as m_c uses {PRONOUN/m_c/poss} rebellious ways to destroy the hold StarClan has on the world, r_c can't give a rat's tail what the new leader does with the life for [virtue].",
+          "text": "So long as m_c uses {PRONOUN/m_c/poss} rebellious ways to destroy the hold the stars have on the world, r_c can't give a rat's tail what the new leader does with the life for [virtue].",
           "virtue": [
             "ambition",
             "bravery",

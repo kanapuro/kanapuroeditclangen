@@ -5300,7 +5300,7 @@
         ],
         "tags": [],
         "weight": 20,
-        "event_text": "m_c failed to interpret a warning sign from StarClan and couldn't foresee the circumstances of {PRONOUN/m_c/poss} death.",
+        "event_text": "m_c failed to interpret a warning sign from the afterlife and couldn't foresee the circumstances of {PRONOUN/m_c/poss} death.",
         "m_c": {
             "status": [
                 "leader"
@@ -5316,7 +5316,7 @@
                 "cats": [
                     "m_c"
                 ],
-                "lead_death": "failed to interpret a warning from StarClan"
+                "lead_death": "failed to interpret a warning from the afterlife"
             }
         ]
     },
@@ -6399,7 +6399,7 @@
             "some_lives"
         ],
         "weight": 20,
-        "event_text": "m_c caught greencough and died more than once, despite the efforts of StarClan.",
+        "event_text": "m_c caught greencough and died more than once, despite the efforts of the colony.",
         "m_c": {
             "status": [
                 "leader"
@@ -6429,7 +6429,7 @@
             "some_lives"
         ],
         "weight": 20,
-        "event_text": "m_c caught whitecough and died more than once, despite the efforts of StarClan.",
+        "event_text": "m_c caught whitecough and died more than once, despite the efforts of the colony.",
         "m_c": {
             "status": [
                 "leader"
@@ -6459,7 +6459,7 @@
             "some_lives"
         ],
         "weight": 20,
-        "event_text": "m_c caught yellowcough and died more than once, despite the efforts of StarClan.",
+        "event_text": "m_c caught yellowcough and died more than once, despite the efforts of the colony.",
         "m_c": {
             "status": [
                 "leader"
@@ -6624,7 +6624,7 @@
             "all_lives"
         ],
         "weight": 20,
-        "event_text": "Despite StarClan's efforts, m_c's body just couldn't continue. {PRONOUN/m_c/poss/CAP} remaining lives were taken by old age.",
+        "event_text": "Despite the colony's efforts, m_c's body just couldn't continue. {PRONOUN/m_c/poss/CAP} remaining lives were taken by old age.",
         "m_c": {
             "age": [
                 "senior"
@@ -7128,7 +7128,7 @@
             "lives_remain"
         ],
         "weight": 20,
-        "event_text": "o_c_n attempted to break into the camp. m_c died defending the nursery. r_c remained hidden beneath {PRONOUN/m_c/poss} body as StarClan brought m_c back to life.",
+        "event_text": "o_c_n attempted to break into the camp. m_c died defending the nursery. r_c remained hidden beneath {PRONOUN/m_c/poss} body as the stars brought m_c back to life.",
         "m_c": {
             "age": [
                 "young adult",
@@ -8162,7 +8162,7 @@
             "lives_remain"
         ],
         "weight": 30,
-        "event_text": "r_c attempts to take what remains of m_c's lives, but a warning from StarClan gives {PRONOUN/m_c/object} enough information to avoid such a fate. {PRONOUN/m_c/subject/CAP} still {VERB/m_c/lose/loses} a life, but at least {PRONOUN/m_c/subject} {VERB/m_c/manage/manages} to take r_c down with {PRONOUN/m_c/object}.",
+        "event_text": "r_c attempts to take what remains of m_c's lives, but a warning from the stars gives {PRONOUN/m_c/object} enough information to avoid such a fate. {PRONOUN/m_c/subject/CAP} still {VERB/m_c/lose/loses} a life, but at least {PRONOUN/m_c/subject} {VERB/m_c/manage/manages} to take r_c down with {PRONOUN/m_c/object}.",
         "m_c": {
             "status": [
                 "leader"

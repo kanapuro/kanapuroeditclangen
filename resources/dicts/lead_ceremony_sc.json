@@ -73,7 +73,7 @@
       "tags": [],
       "lead_trait": [],
       "text": [
-        "m_c leaves to speak with StarClan. {PRONOUN/m_c/subject/CAP} {VERB/m_c/close/closes} {PRONOUN/m_c/poss} eyes and {VERB/m_c/are/is} immediately surrounded by {PRONOUN/m_c/poss} loved ones, friends, and companions who have passed on. Stars shine throughout their pelts, and their eyes are warm as they greet the new leader."
+        "m_c leaves to speak with the dead. {PRONOUN/m_c/subject/CAP} {VERB/m_c/close/closes} {PRONOUN/m_c/poss} eyes and {VERB/m_c/are/is} immediately surrounded by {PRONOUN/m_c/poss} loved ones, friends, and companions who have passed on. Stars shine throughout their pelts, and their eyes are warm as they greet the new leader."
       ]
     },
     "new_clan": {
@@ -91,7 +91,7 @@
         "bloodthirsty"
       ],
       "text": [
-        "m_c leaves to speak with StarClan. {PRONOUN/m_c/subject/CAP} {VERB/m_c/close/closes} {PRONOUN/m_c/poss} eyes and {VERB/m_c/awaken/awakens} under a vast, inky black sky. {PRONOUN/m_c/subject/CAP} {VERB/m_c/turn/turns} around to see a wary group of cats approaching, stars dotting their fur."
+        "m_c leaves to speak with the dead. {PRONOUN/m_c/subject/CAP} {VERB/m_c/close/closes} {PRONOUN/m_c/poss} eyes and {VERB/m_c/awaken/awakens} under a vast, inky black sky. {PRONOUN/m_c/subject/CAP} {VERB/m_c/turn/turns} around to see a wary group of cats approaching, stars dotting their fur."
       ]
     }
   },
@@ -390,7 +390,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c walks up to m_c, giving {PRONOUN/m_c/object} a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/pause/pauses}, then {VERB/r_c/shake/shakes} {PRONOUN/r_c/poss} head, heading back into the ranks of StarClan.",
+          "text": "r_c walks up to m_c, giving {PRONOUN/m_c/object} a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/pause/pauses}, then {VERB/r_c/shake/shakes} {PRONOUN/r_c/poss} head, heading back into the ranks of the dead.",
           "virtue": [
             "acceptance",
             "bravery",
@@ -471,7 +471,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c presses {PRONOUN/r_c/poss} nose to m_c's forehead, offering a life for [virtue]. Before {PRONOUN/r_c/subject} {VERB/r_c/return/returns} to the line of StarClan cats, {PRONOUN/r_c/subject} {VERB/r_c/whisper/whispers} to keep an eye on c_n, not just the horizons.",
+          "text": "r_c presses {PRONOUN/r_c/poss} nose to m_c's forehead, offering a life for [virtue]. Before {PRONOUN/r_c/subject} {VERB/r_c/return/returns} to the line of starry cats, {PRONOUN/r_c/subject} {VERB/r_c/whisper/whispers} to keep an eye on c_n, not just the horizons.",
           "virtue": [
             "acceptance",
             "bravery",
@@ -1131,7 +1131,7 @@
       ],
       "life_giving": [
         {
-          "text": "The cats of StarClan were well aware of m_c's compassionate nature. r_c prances forward and gives the new leader a life for [virtue], whispering to keep {PRONOUN/m_c/poss} heart pure and open to others.",
+          "text": "The cats of the stars were well aware of m_c's compassionate nature. r_c prances forward and gives the new leader a life for [virtue], whispering to keep {PRONOUN/m_c/poss} heart pure and open to others.",
           "virtue": [
             "acceptance",
             "bravery",
@@ -1339,7 +1339,7 @@
       ],
       "life_giving": [
         {
-          "text": "There is no doubt in r_c's eyes that StarClan made a good choice in leader. m_c had demonstrated {PRONOUN/m_c/poss} faith in StarClan time and time again, and it is {PRONOUN/r_c/poss} honor to give {PRONOUN/m_c/object} a life for [virtue].",
+          "text": "There is no doubt in r_c's eyes that the colony made a good choice in leader. m_c had demonstrated {PRONOUN/m_c/poss} faith in the dead time and time again, and it is {PRONOUN/r_c/poss} honor to give {PRONOUN/m_c/object} a life for [virtue].",
           "virtue": [
             "acceptance",
             "bravery",
@@ -1417,7 +1417,7 @@
           ]
         },
         {
-          "text": "r_c hesitates for a moment, a vision of blood across m_c's claws assaulting the StarClan cat's mind. But eventually, {PRONOUN/r_c/subject} {VERB/r_c/relent/relents} and gives a life for [virtue].",
+          "text": "r_c hesitates for a moment, a vision of blood across m_c's claws assaulting the starry cat's mind. But eventually, {PRONOUN/r_c/subject} {VERB/r_c/relent/relents} and gives a life for [virtue].",
           "virtue": [
             "acceptance",
             "bravery",
@@ -1743,7 +1743,7 @@
           ]
         },
         {
-          "text": "Tail flicking nervously, m_c watches the StarClan cat approach. r_c dips {PRONOUN/r_c/poss} head and reassures m_c that if {PRONOUN/m_c/subject} {VERB/m_c/weren't/wasn't} fit to be leader, {PRONOUN/m_c/subject} wouldn't have made it this far. m_c braces as {PRONOUN/m_c/subject} {VERB/m_c/receive/receives} a life for [virtue], hoping that the starry cat is right.",
+          "text": "Tail flicking nervously, m_c watches the starry cat approach. r_c dips {PRONOUN/r_c/poss} head and reassures m_c that if {PRONOUN/m_c/subject} {VERB/m_c/weren't/wasn't} fit to be leader, {PRONOUN/m_c/subject} wouldn't have made it this far. m_c braces as {PRONOUN/m_c/subject} {VERB/m_c/receive/receives} a life for [virtue], hoping that the starry cat is right.",
           "virtue": [
             "acceptance",
             "bravery",
@@ -1865,7 +1865,7 @@
           ]
         },
         {
-          "text": "m_c suppresses {PRONOUN/m_c/poss} shivers of excitement as r_c pads up, a small smile on {PRONOUN/r_c/poss} face. The StarClan cat delicately touches {PRONOUN/r_c/poss} nose to m_c's head, murmuring that this life is for [virtue], and {PRONOUN/r_c/subject} {VERB/r_c/expect/expects} m_c to use it well.",
+          "text": "m_c suppresses {PRONOUN/m_c/poss} shivers of excitement as r_c pads up, a small smile on {PRONOUN/r_c/poss} face. The starry cat delicately touches {PRONOUN/r_c/poss} nose to m_c's head, murmuring that this life is for [virtue], and {PRONOUN/r_c/subject} {VERB/r_c/expect/expects} m_c to use it well.",
           "virtue": [
             "devotion",
             "determination",
@@ -2181,7 +2181,7 @@
       ],
       "life_giving": [
         {
-          "text": "Valuing m_c's thoughtful nature, r_c hopes that {PRONOUN/m_c/subject} will not let the stress of leadership get to {PRONOUN/m_c/object} as the StarClan cat gives a life for [virtue].",
+          "text": "Valuing m_c's thoughtful nature, r_c hopes that {PRONOUN/m_c/subject} will not let the stress of leadership get to {PRONOUN/m_c/object} as the starry cat gives a life for [virtue].",
           "virtue": [
             "acceptance",
             "bravery",
@@ -2380,7 +2380,7 @@
           ]
         },
         {
-          "text": "Wisdom is a virtue that is well valued in StarClan. r_c hopes that, with this life of [virtue], m_c can find the courage and power to be a great leader one day.",
+          "text": "Wisdom is a virtue that is well valued in the afterlife. r_c hopes that, with this life of [virtue], m_c can find the courage and power to be a great leader one day.",
           "virtue": [
             "acceptance",
             "bravery",
@@ -2536,7 +2536,7 @@
       ],
       "life_giving": [
         {
-          "text": "Not all of StarClan is as rigid as the Code some cling to. r_c hopes that m_c will use {PRONOUN/m_c/poss} rebellious nature to make c_n a better place as {PRONOUN/r_c/subject} {VERB/r_c/gives/give} a life for [virtue].",
+          "text": "Not all of the dead are as rigid as the Code some cling to. r_c hopes that m_c will use {PRONOUN/m_c/poss} rebellious nature to make c_n a better place as {PRONOUN/r_c/subject} {VERB/r_c/gives/give} a life for [virtue].",
           "virtue": [
             "acceptance",
             "bravery",
@@ -2569,7 +2569,7 @@
       ],
       "life_giving": [
         {
-          "text": "Sincerity and honesty was one of the most prominent trait of a StarClan cat. r_c presses {PRONOUN/r_c/poss} nose against m_c and with a serene voice gives the new leader a life for [virtue].",
+          "text": "Sincerity and honesty was one of the most prominent trait of a good cat. r_c presses {PRONOUN/r_c/poss} nose against m_c and with a serene voice gives the new leader a life for [virtue].",
           "virtue": [
             "acceptance",
             "bravery",
@@ -2650,7 +2650,7 @@
           ]
         },
         {
-          "text": "r_c stands apart from the other StarClan cats, {PRONOUN/r_c/poss} expression unreadable. {PRONOUN/r_c/subject/CAP} {VERB/r_c/approach/approaches} m_c with a quiet grace, giving a life for [virtue] before retreating to {PRONOUN/r_c/poss} solitary corner of the stars.",
+          "text": "r_c stands apart from the other starry cats, {PRONOUN/r_c/poss} expression unreadable. {PRONOUN/r_c/subject/CAP} {VERB/r_c/approach/approaches} m_c with a quiet grace, giving a life for [virtue] before retreating to {PRONOUN/r_c/poss} solitary corner of the stars.",
           "virtue": [
             "acceptance",
             "bravery",
@@ -2704,7 +2704,7 @@
           ]
         },
         {
-          "text": "r_c's voice is soft, almost lost in the vastness of StarClan, as {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} m_c a life for [virtue].",
+          "text": "r_c's voice is soft, almost lost in the vastness of the afterlife, as {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} m_c a life for [virtue].",
           "virtue": [
             "confidence",
             "bravery",
@@ -3330,7 +3330,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c nearly sprints out of the crowd, caught last moment by an older StarClan cat who gives a sharp, but endeared, whisper before setting {PRONOUN/r_c/object} back down. r_c continues towards m_c, but slower this time, barely containing {PRONOUN/r_c/poss} excitement. When {PRONOUN/r_c/subject} {VERB/r_c/give/gives} a life for [virtue], {PRONOUN/r_c/subject} {VERB/r_c/press/presses} {PRONOUN/r_c/self} tightly against m_c's legs before returning to the ranks of StarClan.",
+          "text": "r_c nearly sprints out of the crowd, caught last moment by an older starry cat who gives a sharp, but endeared, whisper before setting {PRONOUN/r_c/object} back down. r_c continues towards m_c, but slower this time, barely containing {PRONOUN/r_c/poss} excitement. When {PRONOUN/r_c/subject} {VERB/r_c/give/gives} a life for [virtue], {PRONOUN/r_c/subject} {VERB/r_c/press/presses} {PRONOUN/r_c/self} tightly against m_c's legs before returning to the ranks of the afterlife.",
           "virtue": [
             "love",
             "patience",
@@ -3599,7 +3599,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c, one of StarClan's oldest leaders, looks at the new leader with a conflicted expression. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} a last life, the gift of [virtue].",
+          "text": "r_c, one of the afterlife's oldest leaders, looks at the new leader with a conflicted expression. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} a last life, the gift of [virtue].",
           "virtue": [
             "endurance in the face of hardship",
             "knowing when to fight and when to choose peace",
@@ -3690,7 +3690,7 @@
       "rank": [],
       "life_giving": [
         {
-          "text": "r_c sniffs that they don't know what sick, twisted turn of events led to you becoming leader of c_n, but rest assured, there will never be a place for you in StarClan. Still, they reluctantly give you a life for [virtue], if only for the good of the companions that they were stolen away from. They stalk back into the crowd muttering curses to your name.",
+          "text": "r_c sniffs that they don't know what sick, twisted turn of events led to you becoming leader of c_n, but rest assured, there will never be a place for you in the stars. Still, they reluctantly give you a life for [virtue], if only for the good of the companions that they were stolen away from. They stalk back into the crowd muttering curses to your name.",
           "virtue": [
             "morality",
             "righteousness",
@@ -3893,7 +3893,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c bounds up to you, excited to see you despite what happened. There is a gentle and kind look in r_c's eyes, and they tell you that they forgive you, and all they want is for you to learn and grow like they never could. They crane their head up to touch noses with you, giving you a life for [virtue]. Just before they head back into the crowd, they whisper that they believe in you, and that they know you can make things right. The other StarClan cats glare at you for betraying such a sweet soul.",
+          "text": "r_c bounds up to you, excited to see you despite what happened. There is a gentle and kind look in r_c's eyes, and they tell you that they forgive you, and all they want is for you to learn and grow like they never could. They crane their head up to touch noses with you, giving you a life for [virtue]. Just before they head back into the crowd, they whisper that they believe in you, and that they know you can make things right. The other starry cats glare at you for betraying such a sweet soul.",
           "virtue": [
             "second chances",
             "improvement"
@@ -4077,7 +4077,7 @@
       ],
       "life_giving": [
         {
-          "text": "It takes an awkward moment before the next cat skitters out of the crowd, squeaking out apologies. The cat, r_c, giggles that they were practicing their hunting crouch for their apprentice ceremony, and you are immediately hit with a wave of guilt. r_c happily wobbles over to you, mewing that they give you the life of [virtue], and that they just know you'll be a 'super cool awesome leader'. They stumble away, happily giggling, and you feel as though the whole of StarClan is glaring at you.",
+          "text": "It takes an awkward moment before the next cat skitters out of the crowd, squeaking out apologies. The cat, r_c, giggles that they were practicing their hunting crouch for their apprentice ceremony, and you are immediately hit with a wave of guilt. r_c happily wobbles over to you, mewing that they give you the life of [virtue], and that they just know you'll be a 'super cool awesome leader'. They stumble away, happily giggling, and you feel as though the whole of the afterlife is glaring at you.",
           "virtue": [
             "happiness",
             "kindness",
@@ -4119,7 +4119,7 @@
       "rank": [],
       "life_giving": [
         {
-          "text": "r_c bounds up to you, but quickly skitters to a halt as they recognize you. They tilt their head to the side. \"Oh, you?\" r_c seems both confused and offended. \"Well, I guess that explains why this place smells so bad all of a sudden.\" They give you a life for [virtue] and run happily back to the other cats in StarClan.",
+          "text": "r_c bounds up to you, but quickly skitters to a halt as they recognize you. They tilt their head to the side. \"Oh, you?\" r_c seems both confused and offended. \"Well, I guess that explains why this place smells so bad all of a sudden.\" They give you a life for [virtue] and run happily back to the other starry cats.",
           "virtue": [
             "honesty",
             "humor",
@@ -4154,7 +4154,7 @@
         "bloodthirsty"
       ],
       "text": [
-        "r_c hails m_c by {PRONOUN/m_c/poss} new name, m_c_star, telling {PRONOUN/m_c/object} that {PRONOUN/m_c/poss} old life is no more. {PRONOUN/m_c/subject/CAP} {VERB/m_c/are/is} granted guardianship of c_n, and {VERB/m_c/are/is} told to use {PRONOUN/m_c/poss} new power wisely. StarClan is silent as the new leader begins to wake up. m_c_star stands, feeling a new strength within {PRONOUN/m_c/poss} body, and grins."
+        "r_c hails m_c by {PRONOUN/m_c/poss} new name, m_c_star, telling {PRONOUN/m_c/object} that {PRONOUN/m_c/poss} old life is no more. {PRONOUN/m_c/subject/CAP} {VERB/m_c/are/is} granted guardianship of c_n, and {VERB/m_c/are/is} told to use {PRONOUN/m_c/poss} new power wisely. The group of starry cats are silent as the new leader begins to wake up. m_c_star stands, feeling a new strength within {PRONOUN/m_c/poss} body, and grins."
       ]
     }
   }

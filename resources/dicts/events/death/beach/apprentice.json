@@ -76,7 +76,7 @@
             "Greenleaf",
             "Leaf-fall"
         ],
-        "death_text": "m_c couldn't speak, yell for help, or beg StarClan to give {PRONOUN/m_c/subject} a sign they were still with {PRONOUN/m_c/object}, {PRONOUN/m_c/poss} tongue having swelled up inside {PRONOUN/m_c/poss} dried mouth. As m_c collapses, feeling {PRONOUN/m_c/poss} body internally shut down because of dehydration and heat exhaustion, {PRONOUN/m_c/subject} pray that {PRONOUN/m_c/poss} companions locate m_c's body before {PRONOUN/m_c/subject} become unrecognizable under the sun.",
+        "death_text": "m_c couldn't speak, yell for help, or beg the stars to give {PRONOUN/m_c/subject} a sign they were still with {PRONOUN/m_c/object}, {PRONOUN/m_c/poss} tongue having swelled up inside {PRONOUN/m_c/poss} dried mouth. As m_c collapses, feeling {PRONOUN/m_c/poss} body internally shut down because of dehydration and heat exhaustion, {PRONOUN/m_c/subject} pray that {PRONOUN/m_c/poss} companions locate m_c's body before {PRONOUN/m_c/subject} become unrecognizable under the sun.",
         "history_text": {
                         "reg_death": "m_c was claimed by dehydration and heat exhaustion."
                         },
@@ -127,7 +127,7 @@
          "other_cat",
          "other_cat_parent"
         ],
-        "death_text": "m_c  never meant to meet StarClan this way, rotting away under the sun after fainting from dehydration, heat exhaustion, and overexertion. r_c tragically discovers {PRONOUN/m_c/poss} body, unable to stop {PRONOUN/r_c/poss} desperate wails at the site of {PRONOUN/r_c/poss} child's body.",
+        "death_text": "m_c  never meant to meet the stars this way, rotting away under the sun after fainting from dehydration, heat exhaustion, and overexertion. r_c tragically discovers {PRONOUN/m_c/poss} body, unable to stop {PRONOUN/r_c/poss} desperate wails at the site of {PRONOUN/r_c/poss} child's body.",
         "history_text": {
                      "reg_death": "m_c tragically died due to dehydration and overheating."
                  },

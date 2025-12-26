@@ -70,10 +70,10 @@
   },
   "cold": {
     "body": [
-"Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join StarClan, will so many companions remember {PRONOUN/r_c/object}?"
+"Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join the stars, will so many companions remember {PRONOUN/r_c/object}?"
     ],
     "no_body": [
-	"Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join StarClan, will so many companions remember {PRONOUN/r_c/object}?"
+	"Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join the stars, will so many companions remember {PRONOUN/r_c/object}?"
     ]
   },
   "compassionate": {
@@ -102,18 +102,18 @@
   },
   "insecure": {
     "body": [
-      "Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join StarClan, will so many companions remember {PRONOUN/r_c/object}?"
+      "Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join the stars, will so many companions remember {PRONOUN/r_c/object}?"
     ],
     "no_body": [
-	"Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join StarClan, will so many companions remember {PRONOUN/r_c/object}?"
+	"Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join the stars, will so many companions remember {PRONOUN/r_c/object}?"
     ]
   },
   "lonesome": {
     "body": [
-	"Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join StarClan, will so many companions remember {PRONOUN/r_c/object}?"
+	"Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join the stars, will so many companions remember {PRONOUN/r_c/object}?"
     ],
     "no_body": [
-	"Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join StarClan, will so many companions remember {PRONOUN/r_c/object}?"
+	"Though r_c stays silent while the Clan tells tales of m_c's life, {PRONOUN/r_c/poss} mind is in turmoil. When {PRONOUN/r_c/subject} {VERB/r_c/go/goes} to join the stars, will so many companions remember {PRONOUN/r_c/object}?"
     ]
   },
   "loving": {
