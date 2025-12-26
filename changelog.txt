@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- New LGMMKE-Only menu drawing! :)
 - Now merged with FelGen name lists, replacing outsiders entirely with the single_names.txt list, and adding options (must use one or more, preventions in place to prevent otherwise) for syllable names (FelGen), single names (FelGen/outsider), warrior names (ClanGen), and ancient names (GeneMod/GeneMerge)
 - All "allow to be randomly selected on patrol" settings have been moved to the role settings tab, where they belong.
 - Player characters now forced to be selected on LifeGen patrols, like the date screen.
