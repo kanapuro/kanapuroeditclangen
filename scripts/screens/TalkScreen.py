@@ -1500,7 +1500,7 @@ class TalkScreen(Screens):
                 return False
 
         if "guide" in BLOCK["status"]:
-            if cat.ID not in [game.clan.instructor.ID, game.clan.demon.ID]:
+            if cat.ID not in [game.clan.instructor.ID, game.clan.demon.ID, game.clan.wanderer.ID]:
                 return False
 
         if any(st in possible_statuses for st in BLOCK["status"]):

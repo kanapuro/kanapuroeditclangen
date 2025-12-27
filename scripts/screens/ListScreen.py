@@ -802,6 +802,7 @@ class ListScreen(Screens):
                 the_cat.dead
                 and the_cat.ID != game.clan.instructor.ID
                 and the_cat.ID != game.clan.demon.ID
+                and the_cat.ID != game.clan.wanderer.ID
                 and not the_cat.outside
                 and not the_cat.df
                 and not the_cat.faded
@@ -822,6 +823,7 @@ class ListScreen(Screens):
                 the_cat.dead
                 and the_cat.ID != game.clan.instructor.ID
                 and the_cat.ID != game.clan.demon.ID
+                and the_cat.ID != game.clan.wanderer.ID
                 and the_cat.df
                 and not the_cat.faded
                 and the_cat.moons >= 0
@@ -838,6 +840,7 @@ class ListScreen(Screens):
         for the_cat in Cat.all_cats_list:
             if (
                 the_cat.ID in game.clan.unknown_cats
+                and the_cat.ID != game.clan.wanderer.ID
                 and not the_cat.faded
                 and not the_cat.driven_out
                 and the_cat.moons >= 0

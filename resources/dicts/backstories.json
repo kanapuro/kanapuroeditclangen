@@ -147,7 +147,11 @@
     "newscguide1": "m_c was originally from an ancient group of cats but decided to watch and protect the newly formed c_n.",
     "newscguide2": "Known for {PRONOUN/m_c/poss} unwavering fairness in life, m_c now guides others to the stars, ensuring each spirit finds its rightful place.",
     "newscguide3": "Having sacrificed {PRONOUN/m_c/poss} life to save {PRONOUN/m_c/poss} family, m_c now guides worthy cats to the stars.",
-    "newscguide4": "A peacemaker in life, m_c now unites spirits from the new colonies in the stars."
+    "newscguide4": "A peacemaker in life, m_c now unites spirits from the new colonies in the stars.",
+    "newwandererguide1": "m_c was a wanderer in life and continues {PRONOUN/m_c/poss} journey in the afterlife, guiding lost souls who prefer the freedom of the open road.",
+    "newwandererguide2": "Never bound by colony walls, m_c now watches over those who choose to wander rather than be confined, showing them the way through the wilderness.",
+    "newwandererguide3": "Having lived life on {PRONOUN/m_c/poss} own terms, m_c now guides cats who seek independence and freedom from the constraints of traditional afterlife choices.",
+    "newwandererguide4": "m_c roamed the lands in life and now {PRONOUN/m_c/subject} {VERB/m_c/guide/guides} wandering spirits to find peace beyond the stars and darkness."
   },
   "backstory_display": {
     "clan_founder_backstories": "Colony founder",
@@ -167,7 +171,8 @@
     "dark_forest_kits": "from the Dark Forest",
     "oldstarclan_backstories": "ancient spirit",
     "new_sc_guide_backstories": "ancient spirit",
-    "new_df_guide_backstories": "ancient spirit"
+    "new_df_guide_backstories": "ancient spirit",
+    "new_wanderer_guide_backstories": "ancient spirit"
   },
   "backstory_categories": {
     "dark_forest_kits": [
@@ -190,6 +195,12 @@
       "newdfguide2",
       "newdfguide3",
       "newdfguide4"
+    ],
+    "new_wanderer_guide_backstories": [
+      "newwandererguide1",
+      "newwandererguide2",
+      "newwandererguide3",
+      "newwandererguide4"
     ],
     "dead_cat_backstories": [
       "dead1",

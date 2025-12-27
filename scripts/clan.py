@@ -138,6 +138,8 @@ class Clan:
         # ^^ starclan guide
         self.demon = None
         # ^^ dark forest guide
+        self.wanderer = None
+        # ^^ wanderer guide
         self.followingsc = followingsc
         self.biome = biome
         self.camp_bg = camp_bg
@@ -256,6 +258,20 @@ class Clan:
         self.add_cat(self.demon)
         self.add_to_darkforest(self.demon)
         self.all_clans = []
+        
+        self.wanderer = Cat(status=choice(["apprentice", "mediator apprentice", "medicine cat apprentice", "warrior",
+                                            "medicine cat", "leader", "mediator", "queen", "queen's apprentice", "deputy", "elder"]),
+                            )
+        self.wanderer.outside = True
+        self.wanderer.dead = True
+        self.wanderer.dead_for = randint(20, 200)
+        if self.clan_age == "new":
+            self.wanderer.backstory = choice(BACKSTORIES["backstory_categories"]["new_wanderer_guide_backstories"])
+        else:
+            self.wanderer.backstory = choice(BACKSTORIES["backstory_categories"]["dead_cat_backstories"])
+        self.add_cat(self.wanderer)
+        self.add_to_unknown(self.wanderer)
+        self.all_clans = []
  
         if self.leader.status != "leader":
             self.leader.status_change('leader')
@@ -272,7 +288,8 @@ class Clan:
                     self.medicine_cat and Cat.all_cats[i] != \
                     self.deputy and Cat.all_cats[i] != \
                     self.instructor and Cat.all_cats[i] != \
-                    self.demon and Cat.all_cats[i] != self.focus_cat \
+                    self.demon and Cat.all_cats[i] != \
+                    self.wanderer and Cat.all_cats[i] != self.focus_cat \
                     and not_found:
                 Cat.all_cats[i].example = True
                 self.remove_cat(Cat.all_cats[i].ID)
@@ -817,6 +834,7 @@ class Clan:
             "clans_in_focus": self.clans_in_focus,
             "instructor": self.instructor.ID,
             "demon": self.demon.ID,
+            "wanderer": self.wanderer.ID,
             "reputation": self.reputation,
             "following_starclan": self.followingsc, 
             "mediated": game.mediated,
@@ -1253,6 +1271,18 @@ class Clan:
             game.clan.demon.dead = True
             game.clan.add_cat(game.clan.demon)
             game.clan.demon.df = True
+        
+        # Wanderer Info (Backwards compatible)
+        if "wanderer" in clan_data and clan_data["wanderer"] in Cat.all_cats:
+            game.clan.wanderer = Cat.all_cats[clan_data["wanderer"]]
+            game.clan.add_cat(game.clan.wanderer)
+            game.clan.wanderer.outside = True
+        else:
+            game.clan.wanderer = Cat(
+                status=choice(["warrior", "warrior", "elder"]))
+            game.clan.wanderer.dead = True
+            game.clan.wanderer.outside = True
+            game.clan.add_cat(game.clan.wanderer)
    
         ##Commented this out because I don't know why it's in here twice. If lead/dep/med stuff starts sobbing... ye ##
         # game.clan.leader_lives = leader_lives

@@ -598,7 +598,7 @@ class ProfileScreen(Screens):
                 #     object_id = "#send_ur_button"
                 # else:
                 #     object_id = "#guide_sc_button"
-                    if self.the_cat.ID != game.clan.instructor.ID and self.the_cat.ID != game.clan.demon.ID:
+                    if self.the_cat.ID != game.clan.instructor.ID and self.the_cat.ID != game.clan.demon.ID and self.the_cat.ID != game.clan.wanderer.ID:
                         if event.ui_object_id == "#guide_sc_button":
                             self.the_cat.outside, self.the_cat.exiled = False, False
                             self.the_cat.df = False
@@ -616,19 +616,28 @@ class ProfileScreen(Screens):
                             self.the_cat.thought = "Is wandering aimlessly"
 
 
-                    if self.the_cat.ID == game.clan.demon.ID and game.clan.followingsc == True:
+                    if self.the_cat.ID == game.clan.demon.ID and game.clan.followingsc is not False:
+                        was_starclan = game.clan.followingsc is True
                         game.clan.followingsc = False
-                        for i in game.clan.clan_cats:
-                            clan_cat = Cat.fetch_cat(i)
-                            if clan_cat:
-                                clan_cat.faith-=1
+                        # Only apply faith penalty if switching FROM starclan
+                        if was_starclan:
+                            for i in game.clan.clan_cats:
+                                clan_cat = Cat.fetch_cat(i)
+                                if clan_cat:
+                                    clan_cat.faith-=1
 
-                    elif self.the_cat.ID == game.clan.instructor.ID and not game.clan.followingsc:
+                    elif self.the_cat.ID == game.clan.instructor.ID and game.clan.followingsc is not True:
+                        was_darkforest = game.clan.followingsc is False
                         game.clan.followingsc = True
-                        for i in game.clan.clan_cats:
-                            clan_cat = Cat.fetch_cat(i)
-                            if clan_cat:
-                                clan_cat.faith+=1
+                        # Only apply faith bonus if switching FROM darkforest
+                        if was_darkforest:
+                            for i in game.clan.clan_cats:
+                                clan_cat = Cat.fetch_cat(i)
+                                if clan_cat:
+                                    clan_cat.faith+=1
+                    
+                    elif self.the_cat.ID == game.clan.wanderer.ID and game.clan.followingsc is not None:
+                        game.clan.followingsc = None
 
 
 
@@ -1448,6 +1457,7 @@ class ProfileScreen(Screens):
         # use these attributes to create differing profiles for StarClan cats etc.
         is_sc_instructor = False
         is_df_instructor = False
+        is_wanderer_instructor = False
         if self.the_cat is None:
             return
         if (
@@ -1458,6 +1468,8 @@ class ProfileScreen(Screens):
             is_sc_instructor = True
         elif self.the_cat.dead and game.clan.demon.ID == self.the_cat.ID and self.the_cat.df is True:
             is_df_instructor = True
+        elif self.the_cat.dead and game.clan.wanderer.ID == self.the_cat.ID and self.the_cat.outside is True:
+            is_wanderer_instructor = True
 
         # Info in string
         cat_name = str(self.the_cat.name)
@@ -1479,6 +1491,12 @@ class ProfileScreen(Screens):
                 self.the_cat.df
             else:
                 self.the_cat.thought = "Is picking more " + game.clan.name + "cats to join them"
+        
+        if is_wanderer_instructor:
+            if game.clan.followingsc is None:
+                self.the_cat.thought = "Hello. I guide the wandering cats of " + game.clan.name + "along the open road."
+            else:
+                self.the_cat.thought = "Misses watching over the wanderers of " + game.clan.name
 
         self.profile_elements["cat_name"] = pygame_gui.elements.UITextBox(cat_name,
                                                                         ui_scale(pygame.Rect((50, 280), (-1, 105))),
@@ -4069,6 +4087,16 @@ class ProfileScreen(Screens):
                                                                          ' forest after death.',
                                                           starting_height=2, manager=MANAGER)
                     if not game.clan.followingsc:
+                        self.exile_cat_button.disable()
+
+                elif game.clan.wanderer.ID == self.the_cat.ID:
+                    self.exile_cat_button = UIImageButton(ui_scale(pygame.Rect((578, 450), (172, 46))),
+                                                            "",
+                                                          object_id= "#follow_sc_button",
+                                                          tool_tip_text='Your Clan will become Wanderers'
+                                                                         ' after death.',
+                                                          starting_height=2, manager=MANAGER)
+                    if game.clan.followingsc is None:
                         self.exile_cat_button.disable()
 
                 else:

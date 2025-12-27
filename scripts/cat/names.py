@@ -115,7 +115,7 @@ class Name:
     def _choose_name_type(self):
         """Choose an appropriate name type based on settings and context."""
         # Default to warrior names when no clan/settings exist (e.g., new clan creation)
-        if not game.clan or not hasattr(game.clan, 'clan_settings'):
+        if not game.clan or not hasattr(game.clan, 'clan_settings') or not game.clan.clan_settings:
             return "warrior"
 
         settings = game.clan.clan_settings

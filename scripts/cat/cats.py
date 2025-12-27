@@ -1172,8 +1172,10 @@ class Cat:
                     text = (
                         "They've lost their last life and have travelled to the stars."
                     )
-                else:
+                elif game.clan.followingsc is False:
                     text = "They've lost their last life and have travelled to the darkness."
+                else:
+                    text = "They've lost their last life and have wandered off into the unknown."
         else:
             self.dead = True
             game.just_died.append(self.ID)
@@ -1211,6 +1213,19 @@ class Cat:
                     self.df = False
                     self.history.wrong_placement = True
                     game.clan.add_to_starclan(self)
+                else:
+                    # Wanderer following - 50/50 chance to go wandering or one of the other paths
+                    if randint(0, 1) == 0:
+                        self.outside = True
+                        self.history.wrong_placement = True
+                        game.clan.add_to_unknown(self)
+                    else:
+                        self.df = choice([True, False])
+                        self.history.wrong_placement = True
+                        if self.df:
+                            game.clan.add_to_darkforest(self)
+                        else:
+                            game.clan.add_to_starclan(self)
             else:
                 if game.clan.followingsc is True:
                     self.df = False
@@ -1218,6 +1233,9 @@ class Cat:
                 elif game.clan.followingsc is False:
                     self.df = True
                     game.clan.add_to_darkforest(self)
+                else:
+                    self.outside = True
+                    game.clan.add_to_unknown(self)
         else:
             game.clan.add_to_unknown(self)
         
