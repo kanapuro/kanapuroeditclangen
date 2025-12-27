@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- (Hopefully) Fixed issue causing ancient names to lose the space when saving/loading.
+- Auto-generated outsiders will now have a high chance of being malnourished, a low chance of being starved, and a low chance of neither.
 - Fixed crash related to right clicking on clan screen.
 - Cats on a newly generated colony will have names that align with default settings (warrior-style). Randomly generated names pull from player's name settings. Kits in a litter share naming style, which depends on their parent's naming style.
 - Fixed crash related to accessory tabs on character customization.

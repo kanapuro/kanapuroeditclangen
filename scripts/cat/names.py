@@ -227,10 +227,11 @@ class Name:
         """Generate an ancient-style name (capitalized prefix + space + capitalized suffix)."""
         # Use warrior name generation logic but format as ancient; allow prefix/suffix overrides
         self._generate_warrior_name(prefix, suffix, eyes, color, pelt, biome, tortiepattern, False)
-        # Convert to ancient format: store capitalized suffix without leading spaces
+        # Convert to ancient format: store capitalized suffix WITH a leading space for persistence
         if self.suffix:
             base = self.suffix.strip()
-            self.suffix = base[0].upper() + base[1:]
+            if base:
+                self.suffix = " " + base[0].upper() + base[1:]
             self.specsuffix_hidden = True
     
     def _generate_warrior_name(self, prefix, suffix, eyes, color, pelt, biome, tortiepattern, load_existing_name):
@@ -441,8 +442,11 @@ class Name:
             return f"{self.prefix.strip()}egg"
         # Base formatting
         if self.name_type == "ancient":
-            # Ensure single space between parts
-            return self.prefix.strip() + " " + self.suffix.strip()
+            # Ensure exactly one space between prefix and suffix; suffix should already carry leading space
+            suffix = self.suffix
+            if suffix and not suffix.startswith(" "):
+                suffix = " " + suffix
+            return self.prefix.strip() + (suffix if suffix else "")
         return self.prefix.strip() + self.suffix.strip()
 
 

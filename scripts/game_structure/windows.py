@@ -669,18 +669,26 @@ class ChangeCatName(UIWindow):
                     not in self.the_cat.name.names_dict["special_suffixes"]
                     or self.the_cat.name.specsuffix_hidden
                 ):
-                    self.the_cat.name.suffix = sub(
+                    raw_suffix = sub(
                         r"[^A-Za-z0-9 '\-]+", "", self.suffix_entry_box.get_text()
                     )
+                    # For ancient, ensure leading space is stored for persistence/loading
+                    if self.the_cat.name.name_type == "ancient" and raw_suffix:
+                        if not raw_suffix.startswith(" "):
+                            raw_suffix = " " + raw_suffix
+                    self.the_cat.name.suffix = raw_suffix
                     self.name_changed.show()
                 else:
                     # If the user picked ancient, force special suffix hidden so the typed suffix is applied
                     if self.the_cat.name.name_type == "ancient":
                         self.the_cat.name.specsuffix_hidden = True
                         self.the_cat.specsuffix_hidden = True
-                        self.the_cat.name.suffix = sub(
+                        raw_suffix = sub(
                             r"[^A-Za-z0-9 '\-]+", "", self.suffix_entry_box.get_text()
                         )
+                        if raw_suffix and not raw_suffix.startswith(" "):
+                            raw_suffix = " " + raw_suffix
+                        self.the_cat.name.suffix = raw_suffix
                         self.name_changed.show()
 
                 # If the user used dice to switch types, keep that; else derive ancient if suffix has spaces
@@ -733,7 +741,7 @@ class ChangeCatName(UIWindow):
                 # For ancient, capitalize suffix for display and hide special suffix to allow custom suffix on kits
                 if chosen_type == "ancient" and rolled.suffix:
                     base = rolled.suffix.strip()
-                    rolled.suffix = base[0].upper() + base[1:] if base else base
+                    rolled.suffix = (" " + base[0].upper() + base[1:]) if base else base
                     self.specsuffic_hidden = True
                 else:
                     # Do not alter the user's special-suffix toggle here for warrior

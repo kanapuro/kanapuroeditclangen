@@ -422,6 +422,26 @@ class HandleShortEvents:
                 self.involved_cats.append(cat.ID)
                 self.new_cat_objects.append([cat])
 
+                # Chance split for outsiders that just joined:
+                # 20% starving, 60% malnourished, 20% neither
+                try:
+                    if not cat.dead and not cat.outside:
+                        r = random.random()
+                        if r < 0.20:
+                            cat.get_ill("starving")
+                            if extra_text is None:
+                                extra_text = f"{cat.name} looks starved after joining."
+                            elif extra_text:
+                                extra_text = extra_text + f" {cat.name} looks starved after joining."
+                        elif r < 0.80:
+                            cat.get_ill("malnourished")
+                            if extra_text is None:
+                                extra_text = f"{cat.name} looks malnourished after joining."
+                            elif extra_text:
+                                extra_text = extra_text + f" {cat.name} looks malnourished after joining."
+                except Exception:
+                    pass
+
         # Check to see if any young litters joined with alive parents.
         # If so, see if recovering from birth condition is needed and give the condition
         for sub in self.new_cats:

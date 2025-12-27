@@ -1183,6 +1183,21 @@ class PatrolOutcome:
 
                 cat.pelt.inventory = []
                 # ^^ this stops the multi-cat inventory thing for kittypets joining from patrols!!
+
+                # Chance split for outsiders that just joined:
+                # 20% starving, 60% malnourished, 20% neither
+                try:
+                    if not cat.dead and not cat.outside:
+                        r = random.random()
+                        if r < 0.20:
+                            cat.get_ill("starving")
+                            results.append(f"{cat.name} looks starved after joining.")
+                        elif r < 0.80:
+                            cat.get_ill("malnourished")
+                            results.append(f"{cat.name} looks malnourished after joining.")
+                except Exception:
+                    # Fail-safe: do not break patrol outcome if condition application fails
+                    pass
             
         # Check to see if any young litters joined with alive parents.
         # If so, see if recovering from birth condition is needed
