@@ -4897,6 +4897,16 @@ def create_example_cats():
                 leeway = 5 - (PERMANENT[condition]['moons_until'] + 1)
                 if age > leeway:
                     continue
+                # exclude intersex-exclusive conditions for non-intersex cats
+                intersex_exclusive = [
+                    "excess testosterone",
+                    "aneuploidy",
+                    "testosterone deficiency",
+                    "chimerism",
+                    "mosaicism",
+                ]
+                if game.choose_cats[a].gender != "intersex" and condition in intersex_exclusive:
+                    continue
                 possible_conditions.append(condition)
                 
             if possible_conditions:
@@ -4905,15 +4915,18 @@ def create_example_cats():
                 if PERMANENT[chosen_condition]['congenital'] in ['always', 'sometimes']:
                     born_with = True
 
-                game.choose_cats[a].get_permanent_condition(chosen_condition, born_with)
-                if game.choose_cats[a].permanent_condition[chosen_condition]["moons_until"] == 0:
-                    game.choose_cats[a].permanent_condition[chosen_condition]["moons_until"] = -2
+                added = game.choose_cats[a].get_permanent_condition(chosen_condition, born_with)
+                if added:
+                    cond = game.choose_cats[a].permanent_condition.get(chosen_condition)
+                    if cond and cond.get("moons_until") == 0:
+                        cond["moons_until"] = -2
 
                 # assign scars
-                if chosen_condition in ['lost a leg', 'born without a leg']:
-                    game.choose_cats[a].pelt.scars.append('NOPAW')
-                elif chosen_condition in ['lost their tail', 'born without a tail']:
-                    game.choose_cats[a].pelt.scars.append("NOTAIL")
+                if added:
+                    if chosen_condition in ['lost a leg', 'born without a leg']:
+                        game.choose_cats[a].pelt.scars.append('NOPAW')
+                    elif chosen_condition in ['lost their tail', 'born without a tail']:
+                        game.choose_cats[a].pelt.scars.append("NOTAIL")
         #update_sprite(game.choose_cats[a])
     
 

@@ -15,7 +15,7 @@ pygame.init()
 
 # G A M E
 class Game:
-    max_name_length = 10
+    max_name_length = 30
     # max_events_displayed = 10
     # event_scroll_ct = 0
     # max_allegiance_displayed = 17

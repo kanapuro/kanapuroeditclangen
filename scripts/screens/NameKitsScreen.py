@@ -70,7 +70,7 @@ class NameKitsScreen(Screens):
                         self.selected_details['mentor_name'].kill()
                     name = str(self.selected_cat.name)  # get name
                     if self.selected_cat.name.prefix != "":
-                        if 11 <= len(name):  # check name length
+                        if 30 <= len(name):  # check name length
                             short_name = str(name)[0:9]
                             name = short_name + '...'
                         self.selected_details["mentor_name"] = pygame_gui.elements.ui_label.UILabel(
@@ -293,7 +293,7 @@ class NameKitsScreen(Screens):
 
             self.selected_details["name_entry"].set_allowed_characters(
                 list("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "))
-            self.selected_details["name_entry"].set_text_length_limit(11)
+            self.selected_details["name_entry"].set_text_length_limit(30)
             self.selected_details["clan"] = pygame_gui.elements.UITextBox(
                 "-kit",
                 ui_scale(pygame.Rect((160, 192), (100, 25))),

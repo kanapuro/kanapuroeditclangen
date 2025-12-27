@@ -874,8 +874,8 @@ class ChooseMateScreen(Screens):
             ),
         )
         name = str(self.the_cat.name)  # get name
-        if 11 <= len(name):  # check name length
-            short_name = str(name)[0:9]
+        if 30 <= len(name):  # check name length
+            short_name = str(name)[0:28]
             name = short_name + "..."
         self.current_cat_elements["name"] = pygame_gui.elements.ui_label.UILabel(
             ui_scale(pygame.Rect((65, 115), (120, 30))),
@@ -1038,8 +1038,8 @@ class ChooseMateScreen(Screens):
         )
 
         name = str(self.selected_cat.name)
-        if 11 <= len(name):  # check name length
-            short_name = str(name)[0:9]
+        if 30 <= len(name):  # check name length
+            short_name = str(name)[0:28]
             name = short_name + "..."
         self.selected_cat_elements["name"] = pygame_gui.elements.ui_label.UILabel(
             ui_scale(pygame.Rect((620, 115), (110, 30))),

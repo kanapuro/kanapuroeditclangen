@@ -1045,13 +1045,9 @@ def create_new_cat(
                     born_with = True
 
                     new_cat.get_permanent_condition(chosen_condition, born_with)
-                    if (
-                        new_cat.permanent_condition[chosen_condition]["moons_until"]
-                        == 0
-                    ):
-                        new_cat.permanent_condition[chosen_condition][
-                            "moons_until"
-                        ] = -2
+                    cond = new_cat.permanent_condition.get(chosen_condition)
+                    if cond and cond.get("moons_until") == 0:
+                        cond["moons_until"] = -2
 
                 # assign scars
                 if chosen_condition in ["lost a leg", "born without a leg"]:

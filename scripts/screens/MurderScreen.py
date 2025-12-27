@@ -807,8 +807,8 @@ class MurderScreen(Screens):
             
             name = str(self.cat_to_murder.name)  # get name
 
-            if 17 <= len(name):  # check name length
-                short_name = str(name)[0:15]
+            if 40 <= len(name):  # check name length
+                short_name = str(name)[0:38]
                 name = short_name + '...'
 
             self.victim_name = pygame_gui.elements.ui_label.UILabel(
@@ -2978,8 +2978,8 @@ class MurderScreen(Screens):
                                                                                    manager=MANAGER)
 
             name = str(self.selected_cat.name)  # get name
-            if 17 <= len(name):  # check name length
-                short_name = str(name)[0:15]
+            if 40 <= len(name):  # check name length
+                short_name = str(name)[0:38]
                 name = short_name + '...'
             self.selected_details["victim_name"] = pygame_gui.elements.ui_label.UILabel(
                 ui_scale(pygame.Rect((102, 237), (150, 30))),
@@ -3057,8 +3057,8 @@ class MurderScreen(Screens):
                                                                                    manager=MANAGER)
 
             name = str(self.selected_cat.name)  # get name
-            if 17 <= len(name):  # check name length
-                short_name = str(name)[0:15]
+            if 40 <= len(name):  # check name length
+                short_name = str(name)[0:38]
                 name = short_name + '...'
             self.selected_details["mentor_name"] = pygame_gui.elements.ui_label.UILabel(
                 ui_scale(pygame.Rect((552, 237), (150, 30))),

@@ -1522,7 +1522,7 @@ class PatrolScreen(Screens):
                 # Failsafe, if apprentice or mentor is set to none.
                 if self.app_mentor is not None:
                     name = str(self.app_mentor.name)  # get name
-                    if 10 <= len(name):  # check name length
+                    if 28 <= len(name):  # check name length
                         short_name = name[0:9]
                         name = short_name + ".."
                     self.elements[

@@ -675,7 +675,7 @@ class GiftScreen(Screens):
             )
 
             name = str(self.selected_cat.name)  # get name
-            if 45 <= len(name):  # check name length
+            if 95 <= len(name):  # check name length
                 short_name = str(name)[0:9]
                 name = short_name + '...'
 

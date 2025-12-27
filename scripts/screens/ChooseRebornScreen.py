@@ -404,7 +404,7 @@ class ChooseRebornScreen(Screens):
                 manager=MANAGER)
 
             name = str(self.selected_cat.name)  # get name
-            if 11 <= len(name):  # check name length
+            if 30 <= len(name):  # check name length
                 short_name = str(name)[0:9]
                 name = short_name + '...'
             self.selected_details["mentor_name"] = pygame_gui.elements.ui_label.UILabel(

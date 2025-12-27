@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Generously expanded text limits for naming clans/colonies and cats!
+- Added chosrun.sh so I can test LGMMKE on my shitty "new" chromebook. Make sure to have VSCode closed when you run it. It needs as much memory as it can get. Also loads of settings.json changes for .vscode. I couldn't stand the issues.
 - (Hopefully) Fixed issue causing ancient names to lose the space when saving/loading.
 - Auto-generated outsiders will now have a high chance of being malnourished, a low chance of being starved, and a low chance of neither.
 - Fixed crash related to right clicking on clan screen.
