@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed crash related to right clicking on clan screen.
+- Cats on a newly generated colony will have names that align with default settings (warrior-style). Randomly generated names pull from player's name settings. Kits in a litter share naming style, which depends on their parent's naming style.
 - Fixed crash related to accessory tabs on character customization.
 - Replaced all instances of "unknown residence" and related content with "wanderer"/"wanderers"/"wandering endlessly"/etc.
 - New LGMMKE-Only menu drawing! :)

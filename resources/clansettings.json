@@ -90,6 +90,11 @@
             "Enable syllable-based names",
             "Cats can have names generated from 1-3 syllables (e.g., Kima, Dolu, Bajako). At least one name type must be enabled.",
             false
+        ],
+        "kit_inherit_naming": [
+            "Kits inherit parents' naming style",
+            "Kits of the same litter use one naming style inherited from their parents when enabled.",
+            true
         ]
     },
     "role": {

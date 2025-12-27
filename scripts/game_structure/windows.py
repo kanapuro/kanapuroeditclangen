@@ -595,6 +595,61 @@ class ChangeCatName(UIWindow):
         self.set_blocking(True)
 
     def process_event(self, event):
+        def get_enabled_name_types():
+            settings = getattr(game.clan, "clan_settings", {}) if game.clan else {}
+            enabled = []
+            if settings.get("warrior_names", True):
+                enabled.append("warrior")
+            if settings.get("ancient_names", False):
+                enabled.append("ancient")
+            if settings.get("single_names", False):
+                enabled.append("single")
+            if settings.get("syllable_names", False):
+                enabled.append("syllable")
+            if not enabled:
+                enabled.append("warrior")
+            return enabled
+
+        def roll_name(force_type=None, force_prefix=None, force_suffix=None, keep_suffix=False):
+            """Generate a name honoring settings; can force type/prefix/suffix and optionally keep suffix."""
+            eyes = getattr(self.the_cat.pelt, "eye_colour", None)
+            color = getattr(self.the_cat.pelt, "colour", None)
+            pelt_name = getattr(self.the_cat.pelt, "name", None)
+            tortiepattern = getattr(self.the_cat.pelt, "tortiepattern", None)
+            biome = game.clan.biome if game.clan else None
+
+            n = Name(cat=self.the_cat)
+
+            if force_type and n.name_type != force_type:
+                n.name_type = force_type
+                n.prefix = force_prefix
+                if force_suffix is not None:
+                    n.suffix = force_suffix
+                n.specsuffix_hidden = False
+
+                if force_type == "single":
+                    n._generate_single_name()
+                elif force_type == "syllable":
+                    n._generate_syllable_name()
+                elif force_type == "ancient":
+                    n._generate_ancient_name(eyes, color, pelt_name, biome, tortiepattern, prefix=force_prefix, suffix=force_suffix)
+                else:
+                    n._generate_warrior_name(force_prefix, force_suffix, eyes, color, pelt_name, biome, tortiepattern, False)
+
+            # Ancient names should keep suffix visible/editable here
+            if n.name_type == "ancient":
+                n.specsuffix_hidden = False
+
+            # Optionally keep the provided suffix (used when rolling prefix only for warrior/ancient)
+            if keep_suffix and force_suffix is not None:
+                n.suffix = force_suffix
+                # If we kept an ancient suffix, ensure it's capitalized without leading spaces
+                if n.name_type == "ancient" and n.suffix:
+                    base = n.suffix.strip()
+                    n.suffix = base[0].upper() + base[1:] if base else base
+
+            return n
+
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             if event.ui_element == self.done_button:
                 old_name = str(self.the_cat.name)
@@ -602,11 +657,10 @@ class ChangeCatName(UIWindow):
                 self.the_cat.specsuffix_hidden = self.specsuffic_hidden
                 self.the_cat.name.specsuffix_hidden = self.specsuffic_hidden
 
-                # Note: Prefixes are not allowed be all spaces or empty, but they can have spaces in them.
-                if sub(r"[^A-Za-z0-9 ]+", "", self.prefix_entry_box.get_text()) != "":
-                    self.the_cat.name.prefix = sub(
-                        r"[^A-Za-z0-9 ]+", "", self.prefix_entry_box.get_text()
-                    )
+                # Allow letters, numbers, space, apostrophe, and hyphen in typed names.
+                cleaned_prefix = sub(r"[^A-Za-z0-9 '\-]+", "", self.prefix_entry_box.get_text())
+                if cleaned_prefix.strip() != "":
+                    self.the_cat.name.prefix = cleaned_prefix
 
                 # Suffixes can be empty, if you want. However, don't change the suffix if it's currently being hidden
                 # by a special suffix.
@@ -616,9 +670,24 @@ class ChangeCatName(UIWindow):
                     or self.the_cat.name.specsuffix_hidden
                 ):
                     self.the_cat.name.suffix = sub(
-                        r"[^A-Za-z0-9 ]+", "", self.suffix_entry_box.get_text()
+                        r"[^A-Za-z0-9 '\-]+", "", self.suffix_entry_box.get_text()
                     )
                     self.name_changed.show()
+                else:
+                    # If the user picked ancient, force special suffix hidden so the typed suffix is applied
+                    if self.the_cat.name.name_type == "ancient":
+                        self.the_cat.name.specsuffix_hidden = True
+                        self.the_cat.specsuffix_hidden = True
+                        self.the_cat.name.suffix = sub(
+                            r"[^A-Za-z0-9 '\-]+", "", self.suffix_entry_box.get_text()
+                        )
+                        self.name_changed.show()
+
+                # If the user used dice to switch types, keep that; else derive ancient if suffix has spaces
+                if self.the_cat.name.name_type not in ["warrior", "ancient", "single", "syllable"]:
+                    self.the_cat.name.name_type = "warrior"
+                if " " in self.suffix_entry_box.get_text():
+                    self.the_cat.name.name_type = "ancient"
 
                 if old_name != str(self.the_cat.name):
                     self.name_changed.show()
@@ -627,29 +696,52 @@ class ChangeCatName(UIWindow):
                     self.name_changed.hide()
 
             elif event.ui_element == self.random_prefix:
-                if self.suffix_entry_box.text:
-                    use_suffix = self.suffix_entry_box.text
+                enabled = get_enabled_name_types()
+                chosen_type = random.choice(enabled)
+
+                current_suffix = self.suffix_entry_box.text or self.the_cat.name.suffix
+
+                # Roll respecting the chosen type but always keep the current suffix unchanged
+                rolled = roll_name(force_type=chosen_type, force_suffix=current_suffix, keep_suffix=True)
+
+                self.prefix_entry_box.set_text(rolled.prefix)
+                # Do not change suffix on prefix roll; user controls it separately
+                if chosen_type == "ancient":
+                    base = current_suffix.strip()
+                    formatted_suffix = base[0].upper() + base[1:] if base else base
+                    self.suffix_entry_box.set_text(formatted_suffix)
                 else:
-                    use_suffix = self.the_cat.name.suffix
-                self.prefix_entry_box.set_text(
-                    Name(
-                        None,
-                        use_suffix,
-                        cat=self.the_cat
-                    ).prefix
-                )
+                    self.suffix_entry_box.set_text(current_suffix)
+
+                # If we picked ancient, auto-hide special suffix so custom suffix can apply on kits
+                if chosen_type == "ancient":
+                    self.specsuffic_hidden = True
+                else:
+                    # Preserve user's special-suffix toggle; prefix rolls should not change it
+                    self.specsuffic_hidden = self.specsuffic_hidden
+                # Persist the intended name type for the save click
+                self.the_cat.name.name_type = chosen_type
             elif event.ui_element == self.random_suffix:
-                if self.prefix_entry_box.text:
-                    use_prefix = self.prefix_entry_box.text
+                enabled = [t for t in get_enabled_name_types() if t in ["warrior", "ancient"]]
+                if not enabled:
+                    enabled = ["warrior"]
+                chosen_type = random.choice(enabled)
+
+                use_prefix = self.prefix_entry_box.text if self.prefix_entry_box.text else self.the_cat.name.prefix
+                rolled = roll_name(force_type=chosen_type, force_prefix=use_prefix, force_suffix=None, keep_suffix=False)
+
+                # For ancient, capitalize suffix for display and hide special suffix to allow custom suffix on kits
+                if chosen_type == "ancient" and rolled.suffix:
+                    base = rolled.suffix.strip()
+                    rolled.suffix = base[0].upper() + base[1:] if base else base
+                    self.specsuffic_hidden = True
                 else:
-                    use_prefix = self.the_cat.name.prefix
-                self.suffix_entry_box.set_text(
-                    Name(
-                        use_prefix,
-                        None,
-                        cat=self.the_cat
-                    ).suffix
-                )
+                    # Do not alter the user's special-suffix toggle here for warrior
+                    pass
+
+                self.suffix_entry_box.set_text(rolled.suffix)
+                # Keep the existing prefix entry text; only update suffix/flag
+                self.the_cat.name.name_type = chosen_type
             elif event.ui_element == self.toggle_spec_block_on:
                 self.specsuffic_hidden = True
                 self.suffix_entry_box.enable()

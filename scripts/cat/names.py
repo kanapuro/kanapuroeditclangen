@@ -7,6 +7,7 @@ import os
 import random
 
 import ujson
+from typing import Optional, Tuple
 
 from scripts.game_structure.game_essentials import game
 from scripts.housekeeping.datadir import get_save_dir
@@ -39,9 +40,7 @@ class Name:
             names_dict = ujson.loads(read_file.read())
 
         if os.path.exists(get_save_dir() + "/prefixlist.txt"):
-            with open(
-                str(get_save_dir() + "/prefixlist.txt"), "r", encoding="utf-8"
-            ) as read_file:
+            with open(get_save_dir() + "/prefixlist.txt", "r", encoding="utf-8") as read_file:
                 name_list = read_file.read()
                 if_names = len(name_list)
             if if_names > 0:
@@ -53,39 +52,6 @@ class Name:
                                 names_dict["normal_prefixes"].remove(new_name[1:])
                         else:
                             names_dict["normal_prefixes"].append(new_name)
-
-        if os.path.exists(get_save_dir() + "/suffixlist.txt"):
-            with open(
-                str(get_save_dir() + "/suffixlist.txt"), "r", encoding="utf-8"
-            ) as read_file:
-                name_list = read_file.read()
-                if_names = len(name_list)
-            if if_names > 0:
-                new_names = name_list.split("\n")
-                for new_name in new_names:
-                    if new_name != "":
-                        if new_name.startswith("-"):
-                            while new_name[1:] in names_dict["normal_suffixes"]:
-                                names_dict["normal_suffixes"].remove(new_name[1:])
-                        else:
-                            names_dict["normal_suffixes"].append(new_name)
-
-        if os.path.exists(get_save_dir() + "/specialsuffixes.txt"):
-            with open(
-                str(get_save_dir() + "/specialsuffixes.txt", "r"), encoding="utf-8"
-            ) as read_file:
-                name_list = read_file.read()
-                if_names = len(name_list)
-            if if_names > 0:
-                new_names = name_list.split("\n")
-                for new_name in new_names:
-                    if new_name != "":
-                        if new_name.startswith("-"):
-                            del names_dict["special_suffixes"][new_name[1:]]
-                        elif ":" in new_name:
-                            _tmp = new_name.split(":")
-                            names_dict["special_suffixes"][_tmp[0]] = _tmp[1]
-
     def __init__(
         self,
         prefix=None,
@@ -97,7 +63,7 @@ class Name:
         cat=None,
 
         # LG
-        status=None
+        status=None,
     ):
         self.prefix = prefix
         self.suffix = suffix
@@ -108,12 +74,15 @@ class Name:
 
         # Determine name type for new names
         if not load_existing_name and prefix is None and suffix is None:
-            # Outsider cats (loner, rogue, kittypet) get single names by default
-            if cat and hasattr(cat, 'status') and cat.status in ["rogue", "loner", "kittypet"]:
+            # Outsiders use single names; clan cats follow settings/defaults
+            if self.cat and (
+                getattr(self.cat, 'outside', False)
+                or getattr(self.cat, 'status', None) in ["rogue", "loner", "kittypet"]
+            ):
                 self.name_type = "single"
             else:
                 self.name_type = self._choose_name_type()
-        
+
         # If loading existing name or has prefix/suffix, assume warrior-style
         if load_existing_name or prefix is not None or suffix is not None:
             if prefix is not None and suffix is not None and suffix and " " in suffix:
@@ -138,20 +107,20 @@ class Name:
         elif self.name_type == "syllable":
             self._generate_syllable_name()
         elif self.name_type == "ancient":
-            self._generate_ancient_name(eyes, color, pelt, biome, tortiepattern)
+            self._generate_ancient_name(eyes, color, pelt, biome, tortiepattern, prefix=prefix, suffix=suffix)
         else:  # Default to warrior-style
             self.name_type = "warrior"
             self._generate_warrior_name(prefix, suffix, eyes, color, pelt, biome, tortiepattern, load_existing_name)
 
     def _choose_name_type(self):
-        """Choose a random name type based on enabled settings."""
-        # Get clan settings, or default to warrior names only if no clan exists
+        """Choose an appropriate name type based on settings and context."""
+        # Default to warrior names when no clan/settings exist (e.g., new clan creation)
         if not game.clan or not hasattr(game.clan, 'clan_settings'):
             return "warrior"
-        
+
         settings = game.clan.clan_settings
         enabled_types = []
-        
+
         if settings.get("warrior_names", True):
             enabled_types.append("warrior")
         if settings.get("ancient_names", False):
@@ -160,12 +129,71 @@ class Name:
             enabled_types.append("single")
         if settings.get("syllable_names", False):
             enabled_types.append("syllable")
-        
+
         # Ensure at least one type is enabled (fallback to warrior)
         if not enabled_types:
             return "warrior"
-        
+
+        # Kits: optionally inherit naming style from parents, and keep consistent per litter
+        try:
+            if self.cat and getattr(self.cat, "status", None) in ("newborn", "kitten") and settings.get("kit_inherit_naming", True):
+                # Use Cat.parent1/parent2 directly for a stable litter key
+                p1 = getattr(self.cat, "parent1", None)
+                p2 = getattr(self.cat, "parent2", None)
+                parent_ids = [pid for pid in (p1, p2) if pid]
+
+                litter_key = None
+                if parent_ids:
+                    # Sort to make the key order-independent
+                    if len(parent_ids) == 1:
+                        pid1 = str(parent_ids[0])
+                        pid2 = ""
+                    else:
+                        pid1, pid2 = sorted([str(parent_ids[0]), str(parent_ids[1])])
+                    litter_key = (pid1, pid2)
+
+                inherit_type = None
+                if litter_key is not None:
+                    if not hasattr(Name, "_litter_style_cache"):
+                        Name._litter_style_cache = {}
+                    inherit_type = Name._litter_style_cache.get(litter_key)
+
+                def detect_type(name_str: str) -> str:
+                    if " " in name_str:
+                        return "ancient"
+                    for suf in self.names_dict.get("normal_suffixes", []):
+                        if name_str.lower().endswith(suf.lower()):
+                            return "warrior"
+                    return "single"
+
+                if inherit_type is None and parent_ids:
+                    parent_types = []
+                    for pid in parent_ids:
+                        parent_cat = None
+                        try:
+                            parent_cat = self.cat.__class__.all_cats.get(pid)
+                        except Exception:
+                            parent_cat = None
+                        if parent_cat and getattr(parent_cat, "name", None):
+                            parent_types.append(detect_type(str(parent_cat.name)))
+
+                    if parent_types:
+                        if "warrior" in parent_types:
+                            inherit_type = "warrior"
+                        else:
+                            inherit_type = parent_types[0]
+
+                    if litter_key is not None and inherit_type is not None:
+                        Name._litter_style_cache[litter_key] = inherit_type
+
+                if inherit_type in enabled_types:
+                    return inherit_type
+        except Exception:
+            pass
+
         return random.choice(enabled_types)
+
+    
     
     def _generate_single_name(self):
         """Generate a single-word name from the curated list."""
@@ -195,13 +223,14 @@ class Name:
             self.name_type = "warrior"
             self._generate_warrior_name(None, None, None, None, None, None, None, False)
     
-    def _generate_ancient_name(self, eyes, color, pelt, biome, tortiepattern):
+    def _generate_ancient_name(self, eyes, color, pelt, biome, tortiepattern, prefix=None, suffix=None):
         """Generate an ancient-style name (capitalized prefix + space + capitalized suffix)."""
-        # Use warrior name generation logic but format as ancient
-        self._generate_warrior_name(None, None, eyes, color, pelt, biome, tortiepattern, False)
-        # Convert to ancient format: capitalize suffix and add space
+        # Use warrior name generation logic but format as ancient; allow prefix/suffix overrides
+        self._generate_warrior_name(prefix, suffix, eyes, color, pelt, biome, tortiepattern, False)
+        # Convert to ancient format: store capitalized suffix without leading spaces
         if self.suffix:
-            self.suffix = " " + self.suffix[0].upper() + self.suffix[1:]
+            base = self.suffix.strip()
+            self.suffix = base[0].upper() + base[1:]
             self.specsuffix_hidden = True
     
     def _generate_warrior_name(self, prefix, suffix, eyes, color, pelt, biome, tortiepattern, load_existing_name):
@@ -317,9 +346,9 @@ class Name:
             and possible_prefix_categories
         ):
             prefix_category = random.choice(possible_prefix_categories)
-            self.prefix = random.choice(prefix_category)
+            self.prefix = random.choice(prefix_category).strip()
         else:
-            self.prefix = random.choice(self.names_dict["normal_prefixes"])
+            self.prefix = random.choice(self.names_dict["normal_prefixes"]).strip()
 
         # This thing prevents any prefix duplications from happening.
         # Try statement stops this form running when initializing.
@@ -341,7 +370,7 @@ class Name:
     def give_suffix(self, pelt, biome, tortiepattern):
         """Generate possible suffix."""
         if pelt is None or pelt == "SingleColour":
-            self.suffix = random.choice(self.names_dict["normal_suffixes"])
+            self.suffix = random.choice(self.names_dict["normal_suffixes"]).strip()
         else:
             named_after_pelt = not random.getrandbits(2)  # Chance for True is '1/8'.
             named_after_biome = not random.getrandbits(3)  # 1/8
@@ -353,25 +382,25 @@ class Name:
                 ):
                     self.suffix = random.choice(
                         self.names_dict["tortie_pelt_suffixes"][tortiepattern]
-                    )
+                    ).strip()
                 elif pelt in self.names_dict["pelt_suffixes"]:
-                    self.suffix = random.choice(self.names_dict["pelt_suffixes"][pelt])
+                    self.suffix = random.choice(self.names_dict["pelt_suffixes"][pelt]).strip()
                 else:
-                    self.suffix = random.choice(self.names_dict["normal_suffixes"])
+                    self.suffix = random.choice(self.names_dict["normal_suffixes"]).strip()
             elif named_after_biome:
                 if biome in self.names_dict["biome_suffixes"]:
                     self.suffix = random.choice(
                         self.names_dict["biome_suffixes"][biome]
-                    )
+                    ).strip()
                 else:
-                    self.suffix = random.choice(self.names_dict["normal_suffixes"])
+                    self.suffix = random.choice(self.names_dict["normal_suffixes"]).strip()
             else:
-                self.suffix = random.choice(self.names_dict["normal_suffixes"])
+                self.suffix = random.choice(self.names_dict["normal_suffixes"]).strip()
 
     def __repr__(self):
-        # For single and syllable names, return just the prefix (suffix is empty)
+        # For single and syllable names, return just the trimmed prefix
         if self.name_type in ["single", "syllable"]:
-            return self.prefix
+            return self.prefix.strip()
         
         # Handles predefined suffixes (such as newborns being kit),
         # then suffixes based on ages (fixes #2004, just trust me)
@@ -396,9 +425,9 @@ class Name:
                 if adjusted_status != "warrior" and not self.specsuffix_hidden:
                     # For ancient names, maintain the space format
                     if self.name_type == "ancient":
-                        return self.prefix + " " + self.names_dict["special_suffixes"][adjusted_status]
+                        return self.prefix.strip() + " " + self.names_dict["special_suffixes"][adjusted_status]
                     return (
-                        self.prefix + self.names_dict["special_suffixes"][adjusted_status]
+                        self.prefix.strip() + self.names_dict["special_suffixes"][adjusted_status]
                     )
             if (
                 self.cat.status in self.names_dict["special_suffixes"]
@@ -406,11 +435,15 @@ class Name:
             ):
                 # For ancient names, maintain the space format
                 if self.name_type == "ancient":
-                    return self.prefix + " " + self.names_dict["special_suffixes"][self.cat.status]
-                return self.prefix + self.names_dict["special_suffixes"][self.cat.status]
+                    return self.prefix.strip() + " " + self.names_dict["special_suffixes"][self.cat.status]
+                return self.prefix.strip() + self.names_dict["special_suffixes"][self.cat.status]
         if game.config["fun"]["april_fools"]:
-            return f"{self.prefix}egg"
-        return self.prefix + self.suffix
+            return f"{self.prefix.strip()}egg"
+        # Base formatting
+        if self.name_type == "ancient":
+            # Ensure single space between parts
+            return self.prefix.strip() + " " + self.suffix.strip()
+        return self.prefix.strip() + self.suffix.strip()
 
 
 names = Name()

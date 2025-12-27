@@ -143,6 +143,11 @@ class ClanScreen(Screens):
                         continue
                     if c.dead or not c.in_camp or c.exiled or c.outside:
                         continue
+                    # Skip cats without a valid placement to avoid crashes
+                    if not hasattr(c, "placement") or c.placement is None:
+                        continue
+                    if not isinstance(c.placement, (list, tuple)) or len(c.placement) != 2:
+                        continue
                     base_rect = pygame.Rect(tuple(c.placement), (50, 50))
                     scaled_rect = ui_scale(base_rect)
                     scaled_rect.x += offx
