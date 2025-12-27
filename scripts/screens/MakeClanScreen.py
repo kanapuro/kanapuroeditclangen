@@ -2868,7 +2868,11 @@ class MakeClanScreen(Screens):
                 searched = self.search_text
                 if searched not in ["", "search"]:
                     for acc in acc_list:
-                        if searched in str(self.ACC_DISPLAY[acc]["default"]).lower() or searched in acc.lower():
+                        display_entry = self.ACC_DISPLAY.get(acc)
+                        default_name = (
+                            str(display_entry.get("default")) if isinstance(display_entry, dict) else acc
+                        )
+                        if searched in default_name.lower() or searched in acc.lower():
                             new_acc_list.append(acc)
                 else:
                     new_acc_list = acc_list
