@@ -1,0 +1,7 @@
+- genemod
+- reincarnation lifegen mod
+- lifegen infection mod
+- dadm? ik some of it weird
+- dnd
+- leader update: by default leaders do not ascend to leaderhood until the player directs it, and the player can select which type of leadership to have: one-life or nine-life. there are options to automate this, with subsettings for if you want automated one-life or nine-life. there can also be multiple leaders, although your first leader is your "primary" leader until they die or step down, which then makes the next leader in line the primary one. if there are no leaders, it defaults to previous behavior (deputy becomes leader). extra leaders are manually set and do not generate automatically.
+- horn/antler accessories!!!!!!!! yay!!!!!!!!!!!
