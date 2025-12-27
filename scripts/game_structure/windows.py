@@ -480,6 +480,7 @@ class ChangeCatName(UIWindow):
         )
 
         self.specsuffic_hidden = self.the_cat.name.specsuffix_hidden
+        self.pending_name_type = None  # Track dice-chosen type without modifying cat until Done
 
         self.heading = pygame_gui.elements.UITextBox(
             f"-Change {self.the_cat.name}'s Name-",
@@ -704,8 +705,10 @@ class ChangeCatName(UIWindow):
                         self.the_cat.name.suffix = raw_suffix
                         self.name_changed.show()
 
-                # If the user used dice to switch types, keep that; else derive ancient if suffix has spaces
-                if self.the_cat.name.name_type not in ["warrior", "ancient", "single", "syllable"]:
+                # Apply pending name type from dice; else derive ancient if suffix has spaces
+                if self.pending_name_type:
+                    self.the_cat.name.name_type = self.pending_name_type
+                elif self.the_cat.name.name_type not in ["warrior", "ancient", "single", "syllable"]:
                     self.the_cat.name.name_type = "warrior"
                 if " " in self.suffix_entry_box.get_text():
                     self.the_cat.name.name_type = "ancient"
@@ -741,8 +744,8 @@ class ChangeCatName(UIWindow):
                 else:
                     # Preserve user's special-suffix toggle; prefix rolls should not change it
                     self.specsuffic_hidden = self.specsuffic_hidden
-                # Persist the intended name type for the save click
-                self.the_cat.name.name_type = chosen_type
+                # Track the intended name type for the save click (don't modify cat until Done)
+                self.pending_name_type = chosen_type
             elif event.ui_element == self.random_suffix:
                 enabled = [t for t in get_enabled_name_types() if t in ["warrior", "ancient"]]
                 if not enabled:
@@ -763,8 +766,8 @@ class ChangeCatName(UIWindow):
                     pass
 
                 self.suffix_entry_box.set_text(rolled.suffix)
-                # Keep the existing prefix entry text; only update suffix/flag
-                self.the_cat.name.name_type = chosen_type
+                # Track the intended name type for the save click (don't modify cat until Done)
+                self.pending_name_type = chosen_type
             elif event.ui_element == self.toggle_spec_block_on:
                 self.specsuffic_hidden = True
                 self.suffix_entry_box.enable()
