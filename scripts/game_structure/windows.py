@@ -648,6 +648,19 @@ class ChangeCatName(UIWindow):
                     base = n.suffix.strip()
                     n.suffix = base[0].upper() + base[1:] if base else base
 
+            # Ensure non-empty suffix for warrior/ancient dice outcomes
+            if n.name_type in ("warrior", "ancient"):
+                if not n.suffix or str(n.suffix).strip() == "":
+                    try:
+                        fallback = random.choice(Name.names_dict.get("normal_suffixes", []))
+                    except Exception:
+                        fallback = None
+                    if fallback:
+                        if n.name_type == "ancient":
+                            n.suffix = fallback[0].upper() + fallback[1:]
+                        else:
+                            n.suffix = fallback
+
             return n
 
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
@@ -716,7 +729,8 @@ class ChangeCatName(UIWindow):
                 # Do not change suffix on prefix roll; user controls it separately
                 if chosen_type == "ancient":
                     base = current_suffix.strip()
-                    formatted_suffix = base[0].upper() + base[1:] if base else base
+                    # Display ancient with leading space for parity; save handler will persist it
+                    formatted_suffix = (" " + base[0].upper() + base[1:]) if base else base
                     self.suffix_entry_box.set_text(formatted_suffix)
                 else:
                     self.suffix_entry_box.set_text(current_suffix)
@@ -741,6 +755,7 @@ class ChangeCatName(UIWindow):
                 # For ancient, capitalize suffix for display and hide special suffix to allow custom suffix on kits
                 if chosen_type == "ancient" and rolled.suffix:
                     base = rolled.suffix.strip()
+                    # Display ancient with leading space for parity; save handler will persist it
                     rolled.suffix = (" " + base[0].upper() + base[1:]) if base else base
                     self.specsuffic_hidden = True
                 else:

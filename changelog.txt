@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Resolved a handful of name generation/UI issues related to previous ancient name randomization.
 - Generously expanded text limits for naming clans/colonies and cats!
 - Added chosrun.sh so I can test LGMMKE on my shitty "new" chromebook. Make sure to have VSCode closed when you run it. It needs as much memory as it can get. Also loads of settings.json changes for .vscode. I couldn't stand the issues.
 - (Hopefully) Fixed issue causing ancient names to lose the space when saving/loading.
