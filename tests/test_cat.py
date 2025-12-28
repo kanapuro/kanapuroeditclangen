@@ -509,7 +509,7 @@ class TestNameRepr(unittest.TestCase):
         :return:
         """
         outsider_statuses = ["loner", "rogue", "kittypet"]
-        ex_clancat_statuses = ["former Clancat", "exiled"]
+        ex_clancat_statuses = ["former colonycat", "exiled"]
 
         age_suffix = [[0, "kit"], [1, "kit"], [6, "paw"], [14, "test"]]
 
@@ -533,7 +533,7 @@ class TestNameRepr(unittest.TestCase):
         :return:
         """
         outsider_statuses = ["loner", "rogue", "kittypet"]
-        ex_clancat_statuses = ["former Clancat", "exiled"]
+        ex_clancat_statuses = ["former colonycat", "exiled"]
 
         age_suffix = [[0, "kit"], [1, "kit"], [6, "paw"], [14, "test"]]
 

@@ -137,7 +137,15 @@ class ListScreen(Screens):
                     element.change_object_id("#show_living_button")
                     element.tool_tip_text = "view cats in the living world"
                     self.death_status = "dead"
-                    self.get_sc_cats()
+                    # Default to clan's current guide instead of always Starclan
+                    if game.clan.followingsc is True:
+                        self.get_sc_cats()
+                    elif game.clan.followingsc is False:
+                        self.get_df_cats()
+                    elif game.clan.followingsc is None:
+                        self.get_ur_cats()
+                    else:
+                        self.get_sc_cats()
                 else:
                     element.change_object_id("#show_dead_button")
                     element.tool_tip_text = "view cats in the afterlife"
@@ -628,7 +636,11 @@ class ListScreen(Screens):
 
         # adding in the guide if necessary, this ensures the guide isn't affected by sorting as we always want them to
         # be the first cat on the list
-        if (self.current_group == "df" and game.clan.instructor.df) or (
+        if self.current_group == "ur":
+            if game.clan.wanderer in self.full_cat_list:
+                self.full_cat_list.remove(game.clan.wanderer)
+            self.full_cat_list.insert(0, game.clan.wanderer)
+        elif (self.current_group == "df" and game.clan.instructor.df) or (
             self.current_group == "sc" and not game.clan.instructor.df
         ):
             if game.clan.instructor in self.full_cat_list:
@@ -800,9 +812,6 @@ class ListScreen(Screens):
         for the_cat in Cat.all_cats_list:
             if (
                 the_cat.dead
-                and the_cat.ID != game.clan.instructor.ID
-                and the_cat.ID != game.clan.demon.ID
-                and the_cat.ID != game.clan.wanderer.ID
                 and not the_cat.outside
                 and not the_cat.df
                 and not the_cat.faded
@@ -821,9 +830,6 @@ class ListScreen(Screens):
         for the_cat in Cat.all_cats_list:
             if (
                 the_cat.dead
-                and the_cat.ID != game.clan.instructor.ID
-                and the_cat.ID != game.clan.demon.ID
-                and the_cat.ID != game.clan.wanderer.ID
                 and the_cat.df
                 and not the_cat.faded
                 and the_cat.moons >= 0
@@ -840,7 +846,6 @@ class ListScreen(Screens):
         for the_cat in Cat.all_cats_list:
             if (
                 the_cat.ID in game.clan.unknown_cats
-                and the_cat.ID != game.clan.wanderer.ID
                 and not the_cat.faded
                 and not the_cat.driven_out
                 and the_cat.moons >= 0

@@ -43,9 +43,9 @@ class NewCatEvents:
                 outside_cat = NewCatEvents.update_cat_properties(outside_cat)
                 event_text = f"A {backstory} named {outside_cat.name} waits on the border, asking to join the Clan."
                 name_change = random.choice([1, 2])
-                if name_change == 1 or backstory == 'former Clancat':
+                if name_change == 1 or backstory == 'former colonycat':
                     event_text = event_text + f" They decide to keep their name."
-                elif name_change == 2 and backstory != 'former Clancat':
+                elif name_change == 2 and backstory != 'former colonycat':
                     outside_cat.name = Name(status=outside_cat.status, cat=outside_cat)
                     event_text = event_text + f" They decide to take a new name, {outside_cat.name}."
                 outside_cat.thought = "Is looking around the camp with wonder"
@@ -271,12 +271,12 @@ class NewCatEvents:
 
     @staticmethod
     def has_outside_cat():
-        outside_cats = [i for i in Cat.all_cats.values() if i.status in ["kittypet", "loner", "rogue", "former Clancat"] and not i.dead and i.outside]
+        outside_cats = [i for i in Cat.all_cats.values() if i.status in ["kittypet", "loner", "rogue", "former colonycat"] and not i.dead and i.outside]
         return any(outside_cats)
 
     @staticmethod
     def select_outside_cat():
-        outside_cats = [i for i in Cat.all_cats.values() if i.status in ["kittypet", "loner", "rogue", "former Clancat"] and not i.dead and i.outside]
+        outside_cats = [i for i in Cat.all_cats.values() if i.status in ["kittypet", "loner", "rogue", "former colonycat"] and not i.dead and i.outside]
         if outside_cats:
             return random.choice(outside_cats)
         else:

@@ -1152,7 +1152,7 @@ class GenerateEvents:
                         "loner",
                         "rogue",
                         "kittypet",
-                        "former Clancat",
+                        "former colonycat",
                         "exiled",
                     ]:
                         if "lost" not in cat_info["status"]:

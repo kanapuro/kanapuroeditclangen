@@ -1690,7 +1690,7 @@ class Events:
                                 "kittypet",
                                 "loner",
                                 "rogue",
-                                "former clancat",
+                                "former colonycat",
                                 "exiled",
                             ]:
                                 if (
@@ -2228,7 +2228,7 @@ class Events:
                         "kittypet",
                         "loner",
                         "rogue",
-                        "former Clancat",
+                        "former colonycat",
                         "driven off",
                     ]
                     and not cat.exiled
@@ -2411,7 +2411,7 @@ class Events:
             if cat.forgiven >= game.config["shunned_cat"]["max_forgiven_moons"] + 1:
                 cat.forgiven = 0
         
-        if cat.shunned > 0 and cat.status != "former Clancat":
+        if cat.shunned > 0 and cat.status != "former colonycat":
             cat.shunned += 1
             if cat.shunned >3:
                 exilechance = random.randint(1,15)
@@ -4032,7 +4032,7 @@ class Events:
                 # exile/runaway
                 if not int(random.random() * 10) and cat.ID != game.clan.your_cat.ID:
                     game.clan.add_to_outside(cat)
-                    cat.status_change("former Clancat")
+                    cat.status_change("former colonycat")
                     text = f"{cat.name} runs away in the middle of the night, sick of being treated so terribly."
                 else:
                     cat.exile()

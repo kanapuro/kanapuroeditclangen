@@ -64,6 +64,10 @@ def json_load():
             elif cat["favourite"] is True:
                 cat["favourite"] = 1
 
+            # Migrate old "former clancat" status to "former colonycat"
+            if cat["status"] == "former clancat":
+                cat["status"] = "former colonycat"
+
             # moving clangen accs over to accessories + inventory
             if "accessories" not in cat:
                 cat["accessories"] = []

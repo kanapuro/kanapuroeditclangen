@@ -59,7 +59,7 @@ class Clan:
         "queen",
         "general",
         "exiled",
-        "former Clancat"
+        "former colonycat"
     ]
     
 

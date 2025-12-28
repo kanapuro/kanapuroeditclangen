@@ -279,7 +279,7 @@
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
-      "status": ["rogue", "loner", "former Clancat", "exiled"],
+      "status": ["rogue", "loner", "former colonycat", "exiled"],
       "age": ["adolescent", "young adult", "adult", "senior adult"],
       "trait": [
         "cunning",
@@ -294,7 +294,7 @@
     "reputation": ["any"],
     "rep_change": -7,
     "m_c": {
-      "status": ["rogue", "loner", "kittypet", "former Clancat", "exiled"],
+      "status": ["rogue", "loner", "kittypet", "former colonycat", "exiled"],
       "age": ["adolescent", "young adult", "adult", "senior adult"],
       "skill": [
         "MEDIATOR,1"
@@ -518,7 +518,7 @@
     "reputation": ["any"],
     "rep_change": -10,
     "m_c": {
-      "status": ["loner", "kittypet", "rogue", "exiled", "former Clancat"],
+      "status": ["loner", "kittypet", "rogue", "exiled", "former colonycat"],
       "age": ["adolescent", "young adult", "adult", "senior adult"],
       "skill": [
         "RUNNER,1"
@@ -820,7 +820,7 @@
     "reputation": ["any"],
     "rep_change": -3,
     "m_c": {
-      "status": ["rogue", "kittypet", "loner", "former Clancat", "exiled" ],
+      "status": ["rogue", "kittypet", "loner", "former colonycat", "exiled" ],
       "trait": [ "fierce", "bloodthirsty", "vengeful", "competitive", "arrogant", "ambitious", "bold", "shameless" ],
       "new_thought": "Curses c_n",
       "kit_thought": "Wonders what happened to m_c"
@@ -861,7 +861,7 @@
     "reputation": ["any"],
     "rep_change": 3,
     "m_c": {
-      "status": ["rogue", "kittypet", "loner", "former Clancat" ],
+      "status": ["rogue", "kittypet", "loner", "former colonycat" ],
       "trait": [ "cunning", "sneaky", "careful" ],
       "new_thought": "Is impressed c_n managed to find {PRONOUN/m_c/object}",
       "kit_thought": "Takes in the new surroundings with wide eyes"
@@ -873,7 +873,7 @@
     "reputation": ["hostile"],
     "rep_change": 3,
     "m_c": {
-      "status": ["rogue", "kittypet", "loner", "former Clancat" ],
+      "status": ["rogue", "kittypet", "loner", "former colonycat" ],
       "trait": [ "oblivious" ],
       "new_thought": "Feels very comfortable with {PRONOUN/m_c/poss} choice to join c_n",
       "kit_thought": "Takes in the new surroundings with wide eyes"
@@ -930,7 +930,7 @@
     "reputation": ["any"],
     "rep_change": 1,
     "m_c": {
-      "status": ["former Clancat"],
+      "status": ["former colonycat"],
       "new_thought": "Readjusts to Clan life",
       "kit_thought": "Is learning the truth behind all the stories"
     }
@@ -941,7 +941,7 @@
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
-      "status": ["former Clancat"],
+      "status": ["former colonycat"],
       "kit_thought": "Wonders where m_c has gone"
     }
   },
@@ -951,7 +951,7 @@
     "reputation": ["any"],
     "rep_change": -3,
     "m_c": {
-      "status": ["former Clancat"],
+      "status": ["former colonycat"],
       "new_thought": "Thinks bitterly of {PRONOUN/m_c/poss} old Clan, wishing it had protected {PRONOUN/m_c/object}",
       "kit_thought": "Wonders where m_c has gone"
     }

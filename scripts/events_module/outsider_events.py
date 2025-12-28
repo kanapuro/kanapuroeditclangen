@@ -27,7 +27,7 @@ class OutsiderEvents:
                 death_history = "m_c died outside of the Clan."
                 if cat.exiled:
                     text = f'Rumors reach your Clan that the exiled {cat.name} has died recently.'
-                elif cat.status in ['kittypet', 'loner', 'rogue', 'former Clancat']:
+                elif cat.status in ['kittypet', 'loner', 'rogue', 'former colonycat']:
                     text = f'Rumors reach your Clan that the {cat.status} ' \
                            f'{cat.name} has died recently.'
                     death_history = "m_c died while roaming around."

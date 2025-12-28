@@ -939,9 +939,9 @@ class PatrolOutcome():
         elif "loner" in attribute_list:
             cat_type = "loner"
         elif "clancat" in attribute_list:
-            cat_type = "former Clancat"
+            cat_type = "former colonycat"
         else:
-            cat_type = choice(['kittypet', 'loner', 'former Clancat'])
+            cat_type = choice(['kittypet', 'loner', 'former colonycat'])
         
         # LITTER
         litter = False
@@ -953,12 +953,12 @@ class PatrolOutcome():
         # CHOOSE DEFAULT BACKSTORY BASED ON CAT TYPE, STATUS.
         if status in ("kitten", "newborn"):
             chosen_backstory = choice(BACKSTORIES["backstory_categories"]["abandoned_backstories"])
-        elif status == "medicine cat" and cat_type == "former Clancat":
+        elif status == "medicine cat" and cat_type == "former colonycat":
             chosen_backstory = choice(["medicine_cat", "disgraced1"])
         elif status == "medicine cat":
             chosen_backstory = choice(["wandering_healer1", "wandering_healer2"])
         else:
-            if cat_type == "former Clancat":
+            if cat_type == "former colonycat":
                 x = "former_clancat"
             else:
                 x = cat_type
@@ -1000,7 +1000,7 @@ class PatrolOutcome():
                                 new_name=new_name,
                                 loner=cat_type in ["loner", "rogue"],
                                 kittypet=cat_type == "kittypet",
-                                other_clan=cat_type == 'former Clancat',
+                                other_clan=cat_type == 'former colonycat',
                                 kit=False if litter else status in ["kitten", "newborn"],  # this is for singular kits, litters need this to be false
                                 litter=litter,
                                 backstory=chosen_backstory,

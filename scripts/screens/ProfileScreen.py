@@ -125,8 +125,8 @@ def bs_blurb_text(cat):
     backstory = cat.backstory
     backstory_text = BACKSTORIES["backstories"][backstory]
 
-    if cat.status in ["kittypet", "loner", "rogue", "former Clancat"]:
-        return f"This cat is a {cat.status} and currently resides outside of the Clans."
+    if cat.status in ["kittypet", "loner", "rogue", "former colonycat"]:
+        return f"This cat is a {cat.status} and currently resides outside of the colonies."
 
     return backstory_text
 
@@ -1481,22 +1481,21 @@ class ProfileScreen(Screens):
         if is_sc_instructor:
 
             if game.clan.followingsc == True:
-                self.the_cat.thought = "Hello. I will be guiding the cats of " + game.clan.name + "into the stars."
+                self.the_cat.thought = "Hello. I will be guiding the cats of " + game.clan.name + " into the stars."
             else:
                 self.the_cat.thought = "Misses watching over " + game.clan.name
 
         if is_df_instructor:
-            if game.clan.followingsc == True:
-                self.the_cat.thought = "Hello. I am here to drag the cats of " + game.clan.name + "into the darkness"
-                self.the_cat.df
+            if game.clan.followingsc == False:
+                self.the_cat.thought = "Hello. I am here to drag the cats of " + game.clan.name + " into the darkness"
             else:
-                self.the_cat.thought = "Is picking more " + game.clan.name + "cats to join them"
+                self.the_cat.thought = "Is picking more " + game.clan.name + " cats to join them"
         
         if is_wanderer_instructor:
             if game.clan.followingsc is None:
-                self.the_cat.thought = "Hello. I guide the wandering cats of " + game.clan.name + "along the open road."
+                self.the_cat.thought = "Hello. I guide the wandering cats of " + game.clan.name + " along the open road."
             else:
-                self.the_cat.thought = "Misses watching over the wanderers of " + game.clan.name
+                self.the_cat.thought = "Lingers among the cats of " + game.clan.name
 
         self.profile_elements["cat_name"] = pygame_gui.elements.UITextBox(cat_name,
                                                                         ui_scale(pygame.Rect((50, 280), (-1, 105))),
@@ -1869,7 +1868,7 @@ class ProfileScreen(Screens):
                 self.placeholder_tab_3.enable()
 
         if self.the_cat.ID == game.clan.your_cat.ID:
-            if not self.the_cat.dead and self.the_cat.exiled or self.the_cat.status == 'former_Clancat':
+            if not self.the_cat.dead and self.the_cat.exiled or self.the_cat.status == 'former colonycat':
                 if game.clan.exile_return:
                     self.exile_return_button.disable()
                 else:
@@ -2175,7 +2174,7 @@ class ProfileScreen(Screens):
 
         # STATUS
         if the_cat.outside and not (the_cat.exiled or the_cat.df) and the_cat.status not in ['kittypet', 'loner', 'rogue',
-            'former Clancat'] and not the_cat.dead:
+            'former colonycat'] and not the_cat.dead:
             output += "<font color='#FF0000'>lost</font>"
         elif the_cat.exiled:
             output += "<font color='#FF0000'>exiled</font>"
@@ -2335,7 +2334,7 @@ class ProfileScreen(Screens):
 
         # BACKSTORY
         bs_text = "this should not appear"
-        if the_cat.status in ["kittypet", "loner", "rogue", "former Clancat"]:
+        if the_cat.status in ["kittypet", "loner", "rogue", "former colonycat"]:
             bs_text = the_cat.status
         else:
             if the_cat.backstory:
@@ -2363,7 +2362,7 @@ class ProfileScreen(Screens):
                 "loner",
                 "kittypet",
                 "rogue",
-                "former Clancat",
+                "former colonycat",
                 "exiled",
             ]:
                 nutr = None
@@ -2633,11 +2632,11 @@ class ProfileScreen(Screens):
         if self.the_cat.backstory:
             bs_blurb = BACKSTORIES["backstories"][self.the_cat.backstory]
         if (
-            self.the_cat.status in ["kittypet", "loner", "rogue", "former Clancat"]
+            self.the_cat.status in ["kittypet", "loner", "rogue", "former colonycat"]
             and self.the_cat.dead
         ):
             bs_blurb = f"This cat was a {self.the_cat.status} in life."
-        elif self.the_cat.status in ["kittypet", "loner", "rogue", "former Clancat"]:
+        elif self.the_cat.status in ["kittypet", "loner", "rogue", "former colonycat"]:
             bs_blurb = f"This cat is a {self.the_cat.status} and currently resides outside of the Clans."
 
         if bs_blurb is not None:
@@ -2758,7 +2757,7 @@ class ProfileScreen(Screens):
         """
         returns adjusted apprenticeship history text (mentor influence and app ceremony)
         """
-        if self.the_cat.status in ["kittypet", "loner", "rogue", "former Clancat"]:
+        if self.the_cat.status in ["kittypet", "loner", "rogue", "former colonycat"]:
             return ""
 
         mentor_influence = History.get_mentor_influence(self.the_cat)
@@ -4071,29 +4070,29 @@ class ProfileScreen(Screens):
                     self.exile_cat_button = UIImageButton(ui_scale(pygame.Rect((578, 450), (172, 46))),
                                                             "",
                                                           object_id= "#follow_sc_button",
-                                                           tool_tip_text='Your Clan will Ascend'
+                                                           tool_tip_text='Your colony will Ascend'
                                                                          ' after death.',
 
                                                           starting_height=2, manager=MANAGER)
 
-                    if game.clan.followingsc:
+                    if game.clan.followingsc is True:
                         self.exile_cat_button.disable()
 
                 elif game.clan.demon.ID == self.the_cat.ID:
                     self.exile_cat_button = UIImageButton(ui_scale(pygame.Rect((578, 450), (172, 46))),
                                                             "",
                                                           object_id= "#follow_df_button",
-                                                          tool_tip_text='Your Clan will become Parisitic'
-                                                                         ' forest after death.',
+                                                          tool_tip_text='Your colony will become Parisitic'
+                                                                         ' after death.',
                                                           starting_height=2, manager=MANAGER)
-                    if not game.clan.followingsc:
+                    if game.clan.followingsc is False:
                         self.exile_cat_button.disable()
 
                 elif game.clan.wanderer.ID == self.the_cat.ID:
                     self.exile_cat_button = UIImageButton(ui_scale(pygame.Rect((578, 450), (172, 46))),
                                                             "",
                                                           object_id= "#follow_sc_button",
-                                                          tool_tip_text='Your Clan will become Wanderers'
+                                                          tool_tip_text='Your colony will become Wanderers'
                                                                          ' after death.',
                                                           starting_height=2, manager=MANAGER)
                     if game.clan.followingsc is None:

@@ -678,7 +678,7 @@ class TalkScreen(Screens):
                     possible_texts = ujson.loads(read_file.read())
 
             if cat.status in ["rogue", "loner", "kittypet"]:
-                # former clancats only get their own file so we can write general dialogue about not knowing what a clan is
+                # former colonycats only get their own file so we can write general dialogue about not knowing what a clan is
                 with open(f"{self.resource_dir}general_outsider.json", 'r') as read_file:
                     possible_texts4 = ujson.loads(read_file.read())
                     possible_texts.update(possible_texts4)

@@ -1243,7 +1243,7 @@ class Cat:
             self.shunned = 0
 
         if self.exiled:
-            self.status = 'former Clancat'
+            self.status = 'former colonycat'
 
         return
 
@@ -1357,8 +1357,8 @@ class Cat:
                 acceptchance = randint(1,40)
                 killchance = randint(1,10)
 
-        elif you.status in ["loner", "rogue", "kittypet", "former Clancat"]:
-        # can only be former clancat rn but this is just to cover bases 4 the future
+        elif you.status in ["loner", "rogue", "kittypet", "former colonycat"]:
+        # can only be former colonycat rn but this is just to cover bases 4 the future
             if num_victims == 0:
                 acceptchance = randint(1,3)
                 killchance = randint(1,50)

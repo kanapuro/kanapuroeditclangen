@@ -23,7 +23,7 @@
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
-      "status": ["loner", "rogue", "kittypet", "former Clancat"],
+      "status": ["loner", "rogue", "kittypet", "former colonycat"],
       "new_thought": "Heard rumors that a Clan was hunting for {PRONOUN/m_c/object}",
       "relationships": [
         {
@@ -41,7 +41,7 @@
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
-      "status": ["loner", "rogue", "kittypet", "former Clancat"],
+      "status": ["loner", "rogue", "kittypet", "former colonycat"],
       "new_thought": "Heard rumors that a Clan was hunting for {PRONOUN/m_c/object}",
       "relationships": [
         {
@@ -196,7 +196,7 @@
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
-      "status": ["loner", "rogue", "kittypet", "former Clancat"],
+      "status": ["loner", "rogue", "kittypet", "former colonycat"],
       "new_thought": "Heard rumors that a Clan was looking for {PRONOUN/m_c/object}",
       "relationships": [
         {
@@ -214,7 +214,7 @@
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
-      "status": ["loner", "rogue", "kittypet", "former Clancat"],
+      "status": ["loner", "rogue", "kittypet", "former colonycat"],
       "new_thought": "Heard rumors that a Clan was looking for {PRONOUN/m_c/object}",
       "relationships": [
         {
@@ -314,7 +314,7 @@
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
-      "status": ["loner", "rogue", "kittypet", "former Clancat"],
+      "status": ["loner", "rogue", "kittypet", "former colonycat"],
       "new_thought": "Heard rumors that a Clan was looking for {PRONOUN/m_c/object}"
       }
   },
@@ -324,7 +324,7 @@
     "reputation": ["any"],
     "rep_change": -2,
     "m_c": {
-      "status": ["loner", "rogue", "kittypet", "former Clancat"],
+      "status": ["loner", "rogue", "kittypet", "former colonycat"],
       "new_thought": "Heard rumors that a Clan was looking for {PRONOUN/m_c/object}"
     }
   },
@@ -334,7 +334,7 @@
     "reputation": ["any"],
     "rep_change": 1,
     "m_c": {
-      "status": ["former Clancat"],
+      "status": ["former colonycat"],
       "new_thought": "Wonders why c_n would be looking for {PRONOUN/m_c/object}",
       "relationships": [
         {
@@ -380,7 +380,7 @@
     "reputation": ["any"],
     "rep_change": -1,
     "m_c": {
-      "status": ["former Clancat"],
+      "status": ["former colonycat"],
       "new_thought": "Wonders why c_n would be looking for {PRONOUN/m_c/object}",
       "relationships": [
         {
@@ -406,7 +406,7 @@
     "reputation": ["any"],
     "rep_change": -1,
     "m_c": {
-      "status": ["former Clancat"],
+      "status": ["former colonycat"],
       "new_thought": "Wonders why c_n would be looking for {PRONOUN/m_c/object}",
       "relationships": [
         {
@@ -432,7 +432,7 @@
     "reputation": ["hostile"],
     "rep_change": -1,
     "m_c": {
-      "status": ["rogue", "kittypet", "loner", "former Clancat"],
+      "status": ["rogue", "kittypet", "loner", "former colonycat"],
       "skill": [ "GHOST,1" ],
       "new_thought": "Shivers, thanking the spirit that warned {PRONOUN/m_c/object}",
       "relationships": [
@@ -575,7 +575,7 @@
     "reputation": ["any"],
     "rep_change": -1,
     "m_c": {
-      "status": ["loner", "rogue", "kittypet", "former Clancat", "exiled"],
+      "status": ["loner", "rogue", "kittypet", "former colonycat", "exiled"],
       "age": ["adolescent", "young adult", "adult", "senior adult"],
       "skill": [
         "CLAIRVOYANT,1"
