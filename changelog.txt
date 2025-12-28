@@ -1,5 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
-- Replaced all instances of "former clancat" with "former colonycat"... because I felt like it...
+- Replaced all instances of "former clancat" with "former colonycat"... because I felt like it... (Backwards compatible!)
 - Wanderer guides now populate at the top of the list + string/button fixes related to following/religion!
 - Fixed another bug that caused multi-named cats to lose their suffix if you generated a new prefix but didn't press done.
 - Repopulated single_names.txt because somehow only added A-C instead of A-Z...
