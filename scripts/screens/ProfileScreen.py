@@ -3830,42 +3830,25 @@ class ProfileScreen(Screens):
             if "moon" in game.clan.murdered and game.clan.murdered["moon"] == game.clan.age:
                 self.murder_cat_button.disable()
                 
-            # Only show these buttons for the main character
-            if self.the_cat.ID == game.clan.your_cat.ID:
-                print(f"DEBUG: MC dangerous tab: joined_df={game.clan.your_cat.joined_df}, dead={game.clan.your_cat.dead}, outside={game.clan.your_cat.outside}")
-                if game.clan.your_cat.joined_df:
-                    self.exit_df_button = UIImageButton(
-                        ui_scale(pygame.Rect((578, 558), (172, 36))),
-                        "",
-                        object_id="#exit_df_button",
-                        tool_tip_text='Leave the Dark Forest',
-                        starting_height=2, manager=MANAGER
-                    )
-                    self.profile_elements["exit_df_button"] = self.exit_df_button
-                    if hasattr(self, 'join_df_button') and "join_df_button" in self.profile_elements:
-                        del self.profile_elements["join_df_button"]
-                else:
-                    if not (game.clan.your_cat.dead or game.clan.your_cat.outside):
-                        self.join_df_button = UIImageButton(
-                            ui_scale(pygame.Rect((578, 558), (172, 36))),
-                            "",
-                            object_id="#join_df_button",
-                            tool_tip_text='Join the Dark Forest',
-                            starting_height=2, manager=MANAGER
-                        )
-                        print("DEBUG: join_df_button created and added to profile_elements for main character")
-                        self.profile_elements["join_df_button"] = self.join_df_button
-                        if hasattr(self, 'exit_df_button') and "exit_df_button" in self.profile_elements:
-                            del self.profile_elements["exit_df_button"]
-                        self.join_df_button.enable()
-                    else:
-                        print("DEBUG: MC is dead or outside, not showing join_df_button")
-            else:
-                # Remove from profile_elements if not main character
-                if "join_df_button" in self.profile_elements:
-                    del self.profile_elements["join_df_button"]
-                if "exit_df_button" in self.profile_elements:
-                    del self.profile_elements["exit_df_button"]
+            # Show leave DF if joined, otherwise show join DF if not dead/already joined
+            if game.clan.your_cat.joined_df:
+                self.exit_df_button = UIImageButton(
+                    ui_scale(pygame.Rect((578, 558), (172, 36))),
+                    "",
+                    object_id="#exit_df_button",
+                    tool_tip_text='Leave the Dark Forest',
+                    starting_height=2, manager=MANAGER
+                )
+            elif not game.clan.your_cat.dead:
+                self.join_df_button = UIImageButton(
+                    ui_scale(pygame.Rect((578, 558), (172, 36))),
+                    "",
+                    object_id="#join_df_button",
+                    tool_tip_text='Join the Dark Forest',
+                    starting_height=2, manager=MANAGER
+                )
+                if game.clan.your_cat.moons < 6:
+                    self.join_df_button.disable()
             self.affair_button = UIImageButton(
                 ui_scale(pygame.Rect((578, 594), (172, 36))),
                 "",
