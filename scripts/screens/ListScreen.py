@@ -844,10 +844,11 @@ class ListScreen(Screens):
         self.death_status = "dead"
         self.full_cat_list = []
         for the_cat in Cat.all_cats_list:
-            if (
-                the_cat.ID in game.clan.unknown_cats
-                and not the_cat.faded
-                and not the_cat.driven_out
-                and the_cat.moons >= 0
-            ):
-                self.full_cat_list.append(the_cat)
+                if (
+                    the_cat.ID in game.clan.unknown_cats
+                    and not the_cat.faded
+                    and not the_cat.driven_out
+                    and not the_cat.df
+                    and the_cat.moons >= 0
+                ):
+                    self.full_cat_list.append(the_cat)

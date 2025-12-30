@@ -1068,7 +1068,8 @@ class Pregnancy_Events:
 
         if blood_parent:
             blood_parent.outside = True
-            clan.unknown_cats.append(blood_parent.ID)
+            if not getattr(blood_parent, 'df', False):
+                clan.unknown_cats.append(blood_parent.ID)
 
         return all_kitten
 
