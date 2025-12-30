@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed issue that caused DF cats to populate the Wanderers/UK tab when clan is following Wanderers.
+- Changelog below me was partially true. Still had to fix weird DF tab behavior.
 - Changelog entry below me is a fluke. Actual issue was Linux unable to read "PNG" as "png". Really?
 - Re-added MC's ability to join dark forest regardless of clan's overall religious preference, which was accidentally removed when allowing players to follow UR/Wanderers.
 - Hotfix code checks for crash caused by pregnancy/adoption events returning none/negative kits due to stillbirths.

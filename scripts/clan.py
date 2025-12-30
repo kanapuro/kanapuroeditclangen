@@ -682,11 +682,12 @@ class Clan:
 
     def add_to_unknown(self, cat):
         """
-        Places dead cat into the unknown wandering.
+        Places dead cat into the unknown wandering (Wanderers).
         It should not be removed from the list of cats in the clan
+        Prevents Dark Forest cats from being added as Wanderers.
         :param cat: cat object
         """
-        if cat.ID in Cat.all_cats and cat.dead and cat.outside:
+        if cat.ID in Cat.all_cats and cat.dead and cat.outside and not cat.df:
             self.unknown_cats.append(cat.ID)
             if cat.ID in self.starclan_cats:
                 self.starclan_cats.remove(cat.ID)
