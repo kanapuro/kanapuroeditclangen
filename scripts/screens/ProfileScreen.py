@@ -3832,22 +3832,25 @@ class ProfileScreen(Screens):
                 
             if game.clan.your_cat.joined_df:
                 self.exit_df_button = UIImageButton(
-                ui_scale(pygame.Rect((578, 558), (172, 36))),
-                "",
-                object_id="#exit_df_button",
-                tool_tip_text='Leave the Dark Forest',
-                starting_height=2, manager=MANAGER
+                    ui_scale(pygame.Rect((578, 558), (172, 36))),
+                    "",
+                    object_id="#exit_df_button",
+                    tool_tip_text='Leave the Dark Forest',
+                    starting_height=2, manager=MANAGER
                 )
             else:
+                # Always show the join_df_button for the main character if eligible, regardless of clan religion
                 self.join_df_button = UIImageButton(
-                ui_scale(pygame.Rect((578, 558), (172, 36))),
-                "",
-                object_id="#join_df_button",
-                tool_tip_text='Join the Dark Forest',
-                starting_height=2, manager=MANAGER
-            )
-            if game.clan.your_cat.moons < 6:
+                    ui_scale(pygame.Rect((578, 558), (172, 36))),
+                    "",
+                    object_id="#join_df_button",
+                    tool_tip_text='Join the Dark Forest',
+                    starting_height=2, manager=MANAGER
+                )
+            if game.clan.your_cat.moons < 6 or game.clan.your_cat.dead or game.clan.your_cat.outside:
                 self.join_df_button.disable()
+            else:
+                self.join_df_button.enable()
             self.affair_button = UIImageButton(
                 ui_scale(pygame.Rect((578, 594), (172, 36))),
                 "",
