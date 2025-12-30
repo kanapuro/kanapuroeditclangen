@@ -172,6 +172,9 @@ class Pregnancy_Events:
             amount, None, None, clan, adoptive_parents=adoptive_parents
         )
 
+        if not kits:
+            print(f"[WARN] No kits were created for adoption event involving {cat.name}{' and ' + other_cat.name if other_cat else ''}.")
+            return
         insert = "this should not display"
         insert2 = "this should not display"
         if amount == 1:
@@ -372,6 +375,10 @@ class Pregnancy_Events:
         other_cat = Cat.all_cats.get(other_cat_id)
 
         kits = Pregnancy_Events.get_kits(kits_amount, cat, other_cat, clan)
+        if not kits:
+            print(f"[WARN] No kits were created for pregnancy event involving {cat.name}{' and ' + other_cat.name if other_cat else ''}.")
+            del clan.pregnancy_data[cat.ID]
+            return
         kits_amount = len(kits)
         Pregnancy_Events.set_biggest_family()
 
@@ -1012,10 +1019,15 @@ class Pregnancy_Events:
 
         # check if the possible adoptive cat is not already in the family tree and
         # add them as adoptive parents if not
+
         final_adoptive_parents = []
-        for adoptive_p in all_adoptive_parents:
-            if adoptive_p not in all_kitten[0].inheritance.all_involved:
-                final_adoptive_parents.append(adoptive_p)
+        if all_kitten:
+            for adoptive_p in all_adoptive_parents:
+                if adoptive_p not in all_kitten[0].inheritance.all_involved:
+                    final_adoptive_parents.append(adoptive_p)
+        else:
+            # No kittens were created, so no adoptive parents to add
+            pass
 
         # Add the adoptive parents.
         for kit in all_kitten:
