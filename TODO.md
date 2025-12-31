@@ -14,6 +14,8 @@
 - add a type of clan action to wearriros den where your clan is super closed off and the rate of deaths/injuries is SUPER low but it has a slight negative effect on other clans and a medium negative effect on outsiders(?)
 - tab either in dangerous section or roles page to add/remove shunned status
 - button for patrols for "clan duties"!
+- add scrolling to clans on leader page so  U can ummmmm have more than 5 :)
+- command or button to change clan location + subcommand to regenerate outsider clans
 
 
 
