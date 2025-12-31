@@ -12,3 +12,34 @@
 - merge: dumb potato's extras (https://ptb.discord.com/channels/1125069186985640063/1202061506997657612), sprout's text expansions (https://ptb.discord.com/channels/1003759225522110524/1188095282915848202), cypress' more grief thoughts (https://ptb.discord.com/channels/1125069186985640063/1226623287283552296), bits from bingle's strange add-ons (https://ptb.discord.com/channels/1345739018792599643/1358826134602645725), caliiriin's extra pelts (https://ptb.discord.com/channels/1345739018792599643/1360109835005460538), multiroles, more trailblazers-themed content
 - rewrite warning thingy.. make closable + maybe go a bit beyond what clangen/lifegen allows. idk. i feel like mental health and some gruesomeness should be allowed since its a mod for what /I/ want. but i dont really want to get in trouble lel
 - add a type of clan action to wearriros den where your clan is super closed off and the rate of deaths/injuries is SUPER low but it has a slight negative effect on other clans and a medium negative effect on outsiders(?)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NOTES TO SELF:
+
+AI TIPS
+    i use a free school plan for premium ai while i attend college. i have unlimited free requests but limited PREMIUM requests, which are often selected through the "auto" tab. when i hit a limit i need to switch to a specific free model
+        GPT-4o - usual workhorse, good for rewriting problem code, understanding issues, large tasks, clear logic, etc.
+        GPT-4.1 - gnarly issues, subtle bugs, tangled logic, deeper reasoning
+        GPT-5 mini - small rewrites, boilerplate fixes, fast iteration
+        Raptor mini & Grok Code Fast 1 - fast code generation and very lightweight, but not really useful in general
+    if charged avoid claude opus or other models with higher price multipliers ("x3" on the righthand side) as these will EAT through your plan so fast

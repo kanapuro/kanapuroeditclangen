@@ -1201,6 +1201,11 @@
     "plural": "ashy paws",
     "singular": "ashy paws"
   },
+  "BLOODY PAWS": {
+    "default": "bloody paws",
+    "plural": "bloody paws",
+    "singular": "bloody paws"
+  },
   "ORANGEBUTTERFLY": {
     "default": "monarch butterfly",
     "plural": "monarch butterflies",

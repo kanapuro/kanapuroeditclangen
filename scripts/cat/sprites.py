@@ -943,7 +943,7 @@ class Sprites:
             self.make_group('wildaccs_2', (a, 1), f'acc_wild{i}')
 
         for a, i in enumerate([
-            "MUD PAWS", "ASHY PAWS"]):
+            "MUD PAWS", "ASHY PAWS", "BLOODY PAWS"]):
             self.make_group('wildaccs_2', (a, 2), f'acc_wild{i}')
 
         # superartsi's accessories
