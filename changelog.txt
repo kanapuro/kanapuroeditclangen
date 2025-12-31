@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- LeaderDenScreen.py clan = colony and other fixes.
 - NOPAW patch for BLOODY PAWS + unique gift event!
 - Added "BLOODY PAWS" accessory (to learn how! :3) + downloaded local docs/resources (SOURCE) for future reference.
 - Fixed issue that caused DF cats to populate the Wanderers/UK tab when clan is following Wanderers. (x2)

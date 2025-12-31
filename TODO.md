@@ -12,6 +12,8 @@
 - merge: dumb potato's extras (https://ptb.discord.com/channels/1125069186985640063/1202061506997657612), sprout's text expansions (https://ptb.discord.com/channels/1003759225522110524/1188095282915848202), cypress' more grief thoughts (https://ptb.discord.com/channels/1125069186985640063/1226623287283552296), bits from bingle's strange add-ons (https://ptb.discord.com/channels/1345739018792599643/1358826134602645725), caliiriin's extra pelts (https://ptb.discord.com/channels/1345739018792599643/1360109835005460538), multiroles, more trailblazers-themed content
 - rewrite warning thingy.. make closable + maybe go a bit beyond what clangen/lifegen allows. idk. i feel like mental health and some gruesomeness should be allowed since its a mod for what /I/ want. but i dont really want to get in trouble lel
 - add a type of clan action to wearriros den where your clan is super closed off and the rate of deaths/injuries is SUPER low but it has a slight negative effect on other clans and a medium negative effect on outsiders(?)
+- tab either in dangerous section or roles page to add/remove shunned status
+- button for patrols for "clan duties"!
 
 
 

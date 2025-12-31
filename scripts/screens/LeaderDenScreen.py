@@ -142,12 +142,12 @@ class LeaderDenScreen(Screens):
             "",
             object_id="#help_button",
             manager=MANAGER,
-            tool_tip_text="This screen allows you to check on the other cats who live nearby, both Outsiders and "
-            "other Clan cats.  You can control how the leader of your Clan will treat other leaders at "
+            tool_tip_text="This screen allows you to check on the other cats who live nearby, both outsiders and "
+            "other colony cats.  You can control how the leader of your colony will treat other leaders at "
             "Gatherings, but keep in mind that you can only determine one interaction each moon!  "
-            "Likewise, you can consider whether to drive out or invite in Outsider cats.  If you drive "
-            "out a cat, they will no longer appear in the Cats Outside the Clans list.  If you invite "
-            "in a cat, they might join your Clan!",
+            "Likewise, you can consider whether to drive out or invite in outsiders.  If you drive "
+            "out a cat, they will no longer appear in the Outsider list.  If you invite "
+            "in a cat, they might join your colony!",
         )
         # This is here incase the leader comes back
         self.no_leader = False
@@ -278,16 +278,16 @@ class LeaderDenScreen(Screens):
                 " No one is left to attend a Gathering. "
             )
             self.screen_elements["outsider_notice_text"].set_text(
-                " Outsiders do not concern themselves with a dead Clan. "
+                " Outsiders do not concern themselves with a dead colony. "
             )
         # if leader is dead and no one new is leading, give special notice
         elif self.no_leader or game.clan.leader.dead or game.clan.leader.exiled:
             self.no_leader = True
             self.screen_elements["clan_notice_text"].set_text(
-                " With no one to lead, the Clan can't focus on what to say at the Gathering. "
+                " With no one to lead, the colony can't focus on what to say at the Gathering. "
             )
             self.screen_elements["outsider_notice_text"].set_text(
-                " With no one to lead, the Clan can't concern themselves with Outsiders. "
+                " With no one to lead, the colony can't concern themselves with outsiders. "
             )
         # if leader is sick but helper is available, give special notice
         elif game.clan.leader.not_working() and self.helper_cat:
@@ -296,7 +296,7 @@ class LeaderDenScreen(Screens):
                 f" {self.leader_name} and {self.helper_name} are discussing how to handle the next Gathering. "
             )
             self.screen_elements["outsider_notice_text"].set_text(
-                f" {self.leader_name} and {self.helper_name} are discussing what to do about nearby Outsiders. "
+                f" {self.leader_name} and {self.helper_name} are discussing what to do about nearby outsiders. "
             )
         # if leader is sick but no helper is available, give special notice
         elif game.clan.leader.not_working():
@@ -305,14 +305,14 @@ class LeaderDenScreen(Screens):
                 f" There is no one to attend the next Gathering. {self.leader_name} must hope to recover in time for the next one. "
             )
             self.screen_elements["outsider_notice_text"].set_text(
-                f" {self.leader_name} is considering what to do about nearby Outsiders. "
+                f" {self.leader_name} is considering what to do about nearby outsiders. "
             )
 
         self.screen_elements["clan_notice_text"].show()
 
         self.screen_elements["temper_text"] = pygame_gui.elements.UITextBox(
             relative_rect=ui_scale(pygame.Rect((68, 410), (445, -1))),
-            html_text=f"The other Clans think {game.clan.name}Clan is {self.clan_temper}.",
+            html_text=f"The other colonies think {game.clan.name} is {self.clan_temper}.",
             object_id=get_text_box_theme("#text_box_30_horizcenter"),
             manager=MANAGER,
         )
@@ -368,7 +368,7 @@ class LeaderDenScreen(Screens):
         )
         self.focus_frame_elements["clans_tab"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((30, 2), (69, 34))),
-            "Clans",
+            "Colony",
             get_button_dict(ButtonStyles.HORIZONTAL_TAB, (69, 34)),
             object_id="@buttonstyles_horizontal_tab",
             container=self.focus_frame_container,
@@ -672,7 +672,7 @@ class LeaderDenScreen(Screens):
         other_clan = self.focus_clan.name
 
         self.screen_elements["clan_notice_text"].set_text(
-            f" {self.leader_name} has decided to {interaction} {other_clan}Clan."
+            f" {self.leader_name} has decided to {interaction} {other_clan}."
         )
 
         self.handle_other_clan_interaction(interaction)
@@ -884,7 +884,7 @@ class LeaderDenScreen(Screens):
             ui_scale(pygame.Rect((0, 5), (121, 30))),
             "",
             object_id="#outsider_invite",
-            tool_tip_text="This cat will join the Clan if found.",
+            tool_tip_text="This cat will join the colony if found.",
             container=self.focus_outsider_button_container,
             starting_height=3,
             manager=MANAGER,
@@ -924,7 +924,7 @@ class LeaderDenScreen(Screens):
             self.screen_elements["clan_notice_text"].show()
 
             self.screen_elements["temper_text"].set_text(
-                f"The other Clans think {game.clan.name}Clan is {self.clan_temper}."
+                f"The other colonies think {game.clan.name} is {self.clan_temper}."
             )
         else:
             self.screen_elements["outsider_notice_text"].show()
@@ -939,7 +939,7 @@ class LeaderDenScreen(Screens):
                 reputation = "welcoming"
 
             self.screen_elements["temper_text"].set_text(
-                f"Outsiders view your clan as {reputation}."
+                f"Outsiders view your colony as {reputation}."
             )
 
     def update_outsider_cats(self):
