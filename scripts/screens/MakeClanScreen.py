@@ -4113,7 +4113,7 @@ class MakeClanScreen(Screens):
                     for acc in self.notail_accs:
                         self.accessory_buttons[acc].disable()
                 if self.permanent_condition == "born without a leg":
-                    for acc in ["ASHY PAWS", "MUD PAWS"]:
+                    for acc in ["ASHY PAWS", "MUD PAWS", "BLOODY PAWS"]:
                         self.accessory_buttons[acc].disable()
 
             if self.current_selection == "accessory":

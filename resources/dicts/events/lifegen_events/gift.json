@@ -234,6 +234,10 @@
         "ASHY PAWS": {
             "accept_like": "t_c presses {PRONOUN/t_c/poss} paws against the ground, seemingly enjoying the ash's texture. {PRONOUN/t_c/subject/CAP} {VERB/t_c/glance/glances} at the clean pelts of your nearest companions. Uh oh...",
             "accept_dislike": "t_c inspects {PRONOUN/t_c/poss} newly ash-covered paws distastefully. {PRONOUN/t_c/subject/CAP} {VERB/t_c/rub/rubs} them against the ground, trying and failing to clean them, before walking away to find a more successful method."
+            },
+        "BLOODY PAWS": {
+            "accept_like": "t_c glances at {PRONOUN/t_c/poss} blood-stained paws with a mischievous grin. Some cats look uneasy, but t_c seems to enjoy the dramatic effect.",
+            "accept_dislike": "t_c stares at the blood on {PRONOUN/t_c/poss} paws, looking disturbed. {PRONOUN/t_c/subject/CAP} {VERB/t_c/try/tries} to wash it off, but the stains linger, leaving t_c unsettled."
         },
         "MUD": {
             "accept_like": "t_c presses {PRONOUN/t_c/poss} paws against the ground, seemingly enjoying the mud's texture. {PRONOUN/t_c/subject/CAP} {VERB/t_c/glance/glances} at the clean pelts of your nearest companions. Uh oh...",
