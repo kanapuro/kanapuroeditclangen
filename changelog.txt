@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Added Ancient Ruins, Shaded Marsh, and Lush Cave camps by Bunko.
+- Told saves loader to ignore ".git" if you're like me and happen to use github to backup and crossplay saves.
 - LeaderDenScreen.py clan = colony and other fixes.
 - NOPAW patch for BLOODY PAWS + unique gift event!
 - Added "BLOODY PAWS" accessory (to learn how! :3) + downloaded local docs/resources (SOURCE) for future reference.

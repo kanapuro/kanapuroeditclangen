@@ -1186,6 +1186,34 @@ class MakeClanScreen(Screens):
                     "top_target": self.tabs["tab5"],
                 },
             )
+            tab_rect = ui_scale(pygame.Rect((0, 0), (130, 30)))
+            tab_rect.topright = ui_scale_offset((5, 5))
+            self.tabs["tab7"] = UISurfaceImageButton(
+                tab_rect,
+                "Shaded Marsh",
+                get_button_dict(ButtonStyles.VERTICAL_TAB, (130, 30)),
+                object_id="@buttonstyles_vertical_tab",
+                manager=MANAGER,
+                anchors={
+                    "right": "right",
+                    "right_target": self.elements["art_frame"],
+                    "top_target": self.tabs["tab6"],
+                },
+            )
+            tab_rect = ui_scale(pygame.Rect((0, 0), (130, 30)))
+            tab_rect.topright = ui_scale_offset((5, 5))
+            self.tabs["tab8"] = UISurfaceImageButton(
+                tab_rect,
+                "Ancient Ruins",
+                get_button_dict(ButtonStyles.VERTICAL_TAB, (130, 30)),
+                object_id="@buttonstyles_vertical_tab",
+                manager=MANAGER,
+                anchors={
+                    "right": "right",
+                    "right_target": self.elements["art_frame"],
+                    "top_target": self.tabs["tab7"],
+                },
+            )
             # ---
         elif self.biome_selected == "Mountainous":
             tab_rect = ui_scale(pygame.Rect((0, 0), (70, 30)))
@@ -1267,6 +1295,20 @@ class MakeClanScreen(Screens):
                     "right": "right",
                     "right_target": self.elements["art_frame"],
                     "top_target": self.tabs["tab5"],
+                },
+            )
+            tab_rect = ui_scale(pygame.Rect((0, 0), (120, 30)))
+            tab_rect.topright = ui_scale_offset((5, 5))
+            self.tabs["tab7"] = UISurfaceImageButton(
+                tab_rect,
+                "Lush Cave",
+                get_button_dict(ButtonStyles.VERTICAL_TAB, (120, 30)),
+                object_id="@buttonstyles_vertical_tab",
+                manager=MANAGER,
+                anchors={
+                    "right": "right",
+                    "right_target": self.elements["art_frame"],
+                    "top_target": self.tabs["tab6"],
                 },
             )
             # ---
