@@ -1,6 +1,7 @@
 from typing import List
 
 from scripts.debug_commands.cat import CatsCommand
+from scripts.debug_commands.return_cat import ReturnCatCommand
 from scripts.debug_commands.command import Command
 from scripts.debug_commands.eval import EvalCommand, UnderstandRisksCommand
 from scripts.debug_commands.fps import FpsCommand
@@ -13,7 +14,8 @@ commandList: List[Command] = [
     GetCommand(),
     EvalCommand(),
     FpsCommand(),
-    CatsCommand()
+    CatsCommand(),
+    ReturnCatCommand()
 ]
 
 helpCommand = HelpCommand(commandList)

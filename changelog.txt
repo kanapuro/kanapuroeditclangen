@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Added new setting to enable/disable the visibility of a cat's ID on their profile, very useful for debugging!
+- Added new F3/Debug command to RETURN a LOST or EXILED cat. Usage: return (id)
 - Added Ancient Ruins, Shaded Marsh, and Lush Cave camps by Bunko.
 - Told saves loader to ignore ".git" if you're like me and happen to use github to backup and crossplay saves.
 - LeaderDenScreen.py clan = colony and other fixes.

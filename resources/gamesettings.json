@@ -16,6 +16,11 @@
         }
     ],
     "general": {
+        "show cat id in profile": [
+            "Show cat ID in profile",
+            "Display the cat's ID next to their name on the profile page (for advanced users/debugging)",
+            false
+        ],
         "dark mode": [
             "Dark mode",
             "Camp backgrounds will match with the mode: nighttime for dark mode and daytime for light mode.",

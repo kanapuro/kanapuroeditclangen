@@ -1473,6 +1473,9 @@ class ProfileScreen(Screens):
 
         # Info in string
         cat_name = str(self.the_cat.name)
+        # Append ID to name for profile page only if setting enabled
+        if game.settings.get("show cat id in profile", False):
+            cat_name += f" (ID: {self.the_cat.ID})"
         cat_name = shorten_text_to_fit(cat_name, 500, 20)
         if self.the_cat.dead:
             cat_name += " (dead)"  # A dead cat will have the (dead) sign next to their name
@@ -1552,6 +1555,8 @@ class ProfileScreen(Screens):
                 manager=MANAGER,
             )
             self.profile_elements["background"].disable()
+
+        # Remove separate Cat ID display (now appended to name)
 
         # Create cat image object
         self.profile_elements["cat_image"] = pygame_gui.elements.UIImage(
