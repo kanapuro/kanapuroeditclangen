@@ -2248,16 +2248,15 @@ class DeathScreen(UIWindow):
                 self.kill()
                 game.all_screens['events screen'].exit_screen()
             elif event.ui_element == self.mediator_button2:
-                game.clan.your_cat.revives +=1
+                game.clan.your_cat.revives += 1
                 game.clan.your_cat.dead = False
                 game.clan.your_cat.df = False
                 if not game.clan.your_cat.outside:
                     game.clan.your_cat.outside = False
                 if game.clan.your_cat.status in ["rogue", "kittypet", "former colonycat", "loner"]:
                     game.clan.your_cat.status = "exiled"
-                    # cant play as an outsider yet gotta cheese it for now
                 game.clan.your_cat.dead_for = 0
-                game.clan.your_cat.moons+=1
+                # Do NOT increment moons here; revival is instant
                 game.clan.your_cat.update_mentor()
                 game.switches['continue_after_death'] = False
                 if game.clan.your_cat.outside:
@@ -2269,7 +2268,7 @@ class DeathScreen(UIWindow):
                 if game.clan.your_cat.ID in game.clan.unknown_cats:
                     game.clan.unknown_cats.remove(game.clan.your_cat.ID)
                 you = game.clan.your_cat
-                
+
                 if you.moons == 0 and you.status != "newborn":
                     you.status = 'newborn'
                 elif you.moons < 6 and you.status != "kitten":
@@ -2281,10 +2280,12 @@ class DeathScreen(UIWindow):
                 game.clan.your_cat.thought = "Is surprised to find themselves back in the Clan"
                 game.last_screen_forupdate = None
                 game.switches['window_open'] = False
+                # Show revive flavor text INSTANTLY in the event log
+                import ujson
+                from random import choice
                 with open("resources/dicts/events/lifegen_events/revival.json", "r") as read_file:
                     revival_json = ujson.loads(read_file.read())['revival']
-                
-                game.next_events_list.append(Single_Event(choice(revival_json), 'alert'))
+                game.cur_events_list.insert(0, Single_Event(choice(revival_json), 'alert'))
                 game.switches['cur_screen'] = "events screen"
                 self.begin_anew_button.kill()
                 self.pick_path_message.kill()
@@ -2293,6 +2294,10 @@ class DeathScreen(UIWindow):
                 self.mediator_button3.kill()
                 self.mediator_button4.kill()
                 self.kill()
+                # Automatically reload EventsScreen to reflect revive changes
+                if 'events screen' in game.all_screens:
+                    game.all_screens['events screen'].exit_screen()
+                    game.all_screens['events screen'].on_use()
             elif event.ui_element == self.mediator_button3:
                 game.last_screen_forupdate = None
                 game.switches['window_open'] = False

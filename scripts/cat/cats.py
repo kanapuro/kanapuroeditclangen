@@ -1132,6 +1132,11 @@ class Cat:
         that grief messages will align with body status
         - if it is None, a lost cat died and therefore not trigger grief, since the clan does not know
         """
+
+        # If this is the player cat, set continue_after_death immediately
+        if hasattr(game, 'clan') and hasattr(game.clan, 'your_cat') and self == game.clan.your_cat:
+            game.switches['continue_after_death'] = True
+
         if (
             self.status == "leader"
             and "pregnant" in self.injuries
