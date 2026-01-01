@@ -614,7 +614,12 @@ class MakeClanScreen(Screens):
                 return
             
             self.your_cat.name.prefix = new_prefix
-            self.your_cat.name.suffix = new_suffix
+            # Only set custom suffix if special suffix is disabled
+            if self.your_cat.name.specsuffix_hidden:
+                self.your_cat.name.suffix = new_suffix
+            else:
+                # Clear custom suffix so special suffix shows
+                self.your_cat.name.suffix = ""
 
             if game.switches["customise_new_life"] is True:
                 self.open_clan_saved_screen()
