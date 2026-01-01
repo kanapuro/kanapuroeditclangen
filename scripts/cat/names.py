@@ -119,6 +119,15 @@ class Name:
             return "warrior"
 
         settings = game.clan.clan_settings
+        
+        # If settings are empty or None, default to warrior
+        if not settings:
+            return "warrior"
+        
+        # Force warrior names for example cats (kits with no parents during clan creation)
+        if self.cat and getattr(self.cat, "example", False):
+            return "warrior"
+        
         enabled_types = []
 
         if settings.get("warrior_names", True):

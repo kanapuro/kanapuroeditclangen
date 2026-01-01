@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Tried to fix names again. (Falls back to "warrior-type" names when lacking settings.)
+- Genda fixes.
 - Please tell me names are finally fixed.
 - 30% chance of "The " prepend to randomly generated clan names. Also fuck all that parsing nonsense, stores clan prefix and uses it for icons and such. Attempted to fix this three times btw.
 - Clans now generate with full names combining clan_prefix with clan_suffix rather than just prefixes.

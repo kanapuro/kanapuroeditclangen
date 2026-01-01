@@ -114,8 +114,9 @@ class ChangeGenderScreen(Screens):
 
             elif type(event.ui_element) is CatButton:
                 if event.ui_element.cat_id == "add":
+                    # Append only the selected set (copied) and avoid duplicates
                     if event.ui_element.cat_object not in self.the_cat.pronouns:
-                        self.the_cat.pronouns.append(event.ui_element.cat_object)
+                        self.the_cat.pronouns.append(event.ui_element.cat_object.copy())
                 elif event.ui_element.cat_id == "remove":
                     if (
                         event.ui_element.cat_object in self.the_cat.pronouns

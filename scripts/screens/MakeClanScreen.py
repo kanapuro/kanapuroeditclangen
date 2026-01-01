@@ -180,6 +180,9 @@ class MakeClanScreen(Screens):
         self.biome_selected = None
         self.selected_season = "Newleaf"
         self.symbol_selected = None
+        self.generated_clan_prefix = None
+        self.current_page = 1
+        self.symbol_buttons = {}
         self.leader = None  # To store the Clan leader before confirmation
         self.deputy = None
         self.med_cat = None
@@ -642,7 +645,7 @@ class MakeClanScreen(Screens):
         special_rank_str = ["medicine cat", "medicine cat apprentice", "mediator", "mediator apprentice", "queen", "queen's apprentice"]
         for a in range(c_size):
             if a in e:
-                game.choose_cats[a] = Cat(status='warrior', biome=None)
+                game.choose_cats[a] = Cat(status='warrior', biome=None, example=True)
             else:
                 
                 status_percentages = [
@@ -671,7 +674,7 @@ class MakeClanScreen(Screens):
                 if s in special_rank_str:
                     special_ranks += 1
 
-                game.choose_cats[a] = Cat(status=s, biome=None)
+                game.choose_cats[a] = Cat(status=s, biome=None, example=True)
 
             if game.choose_cats[a].moons >= 160:
                 game.choose_cats[a].moons = choice(range(120, 155))
@@ -4597,7 +4600,10 @@ class MakeClanScreen(Screens):
             self.text["recommend"].set_text(
                 f"Recommended Symbol: {clan_prefix.upper()}0"
             )
-            if not self.symbol_selected:
+            # Auto-select if nothing picked yet or if the existing choice doesn't match the prefix
+            if (not self.symbol_selected) or (
+                not self.symbol_selected.startswith(f"symbol{clan_prefix.upper()}")
+            ):
                 self.symbol_selected = choice(matching_symbols)
                 symbol_name = self.symbol_selected.replace("symbol", "")
                 self.text["selected"].set_text(f"Selected Symbol: {symbol_name}")
@@ -4811,6 +4817,13 @@ class MakeClanScreen(Screens):
                         if name_for_matching.lower().startswith(prefix.lower()):
                             if clan_prefix is None or len(prefix) > len(clan_prefix):
                                 clan_prefix = prefix
+            
+            # Fallback: ensure a symbol is chosen if somehow still unset
+            if not self.symbol_selected and clan_prefix:
+                for sprite in sprites.clan_symbols:
+                    if sprite.rstrip("1234567890") == f"symbol{clan_prefix.upper()}":
+                        self.symbol_selected = sprite
+                        break
             
             game.clan = Clan(name = self.clan_name,
                             leader = self.leader,

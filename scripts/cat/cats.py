@@ -4860,7 +4860,7 @@ class Cat:
 
 # Creates a random cat
 def create_cat(status, moons=None, biome=None):
-    new_cat = Cat(status=status, biome=biome)
+    new_cat = Cat(status=status, biome=biome, example=True)
 
     if moons is not None:
         new_cat.moons = moons

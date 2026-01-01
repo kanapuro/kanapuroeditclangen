@@ -504,255 +504,104 @@ class HandleShortEvents:
         handles updating gender_align and pronouns
         """
         possible_genders = getattr(self.chosen_event, "new_gender", [])
+        if not possible_genders:
+            return
 
-        if possible_genders:
-            new_gender = random.choice(possible_genders)
-            self.main_cat.genderalign = new_gender
+        new_gender = random.choice(possible_genders)
+        self.main_cat.genderalign = new_gender
 
-            if new_gender == "nonbinary":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[3].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[4].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[5].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[6].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[7].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[8].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[9].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[10].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[11].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[12].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[13].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[14].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[15].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[16].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[17].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[18].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[19].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[20].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[22].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[22].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[23].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[24].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[25].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[26].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[27].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[28].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[29].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[30].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[31].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[32].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[33].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[34].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[35].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[36].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[37].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[38].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[39].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[40].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[41].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[42].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[43].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[44].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[45].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[46].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[47].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[48].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[49].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[50].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[51].copy()]
-            elif new_gender == "trans female":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[1].copy()]
-            elif new_gender == "trans male":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[2].copy()]
-            elif new_gender == "genderfluid":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[1].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[2].copy()]
-            elif new_gender == "demigirl":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[1].copy()]
-            elif new_gender == "demiboy":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[2].copy()]
-            elif new_gender == "genderfae":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[1].copy()]
-            elif new_gender == "genderfaun":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[2].copy()]
-            elif new_gender == "bigender":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[1].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[2].copy()]
-            elif new_gender == "genderqueer":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[3].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[4].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[5].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[6].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[7].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[8].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[9].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[10].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[11].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[12].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[13].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[14].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[15].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[16].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[17].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[18].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[19].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[20].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[22].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[22].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[23].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[24].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[25].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[26].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[27].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[28].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[29].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[30].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[31].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[32].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[33].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[34].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[35].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[36].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[37].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[38].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[39].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[40].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[41].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[42].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[43].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[44].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[45].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[46].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[47].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[48].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[49].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[50].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[51].copy()]
-            elif new_gender == "agender":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[27].copy()]
-            elif new_gender == "???":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[3].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[4].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[5].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[6].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[7].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[8].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[9].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[10].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[11].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[12].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[13].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[14].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[15].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[16].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[17].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[18].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[19].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[20].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[22].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[22].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[23].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[24].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[25].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[26].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[27].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[28].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[29].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[30].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[31].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[32].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[33].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[34].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[35].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[36].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[37].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[38].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[39].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[40].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[41].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[42].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[43].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[44].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[45].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[46].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[47].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[48].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[49].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[50].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[51].copy()]
-            elif new_gender == "deminonbinary":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[27].copy()]
-            elif new_gender == "trigender":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[1].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[2].copy()]
-            elif new_gender == "genderflux":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[1].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[2].copy()]
-            elif new_gender == "polygender":
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[0].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[3].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[4].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[5].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[6].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[7].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[8].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[9].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[10].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[11].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[12].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[13].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[14].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[15].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[16].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[17].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[18].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[19].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[20].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[22].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[22].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[23].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[24].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[25].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[26].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[27].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[28].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[29].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[30].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[31].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[32].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[33].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[34].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[35].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[36].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[37].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[38].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[39].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[40].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[41].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[42].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[43].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[44].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[45].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[46].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[47].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[48].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[49].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[50].copy()]
-                self.main_cat.pronouns = [self.main_cat.default_pronouns[51].copy()]
-            else:
-                print("No pronouns found for new_gender, keeping original pronouns.", new_gender)
+        def set_pronouns(pool, count):
+            if not self.main_cat.default_pronouns:
+                return
+            picks = random.sample(pool, k=min(count, len(pool)))
+            self.main_cat.pronouns = [
+                self.main_cat.default_pronouns[idx].copy()
+                for idx in picks
+                if 0 <= idx < len(self.main_cat.default_pronouns)
+            ]
+
+        broad_pool = [
+            0,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50,
+            51,
+        ]
+
+        tri_pool = [0, 1, 2]
+        fem_pool = [0, 1]
+        masc_pool = [0, 2]
+        agender_pool = [0, 27]
+
+        pronoun_choices = {
+            "nonbinary": (broad_pool, 3),
+            "genderqueer": (broad_pool, 3),
+            "polygender": (broad_pool, 3),
+            "???": (broad_pool, 3),
+            "trans female": ([1], 1),
+            "trans male": ([2], 1),
+            "genderfluid": (tri_pool, 3),
+            "genderflux": (tri_pool, 3),
+            "trigender": (tri_pool, 3),
+            "bigender": (tri_pool, 3),
+            "demigirl": (fem_pool, 2),
+            "genderfae": (fem_pool, 2),
+            "demiboy": (masc_pool, 2),
+            "genderfaun": (masc_pool, 2),
+            "agender": (agender_pool, 2),
+            "deminonbinary": (agender_pool, 2),
+        }
+
+        pool_info = pronoun_choices.get(new_gender)
+        if pool_info:
+            pool, count = pool_info
+            set_pronouns(pool, count)
+        else:
+            print("No pronouns found for new_gender, keeping original pronouns.", new_gender)
 
     def handle_death(self):
         """
