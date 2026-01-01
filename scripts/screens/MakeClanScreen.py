@@ -4954,7 +4954,7 @@ class MakeClanScreen(Screens):
             starting_height=1,
         )
         self.elements["save_confirm"] = pygame_gui.elements.UITextBox(
-            'Welcome to the world, ' + self.your_cat.name.prefix + 'kit!',
+            'Welcome to the world, ' + str(self.your_cat.name) + '!',
             ui_scale(pygame.Rect((100, 235), (600, 30))),
             object_id=get_text_box_theme(
                 "#text_box_30_horizcenter"),
