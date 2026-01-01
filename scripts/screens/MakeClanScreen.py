@@ -487,9 +487,13 @@ class MakeClanScreen(Screens):
             self.clan_age = "new"
     
     def random_clan_name(self):
-        clan_names = names.names_dict["normal_prefixes"] + names.names_dict["clan_prefixes"]
+        clan_prefixes = names.names_dict["clan_prefixes"]
+        clan_suffixes = names.names_dict.get("clan_suffixes", ["Clan"])
         while True:
-            chosen_name = choice(clan_names)
+            prefix = choice(clan_prefixes)
+            suffix = choice(clan_suffixes)
+            space = " " if choice([True, False]) else ""
+            chosen_name = prefix + space + suffix
             if chosen_name.casefold() not in [clan.casefold() for clan in game.switches['clan_list']]:
                 return chosen_name
             print("Generated clan name was already in use! Rerolling...")
@@ -752,13 +756,13 @@ class MakeClanScreen(Screens):
                 possible_biomes.remove(old_biome)
             self.biome_selected = choice(possible_biomes)
             if self.biome_selected == 'Forest':
-                self.selected_camp_tab = randrange(1, 7)
+                self.selected_camp_tab = randrange(1, 9)
             elif self.biome_selected == "Mountainous":
-                self.selected_camp_tab = randrange(1, 7)
+                self.selected_camp_tab = randrange(1, 8)
             elif self.biome_selected == "Plains":
-                self.selected_camp_tab = randrange(1, 6)
+                self.selected_camp_tab = randrange(1, 10)
             else:
-                self.selected_camp_tab = randrange(1, 5)
+                self.selected_camp_tab = randrange(1, 6)
             self.refresh_selected_camp()
             self.refresh_text_and_buttons()
         elif event.ui_element == self.elements["next_step"]:
@@ -4560,18 +4564,31 @@ class MakeClanScreen(Screens):
             manager=MANAGER,
         )
 
-        if f"symbol{self.clan_name.upper()}0" in sprites.clan_symbols:
+        clan_prefix = None
+        if self.clan_name:
+            for prefix in names.names_dict.get("clan_prefixes", []):
+                if self.clan_name.lower().startswith(prefix.lower()):
+                    # Keep the longest matching prefix
+                    if clan_prefix is None or len(prefix) > len(clan_prefix):
+                        clan_prefix = prefix
+        
+        # Find all matching symbols for this prefix
+        matching_symbols = []
+        if clan_prefix:
+            for sprite in sprites.clan_symbols:
+                if sprite.rstrip("1234567890") == f"symbol{clan_prefix.upper()}":
+                    matching_symbols.append(sprite)
+        
+        if matching_symbols:
             self.text["recommend"].set_text(
-                f"Recommended Symbol: {self.clan_name.upper()}0"
+                f"Recommended Symbol: {clan_prefix.upper()}0"
             )
-
-        if not self.symbol_selected:
-            if f"symbol{self.clan_name.upper()}0" in sprites.clan_symbols:
-                self.symbol_selected = f"symbol{self.clan_name.upper()}0"
-
-                self.text["selected"].set_text(
-                    f"Selected Symbol: {self.clan_name.upper()}0"
-                )
+            if not self.symbol_selected:
+                self.symbol_selected = choice(matching_symbols)
+                symbol_name = self.symbol_selected.replace("symbol", "")
+                self.text["selected"].set_text(f"Selected Symbol: {symbol_name}")
+        else:
+            pass
 
         if self.symbol_selected:
             symbol_name = self.symbol_selected.replace("symbol", "")

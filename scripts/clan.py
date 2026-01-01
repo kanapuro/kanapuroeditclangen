@@ -311,9 +311,16 @@ class Clan:
         number_other_clans = randint(3, 5)
         for _ in range(number_other_clans):
             other_clan_names = [str(i.name) for i in self.all_clans] + [game.clan.name]
-            other_clan_name = choice(names.names_dict["normal_prefixes"] + names.names_dict["clan_prefixes"])
+            clan_prefixes = names.names_dict["clan_prefixes"]
+            clan_prefix = choice(clan_prefixes)
+            clan_suffix = choice(names.names_dict.get("clan_suffixes", ["Clan"]))
+            space = " " if choice([True, False]) else ""
+            other_clan_name = clan_prefix + space + clan_suffix
             while other_clan_name in other_clan_names:
-                other_clan_name = choice(names.names_dict["normal_prefixes"] + names.names_dict["clan_prefixes"])
+                clan_prefix = choice(clan_prefixes)
+                clan_suffix = choice(names.names_dict.get("clan_suffixes", ["Clan"]))
+                space = " " if choice([True, False]) else ""
+                other_clan_name = clan_prefix + space + clan_suffix
             other_clan = OtherClan(name=other_clan_name)
             self.all_clans.append(other_clan)
         if 'other_med' in game.switches:
@@ -1885,9 +1892,15 @@ class OtherClan:
     ]
 
     def __init__(self, name="", relations=0, temperament="", chosen_symbol=""):
-        clan_names = names.names_dict["normal_prefixes"]
-        clan_names.extend(names.names_dict["clan_prefixes"])
-        self.name = name or choice(clan_names)
+        if not name:
+            # Generate clan name using clan_prefixes + clan_suffixes with random spacing
+            clan_prefixes = names.names_dict["clan_prefixes"]
+            clan_suffix = choice(names.names_dict.get("clan_suffixes", ["Clan"]))
+            clan_prefix = choice(clan_prefixes)
+            space = " " if choice([True, False]) else ""
+            self.name = clan_prefix + space + clan_suffix
+        else:
+            self.name = name
         self.relations = relations or randint(8, 12)
         self.temperament = temperament or choice(self.temperament_list)
         if self.temperament not in self.temperament_list:

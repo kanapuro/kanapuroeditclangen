@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Clans now generate with full names combining clan_prefix with clan_suffix rather than just prefixes.
+- F3/Debug command to move territories (both chosen and random) and generate new clans.
 - Revival behavior now allows you to revive instantly after death, without skipping a single moon.
 - Added new setting to enable/disable the visibility of a cat's ID on their profile, very useful for debugging!
 - Added new F3/Debug command to RETURN a LOST or EXILED cat. Usage: return (id)
