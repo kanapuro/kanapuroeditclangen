@@ -2,6 +2,7 @@ from random import choice, randrange
 from re import sub
 from typing import Optional
 import random
+import os
 
 import ujson
 
@@ -497,8 +498,23 @@ class MakeClanScreen(Screens):
             self.clan_age = "new"
     
     def random_clan_name(self):
-        clan_prefixes = names.names_dict["clan_prefixes"]
+        all_prefixes = names.names_dict["clan_prefixes"]
         clan_suffixes = names.names_dict.get("clan_suffixes", ["Clan"])
+        
+        # Filter to only prefixes that have matching symbols with actual variants
+        clan_prefixes = []
+        if os.path.exists("resources/dicts/clan_symbols.json"):
+            with open("resources/dicts/clan_symbols.json", encoding="utf-8") as f:
+                symbol_data = ujson.load(f)
+                for prefix in all_prefixes:
+                    # Check if this prefix has a symbol with variants > 0
+                    if prefix in symbol_data and symbol_data[prefix].get("variants", 0) > 0:
+                        clan_prefixes.append(prefix)
+        
+        # If no prefixes have valid symbols, use all prefixes as fallback
+        if not clan_prefixes:
+            clan_prefixes = all_prefixes
+        
         while True:
             self.generated_clan_prefix = choice(clan_prefixes)
             suffix = choice(clan_suffixes)
@@ -4812,7 +4828,11 @@ class MakeClanScreen(Screens):
                 symbol_name = self.symbol_selected.replace("symbol", "")
                 self.text["selected"].set_text(f"Selected Symbol: {symbol_name}")
         else:
-            pass
+            # No matching symbols for this prefix, pick any symbol if none selected
+            if not self.symbol_selected:
+                self.symbol_selected = choice(sprites.clan_symbols)
+                symbol_name = self.symbol_selected.replace("symbol", "")
+                self.text["selected"].set_text(f"Selected Symbol: {symbol_name}")
 
         if self.symbol_selected:
             symbol_name = self.symbol_selected.replace("symbol", "")
