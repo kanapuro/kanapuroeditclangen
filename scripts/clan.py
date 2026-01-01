@@ -111,6 +111,7 @@ class Clan:
                 your_cat=None,
                 focus_cat=None,
                 clan_age=None,
+                clan_prefix=None,
                 self_run_init_functions = False):
         self.history = History()
         self.your_cat = your_cat
@@ -118,6 +119,7 @@ class Clan:
             return
 
         self.name = name
+        self.clan_prefix = clan_prefix
         self.leader = leader
         self.leader_lives = 9
         self.leader_predecessors = 0
@@ -316,11 +318,17 @@ class Clan:
             clan_suffix = choice(names.names_dict.get("clan_suffixes", ["Clan"]))
             space = " " if choice([True, False]) else ""
             other_clan_name = clan_prefix + space + clan_suffix
+            # 30% chance to prepend 'The'
+            if randint(1, 10) <= 3:
+                other_clan_name = "The " + other_clan_name
             while other_clan_name in other_clan_names:
                 clan_prefix = choice(clan_prefixes)
                 clan_suffix = choice(names.names_dict.get("clan_suffixes", ["Clan"]))
                 space = " " if choice([True, False]) else ""
                 other_clan_name = clan_prefix + space + clan_suffix
+                # 30% chance to prepend 'The'
+                if randint(1, 10) <= 3:
+                    other_clan_name = "The " + other_clan_name
             other_clan = OtherClan(name=other_clan_name)
             self.all_clans.append(other_clan)
         if 'other_med' in game.switches:
@@ -1891,16 +1899,20 @@ class OtherClan:
         "gracious",
     ]
 
-    def __init__(self, name="", relations=0, temperament="", chosen_symbol=""):
+    def __init__(self, name="", relations=0, temperament="", chosen_symbol="", clan_prefix=None):
         if not name:
             # Generate clan name using clan_prefixes + clan_suffixes with random spacing
             clan_prefixes = names.names_dict["clan_prefixes"]
             clan_suffix = choice(names.names_dict.get("clan_suffixes", ["Clan"]))
-            clan_prefix = choice(clan_prefixes)
+            self.clan_prefix = choice(clan_prefixes)
             space = " " if choice([True, False]) else ""
-            self.name = clan_prefix + space + clan_suffix
+            self.name = self.clan_prefix + space + clan_suffix
+            # 30% chance to prepend 'The'
+            if randint(1, 10) <= 3:
+                self.name = "The " + self.name
         else:
             self.name = name
+            self.clan_prefix = clan_prefix
         self.relations = relations or randint(8, 12)
         self.temperament = temperament or choice(self.temperament_list)
         if self.temperament not in self.temperament_list:

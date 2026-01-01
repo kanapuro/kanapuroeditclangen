@@ -443,6 +443,7 @@ class MakeClanScreen(Screens):
             self.elements["name_entry"].set_text(self.random_clan_name())
         elif event.ui_element == self.elements["reset_name"]:
             self.elements["name_entry"].set_text("")
+            self.generated_clan_prefix = None
         elif event.ui_element == self.elements["next_step"]:
             new_name = sub(
                 r"[^A-Za-z0-9 ]+", "", self.elements["name_entry"].get_text()
@@ -461,6 +462,7 @@ class MakeClanScreen(Screens):
             self.open_choose_leader()
         elif event.ui_element == self.elements["previous_step"]:
             self.clan_name = ""
+            self.generated_clan_prefix = None
             self.change_screen('start screen')
         elif event.ui_element == self.elements['small']:
             self.elements['small'].disable()
@@ -490,10 +492,13 @@ class MakeClanScreen(Screens):
         clan_prefixes = names.names_dict["clan_prefixes"]
         clan_suffixes = names.names_dict.get("clan_suffixes", ["Clan"])
         while True:
-            prefix = choice(clan_prefixes)
+            self.generated_clan_prefix = choice(clan_prefixes)
             suffix = choice(clan_suffixes)
             space = " " if choice([True, False]) else ""
-            chosen_name = prefix + space + suffix
+            chosen_name = self.generated_clan_prefix + space + suffix
+            # 30% chance to prepend 'The'
+            if randrange(1, 11) <= 3:
+                chosen_name = "The " + chosen_name
             if chosen_name.casefold() not in [clan.casefold() for clan in game.switches['clan_list']]:
                 return chosen_name
             print("Generated clan name was already in use! Rerolling...")
@@ -570,6 +575,7 @@ class MakeClanScreen(Screens):
             self.open_name_cat()
         elif event.ui_element == self.elements['previous_step']:
             self.clan_name = ""
+            self.generated_clan_prefix = None
             self.open_name_clan()
         elif event.ui_element == self.elements['customize']:
             self.open_customize_cat()
@@ -805,6 +811,8 @@ class MakeClanScreen(Screens):
 
     def handle_choose_symbol_event(self, event):
         if event.ui_element == self.elements["previous_step"]:
+            self.generated_clan_prefix = None
+            self.symbol_selected = None
             self.open_choose_background()
         elif event.ui_element == self.elements["page_right"]:
             self.current_page += 1
@@ -4564,13 +4572,19 @@ class MakeClanScreen(Screens):
             manager=MANAGER,
         )
 
-        clan_prefix = None
-        if self.clan_name:
-            for prefix in names.names_dict.get("clan_prefixes", []):
-                if self.clan_name.lower().startswith(prefix.lower()):
-                    # Keep the longest matching prefix
-                    if clan_prefix is None or len(prefix) > len(clan_prefix):
-                        clan_prefix = prefix
+        # Use stored prefix if available from random generation
+        clan_prefix = getattr(self, 'generated_clan_prefix', None)
+        
+        # If no stored prefix (user typed name), parse from the name
+        if not clan_prefix:
+            name_for_matching = self.clan_name
+            if name_for_matching and name_for_matching.lower().startswith("the "):
+                name_for_matching = name_for_matching[4:]
+            if name_for_matching:
+                for prefix in names.names_dict.get("clan_prefixes", []):
+                    if name_for_matching.lower().startswith(prefix.lower()):
+                        if clan_prefix is None or len(prefix) > len(clan_prefix):
+                            clan_prefix = prefix
         
         # Find all matching symbols for this prefix
         matching_symbols = []
@@ -4608,6 +4622,9 @@ class MakeClanScreen(Screens):
             while self.symbol_selected not in self.symbol_buttons:
                 self.current_page += 1
                 self.refresh_symbol_list()
+            # Disable the selected button after list is refreshed
+            if self.symbol_selected in self.symbol_buttons:
+                self.symbol_buttons[self.symbol_selected].disable()
             self.elements["done_button"].enable()
         else:
             self.elements["selected_symbol"] = pygame_gui.elements.UIImage(
@@ -4781,6 +4798,20 @@ class MakeClanScreen(Screens):
             Patrol.used_patrols.clear()
             convert_camp = {1: 'camp1', 2: 'camp2', 3: 'camp3', 4: 'camp4', 5: 'camp5', 6: 'camp6', 7: 'camp7', 8: 'camp8', 9: 'camp9'}
             self.your_cat.create_inheritance_new_cat()
+            
+            # Get clan_prefix for icon matching
+            clan_prefix = getattr(self, 'generated_clan_prefix', None)
+            if not clan_prefix:
+                # Parse from name if user typed it
+                name_for_matching = self.clan_name
+                if name_for_matching and name_for_matching.lower().startswith("the "):
+                    name_for_matching = name_for_matching[4:]
+                if name_for_matching:
+                    for prefix in names.names_dict.get("clan_prefixes", []):
+                        if name_for_matching.lower().startswith(prefix.lower()):
+                            if clan_prefix is None or len(prefix) > len(clan_prefix):
+                                clan_prefix = prefix
+            
             game.clan = Clan(name = self.clan_name,
                             leader = self.leader,
                             deputy = self.deputy,
@@ -4792,7 +4823,8 @@ class MakeClanScreen(Screens):
                             starting_members=self.members,
                             starting_season=self.selected_season,
                             your_cat=self.your_cat,
-                            clan_age=self.clan_age)
+                            clan_age=self.clan_age,
+                            clan_prefix=clan_prefix)
             game.clan.your_cat.moons = -1
             game.clan.create_clan()
             if self.clan_age == "established":

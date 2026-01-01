@@ -2753,14 +2753,20 @@ def clan_symbol_sprite(clan, return_string=False, force_light=False):
     :param force_light: Set true if you want this sprite to override the dark/light mode changes with the light sprite
     """
     if not clan.chosen_symbol:
-        # Find which clan_prefix is at the start of the clan name (longest match)
-        clan_prefix = None
-        if clan.name:
-            for prefix in names.names_dict.get("clan_prefixes", []):
-                if clan.name.lower().startswith(prefix.lower()):
-                    # Keep the longest matching prefix
-                    if clan_prefix is None or len(prefix) > len(clan_prefix):
-                        clan_prefix = prefix
+        # Use stored clan_prefix if available, otherwise parse from name
+        clan_prefix = getattr(clan, 'clan_prefix', None)
+        
+        if not clan_prefix:
+            # Fallback: parse from name
+            name_for_matching = clan.name
+            if name_for_matching.lower().startswith("the "):
+                name_for_matching = name_for_matching[4:]
+            
+            if name_for_matching:
+                for prefix in names.names_dict.get("clan_prefixes", []):
+                    if name_for_matching.lower().startswith(prefix.lower()):
+                        if clan_prefix is None or len(prefix) > len(clan_prefix):
+                            clan_prefix = prefix
         
         possible_sprites = []
         if clan_prefix:

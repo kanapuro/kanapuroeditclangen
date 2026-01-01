@@ -1423,7 +1423,7 @@ class Sprites:
                 [
                     symbol
                     for symbol in self.symbol_dict
-                    if letter in symbol and self.symbol_dict[symbol]["variants"]
+                    if symbol.startswith(letter) and self.symbol_dict[symbol]["variants"]
                 ]
             ):
                 if self.symbol_dict[symbol]["variants"] > 1 and x_mod > 0:
