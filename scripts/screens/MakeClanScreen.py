@@ -189,6 +189,9 @@ class MakeClanScreen(Screens):
         self.members = []
         self.clan_size = "medium"
         self.clan_age = "established"
+        self.game_settings_codes = []  # For pre-game settings screen
+        self.game_settings_text = {}  # Separate dict for setting descriptions
+        self.game_settings_checkboxes = {}  # Separate dict for setting checkboxes
         
         self.custom_cat = None
         self.elements = {}
@@ -423,6 +426,8 @@ class MakeClanScreen(Screens):
                 self.handle_choose_leader_event(event)
             elif self.sub_screen == 'customize cat':
                 self.handle_customize_cat_event(event)
+            elif self.sub_screen == 'game settings':
+                self.handle_game_settings_event(event)
             elif self.sub_screen == 'choose camp':
                 self.handle_choose_background_event(event)
             elif self.sub_screen == "choose symbol":
@@ -462,7 +467,7 @@ class MakeClanScreen(Screens):
                 self.elements["error"].show()
                 return
             self.clan_name = new_name
-            self.open_choose_leader()
+            self.open_game_settings()
         elif event.ui_element == self.elements["previous_step"]:
             self.clan_name = ""
             self.generated_clan_prefix = None
@@ -577,24 +582,25 @@ class MakeClanScreen(Screens):
             self.selected_cat = None
             self.open_name_cat()
         elif event.ui_element == self.elements['previous_step']:
-            self.clan_name = ""
-            self.generated_clan_prefix = None
-            self.open_name_clan()
+            # Go back to game settings
+            self.open_game_settings()
         elif event.ui_element == self.elements['customize']:
             self.open_customize_cat()
             
     def handle_choose_name_event(self, event):
         if event.ui_element == self.elements['next_step']:
-            new_name = sub(r'[^A-Za-z0-9 ]+', "", self.elements["name_entry"].get_text()).strip()
-            if not new_name:
-                self.elements["error"].set_text("Your cat's name cannot be empty")
+            new_prefix = sub(r'[^A-Za-z0-9 ]+', "", self.elements["prefix_entry"].get_text()).strip()
+            raw_suffix = sub(r'[^A-Za-z0-9 ]+', "", self.elements["suffix_entry"].get_text())
+            # Don't strip ancient-style suffixes (which have leading space)
+            new_suffix = raw_suffix.strip() if not raw_suffix.startswith(" ") else raw_suffix
+            
+            if not new_prefix:
+                self.elements["error"].set_text("Your cat's prefix cannot be empty")
                 self.elements["error"].show()
                 return
-            self.your_cat.name.prefix = new_name
-
-            while self.your_cat.name.prefix.lower() == self.your_cat.name.suffix:
-                print("Prefix and suffix are the same, rerolling suffix...")
-                self.your_cat.name.give_suffix(self.your_cat.pelt, game.clan.biome, None)
+            
+            self.your_cat.name.prefix = new_prefix
+            self.your_cat.name.suffix = new_suffix if new_suffix else ""
 
             if game.switches["customise_new_life"] is True:
                 self.open_clan_saved_screen()
@@ -602,10 +608,50 @@ class MakeClanScreen(Screens):
                 self.open_choose_background()
 
         elif event.ui_element == self.elements["random"]:
-            self.elements["name_entry"].set_text(choice(names.names_dict["normal_prefixes"]))
+            # Generate a new name respecting the current settings and special suffix preference
+            from scripts.cat.names import Name
+            new_name_obj = Name(cat=self.your_cat, biome=game.clan.biome, specsuffix_hidden=self.your_cat.name.specsuffix_hidden)
+            self.elements["prefix_entry"].set_text(new_name_obj.prefix)
+            self.elements["suffix_entry"].set_text(new_name_obj.suffix)
+        
+        elif event.ui_element == self.elements["use_spec_suffix"]:
+            # Toggle whether to use special suffixes
+            self.your_cat.name.specsuffix_hidden = not self.your_cat.name.specsuffix_hidden
+            # Update button appearance
+            if self.your_cat.name.specsuffix_hidden:
+                self.elements["use_spec_suffix"].change_object_id("@unchecked_checkbox")
+            else:
+                self.elements["use_spec_suffix"].change_object_id("@checked_checkbox")
+        
         elif event.ui_element == self.elements['previous_step']:
             self.selected_cat = None
             self.open_choose_leader()
+    
+    def handle_game_settings_event(self, event):
+        """Handle events for pre-game settings screen"""
+        # Check if a checkbox was clicked
+        if event.ui_element in self.game_settings_checkboxes.values():
+            # Find which setting was clicked
+            for code, checkbox in self.game_settings_checkboxes.items():
+                if event.ui_element == checkbox:
+                    # Toggle the setting
+                    game.clan.clan_settings[code] = not game.clan.clan_settings[code]
+                    # Refresh checkboxes to update disabled state if needed
+                    self.refresh_game_settings_checkboxes()
+                    break
+        
+        elif event.ui_element == self.elements['next_step']:
+            # Regenerate names for all example cats with the new settings
+            from scripts.cat.names import Name
+            for cat in game.choose_cats.values():
+                cat.name = Name(cat=cat, biome=game.clan.biome)
+            
+            # Proceed to leader selection
+            self.open_choose_leader()
+        
+        elif event.ui_element == self.elements['previous_step']:
+            # Go back to clan naming
+            self.open_name_clan()
     
     def handle_create_other_cats(self):
         self.create_example_cats2()
@@ -887,9 +933,9 @@ class MakeClanScreen(Screens):
             screen.blit(self.name_clan_img, ui_scale_blit((0, 0)))
             
         elif self.sub_screen == 'choose name':
-            if self.elements["name_entry"].get_text() == "":
+            if self.elements["prefix_entry"].get_text() == "":
                 self.elements['next_step'].disable()
-            elif self.elements["name_entry"].get_text().startswith(" "):
+            elif self.elements["prefix_entry"].get_text().startswith(" "):
                 self.elements["error"].set_text("Your name cannot start with a space.")
                 self.elements["error"].show()
                 self.elements['next_step'].disable()
@@ -909,7 +955,13 @@ class MakeClanScreen(Screens):
             self.tabs[tab].kill()
         for button in self.symbol_buttons:
             self.symbol_buttons[button].kill()
+        for text_box in self.game_settings_text.values():
+            text_box.kill()
+        for checkbox in self.game_settings_checkboxes.values():
+            checkbox.kill()
         self.elements = {}
+        self.game_settings_text = {}
+        self.game_settings_checkboxes = {}
 
         for item in self.customiser_button_dicts:
             for ele in item:
@@ -1735,28 +1787,10 @@ class MakeClanScreen(Screens):
         self.refresh_cat_images_and_info2()
         
         self.sub_screen = 'choose name'
-        
-        self.elements["random"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((285, 447), (34, 34))),
-            "\u2684",
-            get_button_dict(ButtonStyles.ICON, (34, 34)),
-            object_id="@buttonstyles_icon",
-            manager=MANAGER,
-            sound_id="dice_roll",
-        )
 
         self.elements["error"] = pygame_gui.elements.UITextBox("", ui_scale(pygame.Rect((253, 655), (298, -1))),
                                                                manager=MANAGER,
                                                                object_id="#default_dark", visible=False)
-        # self.main_menu.kill()
-        # self.main_menu = UISurfaceImageButton(
-        #     ui_scale(pygame.Rect((25, 50), (153, 30))),
-        #     get_arrow(3) + " Main Menu",
-        #     get_button_dict(ButtonStyles.SQUOVAL, (153, 30)),
-        #     manager=MANAGER,
-        #     object_id="@buttonstyles_squoval",
-        #     starting_height=1,
-        # )
 
         self.elements["previous_step"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((253, 645), (147, 30))),
@@ -1775,23 +1809,55 @@ class MakeClanScreen(Screens):
             starting_height=2,
             anchors={"left_target": self.elements["previous_step"]},
         )
-        self.elements["name_entry"] = pygame_gui.elements.UITextEntryLine(ui_scale(pygame.Rect((325, 450), (140, 30)))
-                                                                          , manager=MANAGER, initial_text=self.your_cat.name.prefix)
-        self.elements["name_entry"].set_allowed_characters(
-            list("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "))
-        self.elements["name_entry"].set_text_length_limit(30)
-
-        if game.settings['dark mode']:
-            self.elements["clan"] = pygame_gui.elements.UITextBox("-kit",
-                                                              ui_scale(pygame.Rect((435, 452), (100, 25))),
-                                                              object_id="#text_box_30_horizcenter_light",
-                                                              manager=MANAGER)
         
-        else:
-            self.elements["clan"] = pygame_gui.elements.UITextBox("-kit",
-                                                              ui_scale(pygame.Rect((435, 452), (100, 25))),
-                                                              object_id="#text_box_30_horizcenter",
-                                                              manager=MANAGER)
+        # Name entry boxes
+        self.elements["prefix_entry"] = pygame_gui.elements.UITextEntryLine(
+            ui_scale(pygame.Rect((270, 430), (115, 30))),
+            manager=MANAGER,
+            initial_text=self.your_cat.name.prefix
+        )
+        self.elements["prefix_entry"].set_allowed_characters(
+            list("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- ")
+        )
+        self.elements["prefix_entry"].set_text_length_limit(30)
+        
+        self.elements["suffix_entry"] = pygame_gui.elements.UITextEntryLine(
+            ui_scale(pygame.Rect((385, 430), (120, 30))),
+            manager=MANAGER,
+            initial_text=self.your_cat.name.suffix
+        )
+        self.elements["suffix_entry"].set_allowed_characters(
+            list("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- ")
+        )
+        self.elements["suffix_entry"].set_text_length_limit(30)
+        
+        # Use special suffixes checkbox
+        self.elements["use_spec_suffix"] = UIImageButton(
+            ui_scale(pygame.Rect((390, 465), (34, 34))),
+            "",
+            object_id="@checked_checkbox" if not self.your_cat.name.specsuffix_hidden else "@unchecked_checkbox",
+            tool_tip_text="When enabled, leaders get -star, deputies get -deputy, medicine cats get role suffixes. When disabled, custom suffix is always used.",
+            manager=MANAGER,
+        )
+        
+        # Special suffix label (to the right of checkbox)
+        self.elements["spec_suffix_label"] = pygame_gui.elements.UITextBox(
+            "special suffixes",
+            ui_scale(pygame.Rect((425, 464), (135, 25))),
+            object_id=get_text_box_theme("#text_box_30_horizleft"),
+            manager=MANAGER,
+        )
+        self.elements["spec_suffix_label"].disable()
+        
+        # Random button below the name entries
+        self.elements["random"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((350, 465), (34, 34))),
+            "\u2684",
+            get_button_dict(ButtonStyles.ICON, (34, 34)),
+            object_id="@buttonstyles_icon",
+            manager=MANAGER,
+            sound_id="dice_roll",
+        )
         
 
 
@@ -1799,6 +1865,10 @@ class MakeClanScreen(Screens):
         """Opens the name Clan screen"""
         self.clear_all_page()
         self.sub_screen = "name clan"
+        
+        # Reset clan but preserve symbol selection
+        # self.symbol_selected = None  # Don't reset - preserve user's choice
+        game.clan = None
 
         # Create all the elements.
         self.elements["random"] = UISurfaceImageButton(
@@ -4340,6 +4410,142 @@ class MakeClanScreen(Screens):
                                    self.custom_cat.ID,
                                    starting_height=0, manager=MANAGER)
     
+    def open_game_settings(self):
+        """Opens pre-game naming settings screen after clan is named"""
+        # Create a temporary clan with the name so settings can be configured
+        if not game.clan:
+            game.clan = Clan(name=self.clan_name, clan_prefix=self.generated_clan_prefix)
+        
+        # Reset naming settings to defaults (only warrior_names and kit_inherit_naming enabled)
+        game.clan.clan_settings["warrior_names"] = True
+        game.clan.clan_settings["ancient_names"] = False
+        game.clan.clan_settings["single_names"] = False
+        game.clan.clan_settings["syllable_names"] = False
+        game.clan.clan_settings["kit_inherit_naming"] = True
+        
+        self.clear_all_page()
+        self.sub_screen = "game settings"
+        
+        # Create container for settings
+        self.elements["container_game_settings"] = pygame_gui.elements.UIScrollingContainer(
+            ui_scale(pygame.Rect((0, 245), (700, 300))),
+            allow_scroll_x=False,
+            manager=MANAGER,
+        )
+        
+        # Create instruction text
+        self.elements["instr"] = pygame_gui.elements.UITextBox(
+            "Pre-game settings",
+            ui_scale(pygame.Rect((100, 185), (600, 50))),
+            object_id=get_text_box_theme("#text_box_30_horizcenter"),
+            manager=MANAGER,
+        )
+        
+        # Settings to show
+        naming_settings = [
+            ("warrior_names", "Enable traditional warrior-style names"),
+            ("ancient_names", "Enable ancient-style names"),
+            ("single_names", "Enable single names"),
+            ("syllable_names", "Enable syllable-based names"),
+            ("kit_inherit_naming", "Kits inherit parents' naming style"),
+        ]
+        
+        # Create text boxes for settings
+        for i, (code, desc) in enumerate(naming_settings):
+            self.game_settings_text[code] = pygame_gui.elements.UITextBox(
+                desc,
+                ui_scale(pygame.Rect((225, i * 39), (500, 39))),
+                container=self.elements["container_game_settings"],
+                object_id=get_text_box_theme("#text_box_30_horizleft_pad_0_8"),
+                manager=MANAGER,
+            )
+            self.game_settings_text[code].disable()
+        
+        self.elements["container_game_settings"].set_scrollable_area_dimensions(
+            ui_scale_dimensions((780, len(naming_settings) * 39 + 40))
+        )
+        
+        # Store setting codes for reference
+        self.game_settings_codes = [code for code, _ in naming_settings]
+        
+        # Create checkboxes
+        self.refresh_game_settings_checkboxes()
+        
+        # Navigation buttons
+        self.elements["previous_step"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((253, 645), (147, 30))),
+            get_arrow(1, arrow_left=True) + " Previous Step",
+            get_button_dict(ButtonStyles.MENU_LEFT, (147, 30)),
+            object_id="@buttonstyles_menu_left",
+            manager=MANAGER,
+            starting_height=2
+        )
+        self.elements["next_step"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((0, 645), (147, 30))),
+            "Next Step " + get_arrow(3, arrow_left=False),
+            get_button_dict(ButtonStyles.MENU_RIGHT, (147, 30)),
+            object_id="@buttonstyles_menu_right",
+            manager=MANAGER,
+            starting_height=2,
+            anchors={"left_target": self.elements["previous_step"]},
+        )
+    
+    def refresh_game_settings_checkboxes(self):
+        """Refresh checkboxes for game settings (naming styles)"""
+        # Kill existing checkboxes
+        for checkbox in self.game_settings_checkboxes.values():
+            checkbox.kill()
+        self.game_settings_checkboxes = {}
+        
+        # Count enabled name types to prevent all from being disabled
+        name_type_settings = ["warrior_names", "ancient_names", "single_names", "syllable_names"]
+        enabled_name_types = sum(
+            1 for setting in name_type_settings 
+            if game.clan.clan_settings.get(setting, False)
+        )
+        
+        # Settings descriptions for tooltips
+        naming_settings = [
+            ("warrior_names", "Cats can have traditional prefix+suffix names (e.g., Fireheart, Bluestar). At least one name type must be enabled."),
+            ("ancient_names", "Cats can have capitalized separated names (e.g., Half Moon, Bright Stream). At least one name type must be enabled."),
+            ("single_names", "Cats can have single-word names from a curated list (e.g., Aurora, Luna, Storm). At least one name type must be enabled."),
+            ("syllable_names", "Cats can have names generated from 1-3 syllables (e.g., Kima, Dolu, Bajako). At least one name type must be enabled."),
+            ("kit_inherit_naming", "Kits of the same litter use one naming style inherited from their parents when enabled."),
+        ]
+        
+        for i, code in enumerate(self.game_settings_codes):
+            if game.clan.clan_settings[code]:
+                box_type = "@checked_checkbox"
+            else:
+                box_type = "@unchecked_checkbox"
+            
+            disabled = False
+            # Disable name type setting if it's the only one enabled
+            if code in name_type_settings and enabled_name_types == 1 and game.clan.clan_settings.get(code, False):
+                disabled = True
+            
+            # Get description for tooltip
+            desc = ""
+            for setting_code, setting_desc in naming_settings:
+                if setting_code == code:
+                    desc = setting_desc
+                    break
+            
+            tooltip = desc
+            if disabled and code in name_type_settings:
+                tooltip = f"{desc} This is the only enabled name type; at least one must be enabled."
+            
+            self.game_settings_checkboxes[code] = UIImageButton(
+                ui_scale(pygame.Rect((170, i * 39), (34, 34))),
+                "",
+                object_id=box_type,
+                container=self.elements["container_game_settings"],
+                tool_tip_text=tooltip,
+            )
+            
+            if disabled:
+                self.game_settings_checkboxes[code].disable()
+    
     def open_choose_background(self):
         # clear screen
         self.clear_all_page()
@@ -4825,6 +5031,14 @@ class MakeClanScreen(Screens):
                         self.symbol_selected = sprite
                         break
             
+            # Store the naming settings from the pre-game settings screen before creating the new clan
+            saved_naming_settings = {}
+            if game.clan:
+                # Save settings from temporary clan
+                for key in ["warrior_names", "ancient_names", "single_names", "syllable_names", "kit_inherit_naming"]:
+                    if key in game.clan.clan_settings:
+                        saved_naming_settings[key] = game.clan.clan_settings[key]
+            
             game.clan = Clan(name = self.clan_name,
                             leader = self.leader,
                             deputy = self.deputy,
@@ -4838,6 +5052,11 @@ class MakeClanScreen(Screens):
                             your_cat=self.your_cat,
                             clan_age=self.clan_age,
                             clan_prefix=clan_prefix)
+            
+            # Restore the naming settings to the new clan
+            for key, value in saved_naming_settings.items():
+                game.clan.clan_settings[key] = value
+            
             game.clan.your_cat.moons = -1
             game.clan.create_clan()
             if self.clan_age == "established":

@@ -340,7 +340,7 @@ class Game:
             return None
 
         # Now we can get a list of all the folders in the saves folder
-        clan_list = [f.name for f in os.scandir(get_save_dir()) if f.is_dir() and f.name != ".git"]
+        clan_list = [f.name for f in os.scandir(get_save_dir()) if f.is_dir() and f.name != ".git" and "backup" not in f.name.lower()]
 
         # the Clan specified in saves/clanlist.txt should be first in the list
         # so we can load it automatically

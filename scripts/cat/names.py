@@ -124,10 +124,7 @@ class Name:
         if not settings:
             return "warrior"
         
-        # Force warrior names for example cats (kits with no parents during clan creation)
-        if self.cat and getattr(self.cat, "example", False):
-            return "warrior"
-        
+        # Build list of enabled naming types from current settings
         enabled_types = []
 
         if settings.get("warrior_names", True):
@@ -241,7 +238,9 @@ class Name:
             base = self.suffix.strip()
             if base:
                 self.suffix = " " + base[0].upper() + base[1:]
-            self.specsuffix_hidden = True
+            # Only force specsuffix_hidden if we generated the name (not user input)
+            if suffix is None:
+                self.specsuffix_hidden = True
     
     def _generate_warrior_name(self, prefix, suffix, eyes, color, pelt, biome, tortiepattern, load_existing_name):
         """Generate a traditional warrior-style name."""
