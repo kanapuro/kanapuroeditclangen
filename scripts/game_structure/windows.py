@@ -686,10 +686,7 @@ class ChangeCatName(UIWindow):
                     raw_suffix = sub(
                         r"[^A-Za-z0-9 '\-]+", "", self.suffix_entry_box.get_text()
                     )
-                    # For ancient, ensure leading space is stored for persistence/loading
-                    if self.the_cat.name.name_type == "ancient" and raw_suffix:
-                        if not raw_suffix.startswith(" "):
-                            raw_suffix = " " + raw_suffix
+                    # Store suffix as-is; don't force ancient space format
                     self.the_cat.name.suffix = raw_suffix
                     self.name_changed.show()
                 else:
@@ -700,8 +697,7 @@ class ChangeCatName(UIWindow):
                         raw_suffix = sub(
                             r"[^A-Za-z0-9 '\-]+", "", self.suffix_entry_box.get_text()
                         )
-                        if raw_suffix and not raw_suffix.startswith(" "):
-                            raw_suffix = " " + raw_suffix
+                        # Store suffix as-is; don't force ancient space format
                         self.the_cat.name.suffix = raw_suffix
                         self.name_changed.show()
 
@@ -732,8 +728,8 @@ class ChangeCatName(UIWindow):
                 # Do not change suffix on prefix roll; user controls it separately
                 if chosen_type == "ancient":
                     base = current_suffix.strip()
-                    # Display ancient with leading space for parity; save handler will persist it
-                    formatted_suffix = (" " + base[0].upper() + base[1:]) if base else base
+                    # Display suffix without forcing leading space; user can add if desired
+                    formatted_suffix = base[0].upper() + base[1:] if base else base
                     self.suffix_entry_box.set_text(formatted_suffix)
                 else:
                     self.suffix_entry_box.set_text(current_suffix)
@@ -755,11 +751,11 @@ class ChangeCatName(UIWindow):
                 use_prefix = self.prefix_entry_box.text if self.prefix_entry_box.text else self.the_cat.name.prefix
                 rolled = roll_name(force_type=chosen_type, force_prefix=use_prefix, force_suffix=None, keep_suffix=False)
 
-                # For ancient, capitalize suffix for display and hide special suffix to allow custom suffix on kits
+                # For ancient, capitalize suffix; don't force space format
                 if chosen_type == "ancient" and rolled.suffix:
                     base = rolled.suffix.strip()
-                    # Display ancient with leading space for parity; save handler will persist it
-                    rolled.suffix = (" " + base[0].upper() + base[1:]) if base else base
+                    # Display suffix without forcing leading space; user can add if desired
+                    rolled.suffix = base[0].upper() + base[1:] if base else base
                     self.specsuffic_hidden = True
                 else:
                     # Do not alter the user's special-suffix toggle here for warrior

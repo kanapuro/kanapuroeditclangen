@@ -442,11 +442,11 @@ class Name:
             return f"{self.prefix.strip()}egg"
         # Base formatting
         if self.name_type == "ancient":
-            # Ensure exactly one space between prefix and suffix; suffix should already carry leading space
+            # Return ancient name with prefix and suffix as-is; don't force space format
             suffix = self.suffix
-            if suffix and not suffix.startswith(" "):
-                suffix = " " + suffix
-            return self.prefix.strip() + (suffix if suffix else "")
+            if suffix:
+                return self.prefix.strip() + suffix
+            return self.prefix.strip()
         return self.prefix.strip() + self.suffix.strip()
 
 
