@@ -246,7 +246,7 @@ class NameKitsScreen(Screens):
             self.next_cat = 0
 
     def change_cat(self, new_mentor=None):
-        self.selected_cat.name.prefix = self.selected_details["name_entry"].get_text().strip()
+        self.selected_cat.name.prefix = self.selected_details["name_entry"].get_text()
 
     def update_selected_cat(self):
         """Updates the image and information on the currently selected mentor"""

@@ -589,10 +589,8 @@ class MakeClanScreen(Screens):
             
     def handle_choose_name_event(self, event):
         if event.ui_element == self.elements['next_step']:
-            new_prefix = sub(r'[^A-Za-z0-9 ]+', "", self.elements["prefix_entry"].get_text()).strip()
-            raw_suffix = sub(r'[^A-Za-z0-9 ]+', "", self.elements["suffix_entry"].get_text())
-            # Don't strip ancient-style suffixes (which have leading space)
-            new_suffix = raw_suffix.strip() if not raw_suffix.startswith(" ") else raw_suffix
+            new_prefix = self.elements["prefix_entry"].get_text()
+            new_suffix = self.elements["suffix_entry"].get_text()
             
             if not new_prefix:
                 self.elements["error"].set_text("Your cat's prefix cannot be empty")
@@ -600,7 +598,7 @@ class MakeClanScreen(Screens):
                 return
             
             self.your_cat.name.prefix = new_prefix
-            self.your_cat.name.suffix = new_suffix if new_suffix else ""
+            self.your_cat.name.suffix = new_suffix
 
             if game.switches["customise_new_life"] is True:
                 self.open_clan_saved_screen()
