@@ -1885,7 +1885,7 @@ class MakeClanScreen(Screens):
     def open_name_clan(self):
         """Opens the name Clan screen"""
         self.clear_all_page()
-        self.sub_screen = "name colony"
+        self.sub_screen = "name clan"
         
         # Reset clan but preserve symbol selection
         # self.symbol_selected = None  # Don't reset - preserve user's choice
