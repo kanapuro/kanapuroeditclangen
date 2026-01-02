@@ -514,7 +514,27 @@ class PatrolScreen(Screens):
             elif game.switches["patrol_category"] == "df":
                 text = "dark forest"
             elif game.switches["patrol_category"] == "date":
-                text = "date"
+                # Check if selected cat is dateable or outable
+                if len(self.current_patrol) > 1:
+                    companion = self.current_patrol[1]
+                    you = game.clan.your_cat
+                    if companion.ID in game.dated_cats or not companion.is_dateable(you):
+                        text = "outing"
+                    else:
+                        text = "date"
+                elif self.selected_cat is not None and self.selected_cat not in self.current_patrol:
+                    # Show compatibility for the selected cat that's not yet added
+                    you = game.clan.your_cat
+                    if self.selected_cat.ID in game.dated_cats:
+                        text = "date (already dated)"
+                    elif self.selected_cat.is_dateable(you):
+                        text = "date"
+                    elif self.selected_cat.is_friendlyable(you):
+                        text = "outing"
+                    else:
+                        text = "date"
+                else:
+                    text = "date"
             else:
                 text = ""
 
@@ -902,8 +922,27 @@ class PatrolScreen(Screens):
     def run_patrol_start(self):
         """Runs patrol start. To be run in a separate thread."""
         try:
+            # Determine patrol type based on the selected companion cat
+            patrol_category = game.switches.get("patrol_category", "clangen")
+            if game.switches.get("patrol_category") == "date" and len(self.current_patrol) > 1:
+                # The first cat is the player character, the second is the companion
+                companion = self.current_patrol[1]
+                you = game.clan.your_cat
+                # Check if companion is dateable
+                if companion.ID in game.dated_cats or not companion.is_dateable(you):
+                    # Either already dated or not dateable - use outing
+                    patrol_category = "outing"
+                    game.switches["patrol_category"] = "outing"
+                    print(f"DEBUG: Companion {companion.name} is not dateable - using OUTING")
+                else:
+                    # Dateable - use date
+                    patrol_category = "date"
+                    game.switches["patrol_category"] = "date"
+                    print(f"DEBUG: Companion {companion.name} is dateable - using DATE")
+            
+            print(f"DEBUG: run_patrol_start - patrol_category = {patrol_category}")
             self.display_text = self.patrol_obj.setup_patrol(
-                self.current_patrol, self.patrol_type
+                self.current_patrol, self.patrol_type, patrol_category=patrol_category
             )
         except RuntimeError:
             self.display_text = None
@@ -1138,9 +1177,11 @@ class PatrolScreen(Screens):
             if not you.dead and "4" not in game.switches['patrolled'] and not you.outside and not you.not_working():
                 if you not in self.current_patrol and not you.not_working():
                     self.current_patrol.insert(0, you)
+                # Show ALL possible companions (both dateable and outable)
                 for the_cat in Cat.all_cats_list:
-                    if the_cat.in_camp and the_cat.ID not in game.dated_cats and the_cat not in self.current_patrol and not the_cat.not_working() and the_cat.is_dateable(game.clan.your_cat):
-                        self.able_cats.append(the_cat)
+                    if the_cat.in_camp and the_cat not in self.current_patrol and not the_cat.not_working() and the_cat.status not in ['kitten', "newborn"]:
+                        if (the_cat.ID not in game.dated_cats and the_cat.is_dateable(you)) or the_cat.is_friendlyable(you):
+                            self.able_cats.append(the_cat)
         else: # DF patrol
             the_cat = game.clan.your_cat
             if not the_cat.dead and not the_cat.outside and not the_cat.not_working():

@@ -1,0 +1,451 @@
+[
+    {
+        "patrol_id": "outing_walk",
+        "biome": [
+            "Any"
+        ],
+        "season": [
+            "Any"
+        ],
+        "types": [
+            "lifegen"
+        ],
+        "tags": ["outing"],
+        "patrol_art": "gen_bump_heads_warriors",
+        "min_cats": 2,
+        "max_cats": 2,
+        "min_max_status": {},
+        "weight": 20,
+        "intro_text": "You invite r_c to go for a walk with you through the forest. Maybe you'll catch up and enjoy each other's company.",
+        "decline_text": "You decide you'd rather relax in the den instead.",
+        "chance_of_success": 60,
+        "success_outcomes": [
+            {
+                "text": "r_c agrees happily! You walk through the forest together, talking about everything and nothing. By the time you return, you both feel closer.",
+                "exp": 5,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "r_c"
+                        ],
+                        "cats_from": [
+                            "y_c"
+                        ],
+                        "mutual": true,
+                        "values": [
+                            "platonic",
+                            "comfort"
+                        ],
+                        "amount": 10
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c seems interested at first, but halfway through the walk, {PRONOUN/r_c/subject} seems distracted and wants to head back.",
+                "exp": 0,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "r_c"
+                        ],
+                        "cats_from": [
+                            "y_c"
+                        ],
+                        "mutual": false,
+                        "values": [
+                            "platonic"
+                        ],
+                        "amount": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "outing_hunting",
+        "biome": [
+            "Any"
+        ],
+        "season": [
+            "Any"
+        ],
+        "types": [
+            "lifegen"
+        ],
+        "tags": ["outing"],
+        "patrol_art": "fst_hunt_fun3",
+        "min_cats": 2,
+        "max_cats": 2,
+        "min_max_status": {},
+        "weight": 20,
+        "intro_text": "You suggest going hunting together with r_c. It could be a good way to bond while getting some fresh kill for the clan.",
+        "decline_text": "You're not in the mood for hunting right now.",
+        "chance_of_success": 55,
+        "success_outcomes": [
+            {
+                "text": "You and r_c work together perfectly in the field! You corner a rabbit as {PRONOUN/r_c/subject} cuts off its escape route. By the time you're done, you've made quite the haul. {PRONOUN/r_c/subject/CAP} {VERB/r_c/seem/seems} pleased with how well you two hunt together.",
+                "exp": 10,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "r_c"
+                        ],
+                        "cats_from": [
+                            "y_c"
+                        ],
+                        "mutual": true,
+                        "values": [
+                            "platonic",
+                            "trust"
+                        ],
+                        "amount": 12
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "You work together for a while, but the hunting isn't going well. You manage to catch something small, but it's not very impressive. r_c is sympathetic, but you both feel a bit discouraged.",
+                "exp": 3,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "r_c"
+                        ],
+                        "cats_from": [
+                            "y_c"
+                        ],
+                        "mutual": true,
+                        "values": [
+                            "platonic"
+                        ],
+                        "amount": 4
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "outing_chat",
+        "biome": [
+            "Any"
+        ],
+        "season": [
+            "Any"
+        ],
+        "types": [
+            "lifegen"
+        ],
+        "tags": ["outing"],
+        "patrol_art": "gen_romanticstroll",
+        "min_cats": 2,
+        "max_cats": 2,
+        "min_max_status": {},
+        "weight": 20,
+        "intro_text": "You find r_c sitting alone and decide to join {PRONOUN/r_c/object} for a chat. Maybe you can learn more about what {PRONOUN/r_c/subject} {VERB/r_c/think/thinks} about.",
+        "decline_text": "You leave them to {PRONOUN/r_c/poss} thoughts.",
+        "chance_of_success": 65,
+        "success_outcomes": [
+            {
+                "text": "You sit down next to r_c and the two of you talk for hours. {PRONOUN/r_c/subject/CAP} shares some interesting stories, and you find yourself laughing more than you have in days. It's nice to just be around somecat you enjoy.",
+                "exp": 0,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "r_c"
+                        ],
+                        "cats_from": [
+                            "y_c"
+                        ],
+                        "mutual": true,
+                        "values": [
+                            "platonic",
+                            "comfort"
+                        ],
+                        "amount": 8
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "You try to start a conversation, but r_c seems too preoccupied to talk. After a few awkward minutes, you leave {PRONOUN/r_c/object} alone with {PRONOUN/r_c/poss} thoughts.",
+                "exp": 0,
+                "weight": 20
+            }
+        ]
+    },
+    {
+        "patrol_id": "outing_teach",
+        "biome": [
+            "Any"
+        ],
+        "season": [
+            "Any"
+        ],
+        "types": [
+            "lifegen"
+        ],
+        "tags": ["outing"],
+        "patrol_art": "gen_train_huntingromance1",
+        "min_cats": 2,
+        "max_cats": 2,
+        "min_max_status": {},
+        "weight": 20,
+        "intro_text": "You offer to teach r_c something you're good at. Maybe your combat skills, hunting techniques, or even just how to find the best sunbathing spots.",
+        "decline_text": "You decide you're not in a teaching mood today.",
+        "chance_of_success": 50,
+        "success_outcomes": [
+            {
+                "text": "r_c listens intently and practices with your guidance. {PRONOUN/r_c/subject/CAP} picks up on it quickly! By the end, {PRONOUN/r_c/subject} thanks you and seems genuinely grateful for your time and patience.",
+                "exp": 8,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "r_c"
+                        ],
+                        "cats_from": [
+                            "y_c"
+                        ],
+                        "mutual": true,
+                        "values": [
+                            "platonic",
+                            "trust",
+                            "comfortable"
+                        ],
+                        "amount": 10
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c tries hard to understand, but seems frustrated with {PRONOUN/r_c/poss} own lack of progress. You try to be encouraging, but the outing ends awkwardly.",
+                "exp": 2,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "r_c"
+                        ],
+                        "cats_from": [
+                            "y_c"
+                        ],
+                        "mutual": false,
+                        "values": [
+                            "platonic"
+                        ],
+                        "amount": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "outing_explore",
+        "biome": [
+            "Any"
+        ],
+        "season": [
+            "Any"
+        ],
+        "types": [
+            "lifegen"
+        ],
+        "tags": ["outing"],
+        "patrol_art": "running_two_warriors",
+        "min_cats": 2,
+        "max_cats": 2,
+        "min_max_status": {},
+        "weight": 20,
+        "intro_text": "You suggest exploring a part of the territory you haven't been to in a while. r_c seems open to an adventure.",
+        "decline_text": "You decide exploring can wait for another day.",
+        "chance_of_success": 55,
+        "success_outcomes": [
+            {
+                "text": "You and r_c discover a beautiful hidden grove you've never seen before! You spend the afternoon exploring together, finding interesting rocks and plants. It's a wonderful way to spend time with {PRONOUN/r_c/object}.",
+                "exp": 5,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "r_c"
+                        ],
+                        "cats_from": [
+                            "y_c"
+                        ],
+                        "mutual": true,
+                        "values": [
+                            "platonic",
+                            "comfortable"
+                        ],
+                        "amount": 9
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "You explore for a bit, but the territory seems less interesting than you remembered. You and r_c head back to camp without finding anything noteworthy.",
+                "exp": 0,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "r_c"
+                        ],
+                        "cats_from": [
+                            "y_c"
+                        ],
+                        "mutual": true,
+                        "values": [
+                            "platonic"
+                        ],
+                        "amount": 2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "outing_group_sunbathe",
+        "biome": [
+            "Any"
+        ],
+        "season": [
+            "Newleaf",
+            "Greenleaf"
+        ],
+        "types": [
+            "lifegen"
+        ],
+        "tags": ["outing"],
+        "patrol_art": "pln_train_newleaf_3mates_cloverfield1",
+        "min_cats": 2,
+        "max_cats": 3,
+        "min_max_status": {},
+        "weight": 15,
+        "intro_text": "You suggest finding a warm sunny spot to relax with r_c and o_c1. A peaceful afternoon sounds perfect.",
+        "decline_text": "You decide to stay in camp instead.",
+        "chance_of_success": 70,
+        "success_outcomes": [
+            {
+                "text": "You all find a perfect sunlit clearing and spend the afternoon lounging together. The warmth, the company, and the easy conversation make for a wonderful day. Everyone seems more relaxed by the time you head back.",
+                "exp": 0,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "patrol"
+                        ],
+                        "cats_from": [
+                            "patrol"
+                        ],
+                        "mutual": false,
+                        "values": [
+                            "platonic",
+                            "comfort"
+                        ],
+                        "amount": 8
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "You find a spot, but clouds roll in and block the sun. The group sits around awkwardly for a bit before deciding to head back to camp.",
+                "exp": 0,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "patrol"
+                        ],
+                        "cats_from": [
+                            "patrol"
+                        ],
+                        "mutual": false,
+                        "values": [
+                            "platonic"
+                        ],
+                        "amount": 1
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "outing_group_border_walk",
+        "biome": [
+            "Any"
+        ],
+        "season": [
+            "Any"
+        ],
+        "types": [
+            "lifegen"
+        ],
+        "tags": ["outing"],
+        "patrol_art": "gen_med_gatheringcatmint_leaf-fall3",
+        "min_cats": 2,
+        "max_cats": 3,
+        "min_max_status": {},
+        "weight": 15,
+        "intro_text": "You invite r_c and o_c1 to walk the borders with you. It's a good way to spend time together while being useful to the clan.",
+        "decline_text": "You decide to stay in camp today.",
+        "chance_of_success": 60,
+        "success_outcomes": [
+            {
+                "text": "The group walks the borders together, marking territory and chatting along the way. It's nice to spend time with friends while doing something productive. Everyone returns to camp in good spirits.",
+                "exp": 5,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "patrol"
+                        ],
+                        "cats_from": [
+                            "patrol"
+                        ],
+                        "mutual": false,
+                        "values": [
+                            "platonic",
+                            "trust"
+                        ],
+                        "amount": 7
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "The walk is pleasant enough, but someone spots a threat near the border and you all have to rush back to camp to report it. The outing ends early.",
+                "exp": 2,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "patrol"
+                        ],
+                        "cats_from": [
+                            "patrol"
+                        ],
+                        "mutual": false,
+                        "values": [
+                            "platonic"
+                        ],
+                        "amount": 3
+                    }
+                ]
+            }
+        ]
+    }
+]

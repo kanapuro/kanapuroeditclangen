@@ -55,7 +55,7 @@ class Patrol():
         # Holds new cats for easy access
         self.new_cats: List[List[Cat]] = []
 
-    def setup_patrol(self, patrol_cats:List[Cat], patrol_type:str) -> str:
+    def setup_patrol(self, patrol_cats:List[Cat], patrol_type:str, patrol_category:str = "clangen") -> str:
         # Add cats
         
         print("PATROL START ---------------------------------------------------")
@@ -67,7 +67,8 @@ class Patrol():
             str(game.clan.biome).casefold(),
             str(game.clan.camp_bg).casefold(),
             patrol_type,
-            game.settings.get('disasters')
+            game.settings.get('disasters'),
+            is_outing=(patrol_category == "outing")
         )
         
         print(f'Total Number of Possible Patrols | normal: {len(final_patrols)}, romantic: {len(final_romance_patrols)} ')
@@ -209,7 +210,7 @@ class Patrol():
         print("Random Cat:", str(self.patrol_random_cat.name))
 
     def get_possible_patrols(self, current_season:str, biome:str, camp:str, patrol_type:str,
-                             game_setting_disaster=None) -> Tuple[List[PatrolEvent]]:
+                             game_setting_disaster=None, is_outing:bool=False) -> Tuple[List[PatrolEvent]]:
         # ---------------------------------------------------------------------------- #
         #                                LOAD RESOURCES                                #
         # ---------------------------------------------------------------------------- #
@@ -306,7 +307,7 @@ class Patrol():
                 possible_patrols.extend(self.generate_patrol_events(self.OTHER_CLAN_HOSTILE))
 
         final_patrols, final_romance_patrols = self. get_filtered_patrols(possible_patrols, biome, camp, current_season,
-                                                                          patrol_type)
+                                                                          patrol_type, is_outing=is_outing)
 
         # This is a debug option. If the patrol_id set isn "debug_ensure_patrol" is possible, 
         # make it the *only* possible patrol
@@ -549,7 +550,7 @@ class Patrol():
         print("final romance chance:", chance_of_romance_patrol)
         return not int(random.random() * chance_of_romance_patrol)
 
-    def _filter_patrols(self, possible_patrols: List[PatrolEvent], biome:str, camp:str, current_season:str, patrol_type:str):
+    def _filter_patrols(self, possible_patrols: List[PatrolEvent], biome:str, camp:str, current_season:str, patrol_type:str, is_outing:bool=False):
         filtered_patrols = []
         romantic_patrols = []
         special_date = get_special_date()
@@ -559,6 +560,9 @@ class Patrol():
             patrol_type = random.choice(["hunting", "border", "training"])
 
         # makes sure that it grabs patrols in the correct biomes, season, with the correct number of cats
+        # NOTE: When is_outing=True, romantic-tagged patrols are excluded, and regular
+        # hunting/border/training/med patrols are used instead. This ensures outings with
+        # non-dateable cats (elders, apprentices, etc.) don't have romantic outcomes.
         for patrol in possible_patrols:
             if not self._check_constraints(patrol):
                 continue
@@ -609,7 +613,11 @@ class Patrol():
                 if game.clan and game.clan.game_mode != 'cruel_season':
                     continue
 
-            if "romantic" in patrol.tags:
+            # If this is an outing (not a date), skip romantic patrols
+            if is_outing and "romantic" in patrol.tags:
+                continue
+
+            if "romantic" in patrol.tags and not is_outing:
                 romantic_patrols.append(patrol)
             else:
                 filtered_patrols.append(patrol)
@@ -620,17 +628,17 @@ class Patrol():
 
         return filtered_patrols, romantic_patrols
 
-    def get_filtered_patrols(self, possible_patrols, biome, camp, current_season, patrol_type):
+    def get_filtered_patrols(self, possible_patrols, biome, camp, current_season, patrol_type, is_outing:bool=False):
         
         filtered_patrols, romantic_patrols = self._filter_patrols(possible_patrols, biome, camp, current_season,
-                                                                  patrol_type)
+                                                                  patrol_type, is_outing=is_outing)
         
         if not filtered_patrols:
             print('No normal patrols possible. Repeating filter with used patrols cleared.')
             self.used_patrols.clear()
             print('used patrols cleared', self.used_patrols)
             filtered_patrols, romantic_patrols = self._filter_patrols(possible_patrols, biome, camp,
-                                                                      current_season, patrol_type)    
+                                                                      current_season, patrol_type, is_outing=is_outing)    
         
         return filtered_patrols, romantic_patrols
 

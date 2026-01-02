@@ -3549,6 +3549,37 @@ class Cat:
         
         return True
 
+    def is_friendlyable(self, other_cat: Cat):
+        """
+            LifeGen-specific function to see if a cat can be taken on a friendly outing.
+            This is used when the main character wants to spend time with cats that aren't
+            available for dating - including elders, kittens, cats outside age range, etc.
+            Basically: if they're NOT dateable, they're outable!
+        """
+        
+        # check to make sure it's not the same cat
+        if self.ID == other_cat.ID:
+            return False
+        
+        # make sure they're not outside the clan or dead
+        if self.dead or other_cat.dead or self.outside or other_cat.outside:
+            return False
+        
+        # check age - NO newborns or kittens allowed on outings
+        if other_cat.age in ["newborn", "kitten"]:
+            return False
+        
+        # NO ill, injured, or sick cats
+        if other_cat.not_working():
+            return False
+        
+        # If they ARE dateable, they're not "outable" (they should be on dates instead)
+        # Otherwise, ANY cat not meeting dating criteria is outable!
+        if self.is_dateable(other_cat):
+            return False
+        
+        return True
+
     def unset_mate(self, other_cat: Cat, breakup: bool = False, fight: bool = False):
         """Unset the mate from both self and other_cat"""
         if not other_cat:

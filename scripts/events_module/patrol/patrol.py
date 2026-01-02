@@ -65,7 +65,7 @@ class Patrol:
         # Holds new cats for easy access
         self.new_cats: List[List[Cat]] = []
 
-    def setup_patrol(self, patrol_cats: List[Cat], patrol_type: str) -> str:
+    def setup_patrol(self, patrol_cats: List[Cat], patrol_type: str, patrol_category: str = "clangen") -> str:
         # Add cats
 
         print("PATROL START ---------------------------------------------------")
@@ -78,6 +78,7 @@ class Patrol:
             str(game.clan.camp_bg).casefold(),
             patrol_type,
             game.settings.get("disasters"),
+            patrol_category,
         )
 
         # lifegen: debug to print all possible patrols
@@ -246,7 +247,7 @@ class Patrol:
         else:
             self.other_clan = None
 
-        if "patrol_category" in game.switches and game.switches["patrol_category"] in ["df", "date", "lifegen"]:
+        if "patrol_category" in game.switches and game.switches["patrol_category"] in ["df", "date", "outing", "lifegen"]:
             self.patrol_leader = game.clan.your_cat
             # youre always da leader here
             
@@ -282,6 +283,7 @@ class Patrol:
         camp: str,
         patrol_type: str,
         game_setting_disaster=None,
+        patrol_category: str = "clangen",
     ) -> Tuple[List[PatrolEvent]]:
         # ---------------------------------------------------------------------------- #
         #                                LOAD RESOURCES                                #
@@ -433,12 +435,14 @@ class Patrol:
                     possible_patrols.extend(self.generate_patrol_events(self.elder_lifegen))
                 else:
                     possible_patrols.extend(self.generate_patrol_events(self.warrior_lifegen))
-        elif game.switches["patrol_category"] == 'date':
+        elif patrol_category == 'date':
             possible_patrols.extend(self.generate_patrol_events(self.date_lifegen))
+        elif patrol_category == 'outing':
+            possible_patrols.extend(self.generate_patrol_events(self.outing_lifegen))
         else:
             possible_patrols.extend(self.generate_patrol_events(self.df_lifegen))
 
-        if game_setting_disaster and game.switches["patrol_category"] == 'clangen':
+        if game_setting_disaster and patrol_category == 'clangen':
             dis_chance = int(random.getrandbits(3))  # disaster patrol chance
             if dis_chance == 1:
                 possible_patrols.extend(self.generate_patrol_events(self.DISASTER))
@@ -1194,6 +1198,10 @@ class Patrol:
             self.date_lifegen = None
             with open(f"{resource_dir}/lifegen/date.json", 'r', encoding='ascii') as read_file:
                 self.date_lifegen = ujson.loads(read_file.read())
+        elif game.switches["patrol_category"] == 'outing':
+            self.outing_lifegen = None
+            with open(f"{resource_dir}/lifegen/outings.json", 'r', encoding='ascii') as read_file:
+                self.outing_lifegen = ujson.loads(read_file.read())
 
     def balance_hunting(self, possible_patrols: list):
         """Filter the incoming hunting patrol list to balance the different kinds of hunting patrols.

@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Added platonic "OUTING" subtype to DATE patrol type! You can now have platonic dates/outings with your kin, friends, and clanmates!
 - RETURN command now works on DEAD cats. Also added history input for return from death for both MC revival and command revival.
 - Stringfix deputy.json:27
 - Finished removing obvious references of "clan" in UI pages.
