@@ -1700,6 +1700,73 @@ class ChangelogPopup(UIWindow):
         return super().process_event(event)
 
 
+class TutorialPopup(UIWindow):
+    def __init__(self):
+        super().__init__(
+            ui_scale(pygame.Rect((150, 150), (500, 400))),
+            window_display_title="Getting Started",
+            object_id="#game_over_window",
+            resizable=False,
+        )
+        self.set_blocking(True)
+
+        self.tutorial_title = UITextBoxTweaked(
+            f"<strong>Getting Started</strong>",
+            ui_scale(pygame.Rect((0, 10), (500, -1))),
+            line_spacing=1,
+            object_id="#changelog_popup_title",
+            container=self,
+            anchors={"centerx": "centerx"},
+        )
+
+        self.tutorial_subtitle = UITextBoxTweaked(
+            f"LifegenMegaMergeKanapuroEdit",
+            ui_scale(pygame.Rect((0, 35), (500, -1))),
+            line_spacing=1,
+            object_id="#changelog_popup_subtitle",
+            container=self,
+            anchors={"centerx": "centerx"},
+        )
+
+        tutorial_text = (
+            "<strong>Welcome to LGMMKE!</strong><br>"
+            "LGMMKE is a game about taking care of both a colony and an individual character. Here's what you need to know!<br>"
+            "• This game is played with a mouse, however you can use keybinds.<br>"
+            "• Pick a name for your colony, select a main character, and load up your save.<br>"
+            "• Press \"timeskip one moon\" to advance time by a month and watch your colony grow.<br>"
+            "• View your save's cats in \"camp\" or \"cat list\", and click on them for more gameplay such as murder, mate selection, having kits/apprentices, accessories, and affairs.<br>"
+            "• Send your colony on patrol in the \"patrol\" tab to hunt, fight, and meet new cats.<br>"
+            "• Explore the camp buttons for more gameplay, and modify the settings to your liking!<br>"
+            "• If your cat dies, press the button to the right of \"timeskip one moon\" to revive, pick a new main character, or start over!<br>"
+            "• Play however you like! Build your lineage, experiment, breed, strategize, or watch your colony grow!<br>"
+            "• Advanced Tip: Press F3 for debugging commands such as changing camp & other colonies, or returning lost and exiled cats.<br>"
+        )
+
+        self.tutorial_text = UITextBoxTweaked(
+            tutorial_text,
+            ui_scale(pygame.Rect((10, 65), (480, 325))),
+            object_id="#text_box_30",
+            line_spacing=0.95,
+            starting_height=2,
+            container=self,
+            manager=MANAGER,
+        )
+
+        self.close_button = UIImageButton(
+            ui_scale(pygame.Rect((470, 5), (22, 22))),
+            "",
+            object_id="#exit_window_button",
+            starting_height=2,
+            container=self,
+        )
+
+    def process_event(self, event):
+        if event.type == pygame_gui.UI_BUTTON_START_PRESS:
+            if event.ui_element == self.close_button:
+                self.kill()
+        return super().process_event(event)
+
+
 class RelationshipLog(UIWindow):
     """This window allows the user to see the relationship log of a certain relationship."""
 

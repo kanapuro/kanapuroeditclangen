@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Added a simple tutorial to the new clan screen!
 - chosrun.sh now uses PULSE instead of ALSA because it annoyed me. (underrun buffer output issues)
 - Fixed name inheritence.
 - Fixed "auto fresh kill" clan setting to actually do what it says.

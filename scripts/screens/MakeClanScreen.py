@@ -29,7 +29,7 @@ from scripts.utility import ui_scale_dimensions, generate_sprite
 from .Screens import Screens
 from ..cat.sprites import sprites
 from ..game_structure.screen_settings import MANAGER, screen
-from ..game_structure.windows import SymbolFilterWindow
+from ..game_structure.windows import SymbolFilterWindow, TutorialPopup
 from ..ui.generate_box import get_box, BoxStyles
 from ..ui.generate_button import ButtonStyles, get_button_dict
 from ..ui.get_arrow import get_arrow
@@ -142,6 +142,7 @@ class MakeClanScreen(Screens):
 
         self.rolls_left = game.config["clan_creation"]["rerolls"]
         # self.menu_warning = None
+        self.tutorial_shown = False
 
     def screen_switches(self):
         super().screen_switches()
@@ -414,6 +415,10 @@ class MakeClanScreen(Screens):
         else:
             create_example_cats()
             self.open_name_clan()
+            # Show tutorial popup on first visit to the screen
+            if not self.tutorial_shown:
+                TutorialPopup()
+                self.tutorial_shown = True
 
     def handle_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
