@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed "auto fresh kill" clan setting to actually do what it says.
 - chosrun.sh (linux run file for chromebook) now uses ALSA for sound rather than dummy (which prevented sound in general).
 - STOP WIPING THE SUFFIX PLS! fixes to suffix issues. attempted to fix this like 5 times im gonnak ill myself lowkirkenuinely
 - Fixed issue where randomly generated symbols had no variants (ie. Mumble) and would not automatically select an icon, probably because it was left behind as a placeholder... Now it picks a new symbol, regardless if it's matching.

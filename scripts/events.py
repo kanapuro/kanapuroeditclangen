@@ -157,8 +157,9 @@ class Events:
                 )
             )
             game.clan.freshkill_pile.time_skip(relevant_cats, game.freshkill_event_list)
-            # get the moonskip freshkill
-            self.get_moon_freshkill()
+            # get the moonskip freshkill (auto hunting)
+            if game.clan.clan_settings.get('freshkill', True):
+                self.get_moon_freshkill()
 
         # Adding in any potential lead den events that have been saved
         if "lead_den_interaction" in game.clan.clan_settings:

@@ -56,8 +56,8 @@
             false
         ],
         "freshkill": [
-            "Enable auto freshkill",
-            "With this setting on, no cat will ever go hungry and hunting patrols will not be needed",
+            "Enable automatic hunting",
+            "When enabled, your colony will automatically catch prey each moon without needing to send hunting patrols, and your cats will never go hungry. When disabled, you must send hunting patrols to feed your colony.",
             true
         ],
         
