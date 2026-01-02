@@ -1177,10 +1177,30 @@ class PatrolScreen(Screens):
             if not you.dead and "4" not in game.switches['patrolled'] and not you.outside and not you.not_working():
                 if you not in self.current_patrol and not you.not_working():
                     self.current_patrol.insert(0, you)
-                # Show ALL possible companions (both dateable and outable)
+                
+                # Determine what type of cats are already in the patrol
+                has_dateable = False
+                has_outable = False
+                for cat in self.current_patrol[1:]:  # Skip your cat
+                    if cat.ID not in game.dated_cats and cat.is_dateable(you):
+                        has_dateable = True
+                    elif cat.is_friendlyable(you):
+                        has_outable = True
+                
+                # Show companions based on what's already in the patrol
                 for the_cat in Cat.all_cats_list:
                     if the_cat.in_camp and the_cat not in self.current_patrol and not the_cat.not_working() and the_cat.status not in ['kitten', "newborn"]:
-                        if (the_cat.ID not in game.dated_cats and the_cat.is_dateable(you)) or the_cat.is_friendlyable(you):
+                        is_dateable = the_cat.ID not in game.dated_cats and the_cat.is_dateable(you)
+                        is_outable = the_cat.is_friendlyable(you)
+                        
+                        # Prevent mixing: if patrol has dateable cats, only show dateable cats
+                        # If patrol has outable cats, only show outable cats
+                        if has_dateable and not is_dateable:
+                            continue
+                        if has_outable and not is_outable:
+                            continue
+                        
+                        if is_dateable or is_outable:
                             self.able_cats.append(the_cat)
         else: # DF patrol
             the_cat = game.clan.your_cat
