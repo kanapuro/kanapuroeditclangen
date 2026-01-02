@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- chosrun.sh now uses PULSE instead of ALSA because it annoyed me. (underrun buffer output issues)
+- Fixed name inheritence.
 - Fixed "auto fresh kill" clan setting to actually do what it says.
 - chosrun.sh (linux run file for chromebook) now uses ALSA for sound rather than dummy (which prevented sound in general).
 - STOP WIPING THE SUFFIX PLS! fixes to suffix issues. attempted to fix this like 5 times im gonnak ill myself lowkirkenuinely

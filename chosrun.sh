@@ -13,7 +13,7 @@ cd "$(dirname "$0")"
 # Lightweight env
 export PIP_NO_CACHE_DIR=1
 export SDL_VIDEODRIVER=x11
-export SDL_AUDIODRIVER=alsa
+export SDL_AUDIODRIVER=pulse
 export SDL_AUDIODEV=default
 export PYGAME_BLEND_ALPHA_SDL2=1
 export PYGAME_SDL2=1

@@ -184,15 +184,18 @@ class Name:
                             parent_types.append(detect_type(str(parent_cat.name)))
 
                     if parent_types:
-                        if "warrior" in parent_types:
-                            inherit_type = "warrior"
-                        else:
-                            inherit_type = parent_types[0]
+                        # Choose randomly from parent types instead of prioritizing warrior
+                        inherit_type = random.choice(parent_types)
 
                     if litter_key is not None and inherit_type is not None:
                         Name._litter_style_cache[litter_key] = inherit_type
 
-                if inherit_type in enabled_types:
+                if inherit_type:
+                    # If we inherited a type, always use it (add to enabled_types if needed)
+                    if inherit_type not in enabled_types:
+                        # Temporarily add the inherited type so kits can use parent's naming style
+                        # even if it's not currently enabled in settings
+                        pass  # We'll return it anyway
                     return inherit_type
         except Exception:
             pass
