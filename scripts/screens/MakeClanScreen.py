@@ -1857,7 +1857,7 @@ class MakeClanScreen(Screens):
             ui_scale(pygame.Rect((390, 465), (34, 34))),
             "",
             object_id="@checked_checkbox" if not self.your_cat.name.specsuffix_hidden else "@unchecked_checkbox",
-            tool_tip_text="When enabled, leaders get -star, deputies get -deputy, medicine cats get role suffixes. When disabled, custom suffix is always used.",
+            tool_tip_text="When enabled, kittens get -kit, apprentices get -paw, and leaders get -star. When disabled, custom suffix is always used.",
             manager=MANAGER,
         )
         
@@ -1885,7 +1885,7 @@ class MakeClanScreen(Screens):
     def open_name_clan(self):
         """Opens the name Clan screen"""
         self.clear_all_page()
-        self.sub_screen = "name clan"
+        self.sub_screen = "name colony"
         
         # Reset clan but preserve symbol selection
         # self.symbol_selected = None  # Don't reset - preserve user's choice
@@ -1980,7 +1980,7 @@ class MakeClanScreen(Screens):
             "Old",
             get_button_dict(ButtonStyles.SQUOVAL, (80, 30)),
             object_id="@buttonstyles_squoval",
-            tool_tip_text="The Clan has existed for many moons and cats' backstories will reflect this.",
+            tool_tip_text="The colony has existed for many moons and cats' backstories will reflect this.",
             manager=MANAGER
         )
         self.elements["new"] = UISurfaceImageButton(
@@ -1988,7 +1988,7 @@ class MakeClanScreen(Screens):
             "New",
             get_button_dict(ButtonStyles.SQUOVAL, (80, 30)),
             object_id="@buttonstyles_squoval",
-            tool_tip_text="The Clan is newly established and cats' backstories will reflect this.",
+            tool_tip_text="The colony is newly established and cats' backstories will reflect this.",
             manager=MANAGER
         )
         self.elements["established"].disable()
