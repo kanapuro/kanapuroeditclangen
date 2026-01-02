@@ -1174,7 +1174,7 @@ class PatrolScreen(Screens):
 
         elif game.switches["patrol_category"] == "date":
             you = game.clan.your_cat
-            if not you.dead and "4" not in game.switches['patrolled'] and not you.outside and not you.not_working():
+            if not you.dead and "4" not in game.switches['patrolled'] and "5" not in game.switches['patrolled'] and not you.outside and not you.not_working():
                 if you not in self.current_patrol and not you.not_working():
                     self.current_patrol.insert(0, you)
                 

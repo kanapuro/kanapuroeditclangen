@@ -127,6 +127,8 @@ class Patrol:
                 game.switches['patrolled'].append('1')
             elif game.switches["patrol_category"] == 'date':
                 game.switches['patrolled'].append('4')
+            elif game.switches["patrol_category"] == 'outing':
+                game.switches['patrolled'].append('5')
             else:
                 game.switches['patrolled'].append('3')
         
