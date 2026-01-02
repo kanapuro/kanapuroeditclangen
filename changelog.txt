@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Stringfix deputy.json:27
 - Finished removing obvious references of "clan" in UI pages.
 - Added a simple tutorial to the new clan screen!
 - chosrun.sh now uses PULSE instead of ALSA because it annoyed me. (underrun buffer output issues)
