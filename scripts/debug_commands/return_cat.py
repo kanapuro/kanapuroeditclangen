@@ -1,13 +1,14 @@
 from typing import List
 
 from scripts.cat.cats import Cat
+from scripts.cat.history import History
 from scripts.debug_commands.command import Command
 from scripts.debug_commands.utils import add_output_line_to_log
 from scripts.game_structure.game_essentials import game
 
 class ReturnCatCommand(Command):
     name = "return"
-    description = "Return a LOST or EXILED cat to the clan. Usage: return <cat id>"
+    description = "Return a LOST, EXILED, or DEAD cat to the clan. Usage: return <cat id>"
     aliases = []
     usage = "<cat id>"
 
@@ -20,16 +21,18 @@ class ReturnCatCommand(Command):
         if not cat:
             add_output_line_to_log(f"Could not find cat with ID {cat_id}")
             return
-        # Consider cat LOST/EXILED if exiled, outside, or status is lost/exiled/former colonycat
+        # Consider cat LOST/EXILED/DEAD if exiled, outside, dead, or status is lost/exiled/former colonycat
         # This forcibly and immediately returns the cat, bypassing in-game random chance or moon skip.
         lost_statuses = ["lost", "exiled", "former colonycat"]
-        if not (cat.exiled or cat.outside or cat.status.lower() in lost_statuses):
-            add_output_line_to_log(f"Cat {cat.name} (ID {cat.ID}) is not LOST or EXILED.")
+        if not (cat.exiled or cat.outside or cat.dead or cat.status.lower() in lost_statuses):
+            add_output_line_to_log(f"Cat {cat.name} (ID {cat.ID}) is not LOST, EXILED, or DEAD.")
             return
         # Save previous status if available
         prev_status = getattr(cat, 'old_status', None)
+        was_dead = cat.dead
         cat.exiled = False
         cat.outside = False
+        cat.dead = False
         Cat.add_to_clan(cat)
         # Restore previous status if available and valid, else default by moons
         valid_roles = [
@@ -49,4 +52,7 @@ class ReturnCatCommand(Command):
                 cat.status_change("kitten")
         # Set a positive thought for feedback
         cat.thought = "Is overjoyed to be home!"
-        add_output_line_to_log(f"Returned {cat.name} (ID {cat.ID}) to the clan as {cat.status}.")
+        # Add history event for return from death (only if cat was actually dead)
+        if was_dead:
+            History.add_return_from_death(cat, f"returned from death.")
+        add_output_line_to_log(f"Returned {cat.name} (ID {cat.ID}) to the colony as {cat.status}.")

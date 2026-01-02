@@ -18,7 +18,8 @@ class History:
                 died_by=None,
                 scar_events=None,
                 murder=None,
-                wrong_placement=False
+                wrong_placement=False,
+                return_from_death=None
                 ):
         self.beginning = beginning if beginning else {}
         self.mentor_influence = mentor_influence if mentor_influence else {"trait": {}, "skill": {}}
@@ -29,6 +30,7 @@ class History:
         self.scar_events = scar_events if scar_events else []
         self.murder = murder if murder else {}
         self.wrong_placement = wrong_placement if wrong_placement else False
+        self.return_from_death = return_from_death if return_from_death else []
 
         # fix 'old' history save bugs
         if type(self.mentor_influence["trait"]) is type(None):
@@ -150,7 +152,8 @@ class History:
             "died_by": cat.history.died_by,
             "scar_events": cat.history.scar_events,
             "murder": cat.history.murder,
-            "wrong_placement": cat.history.wrong_placement
+            "wrong_placement": cat.history.wrong_placement,
+            "return_from_death": cat.history.return_from_death
         }
         return history_dict
 
@@ -496,6 +499,18 @@ class History:
         cat.history.scar_events.append({
             "involved": other_cat,
             "text": scar_text,
+            "moon": game.clan.age
+        })
+
+    @staticmethod
+    def add_return_from_death(cat, text="was returned from the dead"):
+        """ Adds return from death to cat's history. """
+        if not game.clan:
+            return
+        History.check_load(cat)
+
+        cat.history.return_from_death.append({
+            "text": text,
             "moon": game.clan.age
         })
 

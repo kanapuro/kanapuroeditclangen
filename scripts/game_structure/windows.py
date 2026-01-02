@@ -2340,7 +2340,9 @@ class DeathScreen(UIWindow):
                     you.status = "apprentice"
                     you.name.status = "apprentice"
 
-                game.clan.your_cat.thought = "Is surprised to find themselves back in the Clan"
+                game.clan.your_cat.thought = "Is surprised to find themselves back in the colony"
+                # Add history event for revival
+                History.add_return_from_death(you, "returned from death by a higher power.")
                 game.last_screen_forupdate = None
                 game.switches['window_open'] = False
                 # Show revive flavor text INSTANTLY in the event log
