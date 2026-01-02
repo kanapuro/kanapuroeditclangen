@@ -463,13 +463,13 @@ class MakeClanScreen(Screens):
                 r"[^A-Za-z0-9 ]+", "", self.elements["name_entry"].get_text()
             ).strip()
             if not new_name:
-                self.elements["error"].set_text("Your Clan's name cannot be empty")
+                self.elements["error"].set_text("Your colony's name cannot be empty")
                 self.elements["error"].show()
                 return
             if new_name.casefold() in [
                 clan.casefold() for clan in game.switches["clan_list"]
             ]:
-                self.elements["error"].set_text("A Clan with that name already exists.")
+                self.elements["error"].set_text("A colony with that name already exists.")
                 self.elements["error"].show()
                 return
             self.clan_name = new_name
@@ -504,7 +504,7 @@ class MakeClanScreen(Screens):
     
     def random_clan_name(self):
         all_prefixes = names.names_dict["clan_prefixes"]
-        clan_suffixes = names.names_dict.get("clan_suffixes", ["Clan"])
+        clan_suffixes = names.names_dict.get("clan_suffixes")
         
         # Filter to only prefixes that have matching symbols with actual variants
         clan_prefixes = []
@@ -530,7 +530,7 @@ class MakeClanScreen(Screens):
                 chosen_name = "The " + chosen_name
             if chosen_name.casefold() not in [clan.casefold() for clan in game.switches['clan_list']]:
                 return chosen_name
-            print("Generated clan name was already in use! Rerolling...")
+            print("Generated colony name was already in use! Rerolling...")
     
     def handle_name_clan_key(self, event):
         if event.key == pygame.K_ESCAPE:
@@ -544,14 +544,14 @@ class MakeClanScreen(Screens):
                     r"[^A-Za-z0-9 ]+", "", self.elements["name_entry"].get_text()
                 ).strip()
                 if not new_name:
-                    self.elements["error"].set_text("Your Clan's name cannot be empty")
+                    self.elements["error"].set_text("Your colony's name cannot be empty")
                     self.elements["error"].show()
                     return
                 if new_name.casefold() in [
                     clan.casefold() for clan in game.switches["clan_list"]
                 ]:
                     self.elements["error"].set_text(
-                        "A Clan with that name already exists."
+                        "A colony with that name already exists."
                     )
                     self.elements["error"].show()
                     return
@@ -562,13 +562,13 @@ class MakeClanScreen(Screens):
                 r"[^A-Za-z0-9 ]+", "", self.elements["name_entry"].get_text()
             ).strip()
             if not new_name:
-                self.elements["error"].set_text("Your Clan's name cannot be empty")
+                self.elements["error"].set_text("Your colony's name cannot be empty")
                 self.elements["error"].show()
                 return
             if new_name.casefold() in [
                 clan.casefold() for clan in game.switches["clan_list"]
             ]:
-                self.elements["error"].set_text("A Clan with that name already exists.")
+                self.elements["error"].set_text("A colony with that name already exists.")
                 self.elements["error"].show()
                 return
             self.clan_name = new_name
@@ -938,13 +938,13 @@ class MakeClanScreen(Screens):
             if self.elements["name_entry"].get_text() == "":
                 self.elements["next_step"].disable()
             elif self.elements["name_entry"].get_text().startswith(" "):
-                self.elements["error"].set_text("Clan names cannot start with a space.")
+                self.elements["error"].set_text("Colony names cannot start with a space.")
                 self.elements["error"].show()
                 self.elements["next_step"].disable()
             elif self.elements["name_entry"].get_text().casefold() in [
                 clan.casefold() for clan in game.switches["clan_list"]
             ]:
-                self.elements["error"].set_text("A Clan with that name already exists.")
+                self.elements["error"].set_text("A colony with that name already exists.")
                 self.elements["error"].show()
                 self.elements["next_step"].disable()
             else:
@@ -1931,20 +1931,16 @@ class MakeClanScreen(Screens):
             list("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- ")
         )
         self.elements["name_entry"].set_text_length_limit(48)
-        self.elements["clan"] = pygame_gui.elements.UITextBox("-Clan",
-                                                              ui_scale(pygame.Rect((750, 1200), (200, 50))),
-                                                              object_id="#text_box_30_horizcenter_light",
-                                                              manager=MANAGER)
         self.elements["reset_name"] = UIImageButton(ui_scale(pygame.Rect((910, 1190), (268, 60))), "",
                                                     object_id="#reset_name_button", manager=MANAGER)
         
         if game.settings['dark mode']:
-            self.elements["clan_size"] = pygame_gui.elements.UITextBox("This Clan will be... ",
+            self.elements["clan_size"] = pygame_gui.elements.UITextBox("This colony will be... ",
                                                               ui_scale(pygame.Rect((200, 100), (405, 25))),
                                                               object_id="#text_box_30_horizcenter_light",
                                                               manager=MANAGER)
         else:
-            self.elements["clan_size"] = pygame_gui.elements.UITextBox("This Clan will be... ",
+            self.elements["clan_size"] = pygame_gui.elements.UITextBox("This colony will be... ",
                                                               ui_scale(pygame.Rect((200, 100), (405, 25))),
                                                               object_id="#text_box_30_horizcenter",
                                                               manager=MANAGER)

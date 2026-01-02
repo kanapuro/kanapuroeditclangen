@@ -35,7 +35,7 @@ class AllegiancesScreen(Screens):
         super().screen_switches()
         # Heading
         self.heading = pygame_gui.elements.UITextBox(
-            f"<b>{game.clan.name}Clan Allegiances</b>",
+            f"<b>{game.clan.name} Allegiances</b>",
             ui_scale(pygame.Rect((0, 115), (400, 40))),
             object_id=get_text_box_theme("#text_box_34_horizcenter_vertcenter"),
             manager=MANAGER,
