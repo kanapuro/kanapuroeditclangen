@@ -15,3 +15,4 @@
 - tab either in dangerous section or roles page to add/remove shunned status
 - button for patrols for "clan duties"!
 - add scrolling to clans on leader page so  U can ummmmm have more than 5 :)
+- the acquisition of an illness/condition should be listed in the history tab, alongside its cause. ie. a broken back from a badger, or grief stricken from losing (name).

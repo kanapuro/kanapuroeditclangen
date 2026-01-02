@@ -1,93 +1,120 @@
-# LifeGen - A ClanGen Mod
+# LifeGen Mega Merge - Kanapuro Edit (LGMMKE)
 
-### [Discord Server](https://discord.gg/lifegen) || [Official website](https://mods.clangen.io/LifeGen/download) || [ClanGen Itch.io Page](https://sablesteel.itch.io/clan-gen-fan-edit) 
+A ClanGen mod where you control your own cat! Choose your path and live out your life as a warrior. Personalized for Kanapuro's tastes!
 
-## Description
-A ClanGen mod where you control your own cat! Choose your path and live out your life as a warrior.
+## Requirements
 
-## Credits
-Original creator: just-some-cat.tumblr.com
+To run LGMMKE from source code, you'll need:
 
-Fan-edit creator: SableSteel, and many others
+- **Python 3.11.9 or earlier** (no later than 3.11.9)
+- **Poetry** (Python dependency manager)
 
-[LifeGen credits](https://docs.google.com/document/d/1XCm5Eo-y5VA6W9quDMbF3VNyKL7S8_9Tl4c2buuiA8g/edit?usp=sharing)
+> **Note**: Python 3.12+ is not supported. Install Python 3.11.9 or earlier from [python.org](https://www.python.org/downloads)
 
-## Downloads
-### Stable
-Stable versions can be downloaded directly from the [official LifeGen mod website](https://mods.clangen.io/LifeGen/download)
+## Installation & Setup
 
-### Development
-**Note**: Development versions are automatic snapshots of current development efforts. They are _not_ stable, can crash and even corrupt your save files.
-Additionally, we do not provide tech support for development versions.
+### 1. Install Python
 
-Download at your own risk here: [LifeGen development download](https://mods.clangen.io/LifeGen/download-development)
+Download Python 3.11.9 or earlier from [python.org](https://www.python.org/downloads)
 
-## Running from source
-ClanGen uses poetry to manage virtual environments. Therefore it is required to install the dependencies and run the game from source without manual tweaking.
-
-### Installing python
-ClanGen currently supports python versions >=3.8 and <3.13.
-
-Download from the official python website here: https://www.python.org/downloads
-
-Check if python is installed correctly by running `python3 --version`
-
-
-### Installing poetry
-Follow the instructions for installing poetry from the official website: https://python-poetry.org/docs/#installing-with-pipx
-
-#### Linux, macOS, Windows (WSL)
-Open a terminal and paste this:
+Verify installation:
+```bash
+python3 --version
 ```
+
+### 2. Install Poetry
+
+Follow the [official Poetry installation guide](https://python-poetry.org/docs/#installing-with-pipx):
+
+**Linux, macOS, or Windows (WSL/PowerShell):**
+```bash
 python3 -m pip install pipx --user
 python3 -m pipx install poetry
 python3 -m pipx ensurepath
 ```
-Then restart your terminal and check if poetry is installed by running `poetry --version`
 
-#### Windows (Powershell)
-Open a PowerShell window (Windows key and then enter `PowerShell`) and paste this:
-```
-py -m pip install pipx --user
-py -m pipx install poetry
-py -m pipx ensurepath
-```
-or in case you installed Python from the Windows Store:
-```
-python -m pip install pipx --user
-python -m pipx install poetry
-python -m pipx ensurepath
-```
-Then restart your terminal and check if poetry is installed by running `poetry --version`
-
-### Running the game via the helper scripts
-#### Linux, macOS
-Double click the `run.sh` script or open it in the terminal via `./run.sh` with the current working directory set to the game's root directory.
-
-#### Windows
-Double click the `run.bat` script.
-
-### Running the game via Visual Studio Code
-To configure poetry to run with Visual Studio Code, open the ClanGen folder and run the following code snippet in the Visual Studio Code integrated terminal (Ctrl + ` to open the integrated terminal):
-```
-poetry config virtualenvs.in-project true
+Verify installation:
+```bash
+poetry --version
 ```
 
-Now run the following command to create a virtual environment:
+## How to Play
+
+### Option 1: Run Script (Recommended)
+
+**Windows:**
+Double click the `run.bat` file in the game folder.
+
+**Linux / macOS:**
+Double click the `run.sh` file, or open a terminal in the game folder and run:
+```bash
+bash run.sh
 ```
-poetry install --no-root
+
+**Chromebook (Optimized):**
+Double click the `chosrun.sh` file, or open a terminal in the game folder and run:
+```bash
+bash chosrun.sh
 ```
 
-It should have created a `.venv` folder in the root directory of the game.
-If you don't see it, remove existing poetry virtual environments by running `poetry env remove python` and try again.
+### Option 2: Run from Terminal
 
-After that, ensure that you have the Python extension installed in Visual Studio Code. You can install it from the Extensions tab on the left sidebar. [(or click here)
-](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+Navigate to the game directory and use one of the following:
 
-Then, open the Command Palette (Ctrl+Shift+P) and search for `Python: Select Interpreter`. Select the virtual environment created by poetry (it should mention a `.venv` somewhere).
+**Linux / macOS:**
+```bash
+cd kanapuroeditclangen
+bash run.sh
+```
 
-Finally, open the `main.py` file and click the play button in the top right corner to run the game.
+**Windows:**
+```bash
+cd kanapuroeditclangen
+run.bat
+```
 
+**Chromebook (Optimized):**
+```bash
+cd kanapuroeditclangen
+bash chosrun.sh
+```
 
-## Bug Reporting
-Please report any bugs on the LifeGen discord server.
+### Option 3: Run from Visual Studio Code
+
+1. Open the `kanapuroeditclangen` folder in VS Code
+2. Open the integrated terminal (Ctrl + `)
+3. Run:
+   ```bash
+   poetry config virtualenvs.in-project true
+   poetry install --no-root
+   ```
+4. Select the Poetry virtual environment as your Python interpreter (Ctrl+Shift+P → "Python: Select Interpreter")
+5. Open `main.py` and click the play button in the top right corner
+
+## Features
+
+- Play as your own custom cat
+- Multiple life path choices
+- Rich storytelling and events
+- Colony management gameplay
+
+## Support & Community
+
+Have questions or found a bug? 
+
+- Join our **Discord server** at [discord.gg/pB3XnFqenm](https://discord.gg/pB3XnFqenm) - check the `#lgmmke` channel for updates
+- Visit my **Linktree** at [linktr.ee/kanapuro](https://linktr.ee/kanapuro) for multiple ways to contact me
+- Check the **GitHub repository** for the latest source code and issue tracking
+
+## Credits
+
+- **Original Creator**: just-some-cat.tumblr.com
+- **Lifegen Creator**: SableSteel and contributors
+- **LifeGenMegaMerge**: Sel
+- **Kanapuro Edit (LGMMKE)**: Current development
+
+[View the original LifeGen credits](https://docs.google.com/document/d/1XCm5Eo-y5VA6W9quDMbF3VNyKL7S8_9Tl4c2buuiA8g/edit?usp=sharing)
+
+## License
+
+See [LICENSE.md](LICENSE.md) for details.
