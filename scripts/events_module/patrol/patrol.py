@@ -1283,7 +1283,7 @@ class Patrol:
 
         root_dir = "resources/images/patrol_art/"
 
-        if game.settings.get("gore") and self.patrol_event.patrol_art_clean:
+        if not game.settings.get("gore") and self.patrol_event.patrol_art_clean:
             file_name = self.patrol_event.patrol_art_clean
         else:
             file_name = self.patrol_event.patrol_art
