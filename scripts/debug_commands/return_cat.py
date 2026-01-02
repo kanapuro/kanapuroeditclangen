@@ -51,7 +51,10 @@ class ReturnCatCommand(Command):
             else:
                 cat.status_change("kitten")
         # Set a positive thought for feedback
-        cat.thought = "Is overjoyed to be home!"
+        if was_dead:
+            cat.thought = "Is surprised to find themselves back in the colony"
+        else:
+            cat.thought = "Is overjoyed to be home!"
         # Add history event for return from death (only if cat was actually dead)
         if was_dead:
             History.add_return_from_death(cat, f"returned from death.")

@@ -2609,9 +2609,12 @@ class ProfileScreen(Screens):
             death_history = self.get_death_text()
             if death_history:
                 body_history.append(death_history)
-            # join scar and death into one paragraph
+            return_from_death_history = self.get_return_from_death_text()
+            if return_from_death_history:
+                body_history.append(return_from_death_history)
+            # join scar, death, and return into one paragraph
             if body_history:
-                life_history.append(" ".join(body_history))
+                life_history.append("\n".join(body_history))
 
             murder = self.get_murder_text()
             if murder:
@@ -3101,6 +3104,30 @@ class ProfileScreen(Screens):
 
             cat_dict = {"m_c": (str(self.the_cat.name), choice(self.the_cat.pronouns))}
             text = process_text(text, cat_dict)
+
+        return text
+
+    def get_return_from_death_text(self):
+        """
+        returns adjusted return from death history text
+        """
+        text = None
+        if game.switches["show_history_moons"]:
+            moons = True
+        else:
+            moons = False
+
+        if self.the_cat.history.return_from_death:
+            return_events = []
+            for event in self.the_cat.history.return_from_death:
+                moon_text = ""
+                if moons:
+                    moon_text = f" (Moon {event['moon']})"
+                event_text = f"{self.the_cat.name} {event['text']}{moon_text}"
+                return_events.append(event_text)
+            
+            if return_events:
+                text = " ".join(return_events)
 
         return text
 

@@ -1980,6 +1980,7 @@ class Cat:
                 died_by=[],
                 scar_events=[],
                 murder={},
+                return_from_death=[],
             )
             return
         try:
@@ -2019,6 +2020,7 @@ class Cat:
                     ),
                     murder=history_data["murder"] if "murder" in history_data else {},
                     wrong_placement=history_data["wrong_placement"] if "wrong_placement" in history_data else False,
+                    return_from_death=history_data["return_from_death"] if "return_from_death" in history_data else [],
                 )
         except Exception:
             self.history = None
@@ -2050,6 +2052,7 @@ class Cat:
                 died_by=[],
                 scar_events=[],
                 murder={},
+                return_from_death=[],
             )
 
             print(f"WARNING: saving history of cat #{self.ID} didn't work")
