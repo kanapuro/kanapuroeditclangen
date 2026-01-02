@@ -614,9 +614,7 @@ class MakeClanScreen(Screens):
                 return
             
             self.your_cat.name.prefix = new_prefix
-            # Only update suffix if special suffix is disabled
-            if self.your_cat.name.specsuffix_hidden:
-                self.your_cat.name.suffix = new_suffix
+            self.your_cat.name.suffix = new_suffix
 
             if game.switches["customise_new_life"] is True:
                 self.open_clan_saved_screen()
@@ -631,16 +629,15 @@ class MakeClanScreen(Screens):
             self.elements["suffix_entry"].set_text(new_name_obj.suffix)
         
         elif event.ui_element == self.elements["use_spec_suffix"]:
-            # Toggle whether to use special suffixes
+            # Save what's in the text box
+            self.your_cat.name.suffix = self.elements["suffix_entry"].get_text()
+            # Just toggle the flag - don't touch the text box
             self.your_cat.name.specsuffix_hidden = not self.your_cat.name.specsuffix_hidden
             # Update button appearance
             if self.your_cat.name.specsuffix_hidden:
                 self.elements["use_spec_suffix"].change_object_id("@unchecked_checkbox")
-                # Special suffix disabled - show custom suffix in text box
-                self.elements["suffix_entry"].set_text(self.your_cat.name.suffix)
             else:
                 self.elements["use_spec_suffix"].change_object_id("@checked_checkbox")
-                # Special suffix enabled - text box still shows what was typed, but won't be used
         
         elif event.ui_element == self.elements['previous_step']:
             self.selected_cat = None

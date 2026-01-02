@@ -411,6 +411,13 @@ class Name:
         if self.name_type in ["single", "syllable"]:
             return self.prefix.strip()
         
+        # For ancient names, never use special suffixes - always use custom suffix
+        if self.name_type == "ancient":
+            suffix = self.suffix
+            if suffix:
+                return self.prefix.strip() + suffix
+            return self.prefix.strip()
+        
         # Handles predefined suffixes (such as newborns being kit),
         # then suffixes based on ages (fixes #2004, just trust me)
 
@@ -432,9 +439,6 @@ class Name:
                     adjusted_status = "warrior"
 
                 if adjusted_status != "warrior" and not self.specsuffix_hidden:
-                    # For ancient names, maintain the space format
-                    if self.name_type == "ancient":
-                        return self.prefix.strip() + " " + self.names_dict["special_suffixes"][adjusted_status]
                     return (
                         self.prefix.strip() + self.names_dict["special_suffixes"][adjusted_status]
                     )
@@ -442,19 +446,10 @@ class Name:
                 self.cat.status in self.names_dict["special_suffixes"]
                 and not self.specsuffix_hidden
             ):
-                # For ancient names, maintain the space format
-                if self.name_type == "ancient":
-                    return self.prefix.strip() + " " + self.names_dict["special_suffixes"][self.cat.status]
                 return self.prefix.strip() + self.names_dict["special_suffixes"][self.cat.status]
         if game.config["fun"]["april_fools"]:
             return f"{self.prefix.strip()}egg"
         # Base formatting
-        if self.name_type == "ancient":
-            # Return ancient name with prefix and suffix as-is; don't force space format
-            suffix = self.suffix
-            if suffix:
-                return self.prefix.strip() + suffix
-            return self.prefix.strip()
         return self.prefix.strip() + self.suffix.strip()
 
 

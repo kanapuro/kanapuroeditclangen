@@ -1,5 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
-- STOP WIPING THE SUFFIX PLS! fixes to suffix issues
+- STOP WIPING THE SUFFIX PLS! fixes to suffix issues. attempted to fix this like 5 times im gonnak ill myself lowkirkenuinely
 - Fixed issue where randomly generated symbols had no variants (ie. Mumble) and would not automatically select an icon, probably because it was left behind as a placeholder... Now it picks a new symbol, regardless if it's matching.
 - Fix to name generation that respects player-input and removes stripping names of special characters. Let the people use space, hyphen, and apostrophes!
 - More fixes to clan icon persistence.
