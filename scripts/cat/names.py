@@ -440,16 +440,16 @@ class Name:
 
                 if adjusted_status != "warrior" and not self.specsuffix_hidden:
                     return (
-                        self.prefix.strip() + self.names_dict["special_suffixes"][adjusted_status]
+                        self.prefix.strip() + self.names_dict["special_suffixes"][adjusted_status].strip()
                     )
             if (
                 self.cat.status in self.names_dict["special_suffixes"]
                 and not self.specsuffix_hidden
             ):
-                return self.prefix.strip() + self.names_dict["special_suffixes"][self.cat.status]
+                return self.prefix.strip() + self.names_dict["special_suffixes"][self.cat.status].strip()
         if game.config["fun"]["april_fools"]:
             return f"{self.prefix.strip()}egg"
-        # Base formatting
+        # Base formatting - keep user input as-is
         return self.prefix.strip() + self.suffix
 
 
