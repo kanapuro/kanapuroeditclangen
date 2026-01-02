@@ -450,7 +450,7 @@ class Name:
         if game.config["fun"]["april_fools"]:
             return f"{self.prefix.strip()}egg"
         # Base formatting
-        return self.prefix.strip() + self.suffix.strip()
+        return self.prefix.strip() + self.suffix
 
 
 names = Name()

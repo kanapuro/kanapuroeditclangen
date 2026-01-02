@@ -1,7 +1,7 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
 - STOP WIPING THE SUFFIX PLS! fixes to suffix issues. attempted to fix this like 5 times im gonnak ill myself lowkirkenuinely
 - Fixed issue where randomly generated symbols had no variants (ie. Mumble) and would not automatically select an icon, probably because it was left behind as a placeholder... Now it picks a new symbol, regardless if it's matching.
-- Fix to name generation that respects player-input and removes stripping names of special characters. Let the people use space, hyphen, and apostrophes!
+- Fix to name generation that respects player-input and removes stripping names of special characters. Let the people use space, hyphen, and apostrophes! x2
 - More fixes to clan icon persistence.
 - Game saving logic will ignore any subfolders in the saves directory with "backup" in the title. Gives you a safe place to put away saves you don't want loading (if you're like me and have the whole saves folder uploaded to github!).
 - Added a new screen between new clan screen (clan naming) and the kit picker (leader screen) when making a new clan that allows you to prematurely decide your clan's naming behaviors. This setting persists to the whole clan both pre-save (while making clan) and during the actual gameplay (after the clan is made).
