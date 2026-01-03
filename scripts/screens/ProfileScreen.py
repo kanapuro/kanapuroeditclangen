@@ -3858,9 +3858,6 @@ class ProfileScreen(Screens):
             )
             if game.clan.your_cat.moons == 0:
                 self.murder_cat_button.disable()
-            
-            if "moon" in game.clan.murdered and game.clan.murdered["moon"] == game.clan.age:
-                self.murder_cat_button.disable()
                 
             # Show leave DF if joined, otherwise show join DF if not dead/already joined
             if game.clan.your_cat.joined_df:

@@ -1167,23 +1167,10 @@ class MurderScreen(Screens):
             print(f"Accomplice: {accomplice.name} (Agreed: {accompliced})")
     
         print(f"\nCHANCES:")
-        print(f"  Success: {chance}/100 (Config overrides to: {game.config.get('murder_chance', 'Not set')})")
+        print(f"  Success: {chance}/100")
         print(f"  Injury risk: {risk_chance}/100")
         print(f"  Discovery: {discover_chance}/100")
         print(f"  MC Death: {death_chance}/100")
-    
-        if game.config["murder_chance"] != -1:
-            try:
-                config_value = game.config["murder_chance"]
-                chance = config_value
-                chance = chance + randint(-10, 10)
-                if chance < 5:
-                    chance = 5
-                elif chance > 95:
-                    chance = 95
-                print(f"DEBUG: Config {config_value}% -> Final {chance}%")
-            except:
-                pass
 
         print(f"\nROLLS:")
         print(f"  Random modifier (r2): {r2}")

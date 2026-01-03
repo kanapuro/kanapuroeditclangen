@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Apprentice MC's can outing too.
+- Disabled game_config murder logic as it overwrote base murder chance + fixed murder setting bugs. Also disabled murder restrictions because you're gonna get caught or you're not, and that's punishment enough.
 - Fixed inverted "gore" setting logic.
 - Added platonic "OUTING" subtype to DATE patrol type! You can now have platonic dates/outings with your kin, friends, and clanmates! You cannot mix dates and outings!
 - RETURN command now works on DEAD cats. Also added history input for return from death for both MC revival and command revival.

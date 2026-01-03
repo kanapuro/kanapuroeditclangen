@@ -877,7 +877,7 @@ class PatrolScreen(Screens):
         if (
             not game.clan.your_cat.dead and
             not game.clan.your_cat.outside and
-            game.clan.your_cat.moons >= 14 and
+            game.clan.your_cat.moons >= 6 and
             game.switches['patrol_category'] != 'date' and
             not game.clan.your_cat.not_working()
             ):
