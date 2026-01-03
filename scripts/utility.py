@@ -2994,6 +2994,34 @@ def generate_sprite(
                         special_flags=blendmode,
                     )
 
+        # draw injury overlays
+        # Injuries show temporary condition sprites (like wounds before they become scars)
+        # Only renders if both gore setting allows it AND a sprite exists for that injury
+        if not scars_hidden and game.settings.get("gore"):
+            # Check for injuries from the injuries dict
+            if hasattr(cat, 'injuries') and cat.injuries:
+                for injury_name in cat.injuries:
+                    # Create the sprite name (e.g., "injurybroken bone0")
+                    injury_sprite_name = f"injury{injury_name}{cat_sprite}"
+                    # Only try to render if the sprite actually exists
+                    if injury_sprite_name in sprites.sprites:
+                        new_sprite.blit(
+                            sprites.sprites[injury_sprite_name],
+                            (0, 0)
+                        )
+            
+            # Check for illnesses that might have visual representations
+            if hasattr(cat, 'illnesses') and cat.illnesses:
+                for illness_name in cat.illnesses:
+                    # Create the sprite name for illness overlays
+                    illness_sprite_name = f"injury{illness_name}{cat_sprite}"
+                    # Only try to render if the sprite actually exists
+                    if illness_sprite_name in sprites.sprites:
+                        new_sprite.blit(
+                            sprites.sprites[illness_sprite_name],
+                            (0, 0)
+                        )
+
         # draw accessories
         clangen_accessories = ['MAPLE LEAF',
                             'HOLLY',

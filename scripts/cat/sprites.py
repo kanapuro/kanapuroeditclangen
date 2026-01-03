@@ -123,7 +123,7 @@ class Sprites:
         for x in [
             'lineart', 'lineartdf', 'lineartdead', "lineartur",
             'eyes', 'eyes2', 'skin',
-            'scars', 'missingscars',
+            'scars', 'missingscars', 'injuries',
             'medcatherbs', 'wild', 'beetleeyes', 'beetleeyes2', 'beetlemore', 'beetlemore2', 'eyesvivid', 'vivid2', 'towheeeyes', 'towheeeyes2', 'eragonaeyes', 'eragonaeyes2', 'eyesdark', 'dark2',
             'collars', 'bellcollars', 'bowcollars', 'nyloncollars',
             'singlecolours', 'speckledcolours', 'tabbycolours', 'bengalcolours', 'marbledcolours',
@@ -648,6 +648,7 @@ class Sprites:
                 self.make_group("skin", (col, row), f"skin{color}")
 
         self.load_scars()
+        self.load_injuries()
         self.load_symbols()
 
     def load_scars(self):
@@ -1376,6 +1377,29 @@ class Sprites:
         for row, randomaccessories in enumerate(random_data):
             for col, randomaccessory in enumerate(randomaccessories):
                 self.make_group("randomaccessories", (col, row), f"acc_random{randomaccessory}")
+
+    def load_injuries(self):
+        """
+        Loads injury sprites and puts them into groups.
+        Injuries are visual overlays for temporary conditions that may later become scars.
+        If a sprite doesn't exist for an injury, it will be silently skipped.
+        """
+        
+        # Define injuries that can have sprites
+        # These should match the injury names used in the conditions system
+        # When you create a sprite for an injury, add its name here
+        injuries_data = [
+            # Example injuries - add more as you create sprites
+            # Row 1 could be: ["CLAW WOUND", "BITE WOUND", "TORN PELT", "etc..."]
+            # For now, we'll leave it empty and sprites will be loaded dynamically
+        ]
+        
+        # Load injury sprites dynamically
+        # This allows injuries to work even if sprites don't exist yet
+        for row, injuries in enumerate(injuries_data):
+            for col, injury in enumerate(injuries):
+                self.make_group('injuries', (col, row), f'injury{injury}')
+
     def load_symbols(self):
         """
         loads clan symbols
