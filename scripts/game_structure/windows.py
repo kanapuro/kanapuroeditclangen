@@ -479,7 +479,7 @@ class ChangeCatName(UIWindow):
             container=self,
         )
 
-        self.specsuffic_hidden = self.the_cat.name.specsuffix_hidden
+        self.specsuffix_hidden = self.the_cat.name.specsuffix_hidden
         self.pending_name_type = None  # Track dice-chosen type without modifying cat until Done
 
         self.heading = pygame_gui.elements.UITextBox(
@@ -668,8 +668,8 @@ class ChangeCatName(UIWindow):
             if event.ui_element == self.done_button:
                 old_name = str(self.the_cat.name)
 
-                self.the_cat.specsuffix_hidden = self.specsuffic_hidden
-                self.the_cat.name.specsuffix_hidden = self.specsuffic_hidden
+                self.the_cat.specsuffix_hidden = self.specsuffix_hidden
+                self.the_cat.name.specsuffix_hidden = self.specsuffix_hidden
 
                 # Allow letters, numbers, space, apostrophe, and hyphen in typed names.
                 cleaned_prefix = sub(r"[^A-Za-z0-9 '\-]+", "", self.prefix_entry_box.get_text())
@@ -736,10 +736,10 @@ class ChangeCatName(UIWindow):
 
                 # If we picked ancient, auto-hide special suffix so custom suffix can apply on kits
                 if chosen_type == "ancient":
-                    self.specsuffic_hidden = True
+                    self.specsuffix_hidden = True
                 else:
                     # Preserve user's special-suffix toggle; prefix rolls should not change it
-                    self.specsuffic_hidden = self.specsuffic_hidden
+                    self.specsuffix_hidden = self.specsuffix_hidden
                 # Track the intended name type for the save click (don't modify cat until Done)
                 self.pending_name_type = chosen_type
             elif event.ui_element == self.random_suffix:
@@ -756,7 +756,7 @@ class ChangeCatName(UIWindow):
                     base = rolled.suffix.strip()
                     # Display suffix without forcing leading space; user can add if desired
                     rolled.suffix = base[0].upper() + base[1:] if base else base
-                    self.specsuffic_hidden = True
+                    self.specsuffix_hidden = True
                 else:
                     # Do not alter the user's special-suffix toggle here for warrior
                     pass
@@ -765,7 +765,7 @@ class ChangeCatName(UIWindow):
                 # Track the intended name type for the save click (don't modify cat until Done)
                 self.pending_name_type = chosen_type
             elif event.ui_element == self.toggle_spec_block_on:
-                self.specsuffic_hidden = True
+                self.specsuffix_hidden = True
                 self.suffix_entry_box.enable()
                 self.random_suffix.enable()
                 self.toggle_spec_block_on.disable()
@@ -774,7 +774,7 @@ class ChangeCatName(UIWindow):
                 self.toggle_spec_block_off.show()
                 self.suffix_entry_box.set_text(self.the_cat.name.suffix)
             elif event.ui_element == self.toggle_spec_block_off:
-                self.specsuffic_hidden = False
+                self.specsuffix_hidden = False
                 self.random_suffix.disable()
                 self.toggle_spec_block_off.disable()
                 self.toggle_spec_block_off.hide()
