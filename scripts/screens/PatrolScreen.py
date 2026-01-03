@@ -116,7 +116,7 @@ class PatrolScreen(Screens):
                 self.elements['df_icon'].enable()
             else:
                 self.elements['df_icon'].disable()
-            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 14 and not game.clan.your_cat.not_working():
+            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 6 and not game.clan.your_cat.not_working():
                 self.elements['date_icon'].enable()
             else:
                 self.elements['date_icon'].disable()
@@ -131,7 +131,7 @@ class PatrolScreen(Screens):
             self.current_patrol.clear()
             self.elements['cat_icon'].enable()
             self.elements['df_icon'].disable()
-            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 14 and not game.clan.your_cat.not_working():
+            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 6 and not game.clan.your_cat.not_working():
                 self.elements['date_icon'].enable()
             else:
                 self.elements['date_icon'].disable()
@@ -164,7 +164,7 @@ class PatrolScreen(Screens):
                 self.elements['df_icon'].enable()
             else:
                 self.elements['df_icon'].disable()
-            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 14 and not game.clan.your_cat.not_working():
+            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 6 and not game.clan.your_cat.not_working():
                 self.elements['date_icon'].enable()
             else:
                 self.elements['date_icon'].disable()
@@ -878,7 +878,7 @@ class PatrolScreen(Screens):
             not game.clan.your_cat.dead and
             not game.clan.your_cat.outside and
             game.clan.your_cat.moons >= 6 and
-            game.switches['patrol_category'] != 'date' and
+            game.switches['patrol_category'] not in ['date', 'outing'] and
             not game.clan.your_cat.not_working()
             ):
             self.elements['date_icon'].enable()
