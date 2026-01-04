@@ -654,6 +654,7 @@ class PatrolScreen(Screens):
         self.display_text = ""
         self.results_text = ""
         self.current_patrol = []
+        self.selected_cat = None
         self.current_page = 1
         self.patrol_stage = "choose_cats"
         self.patrol_screen = "patrol_cats"  # List
