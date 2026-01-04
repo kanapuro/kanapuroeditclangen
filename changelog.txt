@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed minor visual bug that let MC and patrolcats be selected for date/outing after you've already had a date/outing that moon.
 - Modified "gore" sub-feature for injury overlays: supports aliasing (pregnant and recovering from birth share one sprite) and stores specific scar variants per injury (e.g., a “burntail” scar records and displays the matching burn overlay even if the condition reads “severe burn”).
 - Apprentice MC's can outing too.
 - Disabled game_config murder logic as it overwrote base murder chance + fixed murder setting bugs. Also disabled murder restrictions because you're gonna get caught or you're not, and that's punishment enough.
