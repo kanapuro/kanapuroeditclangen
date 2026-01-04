@@ -657,6 +657,7 @@ class PatrolScreen(Screens):
         self.current_page = 1
         self.patrol_stage = "choose_cats"
         self.patrol_screen = "patrol_cats"  # List
+        game.switches["patrol_category"] = "clangen"
 
         self.elements["info"] = pygame_gui.elements.UITextBox(
             "Choose up to six cats to take on patrol.\n"
