@@ -939,7 +939,7 @@ class Pregnancy_Events:
 
             # Prevent duplicate prefixes in the same litter
             while kit.name.prefix in [kitty.name.prefix for kitty in all_kitten]:
-                kit.name = Name("newborn")
+                kit.name = Name(cat=kit)
 
             all_kitten.append(kit)
             # adoptive parents are set at the end, when everything else is decided
