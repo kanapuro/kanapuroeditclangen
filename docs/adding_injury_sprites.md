@@ -46,9 +46,15 @@ Each injury gets its own unique sprite. Draw both.
 injuries_data = [
     ["pregnant"],  # Row 0, Col 0 - ONE sprite drawn here
 ]
-# "recovering from birth" uses the SAME sprite automatically via alias in utility.py
+# "recovering from birth" uses the SAME sprite automatically
 ```
-Only add ONE of the aliased names to `injuries_data`. The rendering code handles showing the same sprite for both conditions. (Pregnancy/recovery already works this way - don't add both!)
+Only add ONE of the aliased names to `injuries_data`. The alias mapping is in `scripts/utility.py` around line 3005:
+```python
+injury_sprite_alias = {
+    "recovering from birth": "pregnant",
+}
+```
+Add new aliases there if you want other conditions to share sprites. The rendering code automatically looks up the alias and uses that sprite instead.
 
 **Option C: Location-specific variants** (for burns, bites, etc.)
 ```python
