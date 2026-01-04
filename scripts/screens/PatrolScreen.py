@@ -402,7 +402,6 @@ class PatrolScreen(Screens):
         if event.ui_element == self.elements["patrol_again"]:
             self.in_progress_data = None
             self.open_choose_cats_screen()
-            self.update_cat_images_buttons()
         elif event.ui_element == self.elements["clan_return"]:
             self.in_progress_data = None
             self.change_screen("camp screen")
@@ -1176,11 +1175,7 @@ class PatrolScreen(Screens):
 
         elif game.switches["patrol_category"] == "date":
             you = game.clan.your_cat
-            # Check if date/outing has already been done this moon
-            if "4" in game.switches['patrolled'] or "5" in game.switches['patrolled']:
-                # Already patrolled, don't show any cats and don't add player character
-                pass
-            elif not you.dead and not you.outside and not you.not_working():
+            if not you.dead and "4" not in game.switches['patrolled'] and "5" not in game.switches['patrolled'] and not you.outside and not you.not_working():
                 if you not in self.current_patrol and not you.not_working():
                     self.current_patrol.insert(0, you)
                 
@@ -1208,9 +1203,6 @@ class PatrolScreen(Screens):
                         
                         if is_dateable or is_outable:
                             self.able_cats.append(the_cat)
-            else:
-                # Player character is dead, outside, or not working - don't show date/outing option
-                pass
         else: # DF patrol
             the_cat = game.clan.your_cat
             if not the_cat.dead and not the_cat.outside and not the_cat.not_working():
