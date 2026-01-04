@@ -3000,9 +3000,24 @@ def generate_sprite(
         if not scars_hidden and game.settings.get("gore"):
             # Check for injuries from the injuries dict
             if hasattr(cat, 'injuries') and cat.injuries:
+                # Simple aliasing so multiple conditions can share one sprite (e.g., pregnancy states)
+                injury_sprite_alias = {
+                    "recovering from birth": "pregnant",
+                }
+
                 for injury_name in cat.injuries:
-                    # Create the sprite name (e.g., "injurybroken bone0")
-                    injury_sprite_name = f"injury{injury_name}{cat_sprite}"
+                    # Check if injury has a predetermined scar location
+                    injury_sprite_name = None
+                    if "predetermined_scar" in cat.injuries[injury_name] and cat.injuries[injury_name]["predetermined_scar"]:
+                        # Use the scar name to match injury sprite location
+                        scar_name = cat.injuries[injury_name]["predetermined_scar"]
+                        injury_sprite_name = f"injury{scar_name}{cat_sprite}"
+
+                    # Fallback: try injury name itself (with alias support)
+                    if not injury_sprite_name or injury_sprite_name not in sprites.sprites:
+                        base_injury_name = injury_sprite_alias.get(injury_name, injury_name)
+                        injury_sprite_name = f"injury{base_injury_name}{cat_sprite}"
+
                     # Only try to render if the sprite actually exists
                     if injury_sprite_name in sprites.sprites:
                         new_sprite.blit(

@@ -2949,6 +2949,10 @@ class Cat:
         )
 
         if new_injury.name not in self.injuries:
+            # Pre-determine which scar this injury will become (if any)
+            from scripts.events_module.short.scar_events import Scar_Events
+            predetermined_scar = Scar_Events.determine_scar_for_injury(self, new_injury.name)
+            
             self.injuries[new_injury.name] = {
                 "severity": new_injury.severity,
                 "mortality": new_injury.current_mortality,
@@ -2959,6 +2963,7 @@ class Cat:
                 "complication": None,
                 "cause_permanent": new_injury.cause_permanent,
                 "event_triggered": new_injury.new,
+                "predetermined_scar": predetermined_scar,  # Store the predetermined scar
             }
 
         if len(new_injury.also_got) > 0 and not int(random() * 5):

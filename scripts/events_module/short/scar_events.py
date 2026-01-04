@@ -85,6 +85,65 @@ class Scar_Events():
     }
 
     @staticmethod
+    def get_scar_pool(cat, injury_name):
+        """
+        Get the pool of possible scars for an injury.
+        Used both when pre-determining scars and when applying them.
+        """
+        if injury_name not in Scar_Events.scar_allowed:
+            return []
+
+        scar_pool = [i for i in Scar_Events.scar_allowed[injury_name] if i not in cat.pelt.scars]
+        if 'NOPAW' in cat.pelt.scars:
+            scar_pool = [i for i in scar_pool if i not in ['TOETRAP', 'RATBITE', "FROSTSOCK"]]
+        if 'NOTAIL' in cat.pelt.scars:
+            scar_pool = [i for i in scar_pool if
+                         i not in ["HALFTAIL", "TAILBASE", "TAILSCAR", "MANTAIL", "BURNTAIL", "FROSTTAIL"]]
+        if 'HALFTAIL' in cat.pelt.scars:
+            scar_pool = [i for i in scar_pool if i not in ["TAILSCAR", "MANTAIL", "FROSTTAIL"]]
+        if "BRIGHTHEART" in cat.pelt.scars:
+            scar_pool = [i for i in scar_pool if i not in ["RIGHTBLIND", "BOTHBLIND"]]
+        if 'BOTHBLIND' in cat.pelt.scars:
+            scar_pool = [i for i in scar_pool if
+                         i not in ["THREE", "RIGHTBLIND", "LEFTBLIND", "BOTHBLIND", "BRIGHTHEART"]]
+        if 'NOEAR' in cat.pelt.scars:
+            scar_pool = [i for i in scar_pool if
+                         i not in ["LEFTEAR", "RIGHTEAR", 'NOLEFTEAR', 'NORIGHTEAR', "FROSTFACE"]]
+        if 'MANTAIL' in cat.pelt.scars:
+            scar_pool = [i for i in scar_pool if i not in ["BURNTAIL", 'FROSTTAIL']]
+        if 'BURNTAIL' in cat.pelt.scars:
+            scar_pool = [i for i in scar_pool if i not in ["MANTAIL", 'FROSTTAIL']]
+        if 'FROSTTAIL' in cat.pelt.scars:
+            scar_pool = [i for i in scar_pool if i not in ["MANTAIL", 'BURNTAIL']]
+        if 'NOLEFT' in cat.pelt.scars:
+            scar_pool = [i for i in scar_pool if i not in ['LEFTEAR']]
+        if 'NORIGHT' in cat.pelt.scars:
+            scar_pool = [i for i in scar_pool if i not in ['RIGHTEAR']]
+
+        # Extra check for disabling scars.
+        if int(random.random() * 3):
+            condition_scars = {
+                "LEGBITE", "THREE", "NOPAW", "TOETRAP", "NOTAIL", "HALFTAIL", "LEFTEAR", "RIGHTEAR",
+                "MANLEG", "BRIGHTHEART", "NOLEFTEAR", "NORIGHTEAR", "NOEAR", "LEFTBLIND",
+                "RIGHTBLIND", "BOTHBLIND", "RATBITE"
+            }
+            scar_pool = list(set(scar_pool).difference(condition_scars))
+
+        return scar_pool
+
+    @staticmethod
+    def determine_scar_for_injury(cat, injury_name):
+        """
+        Pre-determine which scar an injury will become.
+        Called when the injury is first acquired.
+        Returns the scar name or None.
+        """
+        scar_pool = Scar_Events.get_scar_pool(cat, injury_name)
+        if scar_pool:
+            return random.choice(scar_pool)
+        return None
+
+    @staticmethod
     def handle_scars(cat, injury_name):
         """ 
         This function handles the scars
@@ -103,55 +162,27 @@ class Scar_Events():
 
         if len(cat.pelt.scars) < 4 and not int(random.random() * chance):
 
-            # move potential scar text into displayed scar text
-
-            scar_pool = [i for i in Scar_Events.scar_allowed[injury_name] if i not in cat.pelt.scars]
-            if 'NOPAW' in cat.pelt.scars:
-                scar_pool = [i for i in scar_pool if i not in ['TOETRAP', 'RATBITE', "FROSTSOCK"]]
-            if 'NOTAIL' in cat.pelt.scars:
-                scar_pool = [i for i in scar_pool if
-                             i not in ["HALFTAIL", "TAILBASE", "TAILSCAR", "MANTAIL", "BURNTAIL", "FROSTTAIL"]]
-            if 'HALFTAIL' in cat.pelt.scars:
-                scar_pool = [i for i in scar_pool if i not in ["TAILSCAR", "MANTAIL", "FROSTTAIL"]]
-            if "BRIGHTHEART" in cat.pelt.scars:
-                scar_pool = [i for i in scar_pool if i not in ["RIGHTBLIND", "BOTHBLIND"]]
-            if 'BOTHBLIND' in cat.pelt.scars:
-                scar_pool = [i for i in scar_pool if
-                             i not in ["THREE", "RIGHTBLIND", "LEFTBLIND", "BOTHBLIND", "BRIGHTHEART"]]
-            if 'NOEAR' in cat.pelt.scars:
-                scar_pool = [i for i in scar_pool if
-                             i not in ["LEFTEAR", "RIGHTEAR", 'NOLEFTEAR', 'NORIGHTEAR', "FROSTFACE"]]
-            if 'MANTAIL' in cat.pelt.scars:
-                scar_pool = [i for i in scar_pool if i not in ["BURNTAIL", 'FROSTTAIL']]
-            if 'BURNTAIL' in cat.pelt.scars:
-                scar_pool = [i for i in scar_pool if i not in ["MANTAIL", 'FROSTTAIL']]
-            if 'FROSTTAIL' in cat.pelt.scars:
-                scar_pool = [i for i in scar_pool if i not in ["MANTAIL", 'BURNTAIL']]
-            if 'NOLEFT' in cat.pelt.scars:
-                scar_pool = [i for i in scar_pool if i not in ['LEFTEAR']]
-            if 'NORIGHT' in cat.pelt.scars:
-                scar_pool = [i for i in scar_pool if i not in ['RIGHTEAR']]
-
-            # Extra check for disabling scars.
-            if int(random.random() * 3):
-                condition_scars = {
-                    "LEGBITE", "THREE", "NOPAW", "TOETRAP", "NOTAIL", "HALFTAIL", "LEFTEAR", "RIGHTEAR",
-                    "MANLEG", "BRIGHTHEART", "NOLEFTEAR", "NORIGHTEAR", "NOEAR", "LEFTBLIND",
-                    "RIGHTBLIND", "BOTHBLIND", "RATBITE"
-                }
-
-                scar_pool = list(set(scar_pool).difference(condition_scars))
-
-            # If there are no new scars to give them, return None, None.
-            if not scar_pool:
-                return None, None
+            # Check if injury already has a predetermined scar
+            specialty = None
+            if injury_name in cat.injuries and "predetermined_scar" in cat.injuries[injury_name]:
+                specialty = cat.injuries[injury_name]["predetermined_scar"]
+                # Make sure the predetermined scar is still valid
+                scar_pool = Scar_Events.get_scar_pool(cat, injury_name)
+                if specialty not in scar_pool:
+                    specialty = None  # Scar is no longer valid, pick new one
+            
+            # If no valid predetermined scar, pick one now
+            if specialty is None:
+                scar_pool = Scar_Events.get_scar_pool(cat, injury_name)
+                if not scar_pool:
+                    return None, None
+                specialty = random.choice(scar_pool)
 
             # If we've reached this point, we can move forward with giving history.
             History.add_scar(cat,
                              f"m_c was scarred from an injury ({injury_name}).",
                              condition=injury_name)
 
-            specialty = random.choice(scar_pool)
             if specialty in ["NOTAIL", "HALFTAIL"]:
                 # if cat.pelt.accessory in ["RED FEATHERS", "BLUE FEATHERS", "JAY FEATHERS"]:
                 #     cat.pelt.accessory = None

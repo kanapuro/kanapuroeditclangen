@@ -1387,11 +1387,16 @@ class Sprites:
         
         # Define injuries that can have sprites
         # These should match the injury names used in the conditions system
-        # When you create a sprite for an injury, add its name here
+        # For injuries that become scars (burns, bites, etc), use the SCAR name for location-specific sprites
+        # For general conditions (pregnancy, recovering, etc), use the injury name directly
         injuries_data = [
-            # Example injuries - add more as you create sprites
-            # Row 1 could be: ["CLAW WOUND", "BITE WOUND", "TORN PELT", "etc..."]
-            # For now, we'll leave it empty and sprites will be loaded dynamically
+            # Row 0: Pregnancy/birth related (these don't become scars, use injury names)
+            ["pregnant", "recovering from birth"],
+            # Row 1: Add burn locations here when you draw them
+            # ["BURNPAWS", "BURNTAIL", "BURNBELLY", "BURNRUMP", "BRIGHTHEART"],
+            # Row 2: Add bite locations here when you draw them  
+            # ["CATBITE", "CATBITETWO", "RATBITE", "SNAKE", "SNAKETWO"],
+            # Add more rows as needed...
         ]
         
         # Load injury sprites dynamically
