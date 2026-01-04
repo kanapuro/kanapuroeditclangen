@@ -26,19 +26,39 @@ Check what the game actually calls the injury. You can:
 - Enable the ID display setting and check a cat's profile in-game
 - Add a debug print in the code: `print(cat.injuries.keys())`
 
-### Step 2: Pick a spot in the grid
+### Step 2: Add it to the sprite data
 
-Edit `injuries_data` in `scripts/cat/sprites.py`:
+Open `scripts/cat/sprites.py` and find the `injuries_data` list (around line 60-ish, in the `Sprites` class `__init__` method).
 
+**You have three options for organizing sprites:**
+
+**Option A: One sprite per injury** (most straightforward)
 ```python
 injuries_data = [
-    ["pregnant"],                    # Row 0, Col 0
-    ["broken bone", "claw-wound"],   # Row 1, Col 0 and Col 1
-    ["torn pelt"],                   # Row 2, Col 0
+    ["broken bone"],      # Row 0, Col 0 - draws its own sprite
+    ["claw-wound"],       # Row 1, Col 0 - draws its own sprite
 ]
 ```
+Each injury gets its own unique sprite. Draw both.
 
-The position in this list determines where in `injuries.png` the system will look. Each row is a list, each item in that list is a column.
+**Option B: Aliased sprites** (saves drawing time)
+```python
+injuries_data = [
+    ["pregnant"],  # Row 0, Col 0 - ONE sprite drawn here
+]
+# "recovering from birth" uses the SAME sprite automatically via alias in utility.py
+```
+Only add ONE of the aliased names to `injuries_data`. The rendering code handles showing the same sprite for both conditions. (Pregnancy/recovery already works this way - don't add both!)
+
+**Option C: Location-specific variants** (for burns, bites, etc.)
+```python
+injuries_data = [
+    ["BURNPAWS", "BURNTAIL", "BURNBELLY"],  # Row 0 - different sprites for each location
+]
+```
+The generic injury name (like "severe burn") isn't added here. Instead, add the specific scar names (BURNPAWS, BURNTAIL, etc.). The predetermined scar system picks which one to display based on where the injury occurred.
+
+**The position in this list = position in the PNG.** Each row is a list, each item in that list is a column.
 
 ### Step 3: Draw the sprites
 
