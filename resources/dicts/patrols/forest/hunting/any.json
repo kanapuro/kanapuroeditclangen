@@ -2877,6 +2877,11 @@
                     "daring",
                     "playful"
                 ]
+            },
+            {
+                "text": "Curious about the smell, r_c approaches cautiously but becomes distracted and steps right into the trap's entrance. Thankfully it seems broken, but the close call leaves {PRONOUN/r_c/object} shaken.",
+                "exp": 0,
+                "weight": 15
             }
         ]
     },

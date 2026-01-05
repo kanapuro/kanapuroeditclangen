@@ -1001,6 +1001,12 @@
                 ],
                 "exp": 15,
                 "weight": 20
+            },
+            {
+                "text": "rsc_c thinks for a moment before suggesting a few options. They're not quite sure which one fits best, but they think any of them could work for you.",
+	            "can_have_stat": ["p_l"],
+                "exp": 10,
+                "weight": 15
             }
         ],
         "fail_outcomes": [

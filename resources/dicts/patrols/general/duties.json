@@ -1,0 +1,2043 @@
+[
+    {
+        "patrol_id": "duties_moss_collection",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_med_mossapps",
+        "min_cats": 1,
+        "max_cats": 6,
+        "min_max_status": {},
+        "weight": 15,
+        "intro_text": "The patrol sets out to collect fresh moss for the dens.",
+        "decline_text": "The patrol decides the dens can wait another day.",
+        "chance_of_success": 60,
+        "success_outcomes": [
+            {
+                "text": "r_c finds a perfect patch of soft moss and brings back enough to line several nests. The elders are especially grateful.",
+                "exp": 10,
+                "weight": 20,
+                "herbs": ["moss"],
+                "stat_skill": ["TEACHER,2"],
+                "stat_trait": ["dedicated", "helpful"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort", "trust"],
+                        "amount": 5
+                    }
+                ]
+            },
+            {
+                "text": "Working hard, the patrol gathers pawfuls of fresh bedding. The nursery queens purr gratefully when the patrol returns.",
+                "exp": 10,
+                "weight": 15,
+                "herbs": ["moss"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["platonic"],
+                        "amount": 3
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "The moss r_c finds is damp and moldy. {PRONOUN/r_c/subject/CAP} {VERB/r_c/return/returns} to camp empty-pawed.",
+                "exp": 0,
+                "weight": 20
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_elder_stories",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "lg_elder_default",
+        "min_cats": 2,
+        "max_cats": 6,
+        "min_max_status": {
+            "elder": [1, 6]
+        },
+        "weight": 20,
+        "intro_text": "p_l offers to share stories of the old days with other cats in the camp.",
+        "decline_text": "The others politely decline, saying {PRONOUN/patrol/subject}{VERB/patrol/'ve/'s} other duties.",
+        "chance_of_success": 80,
+        "success_outcomes": [
+            {
+                "text": "p_l weaves a captivating tale of ancient battles and forgotten heroes. The others are entranced, and s_c feels a deeper connection to c_n's history.",
+                "exp": 15,
+                "weight": 30,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["respect", "comfort"],
+                        "amount": 10
+                    }
+                ]
+            },
+            {
+                "text": "p_l's story ends with a valuable lesson about loyalty and bravery. s_c thanks {PRONOUN/p_l/object} earnestly for sharing {PRONOUN/p_l/poss} wisdom.",
+                "exp": 20,
+                "weight": 15,
+                "stat_trait": ["wise", "thoughtful"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["respect", "trust"],
+                        "amount": 8
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "p_l's story rambles on and on. s_c struggles to stay awake and barely remembers anything by the end.",
+                "exp": 0,
+                "weight": 10,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort"],
+                        "amount": -3
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_kit_play",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "lg_shunned_kit_J1",
+        "min_cats": 1,
+        "max_cats": 6,
+        "min_max_status": {},
+        "weight": 15,
+        "intro_text": "A group of kits beg others to play with them.",
+        "decline_text": "r_c gently tells the kits {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} too busy today.",
+        "chance_of_success": 70,
+        "success_outcomes": [
+            {
+                "text": "r_c spends the afternoon playing moss-ball with the kits. Their delighted squeals of laughter warm {PRONOUN/r_c/poss} heart.",
+                "exp": 8,
+                "weight": 25,
+                "stat_trait": ["playful", "childish"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["platonic", "comfort"],
+                        "amount": 5
+                    }
+                ]
+            },
+            {
+                "text": "r_c teaches the kits a new game, and {PRONOUN/r_c/subject} {VERB/r_c/play/plays} until the sun begins to set. The queens thank r_c for tiring the kits out.",
+                "exp": 10,
+                "weight": 15,
+                "stat_skill": ["TEACHER,2"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["platonic", "trust"],
+                        "amount": 7
+                    }
+                ]
+            },
+            {
+                "text": "r_c plays with the kits for a while. {PRONOUN/r_c/subject/CAP} {VERB/r_c/seem/seems} to enjoy {PRONOUN/r_c/self}.",
+                "exp": 5,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["platonic"],
+                        "amount": 3
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "The kits are too rowdy and r_c gets overwhelmed. {PRONOUN/r_c/subject/CAP} retreats to catch {PRONOUN/r_c/poss} breath.",
+                "exp": 0,
+                "weight": 15
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_wall_repair",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_med_cobwebapps",
+        "min_cats": 2,
+        "max_cats": 6,
+        "min_max_status": {},
+        "weight": 15,
+        "intro_text": "The camp walls need reinforcing after the recent storm.",
+        "decline_text": "The patrol decides to postpone the repairs.",
+        "chance_of_success": 55,
+        "success_outcomes": [
+            {
+                "text": "The patrol diligently weaves fresh brambles into the walls. The camp feels much more secure now.",
+                "exp": 12,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["trust", "platonic"],
+                        "amount": 6
+                    }
+                ]
+            },
+            {
+                "text": "r_c organizes the patrol efficiently, and the repairs finish in record time. Everyone is impressed by {PRONOUN/r_c/poss} leadership.",
+                "exp": 15,
+                "weight": 10,
+                "stat_skill": ["CAMP,2"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["r_c"],
+                        "mutual": false,
+                        "values": ["respect", "trust"],
+                        "amount": 8
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "While repairing the walls, r_c gets scratched by a bramble thorn. {PRONOUN/r_c/subject/CAP} {VERB/r_c/wince/winces} but continues working.",
+                "exp": 5,
+                "weight": 15,
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["small cut"],
+                        "scars": []
+                    }
+                ]
+            },
+            {
+                "text": "The patrol's repairs don't hold well. The brambles fall apart after just a day.",
+                "exp": 0,
+                "weight": 10
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_queen_mediator_help",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_train_argue",
+        "min_cats": 2,
+        "max_cats": 6,
+        "min_max_status": {
+            "queen": [1, 4],
+            "mediator": [1, 4],
+            "queen's apprentice": [1, 4]
+        },
+        "weight": 20,
+        "intro_text": "A disagreement breaks out in camp, and someone needs to mediate.",
+        "decline_text": "The patrol decides to let the cats work it out themselves.",
+        "chance_of_success": 75,
+        "success_outcomes": [
+            {
+                "text": "s_c listens patiently to both sides and helps the cats reach a peaceful resolution. Everyone thanks {PRONOUN/s_c/object} for {PRONOUN/s_c/poss} wisdom.",
+                "exp": 18,
+                "weight": 35,
+                "stat_trait": ["wise", "thoughtful", "calm"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["respect", "trust", "comfort"],
+                        "amount": 10
+                    }
+                ]
+            },
+            {
+                "text": "With gentle words and careful listening, s_c helps resolve the conflict. The camp feels more harmonious afterward.",
+                "exp": 15,
+                "weight": 20,
+                "stat_trait": ["compassionate", "sincere"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort", "trust"],
+                        "amount": 8
+                    }
+                ]
+            },
+            {
+                "text": "After listening to both sides, the patrol manages to mediate a peaceful resolution. The disagreement settles down.",
+                "exp": 12,
+                "weight": 25,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": 5
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c tries to help but only makes things worse. The argument escalates and both cats storm off angry.",
+                "exp": 0,
+                "weight": 10,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["platonic"],
+                        "amount": -5
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_elder_tick_care",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "life_warrior_og11",
+        "min_cats": 1,
+        "max_cats": 2,
+        "min_max_status": {
+            "apprentice": [1, 6]
+        },
+        "weight": 15,
+        "intro_text": "An elder asks for help removing ticks from their matted fur.",
+        "decline_text": "app1 politely declines, saying {PRONOUN/app1/subject}{VERB/app1/'re/'s} too busy.",
+        "chance_of_success": 65,
+        "success_outcomes": [
+            {
+                "text": "app1 carefully grooms the elder's fur, patiently working out every tick. The elder purrs gratefully and shares some wisdom about elder care.",
+                "exp": 15,
+                "weight": 25,
+                "stat_skill": ["TEACHER,1"],
+                "stat_trait": ["patient", "careful"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["trust", "respect", "comfort"],
+                        "amount": 8
+                    }
+                ]
+            },
+            {
+                "text": "Working methodically, app1 removes all the ticks and leaves the elder's coat clean and comfortable. The elder calls app1 their favorite apprentice.",
+                "exp": 12,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort", "trust"],
+                        "amount": 10
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "app1 tries to help but is too rough. The elder yelps and app1 stops, feeling embarrassed about hurting them.",
+                "exp": 5,
+                "weight": 15,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort"],
+                        "amount": -4
+                    }
+                ]
+            },
+            {
+                "text": "Despite app1's best efforts, the ticks keep crawling back. The elder eventually gives up and app1 retreats in frustration.",
+                "exp": 0,
+                "weight": 10,
+                "stat_trait": ["impatient"]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_mentor_lesson",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_train_sunny5",
+        "min_cats": 2,
+        "max_cats": 2,
+        "min_max_status": {
+            "apprentice": [1, 1],
+            "warrior": [1, 1]
+        },
+        "weight": 20,
+        "intro_text": "r_c catches app1 slacking and demands {PRONOUN/app1/subject} {VERB/app1/pay/pays} attention during training.",
+        "decline_text": "r_c sighs and moves on to find something else to teach.",
+        "chance_of_success": 50,
+        "success_outcomes": [
+            {
+                "text": "app1 listens intently as r_c shows {PRONOUN/app1/object} a new hunting technique. {PRONOUN/app1/poss/CAP} ears perk up as the lesson suddenly clicks into place.",
+                "exp": 20,
+                "weight": 30,
+                "stat_skill": ["HUNTING,2"],
+                "stat_trait": ["focused", "attentive"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["trust", "respect"],
+                        "amount": 6
+                    }
+                ]
+            },
+            {
+                "text": "Though at first frustrated, app1 takes the scolding seriously and practices the move repeatedly. r_c nods approvingly.",
+                "exp": 15,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["respect", "trust"],
+                        "amount": 5
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "app1's mind wanders during the scolding, and r_c gets even more frustrated. The tension between them grows.",
+                "exp": 0,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": -6
+                    }
+                ]
+            },
+            {
+                "text": "app1 argues back defensively, and the lesson turns into a heated argument. Both cat and mentor storm off in different directions.",
+                "exp": 5,
+                "weight": 15,
+                "stat_trait": ["defiant", "stubborn"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust", "respect"],
+                        "amount": -8
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_mouse_surprise",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_train_sneakprey",
+        "min_cats": 1,
+        "max_cats": 1,
+        "min_max_status": {},
+        "weight": 10,
+        "intro_text": "A mouse suddenly scurries into camp, alarming r_c.",
+        "decline_text": "The mouse disappears under the dens before r_c can react.",
+        "chance_of_success": 70,
+        "success_outcomes": [
+            {
+                "text": "r_c's hunting instincts kick in instantly. With a swift pounce, {PRONOUN/r_c/subject} {VERB/r_c/catch/catches} the mouse and proudly {VERB/r_c/bring/brings} it to the fresh-kill pile. It may not be much, but it's something.",
+                "exp": 10,
+                "prey": ["very_small"],
+                "weight": 40,
+                "stat_trait": ["alert", "quick-witted"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["confidence"],
+                        "amount": 3
+                    }
+                ]
+            },
+            {
+                "text": "The mouse darts across camp and r_c manages to corner it against a rock. After a brief scuffle, the mouse becomes prey.",
+                "exp": 8,
+                "prey": ["very_small"],
+                "weight": 30,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["platonic"],
+                        "amount": 2
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c chases the mouse around camp in a chaotic frenzy, knocking things over and alarming everyone. The mouse escapes unharmed.",
+                "exp": 0,
+                "weight": 20
+            },
+            {
+                "text": "The mouse is too fast for r_c. {PRONOUN/r_c/subject/CAP} {VERB/r_c/miss/misses}, {VERB/r_c/tumble/tumbles} over {PRONOUN/r_c/self}, and {VERB/r_c/end/ends} up dizzy as the mouse disappears into the undergrowth.",
+                "exp": 0,
+                "weight": 15
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_den_reinforcement",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_med_mossapps",
+        "min_cats": 1,
+        "max_cats": 4,
+        "min_max_status": {},
+        "weight": 15,
+        "intro_text": "The dens need some maintenance and reinforcement.",
+        "decline_text": "r_c decides the dens can wait another day.",
+        "chance_of_success": 60,
+        "success_outcomes": [
+            {
+                "text": "r_c patches up the weak spots in the warriors' den with fresh moss and sticks. It feels much sturdier now.",
+                "exp": 10,
+                "herbs": ["moss"],
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["trust"],
+                        "amount": 3
+                    }
+                ]
+            },
+            {
+                "text": "Working together, the patrol reinforces the apprentices' den. The young cats will sleep better tonight.",
+                "exp": 8,
+                "weight": 15,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["platonic"],
+                        "amount": 4
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c accidentally pulls out more moss than {PRONOUN/r_c/subject} {VERB/r_c/add/adds}, making the den worse. {PRONOUN/r_c/subject/CAP} {VERB/r_c/sigh/sighs} and {VERB/r_c/start/starts} over.",
+                "exp": 0,
+                "weight": 15
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_freshkill_organize",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_hunt_sneakprey",
+        "min_cats": 1,
+        "max_cats": 3,
+        "min_max_status": {},
+        "weight": 15,
+        "intro_text": "The fresh-kill pile is disorganized and some prey is starting to smell off.",
+        "decline_text": "r_c wrinkles {PRONOUN/r_c/poss} nose but leaves it for someone else.",
+        "chance_of_success": 70,
+        "success_outcomes": [
+            {
+                "text": "r_c sorts through the pile, removing spoiled prey and organizing the rest by size. The elders nod approvingly.",
+                "exp": 8,
+                "weight": 25,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": 4
+                    }
+                ]
+            },
+            {
+                "text": "After organizing the pile, r_c discovers a hidden mouse that was still good! {PRONOUN/r_c/subject/CAP} {VERB/r_c/add/adds} it back to the top.",
+                "exp": 10,
+                "prey": ["very_small"],
+                "weight": 15,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["confidence"],
+                        "amount": 3
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c accidentally scatters the pile everywhere while trying to organize it. This is going to take a while to fix.",
+                "exp": 0,
+                "weight": 10
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_clear_branches",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "fst_train_stuck_outcome",
+        "min_cats": 2,
+        "max_cats": 6,
+        "min_max_status": {},
+        "weight": 12,
+        "intro_text": "After the recent storm, fallen branches litter the camp.",
+        "decline_text": "The patrol decides to leave the cleanup for later.",
+        "chance_of_success": 80,
+        "success_outcomes": [
+            {
+                "text": "The patrol works efficiently, dragging branches out of camp and clearing the paths. The camp looks much better.",
+                "exp": 12,
+                "weight": 25,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["trust", "platonic"],
+                        "amount": 5
+                    }
+                ]
+            },
+            {
+                "text": "r_c finds some useful sticks among the debris and sets them aside for den repairs later.",
+                "exp": 10,
+                "weight": 20,
+                "stat_trait": ["resourceful"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["respect"],
+                        "amount": 4
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c gets a splinter from a broken branch. {PRONOUN/r_c/subject/CAP} {VERB/r_c/hiss/hisses} in pain but continues working.",
+                "exp": 3,
+                "weight": 15,
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["small cut"],
+                        "scars": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_nest_making",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_herbs",
+        "min_cats": 1,
+        "max_cats": 6,
+        "min_max_status": {},
+        "weight": 15,
+        "intro_text": "Some of the nests are worn out and need to be remade or repaired.",
+        "decline_text": "r_c decides the current nests will do for now.",
+        "chance_of_success": 65,
+        "success_outcomes": [
+            {
+                "text": "r_c carefully builds new nests with fresh moss and feathers. Several cats will sleep more comfortably tonight.",
+                "exp": 12,
+                "herbs": ["moss"],
+                "weight": 25,
+                "stat_trait": ["dedicated"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["comfort", "gratitude"],
+                        "amount": 5
+                    }
+                ]
+            },
+            {
+                "text": "r_c repairs several torn nests throughout the dens. It's not fancy work, but it's effective.",
+                "exp": 8,
+                "herbs": ["moss"],
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": 3
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c's nest-building gets messy. The moss falls apart and {PRONOUN/r_c/subject} {VERB/r_c/have/has} to start over.",
+                "exp": 0,
+                "weight": 15
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_elder_food",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "lg_elder_og4",
+        "min_cats": 1,
+        "max_cats": 5,
+        "min_max_status": {
+            "elder": [1, 4]
+        },
+        "weight": 20,
+        "intro_text": "Some of the elders haven't eaten much today.",
+        "decline_text": "r_c figures the elders can fend for themselves.",
+        "chance_of_success": 75,
+        "success_outcomes": [
+            {
+                "text": "r_c brings a choice piece of prey to the elder's resting spot. They purr gratefully and enjoy the meal.",
+                "exp": 10,
+                "weight": 30,
+                "stat_trait": ["compassionate", "helpful"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["comfort", "respect"],
+                        "amount": 8
+                    }
+                ]
+            },
+            {
+                "text": "r_c ensures every elder gets fed before the hunters eat. The elders seem stronger for the care.",
+                "exp": 8,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["gratitude"],
+                        "amount": 6
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c tries to bring food but accidentally drops it on the way. {PRONOUN/r_c/subject/CAP} {VERB/r_c/apologize/apologizes} and cleans up the mess.",
+                "exp": 0,
+                "weight": 15
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_elder_dirtplace",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_warrior_warrior_siblings",
+        "min_cats": 1,
+        "max_cats": 5,
+        "min_max_status": {
+            "elder": [1, 4]
+        },
+        "weight": 18,
+        "intro_text": "An elder needs help making it to the dirtplace.",
+        "decline_text": "r_c pretends not to notice.",
+        "chance_of_success": 80,
+        "success_outcomes": [
+            {
+                "text": "r_c gently helps the elder to the dirtplace and back to their nest without fuss. The elder is grateful for the quiet assistance.",
+                "exp": 10,
+                "weight": 30,
+                "stat_trait": ["patient", "kind"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["respect", "comfort"],
+                        "amount": 7
+                    }
+                ]
+            },
+            {
+                "text": "The elder moves slowly, but r_c's steady presence helps them along. By the time they return, the elder seems more comfortable.",
+                "exp": 8,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": 5
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "The elder loses their footing on the way back. r_c catches them, but the experience shakes them both.",
+                "exp": 3,
+                "weight": 15,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["gratitude"],
+                        "amount": 4
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_elder_listen",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "life_med_og2",
+        "min_cats": 1,
+        "max_cats": 5,
+        "min_max_status": {
+            "elder": [1, 6]
+        },
+        "weight": 12,
+        "intro_text": "An elder is complaining about their joints again.",
+        "decline_text": "r_c slips away before getting trapped in the conversation.",
+        "chance_of_success": 85,
+        "success_outcomes": [
+            {
+                "text": "r_c sits with the elder and listens patiently to their complaints. By the end, the elder seems to feel better just from being heard.",
+                "exp": 8,
+                "weight": 30,
+                "stat_trait": ["patient", "calm"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["comfort", "respect"],
+                        "amount": 6
+                    }
+                ]
+            },
+            {
+                "text": "r_c settles in to listen, occasionally offering sympathetic comments. The elder's mood lifts considerably.",
+                "exp": 6,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort"],
+                        "amount": 5
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c tries to leave during the elder's story, which only makes them more upset. {PRONOUN/r_c/subject/CAP} {VERB/r_c/end/ends} up listening even longer than expected.",
+                "exp": 0,
+                "weight": 15,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort"],
+                        "amount": -3
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_elder_sunspot",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_train_sunny8",
+        "min_cats": 1,
+        "max_cats": 6,
+        "min_max_status": {
+            "elder": [1, 6]
+        },
+        "weight": 10,
+        "intro_text": "r_c notices an elder struggling to find a comfortable sunny spot.",
+        "decline_text": "r_c leaves them to figure it out themselves.",
+        "chance_of_success": 80,
+        "success_outcomes": [
+            {
+                "text": "r_c gently moves the elder to the warmest, most comfortable sunny spot in camp. The elder purrs contentedly.",
+                "exp": 8,
+                "weight": 30,
+                "stat_trait": ["thoughtful", "kind"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["comfort", "respect"],
+                        "amount": 6
+                    }
+                ]
+            },
+            {
+                "text": "r_c finds a perfect sunny spot and helps settle the elder there. The warmth seems to ease their aching bones.",
+                "exp": 6,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["gratitude"],
+                        "amount": 4
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c tries to move the elder, but the sunny spot disappears as clouds roll in. The elder sighs.",
+                "exp": 0,
+                "weight": 15
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_kit_escape",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "lifegen_kit16",
+        "min_cats": 1,
+        "max_cats": 4,
+        "min_max_status": {},
+        "weight": 18,
+        "intro_text": "Some kits are trying to sneak out of the nursery for an adventure.",
+        "decline_text": "r_c lets the queens handle it.",
+        "chance_of_success": 70,
+        "success_outcomes": [
+            {
+                "text": "r_c gently redirects the kits back to the nursery with a fun game. The queens thank {PRONOUN/r_c/object} for the help.",
+                "exp": 8,
+                "weight": 30,
+                "stat_trait": ["playful", "responsible"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["trust", "platonic"],
+                        "amount": 5
+                    }
+                ]
+            },
+            {
+                "text": "r_c catches the kits before they get far and brings them back to safety. The queens purr gratefully.",
+                "exp": 6,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["gratitude", "trust"],
+                        "amount": 4
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "Despite r_c's best efforts, the kits slip away and wander too far before being brought back. The queens are upset.",
+                "exp": 0,
+                "weight": 15,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": -3
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_teach_rules",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_cat_with_kit_warrior",
+        "min_cats": 1,
+        "max_cats": 5,
+        "min_max_status": {},
+        "weight": 16,
+        "intro_text": "The kits need to learn the colony rules and boundaries.",
+        "decline_text": "r_c figures the queens can teach them eventually.",
+        "chance_of_success": 75,
+        "success_outcomes": [
+            {
+                "text": "r_c patiently explains the rules to the kits, using stories and examples. The kits listen intently and seem to understand.",
+                "exp": 12,
+                "weight": 25,
+                "stat_trait": ["patient", "wise"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["respect", "comfort"],
+                        "amount": 6
+                    }
+                ]
+            },
+            {
+                "text": "r_c teaches the kits about respecting borders and colony boundaries through a practical demonstration. They learn quickly.",
+                "exp": 10,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": 4
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "The kits get bored with the lesson and start playing instead. r_c gives up on explaining for now.",
+                "exp": 3,
+                "weight": 15
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_nursery_clean",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "lg_queenapp_default",
+        "min_cats": 1,
+        "max_cats": 4,
+        "min_max_status": {},
+        "weight": 14,
+        "intro_text": "The nursery needs cleaning. After all, kits can't care for themselves.",
+        "decline_text": "r_c wrinkles {PRONOUN/r_c/poss} nose and walks away.",
+        "chance_of_success": 65,
+        "success_outcomes": [
+            {
+                "text": "r_c thoroughly cleans the nursery, removing old bedding and replacing it with fresh moss. The queens are very grateful.",
+                "exp": 9,
+                "herbs": ["moss"],
+                "weight": 25,
+                "stat_trait": ["dedicated"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["comfort", "gratitude"],
+                        "amount": 5
+                    }
+                ]
+            },
+            {
+                "text": "r_c helps the queens organize and clean the nursery. The space is much more pleasant now.",
+                "exp": 7,
+                "herbs": ["moss"],
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": 3
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c tries to clean but the kits won't stop playing long enough to help. The job is only half done.",
+                "exp": 0,
+                "weight": 15
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_queen_relief",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "life_queenapp_og2",
+        "min_cats": 1,
+        "max_cats": 3,
+        "min_max_status": {
+            "queen": [1, 4]
+        },
+        "weight": 17,
+        "intro_text": "A queen needs a break from watching the kits all day.",
+        "decline_text": "r_c figures the queen has the nursery under control.",
+        "chance_of_success": 80,
+        "success_outcomes": [
+            {
+                "text": "r_c watches the kits while the queen takes some much-needed rest. By the time she returns, she feels refreshed.",
+                "exp": 10,
+                "weight": 30,
+                "stat_trait": ["responsible", "caring"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["gratitude", "comfort"],
+                        "amount": 7
+                    }
+                ]
+            },
+            {
+                "text": "r_c takes over kit duties for the afternoon, giving the queen time to eat and rest properly.",
+                "exp": 8,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort"],
+                        "amount": 5
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c loses track of the kits and the queen has to step back in to prevent chaos. She's more stressed than before.",
+                "exp": 0,
+                "weight": 15,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": -4
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_apprentice_assess",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_train_patrolapprenticesessionfail",
+        "min_cats": 2,
+        "max_cats": 3,
+        "min_max_status": {
+            "warrior": [1, 2],
+            "apprentice": [1, 1]
+        },
+        "weight": 18,
+        "intro_text": "An apprentice is getting ready for their assessment.",
+        "decline_text": "r_c doesn't have time to prepare app1 right now.",
+        "chance_of_success": 60,
+        "success_outcomes": [
+            {
+                "text": "r_c runs app1 through drills and exercises, pointing out areas for improvement. app1 feels much more confident about the upcoming assessment.",
+                "exp": 15,
+                "weight": 25,
+                "stat_skill": ["HUNTING,1", "FIGHTING,1"],
+                "relationships": [
+                    {
+                        "cats_to": ["app1"],
+                        "cats_from": ["r_c"],
+                        "mutual": false,
+                        "values": ["trust", "respect"],
+                        "amount": 7
+                    }
+                ]
+            },
+            {
+                "text": "app1 practices hunting and fighting techniques under r_c's watchful eye. The apprentice shows real promise.",
+                "exp": 12,
+                "weight": 20,
+                "stat_trait": ["focused"],
+                "relationships": [
+                    {
+                        "cats_to": ["app1"],
+                        "cats_from": ["r_c"],
+                        "mutual": false,
+                        "values": ["respect", "trust"],
+                        "amount": 5
+                    }
+                ]
+            },
+            {
+                "text": "r_c spends time working through basic techniques with app1. By the end of the session, app1 feels more prepared.",
+                "exp": 8,
+                "weight": 15,
+                "relationships": [
+                    {
+                        "cats_to": ["app1"],
+                        "cats_from": ["r_c"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": 3
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "The training session doesn't go as planned. app1 gets discouraged and r_c's encouragement doesn't seem to help much.",
+                "exp": 3,
+                "weight": 15,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": -2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_teach_chores",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_train_teachingromance",
+        "min_cats": 2,
+        "max_cats": 4,
+        "min_max_status": {
+            "warrior": [1, 1],
+            "apprentice": [1, 2]
+        },
+        "weight": 15,
+        "intro_text": "r_c feels that the apprentices need to learn how to handle camp chores.",
+        "decline_text": "r_c leaves the apprentices to figure it out themselves.",
+        "chance_of_success": 70,
+        "success_outcomes": [
+            {
+                "text": "r_c teaches the apprentices how to organize the fresh-kill pile and maintain camp. They pick it up quickly.",
+                "exp": 10,
+                "weight": 25,
+                "stat_trait": ["responsible"],
+                "relationships": [
+                    {
+                        "cats_to": ["app1", "app2"],
+                        "cats_from": ["r_c"],
+                        "mutual": false,
+                        "values": ["trust", "respect"],
+                        "amount": 5
+                    }
+                ]
+            },
+            {
+                "text": "r_c shows the apprentices how important camp chores are to the colony's wellbeing. They approach the work with new enthusiasm.",
+                "exp": 8,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["app1", "app2"],
+                        "cats_from": ["r_c"],
+                        "mutual": false,
+                        "values": ["platonic"],
+                        "amount": 3
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "The apprentices goof off instead of learning. r_c has to scold them and start over.",
+                "exp": 0,
+                "weight": 15
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_warrior_code",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "app_cat_looking_up",
+        "min_cats": 1,
+        "max_cats": 6,
+        "min_max_status": {
+            "warrior": [1, 6]
+        },
+        "weight": 16,
+        "intro_text": "r_c decides it's time to discuss the rules and what it means to be a true colony member.",
+        "decline_text": "r_c figures everyone knows the rules already.",
+        "chance_of_success": 80,
+        "success_outcomes": [
+            {
+                "text": "r_c shares stories of honor and duty, reminding everyone what the rules truly mean. The group listens intently.",
+                "exp": 12,
+                "weight": 25,
+                "stat_trait": ["wise", "honorable"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["respect", "trust"],
+                        "amount": 6
+                    }
+                ]
+            },
+            {
+                "text": "r_c leads a discussion about loyalty and the importance of the rules. The patrol leaves feeling renewed in their commitment.",
+                "exp": 10,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["respect"],
+                        "amount": 4
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c's lecture on the colony rules goes over poorly. Some cats seem skeptical about old traditions.",
+                "exp": 0,
+                "weight": 15,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": -2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_apprentice_discipline",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_train_argueWA",
+        "min_cats": 2,
+        "max_cats": 2,
+        "min_max_status": {
+            "warrior": [1, 1],
+            "apprentice": [1, 1]
+        },
+        "weight": 12,
+        "intro_text": "app1 has been misbehaving and needs to be disciplined.",
+        "decline_text": "r_c decides the apprentice will learn their lesson another way.",
+        "chance_of_success": 65,
+        "success_outcomes": [
+            {
+                "text": "r_c gives app1 extra chores and a stern lecture. app1 seems to understand the message and promises to do better.",
+                "exp": 8,
+                "weight": 30,
+                "stat_trait": ["obedient"],
+                "relationships": [
+                    {
+                        "cats_to": ["app1"],
+                        "cats_from": ["r_c"],
+                        "mutual": false,
+                        "values": ["respect"],
+                        "amount": 3
+                    }
+                ]
+            },
+            {
+                "text": "r_c assigns extra training sessions as punishment. app1 grumbles but accepts the consequence.",
+                "exp": 6,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["app1"],
+                        "cats_from": ["r_c"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": 2
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "app1 refuses to accept the discipline and argues back. The situation gets worse before r_c can calm it down.",
+                "exp": 0,
+                "weight": 15,
+                "stat_trait": ["defiant"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust", "respect"],
+                        "amount": -5
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_break_argument",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_train_argueWMW",
+        "min_cats": 1,
+        "max_cats": 4,
+        "min_max_status": {},
+        "weight": 15,
+        "intro_text": "Two cats are getting into a heated argument that could escalate.",
+        "decline_text": "r_c lets them sort it out on their own.",
+        "chance_of_success": 70,
+        "success_outcomes": [
+            {
+                "text": "r_c steps between them and calmly talks both sides down. They agree to settle their differences peacefully.",
+                "exp": 12,
+                "weight": 25,
+                "stat_trait": ["calm", "diplomatic"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["respect", "trust"],
+                        "amount": 6
+                    }
+                ]
+            },
+            {
+                "text": "r_c uses a firm tone to interrupt the argument before it goes too far. Both cats respect {PRONOUN/r_c/object} enough to listen.",
+                "exp": 9,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["respect"],
+                        "amount": 4
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c tries to stop them, but the argument turns into a physical fight anyway. Things get messy.",
+                "exp": 3,
+                "weight": 15,
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["scrapes"],
+                        "scars": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_comfort_grief",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_mates_headbump",
+        "min_cats": 1,
+        "max_cats": 4,
+        "min_max_status": {},
+        "weight": 14,
+        "intro_text": "A colonymate is grieving and needs support.",
+        "decline_text": "r_c doesn't know what to say and walks away.",
+        "chance_of_success": 85,
+        "success_outcomes": [
+            {
+                "text": "r_c sits quietly with the grieving cat, offering comfort through presence. {PRONOUN/r_c/subject/CAP} {VERB/r_c/listen/listens} without judgment.",
+                "exp": 10,
+                "weight": 30,
+                "stat_trait": ["compassionate", "kind"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["comfort", "respect"],
+                        "amount": 8
+                    }
+                ]
+            },
+            {
+                "text": "r_c gently shares memories of the lost cat, helping ease the grieving cat's sorrow.",
+                "exp": 8,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort"],
+                        "amount": 6
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c tries to cheer the cat up but says the wrong thing. The cat gets more upset.",
+                "exp": 0,
+                "weight": 15,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort"],
+                        "amount": -4
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_welcome_party",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": ["new_cat"],
+        "patrol_art": "gen_bump_heads_warrior_loner",
+        "min_cats": 1,
+        "max_cats": 6,
+        "min_max_status": {},
+        "weight": 13,
+        "intro_text": "A patrol came back to camp with news that a new cat is joining the colony.",
+        "decline_text": "r_c figures the newcomer can find their own way.",
+        "chance_of_success": 75,
+        "success_outcomes": [
+            {
+                "text": "r_c warmly welcomes {PRONOUN/n_c:0/object} and shows them around camp. The newcomer feels immediately at home.",
+                "exp": 11,
+                "weight": 25,
+                "stat_trait": ["friendly", "welcoming"],
+                "outsider_rep": 1,
+                "new_cat": [
+                    ["loner", "status:warrior"]
+                ],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["comfort", "platonic"],
+                        "amount": 7
+                    }
+                ]
+            },
+            {
+                "text": "r_c makes sure the newcomer feels accepted and introduces them to key members of the colony.",
+                "exp": 9,
+                "weight": 20,
+                "outsider_rep": 1,
+                "new_cat": [
+                    ["loner", "status:apprentice"]
+                ],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort"],
+                        "amount": 5
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c's welcome is awkward and the newcomer feels uncomfortable. They wander off on their own.",
+                "exp": 0,
+                "weight": 15,
+                "outsider_rep": -1,
+                "new_cat": [
+                    ["loner", "meeting"]
+                ],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["comfort"],
+                        "amount": -2
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_night_watch",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_bord_scentedafox",
+        "min_cats": 1,
+        "max_cats": 3,
+        "min_max_status": {},
+        "weight": 17,
+        "intro_text": "r_c takes the night watch to keep the camp safe while others sleep.",
+        "decline_text": "r_c slips into their nest instead.",
+        "chance_of_success": 75,
+        "success_outcomes": [
+            {
+                "text": "r_c remains vigilant throughout the night, spotting potential threats before they reach camp. The colony sleeps safely.",
+                "exp": 12,
+                "weight": 30,
+                "stat_trait": ["alert", "reliable"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["trust", "respect"],
+                        "amount": 6
+                    }
+                ]
+            },
+            {
+                "text": "All is quiet during r_c's watch. {PRONOUN/r_c/subject/CAP} {VERB/r_c/keep/keeps} a careful eye on the camp borders.",
+                "exp": 8,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": 4
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c gets drowsy during the watch and nearly misses a fox prowling near the borders. {PRONOUN/r_c/subject/CAP} {VERB/r_c/scramble/scrambles} to scare it off.",
+                "exp": 3,
+                "weight": 15,
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["scrapes"],
+                        "scars": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_stranger_border",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": ["new_cat"],
+        "patrol_art": "gen_bord_twocat_hostile_app_loner",
+        "min_cats": 1,
+        "max_cats": 4,
+        "min_max_status": {},
+        "weight": 18,
+        "intro_text": "A patrol returns to camp with a stranger that was spotted near the camp borders.",
+        "decline_text": "r_c decides it's not their problem.",
+        "chance_of_success": 60,
+        "success_outcomes": [
+            {
+                "text": "r_c approaches cautiously and discovers the stranger is just passing through. After some conversation, they move peacefully on their way.",
+                "exp": 10,
+                "weight": 25,
+                "stat_trait": ["cautious", "diplomatic"],
+                "new_cat": [
+                    ["loner", "meeting"]
+                ],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["trust"],
+                        "amount": 5
+                    }
+                ]
+            },
+            {
+                "text": "r_c escorts the stranger away from camp, making it clear they're not welcome. The stranger leaves without incident.",
+                "exp": 8,
+                "weight": 20,
+                "new_cat": [
+                    ["loner", "meeting"]
+                ],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["trust"],
+                        "amount": 3
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c tries to be diplomatic but the stranger sees it as weakness and becomes hostile. r_c manages to drive them off but not without getting scratched.",
+                "exp": 2,
+                "weight": 15,
+                "new_cat": [
+                    ["loner", "meeting"]
+                ],
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["claw-wound"],
+                        "scars": []
+                    }
+                ]
+            },
+            {
+                "text": "r_c confronts the stranger, but miscalculates their response. They fight briefly and the stranger escapes with r_c bearing wounds.",
+                "exp": 3,
+                "weight": 15,
+                "outsider_rep": -1,
+                "new_cat": [
+                    ["loner", "meeting"]
+                ],
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["bite-wound"],
+                        "scars": []
+                    }
+                ]
+            }
+        ],
+        "antag_success_outcomes": [
+            {
+                "text": "Determined to protect {PRONOUN/r_c/poss} colony, r_c attacks the stranger aggressively. {PRONOUN/r_c/subject/CAP} {VERB/r_c/drive/drives} the hostile intruder away from the borders with fury.",
+                "exp": 10,
+                "weight": 20,
+                "stat_trait": ["brave"],
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["small cut"],
+                        "scars": []
+                    }
+                ]
+            }
+        ],
+        "antag_fail_outcomes": [
+            {
+                "text": "Determined to protect {PRONOUN/r_c/poss} colony, r_c throws {PRONOUN/r_c/self} at the stranger. But the stranger is far more violent than anticipated and viciously attacks r_c.",
+                "exp": 0,
+                "weight": 20,
+                "outsider_rep": -2,
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["torn pelt"],
+                        "scars": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_predator_sign",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_patrol_dog_warrior",
+        "min_cats": 1,
+        "max_cats": 4,
+        "min_max_status": {},
+        "weight": 16,
+        "intro_text": "Signs of a predator are found near the camp.",
+        "decline_text": "r_c hopes it will go away on its own.",
+        "chance_of_success": 65,
+        "success_outcomes": [
+            {
+                "text": "r_c investigates and finds the predator is long gone. {PRONOUN/r_c/subject/CAP} {VERB/r_c/mark/marks} the territory to discourage future visits.",
+                "exp": 11,
+                "weight": 25,
+                "stat_trait": ["brave", "resourceful"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["trust", "respect"],
+                        "amount": 6
+                    }
+                ]
+            },
+            {
+                "text": "r_c takes precautions and warns the colony about the danger, organizing extra patrols to keep watch.",
+                "exp": 9,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["respect"],
+                        "amount": 4
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "r_c encounters the predator while investigating but manages to scare it off and escape with only minor injuries.",
+                "exp": 3,
+                "weight": 15,
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["scrapes"],
+                        "scars": []
+                    }
+                ]
+            },
+            {
+                "text": "r_c tracks the predator but miscalculates its behavior. It attacks quickly and r_c barely escapes with injuries.",
+                "exp": 2,
+                "weight": 10,
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["claw-wound"],
+                        "scars": []
+                    }
+                ]
+            }
+        ],
+        "antag_success_outcomes": [
+            {
+                "text": "Determined to protect the colony from this threat, r_c charges at the predator with fierce determination. {PRONOUN/r_c/subject/CAP} {VERB/r_c/drive/drives} the beast away from the camp borders.",
+                "exp": 15,
+                "weight": 20,
+                "stat_trait": ["brave", "strong"],
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["bite-wound"],
+                        "scars": []
+                    }
+                ]
+            }
+        ],
+        "antag_fail_outcomes": [
+            {
+                "text": "Determined to protect the colony, r_c attacks the predator aggressively, but the beast is far more dangerous than anticipated and viciously mauls r_c before fleeing.",
+                "exp": 0,
+                "weight": 20,
+                "outsider_rep": -1,
+                "injury": [
+                    {
+                        "cats": ["r_c"],
+                        "injuries": ["torn pelt"],
+                        "scars": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "patrol_id": "duties_teach_combat",
+        "biome": ["any"],
+        "season": ["any"],
+        "types": ["duties"],
+        "tags": [],
+        "patrol_art": "gen_train_huntingromance1",
+        "min_cats": 1,
+        "max_cats": 5,
+        "min_max_status": {
+            "warrior": [1, 5]
+        },
+        "weight": 15,
+        "intro_text": "r_c wants to spend the afternoon teaching fighting techniques to other warriors.",
+        "decline_text": "r_c figures everyone knows how to fight already.",
+        "chance_of_success": 80,
+        "success_outcomes": [
+            {
+                "text": "r_c demonstrates advanced fighting moves and the others practice intently. Everyone leaves feeling more confident.",
+                "exp": 13,
+                "weight": 25,
+                "stat_skill": ["FIGHTING,2"],
+                "stat_trait": ["strong"],
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": true,
+                        "values": ["respect", "trust"],
+                        "amount": 6
+                    }
+                ]
+            },
+            {
+                "text": "r_c works with the group to refine their combat skills. The training session is productive and encouraging.",
+                "exp": 10,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": ["patrol"],
+                        "cats_from": ["patrol"],
+                        "mutual": false,
+                        "values": ["respect"],
+                        "amount": 4
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "During practice, one of the cats takes a hit too hard and r_c feels responsible. They end the session early.",
+                "exp": 0,
+                "weight": 15,
+                "injury": [
+                    {
+                        "cats": ["s_c"],
+                        "injuries": ["bruises"],
+                        "scars": []
+                    }
+                ]
+            }
+        ]
+    }
+]

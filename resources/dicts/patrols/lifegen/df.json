@@ -3588,6 +3588,11 @@
                     "weight": 20,
                     "can_have_stat": ["any"],
                     "stat_residence": ["df"]
+                },
+                {
+                    "text": "You call out a distraction, giving r_c enough time to scramble away from the Dark Forest cats. The group loses interest and disperses, leaving you both shaken but safe.",
+                    "exp": 8,
+                    "weight": 15
                 }
             ],
             "fail_outcomes": [
@@ -3597,6 +3602,11 @@
                     "weight": 20,
                     "can_have_stat": ["any"],
                     "stat_residence": ["living"]
+                },
+                {
+                    "text": "You hesitate too long, unsure how to help. By the time you decide to act, r_c has already slipped away from the group on {PRONOUN/r_c/poss} own. You hope {PRONOUN/r_c/subject}{VERB/r_c/'re/'s} alright.",
+                    "exp": 0,
+                    "weight": 15
                 }
             ]
         }

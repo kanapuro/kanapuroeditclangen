@@ -1,4 +1,8 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Sub-patrol buttons are now only visible when on the correct tab. When on the dark forest, date/outing, or lifegen tabs, you will NOT see the general patrol subtypes. This is to make room for future subpatrol types.
+- All general categories can be randomly picked from, including camp duties and herb patrols, as long as they have the proper requirements (ie. a healer for herb patrol).
+- Around 36(?) new CAMP DUTY patrols.
+- Added new general patrol category - CAMP DUTIES. This is related to a prior update that allowed elders, queens, and mediators to patrol: they have debuffs on regular patrols and buffs on camp duty patrols! I slightly regret this change because camp duty patrols are a lot like lifegen patrols... but I'm in too deep.
 - Fixed minor visual bug that let MC and patrolcats be selected for date/outing after you've already had a date/outing that moon.
 - Modified "gore" sub-feature for injury overlays: supports aliasing (pregnant and recovering from birth share one sprite) and stores specific scar variants per injury (e.g., a “burntail” scar records and displays the matching burn overlay even if the condition reads “severe burn”).
 - Apprentice MC's can outing too.

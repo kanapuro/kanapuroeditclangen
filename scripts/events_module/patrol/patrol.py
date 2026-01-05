@@ -323,6 +323,7 @@ class Patrol:
                     possible_patrols.extend(self.generate_patrol_events(self.BORDER_GEN))
                     possible_patrols.extend(self.generate_patrol_events(self.TRAINING_GEN))
                     possible_patrols.extend(self.generate_patrol_events(self.MEDCAT_GEN))
+                    possible_patrols.extend(self.generate_patrol_events(self.DUTIES_GEN))
                     possible_patrols.extend(self.generate_patrol_events(self.DISASTER))
                     possible_patrols.extend(self.generate_patrol_events(self.NEW_CAT_WELCOMING))
                     possible_patrols.extend(self.generate_patrol_events(self.NEW_CAT_HOSTILE))
@@ -390,6 +391,7 @@ class Patrol:
             possible_patrols.extend(self.generate_patrol_events(self.BORDER_GEN))
             possible_patrols.extend(self.generate_patrol_events(self.TRAINING_GEN))
             possible_patrols.extend(self.generate_patrol_events(self.MEDCAT_GEN))
+            possible_patrols.extend(self.generate_patrol_events(self.DUTIES_GEN))
         elif game.switches["patrol_category"] == 'lifegen':
 
             if game.clan.your_cat.shunned != 0:
@@ -610,18 +612,17 @@ class Patrol:
         filtered_patrols = []
         romantic_patrols = []
         special_date = get_special_date()
-        # This make sure general only gets hunting, border, or training patrols
-        # chose fix type will make it not depending on the content amount
         if patrol_type == "general":
-            patrol_type = random.choice(["hunting", "border", "training"])
+            possible_types = ["hunting", "border", "training", "duties"]
+            if self.patrol_statuses.get("healer cats", 0) > 0:
+                possible_types.append("med")
+            patrol_type = random.choice(possible_types)
 
-        # makes sure that it grabs patrols in the correct biomes, season, with the correct number of cats
         for patrol in possible_patrols:
 
             if not self._check_constraints(patrol):
                 continue
 
-            # Don't check for repeat patrols if ensure_patrol_id is being used.
             if (
                 not isinstance(
                     game.config["patrol_generation"]["debug_ensure_patrol_id"], str
@@ -682,8 +683,7 @@ class Patrol:
             #  correct button check
             if game.switches["patrol_category"] == 'clangen':
                 if patrol_type == "general":
-                    if not set(patrol.types).intersection({"hunting", "border", "training"}):
-                        # This make sure general only gets hunting, border, or training patrols.
+                    if not set(patrol.types).intersection({"hunting", "border", "training", "duties", "herb_gathering"}):
                         continue
                 else:
                     if 'hunting' not in patrol.types and patrol_type == 'hunting':
@@ -693,6 +693,8 @@ class Patrol:
                     elif 'training' not in patrol.types and patrol_type == 'training':
                         continue
                     elif 'herb_gathering' not in patrol.types and patrol_type == 'med':
+                        continue
+                    elif 'duties' not in patrol.types and patrol_type == 'duties':
                         continue
 
             if game.switches["patrol_category"] in ['lifegen', 'df', 'date']:
@@ -992,26 +994,40 @@ class Patrol:
                                    for ptype in ['hunting', 'border'])
             is_herb_training = any(ptype in self.patrol_event.types 
                                   for ptype in ['herb_gathering', 'med_cat', 'training'])
+            is_duties = any(ptype in self.patrol_event.types 
+                           for ptype in ['duties'])
             
             status_modifier_applied = False
             if kitty.status == "elder":
                 if is_combat_hunting:
-                    success_chance -= 10  # Elders struggle with hunting/combat
+                    success_chance -= 10
                     skill_updates += f"{kitty.name} (elder -10 combat/hunting) -> {success_chance} | "
                     status_modifier_applied = True
                 elif is_herb_training:
-                    success_chance += 5  # Elders excel at teaching and herb knowledge
+                    success_chance += 5
                     skill_updates += f"{kitty.name} (elder +5 herb/training) -> {success_chance} | "
+                    status_modifier_applied = True
+                elif is_duties:
+                    success_chance += 5
+                    skill_updates += f"{kitty.name} (elder +5 duties) -> {success_chance} | "
                     status_modifier_applied = True
             elif kitty.status in ["mediator", "mediator apprentice"]:
                 if is_combat_hunting:
-                    success_chance -= 5  # Mediators less experienced in combat/hunting
+                    success_chance -= 5
                     skill_updates += f"{kitty.name} (mediator -5 combat/hunting) -> {success_chance} | "
+                    status_modifier_applied = True
+                elif is_duties:
+                    success_chance += 3
+                    skill_updates += f"{kitty.name} (mediator +3 duties) -> {success_chance} | "
                     status_modifier_applied = True
             elif kitty.status in ["queen", "queen's apprentice"]:
                 if is_combat_hunting:
-                    success_chance -= 10  # Queens/expectant cats struggle with physical patrols
+                    success_chance -= 10
                     skill_updates += f"{kitty.name} (queen -10 combat/hunting) -> {success_chance} | "
+                    status_modifier_applied = True
+                elif is_duties:
+                    success_chance += 5
+                    skill_updates += f"{kitty.name} (queen +5 duties) -> {success_chance} | "
                     status_modifier_applied = True
             
             if not status_modifier_applied:
@@ -1140,6 +1156,9 @@ class Patrol:
             self.MEDCAT_GEN = None
             with open(f"{resource_dir}general/medcat.json", 'r', encoding='ascii') as read_file:
                 self.MEDCAT_GEN = ujson.loads(read_file.read())
+            self.DUTIES_GEN = None
+            with open(f"{resource_dir}general/duties.json", 'r', encoding='ascii') as read_file:
+                self.DUTIES_GEN = ujson.loads(read_file.read())
         elif game.switches["patrol_category"] == 'lifegen':
             self.general_lifegen = None
             with open(f"{resource_dir}/lifegen/general.json", 'r', encoding='ascii') as read_file:

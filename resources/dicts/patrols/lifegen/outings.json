@@ -82,7 +82,7 @@
         "max_cats": 2,
         "min_max_status": {},
         "weight": 20,
-        "intro_text": "You suggest going hunting together with r_c. It could be a good way to bond while getting some fresh kill for the clan.",
+        "intro_text": "You suggest going hunting together with r_c. It could be a good way to bond while getting some fresh kill for the colony.",
         "decline_text": "You're not in the mood for hunting right now.",
         "chance_of_success": 55,
         "success_outcomes": [
@@ -399,7 +399,7 @@
         "max_cats": 3,
         "min_max_status": {},
         "weight": 15,
-        "intro_text": "You invite r_c and o_c1 to walk the borders with you. It's a good way to spend time together while being useful to the clan.",
+        "intro_text": "You invite r_c and o_c1 to walk the borders with you. It's a good way to spend time together while being useful to the colony.",
         "decline_text": "You decide to stay in camp today.",
         "chance_of_success": 60,
         "success_outcomes": [

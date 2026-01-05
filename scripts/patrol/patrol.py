@@ -282,6 +282,7 @@ class Patrol():
         possible_patrols.extend(self.generate_patrol_events(self.BORDER_GEN))
         possible_patrols.extend(self.generate_patrol_events(self.TRAINING_GEN))
         possible_patrols.extend(self.generate_patrol_events(self.MEDCAT_GEN))
+        possible_patrols.extend(self.generate_patrol_events(self.DUTIES_GEN))
 
         if game_setting_disaster:
             dis_chance = int(random.getrandbits(3))  # disaster patrol chance
@@ -554,10 +555,11 @@ class Patrol():
         filtered_patrols = []
         romantic_patrols = []
         special_date = get_special_date()
-        # This make sure general only gets hunting, border, or training patrols
-        # chose fix type will make it not depending on the content amount
         if patrol_type == "general":
-            patrol_type = random.choice(["hunting", "border", "training"])
+            possible_types = ["hunting", "border", "training", "duties"]
+            if self.patrol_statuses.get("healer cats", 0) > 0:
+                possible_types.append("med")
+            patrol_type = random.choice(possible_types)
 
         # makes sure that it grabs patrols in the correct biomes, season, with the correct number of cats
         # NOTE: When is_outing=True, romantic-tagged patrols are excluded, and regular
@@ -606,6 +608,8 @@ class Patrol():
             elif 'training' not in patrol.types and patrol_type == 'training':
                 continue
             elif 'herb_gathering' not in patrol.types and patrol_type == 'med':
+                continue
+            elif 'duties' not in patrol.types and patrol_type == 'duties':
                 continue
 
             # cruel season tag check
@@ -810,6 +814,9 @@ class Patrol():
         self.MEDCAT_GEN = None
         with open(f"{resource_dir}general/medcat.json", 'r', encoding='ascii') as read_file:
             self.MEDCAT_GEN = ujson.loads(read_file.read())
+        self.DUTIES_GEN = None
+        with open(f"{resource_dir}general/duties.json", 'r', encoding='ascii') as read_file:
+            self.DUTIES_GEN = ujson.loads(read_file.read())
 
     def balance_hunting(self, possible_patrols: list):
         """Filter the incoming hunting patrol list to balance the different kinds of hunting patrols.
