@@ -768,6 +768,8 @@ class Cat:
         self.connected_dialogue = {}
         self.lock_faith = "flexible"
         self.df_join_moon = 0
+        self.moons_in_apprenticeship = 0  # Tracks how long cat has been in current apprentice role
+        self.required_apprenticeship_moons = 6  # Required moons before graduation (set when becoming apprentice)
         self.df_patrols = 0
         self.graduated_df = False
         self.old_status = ""
@@ -1741,6 +1743,13 @@ class Cat:
         self.old_status = self.status
         self.status = new_status
         self.name.status = new_status
+
+        # Track apprenticeship duration - reset when becoming an apprentice
+        if new_status in ["apprentice", "medicine cat apprentice", "mediator apprentice", "queen's apprentice"]:
+            if old_status not in ["apprentice", "medicine cat apprentice", "mediator apprentice", "queen's apprentice"]:
+                # Just became an apprentice - reset counter and set random required duration (3-9 moons)
+                self.moons_in_apprenticeship = 0
+                self.required_apprenticeship_moons = random.randint(3, 9)
 
         self.update_mentor()
         for app in self.apprentice.copy():
@@ -4844,7 +4853,9 @@ class Cat:
                 "df_patrols": self.df_patrols if self.df_patrols else 0,
                 "df_join_moon": self.df_join_moon if self.df_join_moon else 0,
                 "graduated_df": self.graduated_df if self.graduated_df else False,
-                "old_status": self.old_status if self.old_status else ""
+                "old_status": self.old_status if self.old_status else "",
+                "moons_in_apprenticeship": self.moons_in_apprenticeship if hasattr(self, 'moons_in_apprenticeship') else 0,
+                "required_apprenticeship_moons": self.required_apprenticeship_moons if hasattr(self, 'required_apprenticeship_moons') else 6
             }
 
     def determine_next_and_previous_cats(self, filter_func: Callable[[Cat], bool] = None):

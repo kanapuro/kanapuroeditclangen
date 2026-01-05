@@ -375,8 +375,18 @@ class RoleScreen(Screens):
             self.promote_leader.disable()
             self.promote_deputy.disable()
 
-            # ADULT CAT ROLES
-            self.switch_warrior.disable()
+            # ADULT CAT ROLES - Enable warrior if they meet graduation requirements
+            ready_to_graduate = (
+                (
+                    self.the_cat.experience_level not in ["untrained", "trainee"]
+                    and self.the_cat.moons >= game.config["graduation"]["min_graduating_age"]
+                ) or self.the_cat.moons >= game.config["graduation"]["max_apprentice_age"]["apprentice"]
+            )
+            
+            if ready_to_graduate:
+                self.switch_warrior.enable()
+            else:
+                self.switch_warrior.disable()
             self.switch_med_cat.disable()
             self.switch_mediator.disable()
             self.switch_queen.disable()
@@ -407,10 +417,10 @@ class RoleScreen(Screens):
             self.retire.enable()
 
             # In-TRAINING ROLES:
-            self.switch_med_app.disable()
+            self.switch_med_app.enable()
             self.switch_warrior_app.disable()
-            self.switch_mediator_app.disable()
-            self.switch_queen_app.disable()
+            self.switch_mediator_app.enable()
+            self.switch_queen_app.enable()
         elif self.the_cat.status == "deputy":
             if leader_invalid:
                 self.promote_leader.enable()
@@ -427,10 +437,10 @@ class RoleScreen(Screens):
             self.retire.enable()
 
             # In-TRAINING ROLES:
-            self.switch_med_app.disable()
-            self.switch_warrior_app.disable()
-            self.switch_mediator_app.disable()
-            self.switch_queen_app.disable()
+            self.switch_med_app.enable()
+            self.switch_warrior_app.enable()
+            self.switch_mediator_app.enable()
+            self.switch_queen_app.enable()
         elif self.the_cat.status == "medicine cat":
             self.promote_leader.disable()
             self.promote_deputy.disable()
@@ -442,10 +452,10 @@ class RoleScreen(Screens):
             self.retire.enable()
 
             # In-TRAINING ROLES:
-            self.switch_med_app.disable()
-            self.switch_warrior_app.disable()
-            self.switch_mediator_app.disable()
-            self.switch_queen_app.disable()
+            self.switch_med_app.enable()
+            self.switch_warrior_app.enable()
+            self.switch_mediator_app.enable()
+            self.switch_queen_app.enable()
         elif self.the_cat.status == "queen":
             self.promote_leader.disable()
             self.promote_deputy.disable()
@@ -457,9 +467,9 @@ class RoleScreen(Screens):
             self.retire.enable()
 
             # In-TRAINING ROLES:
-            self.switch_med_app.disable()
-            self.switch_warrior_app.disable()
-            self.switch_mediator_app.disable()
+            self.switch_med_app.enable()
+            self.switch_warrior_app.enable()
+            self.switch_mediator_app.enable()
             self.switch_queen_app.disable()
         elif self.the_cat.status == "mediator":
             if leader_invalid:
@@ -479,10 +489,10 @@ class RoleScreen(Screens):
             self.retire.enable()
 
             # In-TRAINING ROLES:
-            self.switch_med_app.disable()
-            self.switch_warrior_app.disable()
+            self.switch_med_app.enable()
+            self.switch_warrior_app.enable()
             self.switch_mediator_app.disable()
-            self.switch_queen_app.disable()
+            self.switch_queen_app.enable()
         elif self.the_cat.status == "elder":
             if leader_invalid:
                 self.promote_leader.enable()
@@ -502,17 +512,27 @@ class RoleScreen(Screens):
             self.retire.disable()
 
             # In-TRAINING ROLES:
-            self.switch_med_app.disable()
-            self.switch_warrior_app.disable()
-            self.switch_mediator_app.disable()
-            self.switch_queen_app.disable()
+            self.switch_med_app.enable()
+            self.switch_warrior_app.enable()
+            self.switch_mediator_app.enable()
+            self.switch_queen_app.enable()
         elif self.the_cat.status == "medicine cat apprentice":
             self.promote_leader.disable()
             self.promote_deputy.disable()
 
-            # ADULT CAT ROLES
+            # ADULT CAT ROLES - Enable medicine cat if they meet graduation requirements
+            ready_to_graduate = (
+                (
+                    self.the_cat.experience_level not in ["untrained", "trainee"]
+                    and self.the_cat.moons >= game.config["graduation"]["min_graduating_age"]
+                ) or self.the_cat.moons >= game.config["graduation"]["max_apprentice_age"]["medicine cat apprentice"]
+            )
+            
             self.switch_warrior.disable()
-            self.switch_med_cat.disable()
+            if ready_to_graduate:
+                self.switch_med_cat.enable()
+            else:
+                self.switch_med_cat.disable()
             self.switch_mediator.disable()
             self.switch_queen.disable()
             self.retire.disable()
@@ -526,10 +546,21 @@ class RoleScreen(Screens):
             self.promote_leader.disable()
             self.promote_deputy.disable()
 
+            # ADULT CAT ROLES - Enable queen if they meet graduation requirements
+            ready_to_graduate = (
+                (
+                    self.the_cat.experience_level not in ["untrained", "trainee"]
+                    and self.the_cat.moons >= game.config["graduation"]["min_graduating_age"]
+                ) or self.the_cat.moons >= game.config["graduation"]["max_apprentice_age"]["queen's apprentice"]
+            )
+            
             self.switch_warrior.disable()
             self.switch_med_cat.disable()
             self.switch_mediator.disable()
-            self.switch_queen.disable()
+            if ready_to_graduate:
+                self.switch_queen.enable()
+            else:
+                self.switch_queen.disable()
             self.retire.disable()
 
             # In-TRAINING ROLES:
@@ -541,10 +572,20 @@ class RoleScreen(Screens):
             self.promote_leader.disable()
             self.promote_deputy.disable()
 
-            # ADULT CAT ROLES
+            # ADULT CAT ROLES - Enable mediator if they meet graduation requirements
+            ready_to_graduate = (
+                (
+                    self.the_cat.experience_level not in ["untrained", "trainee"]
+                    and self.the_cat.moons >= game.config["graduation"]["min_graduating_age"]
+                ) or self.the_cat.moons >= game.config["graduation"]["max_apprentice_age"]["mediator apprentice"]
+            )
+            
             self.switch_warrior.disable()
             self.switch_med_cat.disable()
-            self.switch_mediator.disable()
+            if ready_to_graduate:
+                self.switch_mediator.enable()
+            else:
+                self.switch_mediator.disable()
             self.switch_queen.disable()
             self.retire.disable()
 

@@ -2924,16 +2924,32 @@ class Events:
                 "apprentice", "mediator apprentice",
                 "medicine cat apprentice", "queen's apprentice"
             ] and cat.shunned == 0:
+                
+                # Ensure the attribute exists (for cats created before this feature)
+                if not hasattr(cat, 'moons_in_apprenticeship'):
+                    cat.moons_in_apprenticeship = 0
+                if not hasattr(cat, 'required_apprenticeship_moons'):
+                    cat.required_apprenticeship_moons = random.randint(3, 9)
+                
+                # Increment apprenticeship duration counter
+                cat.moons_in_apprenticeship += 1
+                
+                # Use this cat's individual required apprenticeship duration
+                min_apprenticeship_duration = cat.required_apprenticeship_moons
 
                 if game.clan.clan_settings["12_moon_graduation"]:
-                    _ready = cat.moons >= 12
+                    _ready = cat.moons >= 12 and cat.moons_in_apprenticeship >= min_apprenticeship_duration
                 else:
-                    _ready = (
+                    # Must have minimum 6 moons apprenticeship time, regardless of age/experience
+                    # Only exception is ancient cats (100+ moons) as a safety valve
+                    meets_requirements = (
                         cat.experience_level not in ["untrained", "trainee"]
                         and cat.moons >= game.config["graduation"]["min_graduating_age"]
-                    ) or cat.moons >= game.config["graduation"]["max_apprentice_age"][
-                        cat.status
-                    ]
+                        and cat.moons_in_apprenticeship >= min_apprenticeship_duration
+                    )
+                    ancient_cat_safety = cat.moons >= 100  # Prevents ancient cats from being stuck
+                    
+                    _ready = meets_requirements or ancient_cat_safety
 
                 if _ready:
                     if game.clan.clan_settings["12_moon_graduation"]:

@@ -308,6 +308,8 @@ def json_load():
             new_cat.df_join_moon = cat["df_join_moon"] if "df_join_moon" in cat else 0
             new_cat.df_patrols = cat["df_patrols"] if "df_patrols" in cat else 0
             new_cat.graduated_df = cat["graduated_df"] if "graduated_df" in cat else False
+            new_cat.moons_in_apprenticeship = cat["moons_in_apprenticeship"] if "moons_in_apprenticeship" in cat else 0
+            new_cat.required_apprenticeship_moons = cat["required_apprenticeship_moons"] if "required_apprenticeship_moons" in cat else 6
 
             if "died_by" in cat or "scar_event" in cat or "mentor_influence" in cat:
                 new_cat.convert_history(
