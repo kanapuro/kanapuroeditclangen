@@ -380,6 +380,13 @@
             "relation": 2,
             "comment": "Defines how much increase or decrease the relation with other colonies is."
         },
+        "closed borders" : {
+            "prey_warrior": 0.5,
+            "herb_medicine": 0.5,
+            "relation": 1,
+            "interval": 2,
+            "comment": "Defines the steady prey/herb gain and the amount relations decrease while focusing inward. Interval controls how often (in moons) the relation penalty applies. Outsider reputation drops at 2x the colony relation penalty."
+        },
         "raid other clans" : {
             "prey_warrior": 3,
             "herb_medicine": 4,
@@ -455,6 +462,12 @@
             ]
         },
         "comment": "'raid other colonies' should be more dangerous than 'hoarding'!!!"
+	},
+	"relation_decay": {
+		"interval": 3,
+		"amount": 1,
+		"floor": 7,
+		"comment": "Passive relation decay when enabled; every <interval> moons relations drop by <amount> but will not go below floor."
 	},
 	"save_load": {
 		"load_integrity_checks": true

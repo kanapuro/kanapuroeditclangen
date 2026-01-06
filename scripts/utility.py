@@ -1909,13 +1909,13 @@ def get_other_clan_relation(relation):
     converts int value into string relation and returns string: "hostile", "neutral", or "ally"
     :param relation: the other_clan.relations value
     """
-
-    if int(relation) >= 17:
-        return "ally"
-    elif 7 < int(relation) < 17:
-        return "neutral"
-    elif int(relation) <= 7:
+    rel_val = int(relation)
+    if rel_val <= 7:
         return "hostile"
+    elif rel_val >= 17:
+        return "ally"
+    else:
+        return "neutral"
 
 
 def pronoun_repl(m, cat_pronouns_dict, raise_exception=False):

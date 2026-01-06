@@ -173,7 +173,7 @@ class Pregnancy_Events:
         )
 
         if not kits:
-            print(f"[WARN] No kits were created for adoption event involving {cat.name}{' and ' + other_cat.name if other_cat else ''}.")
+            print(f"[WARN] No kits were created for adoption event involving {cat.name}{' and ' + str(other_cat.name) if other_cat else ''}.")
             return
         insert = "this should not display"
         insert2 = "this should not display"

@@ -1,4 +1,10 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- FINALLY fixed names and special suffix logic. :3
+- random.radint fix (from apprentice update prior)
+- Added "CLOSED BORDERS" warrior focus, which adds prey/herbs every moon while reducing relationship with other colonies every 2 moons.
+- Added "RELATION DRIFT" setting, which reduces your relationships to neutrality with other colonies every 3 moons.
+- "Old" clans have chance to have more varied pre-existing relationships with other colonies.
+- str() crashfix (pregnancy_events.py line 176)
 - Adult/Graduated cats can now go back to apprenticeship and will not graduate automatically for at least 3 moons. You can now swap roles between graduated & apprenticeship types anytime!
 - Sub-patrol buttons are now only visible when on the correct tab. When on the dark forest, date/outing, or lifegen tabs, you will NOT see the general patrol subtypes. This is to make room for future subpatrol types.
 - All general categories can be randomly picked from, including camp duties and herb patrols, as long as they have the proper requirements (ie. a healer for herb patrol).

@@ -1913,6 +1913,7 @@ class Events:
             - business as usual
             - hunting
             - herb gathering
+            - closed borders
             - threaten outsiders
             - seek outsiders
             - sabotage other clans
@@ -1927,6 +1928,8 @@ class Events:
                 - 'cat.moon_skip_illness'
                 - 'cat.moon_skip_injury'
         """
+        # Apply passive relation drift before any early returns so it always fires.
+        self.apply_relation_decay()
         # if no focus is selected, skip all other
         focus_text = "This shouldn't show up, report a bug for the focus feature."
         if game.clan.clan_settings.get(
@@ -1968,11 +1971,11 @@ class Events:
             total_amount = warrior_amount + app_amount
             game.clan.freshkill_pile.add_freshkill(total_amount)
             if total_amount > 1:
-                focus_text = f"With the heightened focus of the Clan, {total_amount} additional pieces of prey were gathered."
+                focus_text = f"With the heightened focus of the colony, {total_amount} additional pieces of prey were gathered."
             elif total_amount == 1:
-                focus_text = f"With the heightened focus of the Clan, {total_amount} additional piece of prey was gathered."
+                focus_text = f"With the heightened focus of the colony, {total_amount} additional piece of prey was gathered."
             else:
-                focus_text = "Despite the additional focus of the Clan, no prey could be gathered."
+                focus_text = "Despite the additional focus of the colony, no prey could be gathered."
             game.freshkill_event_list.append(focus_text)
 
         elif game.clan.clan_settings.get("herb gathering"):
@@ -2013,14 +2016,13 @@ class Events:
             herb_counter = Counter(herbs_found)
             game.clan.herbs.update(herb_counter)
             if herb_amount > 1:
-                focus_text = f"With the additional focus of the Clan, {herb_amount} herbs were gathered."
+                focus_text = f"With the additional focus of the colony, {herb_amount} herbs were gathered."
             elif herb_amount == 1:
-                focus_text = f"With the additional focus of the Clan, {herb_amount} herb was gathered."
+                focus_text = f"With the additional focus of the colony, {herb_amount} herb was gathered."
             else:
-                focus_text = f"Despite the additional focus of the Clan, no herbs could be gathered."
-
+                focus_text = f"Despite the additional focus of the colony, no herbs could be gathered."
             log_text = (
-                "With the additional focus of the Clan, following herbs were gathered: "
+                "With the additional focus of the colony, following herbs were gathered: "
             )
             idx = 0
             for herb, amount in herb_counter.items():
@@ -2032,6 +2034,69 @@ class Events:
                     log_text += " and "
             log_text += "."
             game.herb_events_list.append(log_text)
+
+        elif game.clan.clan_settings.get("closed borders"):
+            info_dict = game.config["focus"].get("closed borders", {})
+
+            # handle prey
+            healthy_warriors = list(
+                filter(
+                    lambda c: c.status in ["warrior", "leader", "deputy"]
+                    and not c.dead
+                    and not c.outside
+                    and not c.exiled
+                    and not c.not_working(),
+                    Cat.all_cats.values(),
+                )
+            )
+            warrior_amount = len(healthy_warriors) * info_dict.get("prey_warrior", 0)
+            game.clan.freshkill_pile.add_freshkill(int(warrior_amount))
+
+            # handle herbs
+            herbs_found = []
+            healthy_meds = list(
+                filter(
+                    lambda c: c.status == "medicine cat"
+                    and not c.dead
+                    and not c.outside
+                    and not c.exiled
+                    and not c.not_working(),
+                    Cat.all_cats.values(),
+                )
+            )
+            med_amount = int(info_dict.get("herb_medicine", 0))
+            for med in healthy_meds:
+                herbs_found.extend(random.sample(HERBS, k=med_amount))
+            herb_amount = len(herbs_found)
+            if herb_amount > 0:
+                herb_counter = Counter(herbs_found)
+                game.clan.herbs.update(herb_counter)
+
+            # relations drift downward while focused inward
+            relation_step = info_dict.get("relation", 0)
+            relation_interval = info_dict.get("interval", 2)
+            if relation_step and game.clan.age % relation_interval == 0:
+                for clan in game.clan.all_clans:
+                    change_clan_relations(clan, -relation_step)
+                # Outsider reputation drops twice as fast when borders are closed
+                change_clan_reputation(-relation_step * 2)
+
+            if warrior_amount > 1 and herb_amount > 1:
+                focus_text = f"With the colony turning inward, {warrior_amount} pieces of prey and {herb_amount} herbs were gathered."
+            elif warrior_amount > 1 and herb_amount == 1:
+                focus_text = f"With the colony turning inward, {warrior_amount} pieces of prey and {herb_amount} herb were gathered."
+            elif warrior_amount > 1 and herb_amount <= 0:
+                focus_text = f"With the colony turning inward, {warrior_amount} pieces of prey were gathered, but no herbs were found."
+            elif warrior_amount == 1 and herb_amount > 1:
+                focus_text = f"With the colony turning inward, {warrior_amount} piece of prey and {herb_amount} herbs were gathered."
+            elif warrior_amount <= 0 and herb_amount > 1:
+                focus_text = f"With the colony turning inward, no prey and {herb_amount} herbs were gathered."
+            elif warrior_amount == 1 and herb_amount == 1:
+                focus_text = f"With the colony turning inward, {warrior_amount} piece of prey and {herb_amount} herb were gathered."
+            elif warrior_amount <= 0 and herb_amount <= 0:
+                focus_text = "Despite closing the borders, no extra prey or herbs were gathered."
+            else:
+                focus_text = "This is a bug, report it - closed borders focus - ref: scripts/events.py line 2097"
 
         elif game.clan.clan_settings.get("threaten outsiders"):
             amount = game.config["focus"]["outsiders"]["reputation"]
@@ -2078,11 +2143,11 @@ class Events:
             game.clan.freshkill_pile.add_freshkill(warrior_amount)
             if warrior_amount > 1:
                 game.freshkill_event_list.append(
-                    f"With the additional focus of the Clan, {warrior_amount} prey pieces were caught."
+                    f"With the additional focus of the colony, {warrior_amount} prey pieces were caught."
                 )
             else:
                 game.freshkill_event_list.append(
-                    f"With the additional focus of the Clan, {warrior_amount} prey piece was caught."
+                    f"With the additional focus of the colony, {warrior_amount} prey piece was caught."
                 )
 
             # handle herbs
@@ -2104,7 +2169,7 @@ class Events:
             if herb_amount > 0:
                 herb_counter = Counter(herbs_found)
                 game.clan.herbs.update(herb_counter)
-                log_text = "With the additional focus of the Clan, following herbs were gathered: "
+                log_text = "With the additional focus of the colony, following herbs were gathered: "
                 idx = 0
                 for herb, amount in herb_counter.items():
                     log_text += str(amount) + " " + herb.replace("_", " ")
@@ -2188,24 +2253,61 @@ class Events:
                     )
 
             if warrior_amount > 1 and herb_amount > 1:
-                focus_text = f"With the additional focus of the Clan, {warrior_amount} pieces of prey and {herb_amount} herbs were gathered."
+                focus_text = f"With the additional focus of the colony, {warrior_amount} pieces of prey and {herb_amount} herbs were gathered."
             elif warrior_amount > 1 and herb_amount == 1:
-                focus_text = f"With the additional focus of the Clan, {warrior_amount} pieces of prey and {herb_amount} herb were gathered."
+                focus_text = f"With the additional focus of the colony, {warrior_amount} pieces of prey and {herb_amount} herb were gathered."
             elif warrior_amount > 1 and herb_amount <= 0:
-                focus_text = f"With the additional focus of the Clan, {warrior_amount} pieces of prey and no herbs were gathered."
+                focus_text = f"With the additional focus of the colony, {warrior_amount} pieces of prey and no herbs were gathered."
             elif warrior_amount == 1 and herb_amount > 1:
-                focus_text = f"With the additional focus of the Clan, {warrior_amount} piece of prey and {herb_amount} herbs were gathered."
+                focus_text = f"With the additional focus of the colony, {warrior_amount} piece of prey and {herb_amount} herbs were gathered."
             elif warrior_amount <= 0 and herb_amount > 1:
-                focus_text = f"With the additional focus of the Clan, no prey and {herb_amount} herbs were gathered."
+                focus_text = f"With the additional focus of the colony, no prey and {herb_amount} herbs were gathered."
             elif warrior_amount == 1 and herb_amount == 1:
-                focus_text = f"With the additional focus of the Clan, {warrior_amount} piece of prey and {herb_amount} herb were gathered."
+                focus_text = f"With the additional focus of the colony, {warrior_amount} piece of prey and {herb_amount} herb were gathered."
             elif warrior_amount <= 0 and herb_amount <= 0:
-                focus_text = "Despite the additional focus of the Clan, neither prey nor herbs could be gathered."
+                focus_text = "Despite the additional focus of the colony, neither prey nor herbs could be gathered."
             else:
                 focus_text = "This is a bug, report it - focus feature"
 
         if focus_text:
             game.cur_events_list.insert(0, Single_Event(focus_text, "misc"))
+
+    def apply_relation_decay(self):
+        """Passively cool relations with other colonies when enabled."""
+        if not game.clan.clan_settings.get("relation drift"):
+            return
+
+        decay_cfg = game.config.get("relation_decay", {})
+        interval = max(1, int(decay_cfg.get("interval", 3)))
+        amount = int(decay_cfg.get("amount", 1))
+        floor = int(decay_cfg.get("floor", 0))
+
+        if game.clan.age % interval != 0:
+            return
+
+        drifted_clans = []
+        for other_clan in game.clan.all_clans:
+            current = int(other_clan.relations)
+            if current <= floor:
+                continue
+            change_clan_relations(other_clan, -amount)
+            drifted_clans.append(other_clan.name)
+        
+        if drifted_clans:
+            if len(drifted_clans) == 1:
+                game.cur_events_list.append(
+                    Single_Event(
+                        f"Without regular contact, relations with {drifted_clans[0]} have cooled.",
+                        "other clans"
+                    )
+                )
+            else:
+                game.cur_events_list.append(
+                    Single_Event(
+                        f"Without regular contact, relations with several colonies have cooled.",
+                        "other clans"
+                    )
+                )
 
     def handle_lost_cats_return(self, predetermined_cat_IDs: list = None):
         """
@@ -2702,18 +2804,18 @@ class Events:
                                str(game.clan.deputy.name) + '.'
                     elif c == 2:
                         text = (
-                            f"{game.clan.deputy.name} has become the new leader of the Clan. "
-                            f"They vow that they will protect the Clan, "
+                            f"{game.clan.deputy.name} has become the new leader of the colony. "
+                            f"They vow that they will protect the colony, "
                             f"even at the cost of their nine lives."
                         )
                     elif c == 3:
                         text = (
                             f"{game.clan.deputy.name} has received "
                             f"their nine lives and became the "
-                            f"new leader of the Clan. They feel like "
+                            f"new leader of the colony. They feel like "
                             f"they are not ready for this new "
                             f"responsibility, but will try their best "
-                            f"to do what is right for the Clan."
+                            f"to do what is right for the colony."
                         )
 
                 # game.ceremony_events_list.append(text)
@@ -3994,10 +4096,10 @@ class Events:
                 cat.shunned = 0
                 cat.forgiven = 1
                 if cat.ID == game.clan.your_cat.ID:
-                    text = "A Clan meeting is called one day, and your Clanmates vote to forgive you for what you did."
+                    text = "A colony meeting is called one day, and your companions vote to forgive you for what you did."
                 else:
                     text = random.choice([
-                        f"After showing genuine remorse and guilt, {cat.name} has been forgiven and welcomed back into {game.clan.name}Clan, though some are quicker to forgive than others.",
+                        f"After showing genuine remorse and guilt, {cat.name} has been forgiven and welcomed back into {game.clan.name}, though some are quicker to forgive than others.",
                         f"{game.clan.leader.name} has chosen to lift the shun on {cat.name}, but will be watching them closely."])\
 
                 murder_history = History.get_murders(cat)

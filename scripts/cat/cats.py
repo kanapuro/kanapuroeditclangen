@@ -1749,7 +1749,7 @@ class Cat:
             if old_status not in ["apprentice", "medicine cat apprentice", "mediator apprentice", "queen's apprentice"]:
                 # Just became an apprentice - reset counter and set random required duration (3-9 moons)
                 self.moons_in_apprenticeship = 0
-                self.required_apprenticeship_moons = random.randint(3, 9)
+                self.required_apprenticeship_moons = randint(3, 9)
 
         self.update_mentor()
         for app in self.apprentice.copy():

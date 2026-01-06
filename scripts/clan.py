@@ -329,7 +329,7 @@ class Clan:
                 # 30% chance to prepend 'The'
                 if randint(1, 10) <= 3:
                     other_clan_name = "The " + other_clan_name
-            other_clan = OtherClan(name=other_clan_name)
+            other_clan = OtherClan(name=other_clan_name, clan_age=self.clan_age)
             self.all_clans.append(other_clan)
         if 'other_med' in game.switches:
             del game.switches['other_med']
@@ -1899,7 +1899,7 @@ class OtherClan:
         "gracious",
     ]
 
-    def __init__(self, name="", relations=0, temperament="", chosen_symbol="", clan_prefix=None):
+    def __init__(self, name="", relations=0, temperament="", chosen_symbol="", clan_prefix=None, clan_age="established"):
         if not name:
             # Generate clan name using clan_prefixes + clan_suffixes with random spacing
             clan_prefixes = names.names_dict["clan_prefixes"]
@@ -1913,7 +1913,14 @@ class OtherClan:
         else:
             self.name = name
             self.clan_prefix = clan_prefix
-        self.relations = relations or randint(8, 12)
+        # Established clans have wider starting relations (6-19) for more variety
+        # New clans have narrow neutral relations (8-12)
+        if relations:
+            self.relations = relations
+        elif clan_age == "established":
+            self.relations = randint(6, 19)
+        else:
+            self.relations = randint(8, 12)
         self.temperament = temperament or choice(self.temperament_list)
         if self.temperament not in self.temperament_list:
             self.temperament = choice(self.temperament_list)

@@ -197,6 +197,11 @@
                 "pregnancy",
                 true
             ]
+        ],
+        "relation drift": [
+            "Allow relationship drift",
+            "When enabled, relations with other colonies slowly cool over time if you do nothing to maintain them.",
+            false
         ]
     },
     "freshkill_tactics":{
@@ -299,6 +304,13 @@
             false,
             "raid_focus",
             "#raid_focus_button"
+        ],
+        "closed borders": [
+            "Closing the Borders",
+            "The colony turns inward. Prey and herbs trickle in steadily, but relations with other colonies cool more quickly.",
+            false,
+            "rest_focus",
+            "#closed_focus_button"
         ],
         "hoarding":[
             "Hoarding Resources",

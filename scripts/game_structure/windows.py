@@ -765,6 +765,7 @@ class ChangeCatName(UIWindow):
                 # Track the intended name type for the save click (don't modify cat until Done)
                 self.pending_name_type = chosen_type
             elif event.ui_element == self.toggle_spec_block_on:
+                # Enable custom suffix - save current text and show it for editing
                 self.specsuffix_hidden = True
                 self.suffix_entry_box.enable()
                 self.random_suffix.enable()
@@ -772,16 +773,22 @@ class ChangeCatName(UIWindow):
                 self.toggle_spec_block_on.hide()
                 self.toggle_spec_block_off.enable()
                 self.toggle_spec_block_off.show()
+                # IMPORTANT: Load the saved suffix - DO NOT REMOVE this line or the custom suffix will be lost
                 self.suffix_entry_box.set_text(self.the_cat.name.suffix)
             elif event.ui_element == self.toggle_spec_block_off:
+                # Disable custom suffix - re-enable special suffix (kit, apprentice, etc.)
+                # IMPORTANT: This code is carefully ordered to preserve user's custom suffix
+                # 1. Save the custom suffix to cat data before clearing the UI
+                # 2. Clear the text box to show the placeholder with the special suffix
+                # 3. Disable editing - DO NOT reorder these steps or you will delete the suffix!
                 self.specsuffix_hidden = False
                 self.random_suffix.disable()
                 self.toggle_spec_block_off.disable()
                 self.toggle_spec_block_off.hide()
                 self.toggle_spec_block_on.enable()
                 self.toggle_spec_block_on.show()
+                self.the_cat.name.suffix = self.suffix_entry_box.get_text()
                 self.suffix_entry_box.set_text("")
-                self.suffix_entry_box.rebuild()
                 self.suffix_entry_box.disable()
             elif event.ui_element == self.back_button:
                 game.all_screens["profile screen"].exit_screen()
