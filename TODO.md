@@ -1,18 +1,17 @@
-- genemod
-- reincarnation lifegen mod
-- lifegen infection mod
-- dadm? ik some of it weird
-- dnd
-- leader update: by default leaders do not ascend to leaderhood until the player directs it, and the player can select which type of leadership to have: one-life or nine-life. there are options to automate this, with subsettings for if you want automated one-life or nine-life. there can also be multiple leaders, although your first leader is your "primary" leader until they die or step down, which then makes the next leader in line the primary one. if there are no leaders, it defaults to previous behavior (deputy becomes leader). extra leaders are manually set and do not generate automatically.
-- horn/antler accessories!!!!!!!! yay!!!!!!!!!!!
+- merge w genemod
+- merge wreincarnation lifegen mod
+- merge wlifegen infection mod
+- merge wdadm? ik some of it weird
+- merge w dnd mod (dnd stats and patrols)
+- merge: dumb potato's extras (https://ptb.discord.com/channels/1125069186985640063/1202061506997657612), sprout's text expansions (https://ptb.discord.com/channels/1003759225522110524/1188095282915848202), cypress' more grief thoughts (https://ptb.discord.com/channels/1125069186985640063/1226623287283552296), bits from bingle's strange add-ons (https://ptb.discord.com/channels/1345739018792599643/1358826134602645725), caliiriin's extra pelts (https://ptb.discord.com/channels/1345739018792599643/1360109835005460538), multiroles
+- trailblazers themed content (horns, wings, stuff!) / horn/antler accessories!!!!!!!! yay!!!!!!!!!!!
+- leader update: by default leaders do not ascend to leaderhood until the player directs it, and the player can select which type of leadership to have: one-life or nine-life. there are options to automate this, with subsettings for if you want automated one-life or nine-life. there can also be multiple leaders, although your first leader is your "primary" leader until they die or step down, which then makes the next leader in line the primary one. if there are no leaders, it defaults to previous behavior (deputy becomes leader). extra leaders are manually set and do not generate automatically. also deputies dont automatically become leaders.
 - lock button on character customizer, where when randomizing kitty, it keeps that trait... and undo button for alla ctions, ( undo left of randomizae, redo right of it!) additionally make some stuff on the customisze cat page like checklists rather than nonsensically as it is now
 - namefixes: loners should populate with regular prefixes sometmes.
 - increase kitten mortality rate highly but the presence of queens reduces the mortality rate
 - fix the fuck outta clangen/lifegen buglist: https://docs.google.com/document/d/1hlOsVhGfFTuR1ep8QayjFCHLry8xR-QKb57tJC1RFbM/edit?tab=t.0
-- merge: dumb potato's extras (https://ptb.discord.com/channels/1125069186985640063/1202061506997657612), sprout's text expansions (https://ptb.discord.com/channels/1003759225522110524/1188095282915848202), cypress' more grief thoughts (https://ptb.discord.com/channels/1125069186985640063/1226623287283552296), bits from bingle's strange add-ons (https://ptb.discord.com/channels/1345739018792599643/1358826134602645725), caliiriin's extra pelts (https://ptb.discord.com/channels/1345739018792599643/1360109835005460538), multiroles, more trailblazers-themed content
 - rewrite warning thingy.. make closable + maybe go a bit beyond what clangen/lifegen allows. idk. i feel like mental health and some gruesomeness should be allowed since its a mod for what /I/ want. but i dont really want to get in trouble lel
 - tab either in dangerous section or roles page to add/remove shunned status
-- button for patrols for "clan duties"!
 - add scrolling to clans on leader page so  U can ummmmm have more than 5 
 - the acquisition of an illness/condition should be listed in the history tab, alongside its cause. ie. a broken back from a badger, or grief stricken from losing (name).
 - add new subpatrols. date patrol - outing/date buttons. "dark forest" = dreams - parasite dream (dark forest), ascender dream (stc), wandering dream (wanderers) (names for these pending!). rename lifegen to daily life?

@@ -626,7 +626,9 @@ class ChangeCatName(UIWindow):
                 n.prefix = force_prefix
                 if force_suffix is not None:
                     n.suffix = force_suffix
-                n.specsuffix_hidden = False
+                # Only default special suffix visibility for warrior; others stay as generated
+                if force_type == "warrior":
+                    n.specsuffix_hidden = False
 
                 if force_type == "single":
                     n._generate_single_name()
@@ -678,28 +680,25 @@ class ChangeCatName(UIWindow):
 
                 # Suffixes can be empty, if you want. However, don't change the suffix if it's currently being hidden
                 # by a special suffix.
+                # Always read the user's typed suffix once
+                raw_suffix = sub(r"[^A-Za-z0-9 '\-]+", "", self.suffix_entry_box.get_text())
+
                 if (
-                    self.the_cat.status
-                    not in self.the_cat.name.names_dict["special_suffixes"]
+                    self.the_cat.status not in self.the_cat.name.names_dict["special_suffixes"]
                     or self.the_cat.name.specsuffix_hidden
                 ):
-                    raw_suffix = sub(
-                        r"[^A-Za-z0-9 '\-]+", "", self.suffix_entry_box.get_text()
-                    )
-                    # Store suffix as-is; don't force ancient space format
+                    # Custom suffix applies when special suffix is hidden or not relevant
                     self.the_cat.name.suffix = raw_suffix
                     self.name_changed.show()
                 else:
-                    # If the user picked ancient, force special suffix hidden so the typed suffix is applied
-                    if self.the_cat.name.name_type == "ancient":
+                    # Special suffix is visible. Only override it for ancient names
+                    # when the user provided a non-empty custom suffix.
+                    if self.the_cat.name.name_type == "ancient" and raw_suffix.strip() != "":
                         self.the_cat.name.specsuffix_hidden = True
                         self.the_cat.specsuffix_hidden = True
-                        raw_suffix = sub(
-                            r"[^A-Za-z0-9 '\-]+", "", self.suffix_entry_box.get_text()
-                        )
-                        # Store suffix as-is; don't force ancient space format
                         self.the_cat.name.suffix = raw_suffix
                         self.name_changed.show()
+                    # Else: keep special suffix visible and do not modify stored custom suffix
 
                 # Apply pending name type from dice; else derive ancient if suffix has spaces
                 if self.pending_name_type:

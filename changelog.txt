@@ -1,5 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
-- FINALLY fixed names and special suffix logic. :3
+- Added setting to toggle deputies ascending to leaders automatically.
+- FINALLY fixed names and special suffix logic. x2, Safegaurded against it breaking again, I hope. Verbose code comments so I don't break it again.
 - random.radint fix (from apprentice update prior)
 - Added "CLOSED BORDERS" warrior focus, which adds prey/herbs every moon while reducing relationship with other colonies every 2 moons.
 - Added "RELATION DRIFT" setting, which reduces your relationships to neutrality with other colonies every 3 moons.

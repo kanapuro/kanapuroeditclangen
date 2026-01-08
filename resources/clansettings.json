@@ -103,6 +103,11 @@
             "The Warrior Code rules will be taken into account when choosing a deputy.",
             false
         ],
+        "leader": [
+            "Allow deputies to automatically become leaders",
+            "Deputies will ascend to leadership when the current leader dies or retires.",
+            true
+        ],
         "12_moon_graduation": [
             "Disable experience-based apprentice graduation",
             "All apprentices will graduate at 12 moons.",

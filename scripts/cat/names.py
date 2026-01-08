@@ -90,6 +90,10 @@ class Name:
             elif prefix is not None and suffix is not None:
                 self.name_type = "warrior"
 
+        # Ancient names should default to hiding special suffixes unless explicitly requested
+        if self.name_type == "ancient" and not load_existing_name:
+            self.specsuffix_hidden = True
+
         try:
             color = cat.pelt.colour
             eyes = cat.pelt.eye_colour
@@ -209,10 +213,13 @@ class Name:
         if self.single_names_list:
             self.prefix = random.choice(self.single_names_list)
             self.suffix = ""
+            # Single-name cats should NOT show special suffixes by default
             self.specsuffix_hidden = True
         else:
             # Fallback to warrior name if list not loaded
             self.name_type = "warrior"
+            # Warrior-style names should allow special suffixes by default
+            self.specsuffix_hidden = False
             self._generate_warrior_name(None, None, None, None, None, None, None, False)
     
     def _generate_syllable_name(self):
@@ -226,10 +233,13 @@ class Name:
                 combined += syllable.lower()
             self.prefix = combined
             self.suffix = ""
+            # Syllable-name cats should NOT show special suffixes by default
             self.specsuffix_hidden = True
         else:
             # Fallback to warrior name if list not loaded
             self.name_type = "warrior"
+            # Warrior-style names should allow special suffixes by default
+            self.specsuffix_hidden = False
             self._generate_warrior_name(None, None, None, None, None, None, None, False)
     
     def _generate_ancient_name(self, eyes, color, pelt, biome, tortiepattern, prefix=None, suffix=None):
@@ -410,22 +420,11 @@ class Name:
                 self.suffix = random.choice(self.names_dict["normal_suffixes"]).strip()
 
     def __repr__(self):
-        # For single and syllable names, return just the trimmed prefix
-        if self.name_type in ["single", "syllable"]:
-            return self.prefix.strip()
-        
-        # For ancient names, never use special suffixes - always use custom suffix
-        if self.name_type == "ancient":
-            suffix = self.suffix
-            if suffix:
-                return self.prefix.strip() + suffix
-            return self.prefix.strip()
-        
-        # Handles predefined suffixes (such as newborns being kit),
-        # then suffixes based on ages (fixes #2004, just trust me)
-
-        # Handles suffix assignment with outside cats
-        if self.cat:
+        # Apply special suffixes first whenever they are not hidden,
+        # regardless of name type (including single/syllable/ancient).
+        # This ensures kits/apprentices/leaders render as expected.
+        if self.cat and not self.specsuffix_hidden:
+            # Handle outsiders: infer a temporary status based on moons
             if self.cat.status not in ["rogue", "loner", "kittypet"] and self.cat.outside:
                 adjusted_status: str = ""
                 if self.cat.moons >= 15:
@@ -441,18 +440,29 @@ class Name:
                 else:
                     adjusted_status = "warrior"
 
-                if adjusted_status != "warrior" and not self.specsuffix_hidden:
-                    return (
-                        self.prefix.strip() + self.names_dict["special_suffixes"][adjusted_status].strip()
-                    )
-            if (
-                self.cat.status in self.names_dict["special_suffixes"]
-                and not self.specsuffix_hidden
-            ):
+                if adjusted_status != "warrior" and adjusted_status in self.names_dict.get("special_suffixes", {}):
+                    return self.prefix.strip() + self.names_dict["special_suffixes"][adjusted_status].strip()
+
+            # Normal clan cat statuses
+            if self.cat.status in self.names_dict.get("special_suffixes", {}):
                 return self.prefix.strip() + self.names_dict["special_suffixes"][self.cat.status].strip()
+
+        # For single and syllable names, return just the trimmed prefix
+        if self.name_type in ["single", "syllable"]:
+            return self.prefix.strip()
+
+        # Ancient names: use stored custom suffix when special suffix is hidden
+        if self.name_type == "ancient":
+            suffix = self.suffix
+            if suffix:
+                return self.prefix.strip() + suffix
+            return self.prefix.strip()
+
+        # April Fools easter egg
         if game.config["fun"]["april_fools"]:
             return f"{self.prefix.strip()}egg"
-        # Base formatting - keep user input as-is
+
+        # Base formatting - keep user input as-is for warrior/other
         return self.prefix.strip() + self.suffix
 
 

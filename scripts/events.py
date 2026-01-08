@@ -254,7 +254,7 @@ class Events:
                 insert = adjust_list_text(ghost_names)
 
             if len(Cat.dead_cats) > 1 and insert:
-                event = f"The past moon, {insert} have taken their place in StarClan. {game.clan.name}Clan mourns their " \
+                event = f"The past moon, {insert} have taken their place in StarClan. {game.clan.name} mourns their " \
                         f"loss, and their Clanmates will miss where they had been in their lives. Moments of their " \
                         f"lives are shared in stories around the circle of mourners as those that were closest to them " \
                         f"take them to their final resting place."
@@ -297,13 +297,13 @@ class Events:
                     insert = adjust_list_text(shaken_cat_names)
 
                     if len(shaken_cats) == 1:
-                        extra_event = f"So much grief and death has taken its toll on the cats of {game.clan.name}Clan. {insert} is particularly shaken by it."
+                        extra_event = f"So much grief and death has taken its toll on the cats of {game.clan.name}. {insert} is particularly shaken by it."
                     else:
-                        extra_event = f"So much grief and death has taken its toll on the cats of {game.clan.name}Clan. {insert} are particularly shaken by it. "
+                        extra_event = f"So much grief and death has taken its toll on the cats of {game.clan.name}. {insert} are particularly shaken by it. "
 
             elif insert:
                 event = (
-                    f"The past moon, {insert} has taken their place in StarClan. {game.clan.name}Clan mourns their "
+                    f"The past moon, {insert} has taken their place in StarClan. {game.clan.name} mourns their "
                     f"loss, and their Clanmates will miss the spot they took up in their lives. Moments of their "
                     f"life are shared in stories around the circle of mourners as those that were closest to them "
                     f"take them to their final resting place."
@@ -324,7 +324,7 @@ class Events:
         if game.clan.game_mode in ['expanded', 'cruel season'] and game.clan.freshkill_pile:
             # make a notification if the Clan does not have enough prey
             if FRESHKILL_EVENT_ACTIVE and not game.clan.freshkill_pile.clan_has_enough_food():
-                event_string = f"{game.clan.name}Clan doesn't have enough prey for next moon!"
+                event_string = f"{game.clan.name} doesn't have enough prey for next moon!"
                 game.cur_events_list.insert(0, Single_Event(event_string))
                 game.freshkill_event_list.append(event_string)
 
@@ -338,7 +338,7 @@ class Events:
         for cat in Cat.all_cats.copy().values():
             if cat.shunned == 2:
                 if cat.status == "leader":
-                    string = f"Due to the cries of outrage from their Clan after the reveal of their crime, {cat.name} has stepped down as leader of {game.clan.name}Clan."
+                    string = f"Due to the cries of outrage from their Clan after the reveal of their crime, {cat.name} has stepped down as leader of {game.clan.name}."
                     cat.specsuffix_hidden = True
                     game.clan.leader_lives = 1
                     # ^^ to keep the leader status for dialogue but take away "star".
@@ -346,7 +346,7 @@ class Events:
                     game.cur_events_list.insert(0, Single_Event(string, "alert", cat.ID))
 
                 elif cat.status == "deputy":
-                    string = f"{game.clan.leader.name} has thrown {cat.name} from their position as {game.clan.name}Clan's deputy."
+                    string = f"{game.clan.leader.name} has thrown {cat.name} from their position as {game.clan.name}'s deputy."
                     game.cur_events_list.insert(0, Single_Event(string, "alert", cat.ID))
                 
                 elif cat.status in ["medicine cat", "medicine cat apprentice"]:
@@ -378,7 +378,7 @@ class Events:
             )
             if not med_fullfilled:
                 string = (
-                    f"{game.clan.name}Clan does not have enough healthy medicine cats! Cats will be sick/hurt "
+                    f"{game.clan.name} does not have enough healthy medicine cats! Cats will be sick/hurt "
                     f"for longer and have a higher chance of dying. "
                 )
                 game.cur_events_list.insert(0, Single_Event(string, ["health", "alert"]))
@@ -390,7 +390,7 @@ class Events:
                 for cat in Cat.all_cats.values()
             )
             if not has_med:
-                string = f"{game.clan.name}Clan has no medicine cat!"
+                string = f"{game.clan.name} has no medicine cat!"
                 game.cur_events_list.insert(0, Single_Event(string, ["health", "alert"]))
 
         # Clear the list of cats that died this moon.
@@ -2750,7 +2750,7 @@ class Events:
 
         event = random.choice(war_events)
         event = ongoing_event_text_adjust(
-            Cat, event, other_clan_name=f"{enemy_clan.name}Clan", clan=game.clan
+            Cat, event, other_clan_name=f"{enemy_clan.name}", clan=game.clan
         )
         game.cur_events_list.append(Single_Event(event, "other_clans"))
 
@@ -2773,11 +2773,11 @@ class Events:
 
         # If a Clan deputy exists, and the leader is dead,
         #  outside, or doesn't exist, make the deputy leader.
-        if game.clan.deputy:
+        if game.clan.deputy and game.clan.clan_settings.get("leader", True):
             if game.clan.deputy is not None and \
-                    not game.clan.deputy.dead and \
-                    not game.clan.deputy.outside and \
-                    (leader_dead or leader_outside or leader_shunned):
+                not game.clan.deputy.dead and \
+                not game.clan.deputy.outside and \
+                (leader_dead or leader_outside or leader_shunned):
                 game.clan.new_leader(game.clan.deputy)
                 game.clan.leader_lives = 9
                 text = ''
@@ -4204,16 +4204,21 @@ class Events:
 
     def check_and_promote_leader(self):
         """Checks if a new leader need to be promoted, and promotes them, if needed."""
+        # If auto-promotion is disabled, just alert when the Clan is leaderless.
+        if not game.clan.clan_settings.get("leader", True):
+            if not game.clan.leader or game.clan.leader.dead or game.clan.leader.outside:
+                game.cur_events_list.insert(
+                    0, Single_Event(f"{game.clan.name} has no leader!", "alert")
+                )
+            return
+
         # check for leader
-        if game.clan.leader:
-            leader_invalid = game.clan.leader.dead or game.clan.leader.outside
-        else:
-            leader_invalid = True
+        leader_invalid = not game.clan.leader or game.clan.leader.dead or game.clan.leader.outside
 
         if leader_invalid:
             self.perform_ceremonies(
                 game.clan.leader
-            )  # This is where the deputy will be make leader
+            )  # This is where the deputy will be made leader
 
             if game.clan.leader:
                 leader_dead = game.clan.leader.dead
@@ -4222,10 +4227,10 @@ class Events:
                 leader_dead = True
                 leader_outside = True
 
-
             if leader_dead or leader_outside:
                 game.cur_events_list.insert(
-                    0, Single_Event(f"{game.clan.name}Clan has no leader!", "alert"))
+                    0, Single_Event(f"{game.clan.name} has no leader!", "alert")
+                )
 
     def check_and_promote_deputy(self):
         """Checks if a new deputy needs to be appointed, and appointed them if needed. """
@@ -4375,7 +4380,7 @@ class Events:
 
             else:
                 game.cur_events_list.insert(
-                    0, Single_Event(f"{game.clan.name}Clan has no deputy!", "alert")
+                    0, Single_Event(f"{game.clan.name} has no deputy!", "alert")
                 )
 
 

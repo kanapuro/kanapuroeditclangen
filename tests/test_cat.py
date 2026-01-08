@@ -586,3 +586,50 @@ class TestNameRepr(unittest.TestCase):
                 cat.outside = True
                 cat.name.specsuffix_hidden = True
                 self.assertTrue(str(cat.name).endswith("test"))
+
+
+class TestNameSpecialSuffixGuardrails(unittest.TestCase):
+    class _DummyPelt:
+        def __init__(self):
+            self.colour = None
+            self.eye_colour = None
+            self.name = None
+            self.tortiepattern = None
+
+    class _DummyCat:
+        def __init__(self, status, moons=6, outside=False):
+            self.status = status
+            self.moons = moons
+            self.outside = outside
+            self.pelt = TestNameSpecialSuffixGuardrails._DummyPelt()
+
+    def _name(self, status, suffix, name_type, specsuffix_hidden):
+        cat = self._DummyCat(status=status, moons=6, outside=False)
+        n = Name(cat=cat, prefix="Test", suffix=suffix, load_existing_name=True)
+        n.name_type = name_type
+        n.specsuffix_hidden = specsuffix_hidden
+        return n
+
+    def test_warrior_special_suffix_visible(self):
+        n = self._name(status="apprentice", suffix="tail", name_type="warrior", specsuffix_hidden=False)
+        self.assertEqual(str(n), "Testpaw")
+
+    def test_warrior_special_suffix_hidden(self):
+        n = self._name(status="apprentice", suffix="tail", name_type="warrior", specsuffix_hidden=True)
+        self.assertEqual(str(n), "Testtail")
+
+    def test_ancient_default_hidden_uses_custom(self):
+        n = self._name(status="leader", suffix=" Ancient", name_type="ancient", specsuffix_hidden=True)
+        self.assertEqual(str(n), "Test Ancient")
+
+    def test_ancient_manual_visible_uses_special(self):
+        n = self._name(status="leader", suffix=" Ancient", name_type="ancient", specsuffix_hidden=False)
+        self.assertEqual(str(n), "Teststar")
+
+    def test_single_never_forces_special(self):
+        n = self._name(status="leader", suffix="", name_type="single", specsuffix_hidden=True)
+        self.assertEqual(str(n), "Test")
+
+    def test_syllable_never_forces_special(self):
+        n = self._name(status="apprentice", suffix="", name_type="syllable", specsuffix_hidden=True)
+        self.assertEqual(str(n), "Test")
