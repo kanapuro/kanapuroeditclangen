@@ -21,6 +21,7 @@ from scripts.utility import (
 
 
 class Pregnancy_Events:
+
     """All events which are related to pregnancy such as kitting and defining who are the parents."""
 
     biggest_family = {}
@@ -28,6 +29,44 @@ class Pregnancy_Events:
     PREGNANT_STRINGS = None
     with open(f"resources/dicts/conditions/pregnancy.json", "r") as read_file:
         PREGNANT_STRINGS = ujson.loads(read_file.read())
+
+    @staticmethod
+    def handle_post_birth_mortality(kit, clan):
+        """
+        Checks post-birth mortality for kittens aged 1–6 moons, with decreasing risk as they age.
+        Applies queen modifiers. Adds history entry if the kitten dies.
+        """
+        # Explicitly only process kittens aged 1–6 moons
+        if not (1 <= getattr(kit, 'moons', 0) <= 6):
+            return
+        # Base risk curve: highest at 1 moon, lowest at 6 moons
+        # Example: 1 moon = 0.18, 2 = 0.15, 3 = 0.12, 4 = 0.09, 5 = 0.06, 6 = 0.03
+        age_curve = {1: 0.18, 2: 0.15, 3: 0.12, 4: 0.09, 5: 0.06, 6: 0.03}
+        base_mortality = age_curve.get(kit.moons, 0.03)
+        # Queen modifiers
+        queens_in_clan = [
+            cat for cat in Cat.all_cats.values()
+            if cat.status == "queen" and not cat.dead and not cat.outside
+        ]
+        per_queen_reduction = clan.clan_settings.get("per_queen_reduction", 0.85)
+        if queens_in_clan:
+            base_mortality *= per_queen_reduction ** len(queens_in_clan)
+        # Parent modifier
+        has_parent_in_clan = False
+        if kit.parent1:
+            parent1_cat = Cat.all_cats.get(kit.parent1)
+            if parent1_cat and not parent1_cat.dead and not parent1_cat.outside:
+                has_parent_in_clan = True
+        if not has_parent_in_clan and kit.parent2:
+            parent2_cat = Cat.all_cats.get(kit.parent2)
+            if parent2_cat and not parent2_cat.dead and not parent2_cat.outside:
+                has_parent_in_clan = True
+        if has_parent_in_clan:
+            base_mortality *= 0.85
+        # Roll for survival
+        if random.random() < base_mortality:
+            History.add_death(kit, f"{kit.name} could not make it through kithood.")
+            kit.die()
 
     @staticmethod
     def set_biggest_family():
@@ -895,7 +934,6 @@ class Pregnancy_Events:
         # Check if realistic litters setting is enabled
         realistic_litters = clan.clan_settings.get("bigger_litters", False) if clan else False
         
-        # Determine if any kits will be stillborn based on litter size (only in realistic litters mode)
         stillborn_chance = 0
         if realistic_litters:
             if kits_amount <= 2:
@@ -909,15 +947,53 @@ class Pregnancy_Events:
             else:  # 7+
                 stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("large", 0)
         
-        # Track stillborn kits for event generation
         stillborn_kits = []
         
         for kit_index in range(kits_amount):
-            # Check for stillbirth before creating the kit (only in realistic litters mode)
             if realistic_litters and stillborn_chance > 0 and random.random() < stillborn_chance:
                 stillborn_kits.append(True)
-                continue  # Skip kit creation entirely - it will be stillborn
-            
+                kit = None
+                try:
+                    if not cat:
+                        if not blood_parent:
+                            insert = "their kits are"
+                            if kits_amount == 1:
+                                insert = "their kit is"
+                            thought = f"Is glad that {insert} safe"
+                            blood_parent = create_new_cat(
+                                Cat,
+                                status=random.choice(["loner", "kittypet"]),
+                                alive=False,
+                                thought=thought,
+                                age=randint(15, 120),
+                                outside=True,
+                            )[0]
+                            blood_parent.thought = thought
+                        kit = Cat(
+                            parent1=blood_parent.ID,
+                            moons=0,
+                            backstory=backstory,
+                            status="newborn",
+                        )
+                    elif cat and other_cat:
+                        kit = Cat(
+                            parent1=cat.ID, parent2=other_cat.ID, moons=0, status="newborn"
+                        )
+                    else:
+                        kit = Cat(
+                            parent1=cat.ID, moons=0, backstory=backstory, status="newborn"
+                        )
+                    # Register the kit before death for history
+                    clan.add_cat(kit)
+                    History.add_beginning(kit, clan_born=bool(cat))
+                    kit.die()
+                    History.add_death(kit, f"{kit.name} was stillborn.")
+                except Exception as e:
+                    if kit is not None:
+                        History.add_death(kit, f"{kit.name} was stillborn.")
+                    pass
+                continue
+
             if not cat:
                 # No parents provided, give a blood parent - this is an adoption.
                 if not blood_parent:
@@ -984,15 +1060,10 @@ class Pregnancy_Events:
                 kit_survives = Pregnancy_Events.check_kit_mortality(kit, cat, clan)
                 if not kit_survives:
                     stillborn_kits.append(True)
-                    # Mark the kit as dead so it won't be added to the clan
+                    clan.add_cat(kit)
+                    History.add_beginning(kit, clan_born=bool(cat))
                     kit.die()
-                    continue
-                
-                post_birth_survives = Pregnancy_Events.check_post_birth_mortality(kit, cat, other_cat, clan)
-                if not post_birth_survives:
-                    stillborn_kits.append(True)
-                    # Mark the kit as dead so it won't be added to the clan
-                    kit.die()
+                    History.add_death(kit, f"{kit.name} was stillborn.")
                     continue
             
             all_kitten.append(kit)

@@ -2592,6 +2592,9 @@ class Events:
             cat.relationship_interaction()
             cat.thoughts()
             return
+
+        if cat.status == "kitten" and 1 <= cat.moons <= 6 and not cat.dead:
+            Pregnancy_Events.handle_post_birth_mortality(cat, game.clan)
         
         if not cat.outside and not cat.exiled:
             if cat.shunned == 0:
