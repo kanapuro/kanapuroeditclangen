@@ -375,10 +375,15 @@ class Pregnancy_Events:
         other_cat = Cat.all_cats.get(other_cat_id)
 
         kits = Pregnancy_Events.get_kits(kits_amount, cat, other_cat, clan)
-        if not kits:
+        
+        # Track stillbirths/neonatal deaths
+        stillborn_count = kits_amount - len(kits) if kits else 0
+        
+        if not kits and stillborn_count == 0:
             print(f"[WARN] No kits were created for pregnancy event involving {cat.name}{' and ' + str(other_cat.name) if other_cat else ''}.")
             del clan.pregnancy_data[cat.ID]
             return
+        
         kits_amount = len(kits)
         Pregnancy_Events.set_biggest_family()
 
@@ -523,6 +528,12 @@ class Pregnancy_Events:
                 clan_cat_cat = Cat.fetch_cat(clan_cat)
                 if clan_cat_cat:
                     clan_cat_cat.faith+= round(random.uniform(0,1), 2)
+        
+        # Handle stillbirths if any occurred
+        if stillborn_count > 0 and "stillborn" in events["birth"]:
+            Pregnancy_Events.handle_stillbirths(
+                cat, other_cat, stillborn_count, clan
+            )
 
     # ---------------------------------------------------------------------------- #
     #                          check if event is triggered                         #
@@ -880,22 +891,30 @@ class Pregnancy_Events:
         #############################
 
         #### GENERATE THE KITS ######
-        # Determine if any kits will be stillborn based on litter size
+        # Check if realistic litters setting is enabled
+        realistic_litters = clan.clan_settings.get("bigger_litters", False) if clan else False
+        
+        # Determine if any kits will be stillborn based on litter size (only in realistic litters mode)
         stillborn_chance = 0
-        if kits_amount <= 2:
-            stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("small", 0)
-        elif kits_amount == 3:
-            stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("three", 0)
-        elif kits_amount <= 5:
-            stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("mid", 0)
-        elif kits_amount == 6:
-            stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("big", 0)
-        else:  # 7+
-            stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("large", 0)
+        if realistic_litters:
+            if kits_amount <= 2:
+                stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("small", 0)
+            elif kits_amount == 3:
+                stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("three", 0)
+            elif kits_amount <= 5:
+                stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("mid", 0)
+            elif kits_amount == 6:
+                stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("big", 0)
+            else:  # 7+
+                stillborn_chance = game.config["pregnancy"]["stillborn_chances"].get("large", 0)
+        
+        # Track stillborn kits for event generation
+        stillborn_kits = []
         
         for kit_index in range(kits_amount):
-            # Check for stillbirth before creating the kit
-            if stillborn_chance > 0 and random.random() < stillborn_chance:
+            # Check for stillbirth before creating the kit (only in realistic litters mode)
+            if realistic_litters and stillborn_chance > 0 and random.random() < stillborn_chance:
+                stillborn_kits.append(True)
                 continue  # Skip this kit - it will be stillborn
             
             if not cat:
@@ -998,6 +1017,14 @@ class Pregnancy_Events:
             # kit.pelt.accessory = None
             kit.pelt.accessories = []
             kit.pelt.inventory = []
+            
+            # Check for kitten mortality if realistic litters is enabled
+            if realistic_litters and clan:
+                kit_survives = Pregnancy_Events.check_kit_mortality(kit, cat, clan)
+                if not kit_survives:
+                    # Record this as a stillborn/neonatal death for event purposes
+                    stillborn_kits.append(True)
+                    continue  # Don't add this kit to the clan
             
             clan.add_cat(kit)
 
@@ -1335,3 +1362,81 @@ class Pregnancy_Events:
             inverse_chance = int(inverse_chance * 0.9)
 
         return inverse_chance
+
+    @staticmethod
+    def check_kit_mortality(kit: Cat, mother: Cat, clan) -> bool:
+        """
+        Determine if a newborn kit survives based on realistic litters setting.
+        Returns True if the kit survives, False if it dies.
+        Only called when bigger_litters (realistic litters) setting is enabled.
+        """
+        # Base mortality rate for newborn kits (1 in 4 chance = 0.25)
+        base_mortality = 0.25
+        
+        # Check if there are any queens (status == "queen") in the clan to help
+        queens_in_clan = [
+            cat for cat in Cat.all_cats.values()
+            if cat.status == "queen" and not cat.dead and not cat.outside and cat.ID != mother.ID
+        ]
+        
+        # Reduce mortality chance significantly if there are queens present
+        mortality_rate = base_mortality
+        if queens_in_clan:
+            # Each additional queen reduces mortality by ~15% (multiplicative)
+            # With 1 queen: 0.25 * 0.85 = 0.2125
+            # With 2 queens: 0.25 * 0.85^2 = 0.1806
+            mortality_rate = base_mortality * (0.85 ** len(queens_in_clan))
+        
+        # Roll for survival
+        return random.random() > mortality_rate
+
+    @staticmethod
+    def handle_stillbirths(mother: Cat, other_parent: Cat, stillborn_count: int, clan) -> None:
+        """
+        Handle the death and event text for stillborn/neonatal kits.
+        Generates appropriate event text and applies grief to parents.
+        """
+        if stillborn_count <= 0:
+            return
+        
+        events = Pregnancy_Events.PREGNANT_STRINGS
+        if "stillborn" not in events["birth"]:
+            return
+        
+        # Build event string based on stillborn count
+        stillborn_strings = events["birth"]["stillborn"]
+        if isinstance(stillborn_strings, dict):
+            # If it's organized by count
+            if str(stillborn_count) in stillborn_strings:
+                event_text = choice(stillborn_strings[str(stillborn_count)])
+            elif stillborn_count == 1:
+                event_text = choice(stillborn_strings.get("single", [choice(stillborn_strings.get("multiple", ["A kit was born stillborn."]))]))
+            else:
+                event_text = choice(stillborn_strings.get("multiple", ["Multiple kits were born stillborn."]))
+        else:
+            # If it's a simple list
+            event_text = choice(stillborn_strings)
+        
+        # Prepare event variables
+        event_text = event_text_adjust(
+            Cat, event_text, main_cat=mother, random_cat=other_parent, clan=clan
+        )
+        event_text = event_text.replace("{insert}", str(stillborn_count) if stillborn_count > 1 else "a kit")
+        
+        involved_cats = [mother.ID]
+        if other_parent:
+            involved_cats.append(other_parent.ID)
+        
+        # Add event to game
+        game.cur_events_list.append(
+            Single_Event(event_text, ["health", "birth_death"], involved_cats)
+        )
+        
+        # Apply grief to parents
+        if not mother.dead:
+            # Mother gets significant grief
+            mother.get_injured("grief stricken", severity="major", event_triggered=True)
+            
+        if other_parent and not other_parent.dead:
+            # Other parent gets some grief too
+            other_parent.get_injured("grief stricken", severity="minor", event_triggered=True)

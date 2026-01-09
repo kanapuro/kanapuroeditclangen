@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Pregnancy system fixes + FOR REALISTIC LITTER SETTING ONLY - increase kitten mortality rate without queens, and reduce it with queens + stillbirthing logic.
 - Fixed a faith-related crash that occured when spamming the moonskip button, as well as crash related to strings in pregnancy/kitting.
 - (18+) Allowed self-targeting for NPCs on moonskip.
 - (18+) Allowed self-targeting on murder screen with custom results and history entries. Trigger setting.

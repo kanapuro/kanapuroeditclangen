@@ -225,6 +225,23 @@
     "lead_death": [
       "m_c lost one of {PRONOUN/m_c/poss} nine lives, but gave birth to a {insert}.",
       "Although m_c gave birth to a {insert}, it came at the cost of one of {PRONOUN/m_c/poss} nine lives."
+    ],
+    "stillborn": [
+      "m_c gave birth, but {PRONOUN/m_c/poss} heart sank as {PRONOUN/m_c/subject} realized {insert} were stillborn.",
+      "The nursery fell silent as m_c delivered {insert} that never drew breath. A quiet tragedy that would linger for many moons.",
+      "m_c's joy turned to devastating heartbreak when {PRONOUN/m_c/subject} realized the kits {PRONOUN/m_c/subject} had carried so long arrived stillborn — {insert} tiny souls never meant to be.",
+      "Too soon for life to take hold, {insert} from m_c's litter never came to know the world beyond the nursery.",
+      "m_c's litter emerged with tragedy — {insert} were stillborn. Though the medicine cat tried everything, nothing could be done.",
+      "The stars were unkind — m_c went into labor, but {insert} were lost before ever drawing breath.",
+      "m_c's belly had been full of hope, but that hope died with the stillborn {insert}.",
+      "No amount of preparation could have changed the fate of {insert} stillborn kits from m_c's litter.",
+      "{PRONOUN/m_c/subject/CAP} had waited so long for these kits, dreamed of their arrival… but {insert} arrived stillborn, leaving only grief behind.",
+      "The nursery that should have been filled with mewling kits was instead filled with m_c's sobs as {PRONOUN/m_c/subject} held {insert} stillborn kits.",
+      "r_c watches helplessly as m_c delivers a litter only to discover {insert} were stillborn. The tragedy hangs heavy in the nursery.",
+      "Though r_c was there for m_c's birth, nothing could save {insert}. They were born without breath, without life.",
+      "r_c grieves alongside m_c over the {insert} stillborn kits. The joy of birth twisted into heartbreak.",
+      "m_c and r_c had dreamed of meeting their litter, but {insert} arrived stillborn instead.",
+      "The kits m_c carried — that m_c and r_c had both felt kick and dreamed about — {insert} of them arrived stillborn. All that anticipation, all that love, now just grief."
     ]
   }
 }
