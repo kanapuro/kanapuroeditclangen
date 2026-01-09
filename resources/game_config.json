@@ -185,7 +185,12 @@
 		"four_kit_modded": {"young adult": 128, "adult": 16, "senior adult": 32, "senior": 64},
 		"five_kit_modded": {"young adult": 64, "adult": 16, "senior adult": 32, "senior": 32},
 		"six_kit_modded": {"young adult": 32, "adult": 8, "senior adult": 16, "senior": 16},
+		"seven_kit_modded": {"young adult": 16, "adult": 4, "senior adult": 8, "senior": 8},
+		"eight_kit_modded": {"young adult": 8, "adult": 2, "senior adult": 4, "senior": 4},
 		"nine_kit_modded": {"young adult": 8, "adult": 2, "senior adult": 3, "senior": 4},
+		"ten_kit_modded": {"young adult": 4, "adult": 1, "senior adult": 2, "senior": 2},
+		"eleven_kit_modded": {"young adult": 2, "adult": 1, "senior adult": 1, "senior": 1},
+		"twelve_kit_modded": {"young adult": 2, "adult": 1, "senior adult": 1, "senior": 1},
 		"max_kit_modded": {"young adult": 1, "adult": 1, "senior adult": 1, "senior": 1},
 		"stillborn_chances": {
 			"small": 0.05,
@@ -193,6 +198,11 @@
 			"mid": 0.25,
 			"big": 0.35,
 			"large": 0.45
+		},
+		"post_birth_mortality": {
+			"no_queen": 0.25,
+			"per_queen_reduction": 0.85,
+			"comment": "no_queen is base mortality (25%), per_queen_reduction multiplies by 0.85 per queen present"
 		},
 		"comment": [
 			"primary mated - 1/chance for kits, relationship and other factors will influence this chance",

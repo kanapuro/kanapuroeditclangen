@@ -376,15 +376,16 @@ class Pregnancy_Events:
 
         kits = Pregnancy_Events.get_kits(kits_amount, cat, other_cat, clan)
         
-        # Track stillbirths/neonatal deaths
-        stillborn_count = kits_amount - len(kits) if kits else 0
+        # Track attempted vs successful kits
+        attempted_kits = kits_amount  # Original number attempted
+        kits_amount = len(kits)  # Number that survived
+        stillborn_count = attempted_kits - kits_amount if kits else 0
         
         if not kits and stillborn_count == 0:
             print(f"[WARN] No kits were created for pregnancy event involving {cat.name}{' and ' + str(other_cat.name) if other_cat else ''}.")
             del clan.pregnancy_data[cat.ID]
             return
         
-        kits_amount = len(kits)
         Pregnancy_Events.set_biggest_family()
 
         # delete the cat out of the pregnancy dictionary
@@ -406,10 +407,10 @@ class Pregnancy_Events:
                 kit.relationships = {}
                 kit.create_one_relationship(cat)
 
-        if kits_amount == 1:
+        if attempted_kits == 1:
             insert = "single kitten"
         else:
-            insert = f"litter of {kits_amount} kits"
+            insert = f"litter of {attempted_kits} kits"
 
         # Since cat has given birth, apply the birth cooldown.
         cat.birth_cooldown = game.config["pregnancy"]["birth_cooldown"]
@@ -915,7 +916,7 @@ class Pregnancy_Events:
             # Check for stillbirth before creating the kit (only in realistic litters mode)
             if realistic_litters and stillborn_chance > 0 and random.random() < stillborn_chance:
                 stillborn_kits.append(True)
-                continue  # Skip this kit - it will be stillborn
+                continue  # Skip kit creation entirely - it will be stillborn
             
             if not cat:
                 # No parents provided, give a blood parent - this is an adoption.
@@ -979,15 +980,21 @@ class Pregnancy_Events:
                         kit.pelt.scars.append("NOTAIL")
                 Condition_Events.handle_already_disabled(kit)
 
-            # Check for kitten mortality if realistic litters is enabled
             if realistic_litters and clan:
                 kit_survives = Pregnancy_Events.check_kit_mortality(kit, cat, clan)
                 if not kit_survives:
-                    # Record this as a stillborn/neonatal death for event purposes
                     stillborn_kits.append(True)
-                    continue  # Don't add this kit to the clan
+                    # Mark the kit as dead so it won't be added to the clan
+                    kit.die()
+                    continue
+                
+                post_birth_survives = Pregnancy_Events.check_post_birth_mortality(kit, cat, other_cat, clan)
+                if not post_birth_survives:
+                    stillborn_kits.append(True)
+                    # Mark the kit as dead so it won't be added to the clan
+                    kit.die()
+                    continue
             
-            # Only add to all_kitten if kit survived mortality check
             all_kitten.append(kit)
 
             # create and update relationships
@@ -1111,7 +1118,6 @@ class Pregnancy_Events:
         min_kits = game.config["pregnancy"]["min_kits"]
         
         if use_modded:
-            # Use modded (bigger litter) configuration
             one_kit = [min_kits] * game.config["pregnancy"]["one_kit_modded"][cat.age]
             two_kits = [min_kits + 1] * game.config["pregnancy"]["two_kit_modded"][cat.age]
             three_kits = [min_kits + 2] * game.config["pregnancy"]["three_kit_modded"][cat.age]
@@ -1119,12 +1125,14 @@ class Pregnancy_Events:
             five_kits = [min_kits + 4] * game.config["pregnancy"]["five_kit_modded"][cat.age]
             six_kits = [min_kits + 5] * game.config["pregnancy"]["six_kit_modded"][cat.age]
             
-            # In modded mode, jump to 9 kits (skip 7-8)
-            nine_kits = [min_kits + 8] * game.config["pregnancy"]["nine_kit_modded"][cat.age]
+            seven_eight_kits = [choice([min_kits + 6, min_kits + 7])] * game.config["pregnancy"]["seven_kit_modded"][cat.age]
+            
+            nine_plus_kits = [choice([min_kits + 8, min_kits + 9, min_kits + 10, min_kits + 11])] * game.config["pregnancy"]["nine_kit_modded"][cat.age]
+            
             max_kits = [game.config["pregnancy"]["max_kits"]] * game.config["pregnancy"]["max_kit_modded"][cat.age]
             
             amount = choice(
-                one_kit + two_kits + three_kits + four_kits + five_kits + six_kits + nine_kits + max_kits
+                one_kit + two_kits + three_kits + four_kits + five_kits + six_kits + seven_eight_kits + nine_plus_kits + max_kits
             )
         else:
             # Use standard configuration
@@ -1369,24 +1377,42 @@ class Pregnancy_Events:
     def check_kit_mortality(kit: Cat, mother: Cat, clan) -> bool:
         """
         Determine if a newborn kit survives based on realistic litters setting.
+        Mortality scales with clan size - larger clans have more resource strain.
+        Kits with parents alive in the clan have better survival chances.
         Returns True if the kit survives, False if it dies.
         Only called when bigger_litters (realistic litters) setting is enabled.
         """
-        # Base mortality rate for newborn kits (1 in 4 chance = 0.25)
         base_mortality = 0.25
         
-        # Check if there are any queens (status == "queen") in the clan to help
+        if clan:
+            living_cats = len(
+                [c for c in Cat.all_cats.values() if not (c.dead or c.outside or c.exiled)]
+            )
+            if living_cats < 10:
+                base_mortality = 0.15
+            elif living_cats > 30:
+                base_mortality = 0.25 + ((living_cats - 30) * 0.01)
+        
+        has_parent_in_clan = False
+        if kit.parent1:
+            parent1_cat = Cat.all_cats.get(kit.parent1)
+            if parent1_cat and not parent1_cat.dead and not parent1_cat.outside:
+                has_parent_in_clan = True
+        if not has_parent_in_clan and kit.parent2:
+            parent2_cat = Cat.all_cats.get(kit.parent2)
+            if parent2_cat and not parent2_cat.dead and not parent2_cat.outside:
+                has_parent_in_clan = True
+        
+        if has_parent_in_clan:
+            base_mortality = base_mortality * 0.85
+        
         queens_in_clan = [
             cat for cat in Cat.all_cats.values()
             if cat.status == "queen" and not cat.dead and not cat.outside and cat.ID != mother.ID
         ]
         
-        # Reduce mortality chance significantly if there are queens present
         mortality_rate = base_mortality
         if queens_in_clan:
-            # Each additional queen reduces mortality by ~15% (multiplicative)
-            # With 1 queen: 0.25 * 0.85 = 0.2125
-            # With 2 queens: 0.25 * 0.85^2 = 0.1806
             mortality_rate = base_mortality * (0.85 ** len(queens_in_clan))
         
         # Roll for survival
@@ -1423,7 +1449,15 @@ class Pregnancy_Events:
         event_text = event_text_adjust(
             Cat, event_text, main_cat=mother, random_cat=other_parent, clan=clan
         )
-        event_text = event_text.replace("{insert}", str(stillborn_count) if stillborn_count > 1 else "a kit")
+        
+        if stillborn_count == 1:
+            insert_text = "a kit"
+        else:
+            insert_text = f"{stillborn_count} kits"
+        event_text = event_text.replace("{insert}", insert_text)
+        
+        # Fix grammar for singular vs plural
+        event_text = event_text.replace("a kit were", "a kit was")
         
         involved_cats = [mother.ID]
         if other_parent:
@@ -1436,9 +1470,54 @@ class Pregnancy_Events:
         
         # Apply grief to parents
         if not mother.dead:
-            # Mother gets significant grief
-            mother.get_injured("grief stricken", severity="major", event_triggered=True)
+            # Mother experiences the loss
+            pass
             
         if other_parent and not other_parent.dead:
-            # Other parent gets some grief too
-            other_parent.get_injured("grief stricken", severity="minor", event_triggered=True)
+            # Other parent experiences the loss too
+            pass
+    @staticmethod
+    def check_post_birth_mortality(kit: Cat, mother: Cat, other_parent: Cat, clan) -> bool:
+        """
+        Determine if a kit survives the post-birth period (hours/days after birth).
+        Mortality scales with clan size - larger clans have more resource strain.
+        Kits with parents alive in the clan have better survival chances.
+        This is separate from neonatal/stillbirth mortality.
+        Returns True if the kit survives, False if it dies shortly after birth.
+        Only called when bigger_litters (realistic litters) setting is enabled.
+        """
+        base_mortality = game.config["pregnancy"]["post_birth_mortality"].get("no_queen", 0.25)
+        
+        if clan:
+            living_cats = len(
+                [c for c in Cat.all_cats.values() if not (c.dead or c.outside or c.exiled)]
+            )
+            if living_cats < 10:
+                base_mortality = base_mortality * 0.6
+            elif living_cats > 30:
+                base_mortality = base_mortality + ((living_cats - 30) * 0.01)
+        
+        has_parent_in_clan = False
+        if kit.parent1:
+            parent1_cat = Cat.all_cats.get(kit.parent1)
+            if parent1_cat and not parent1_cat.dead and not parent1_cat.outside:
+                has_parent_in_clan = True
+        if not has_parent_in_clan and kit.parent2:
+            parent2_cat = Cat.all_cats.get(kit.parent2)
+            if parent2_cat and not parent2_cat.dead and not parent2_cat.outside:
+                has_parent_in_clan = True
+        
+        if has_parent_in_clan:
+            base_mortality = base_mortality * 0.85
+        
+        queens_in_clan = [
+            cat for cat in Cat.all_cats.values()
+            if cat.status == "queen" and not cat.dead and not cat.outside and cat.ID != mother.ID
+        ]
+        
+        mortality_rate = base_mortality
+        if queens_in_clan:
+            per_queen_reduction = game.config["pregnancy"]["post_birth_mortality"].get("per_queen_reduction", 0.85)
+            mortality_rate = base_mortality * (per_queen_reduction ** len(queens_in_clan))
+        
+        return random.random() > mortality_rate
