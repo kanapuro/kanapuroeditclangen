@@ -85,6 +85,10 @@ class MurderScreen(Screens):
         self.victim_name = None
         self.chancetext = None
         self.willingnesstext = None
+        self.is_self_harm = False
+        self.hold_back_button = None
+        self.hold_back_label = None
+        self.holding_back = False
 
     def handle_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
@@ -147,11 +151,13 @@ class MurderScreen(Screens):
                 self.method = choice(["attack", "poison", "accident", "predator"])
                 self.location = choice(["camp", "territory", "border"])
                 self.time = choice(["dawn", "day", "night"])
-
-                self.update_murder_buttons()
-                self.update_method_info()
-                self.update_chance_text(self.cat_to_murder, accomplice=None)
-                self.print_chances(self.selected_cat, accomplice=None)
+            
+            elif event.ui_element == self.hold_back_button and self.hold_back_button:
+                self.holding_back = not self.holding_back
+                self.hold_back_button.change_object_id(
+                    "@checked_checkbox" if self.holding_back else "@unchecked_checkbox"
+                )
+                self.print_chances(self.cat_to_murder, accomplice=None)
             
             elif event.ui_element == self.confirm_mentor and self.selected_cat:
                 r = randint(1,100)
@@ -815,6 +821,23 @@ class MurderScreen(Screens):
                 ui_scale(pygame.Rect((102, 236), (150, 30))),
                 name,
                 object_id="#text_box_34_horizcenter", manager=MANAGER)
+            
+            if self.cat_to_murder.ID == game.clan.your_cat.ID:
+                self.hold_back_button = UIImageButton(
+                    ui_scale(pygame.Rect((102, 370), (34, 34))),
+                    "",
+                    object_id="@unchecked_checkbox",
+                    tool_tip_text="Try to survive - reduces death chance to ~21%",
+                    manager=MANAGER,
+                )
+                
+                self.hold_back_label = pygame_gui.elements.UITextBox(
+                    "Hold back",
+                    ui_scale(pygame.Rect((140, 370), (100, 34))),
+                    object_id=get_text_box_theme("#text_box_22_vertcenter"),
+                    manager=MANAGER,
+                )
+                self.hold_back_label.disable()
 
             self.back_button = UISurfaceImageButton(
                 ui_scale(pygame.Rect((25, 25), (105, 30))),
@@ -1016,6 +1039,16 @@ class MurderScreen(Screens):
         if self.confirm_mentor:
             self.confirm_mentor.kill()
             del self.confirm_mentor
+        
+        if hasattr(self, 'hold_back_button') and self.hold_back_button:
+            self.hold_back_button.kill()
+            del self.hold_back_button
+        
+        if hasattr(self, 'hold_back_label') and self.hold_back_label:
+            self.hold_back_label.kill()
+            del self.hold_back_label
+        
+        self.holding_back = False
 
         if self.randomiser_button:
             self.randomiser_button.kill()
@@ -1150,7 +1183,9 @@ class MurderScreen(Screens):
 
     def change_cat(self, new_mentor=None, accomplice=None, accompliced=None):
         self.current_page = 1
+        was_holding_back = self.holding_back
         self.exit_screen()
+        self.holding_back = was_holding_back
         r = randint(0,100)
         r2 = randint(-10, 10)
 
@@ -1267,6 +1302,11 @@ class MurderScreen(Screens):
         if cat_to_murder.moons < 6 or self.method == "poison":
             chance = math.floor(chance / 2)
             print(f"  +Under 12 Moons OR Poison: {chance}")
+        
+        is_targeting_self = cat_to_murder.ID == game.clan.your_cat.ID
+        if is_targeting_self and self.holding_back:
+            chance = chance // 4
+            print(f"  *Holding back (self-harm): {chance}")
         
         print(f"  Final: {chance}")
         return chance
@@ -1458,6 +1498,13 @@ class MurderScreen(Screens):
 
     def choose_murder_text(self, you, cat_to_murder, accomplice, accompliced):
         """chooses murder text. nuff said also chooses whether the mc is injured or dies"""
+
+        if cat_to_murder.ID == you.ID:
+            self.is_self_harm = True
+            self.handle_self_harm(you, accomplice, accompliced)
+            return
+
+        self.is_self_harm = False
 
         with open(f"{self.RESOURCE_DIR}murder.json",
                 encoding="ascii") as read_file:
@@ -1927,6 +1974,30 @@ class MurderScreen(Screens):
           
     def choose_discover_punishment(self, you, cat_to_murder, accomplice, accompliced):
         """determines punishment text, shunned and guilt outcomes"""
+        if self.is_self_harm:
+            if you.dead and accomplice and accompliced:
+                History.reveal_murder(
+                    cat=accomplice,
+                    other_cat=None,
+                    cat_class=Cat,
+                    victim=you,
+                    murder_index=-1,
+                    shunned=True
+                )
+                if accomplice.status not in ["apprentice", "kitten", "elder", "warrior"]:
+                    event_text = accomplice.shunned_demotion()
+                    game.cur_events_list.insert(3, Single_Event(
+                        event_text,
+                        ["alert"],
+                        [accomplice.ID]))
+                
+                game.cur_events_list.insert(2, Single_Event(
+                    f"After your death, {accomplice.name} is blamed for not preventing it - or worse, for helping.",
+                    ["alert", "birth_death"],
+                    [you.ID, accomplice.ID]))
+                accomplice.faith -= 0.5
+            return
+        
         # 1 = you punished, 2 = accomplice punished, 3 = both punished
         event_text = ""
 
@@ -2229,6 +2300,11 @@ class MurderScreen(Screens):
 
     def handle_murder_fail(self, you, cat_to_murder, accomplice, accompliced):
         """ handles murders failing and victims becoming accidentally injured/sick as a result """
+        
+        if cat_to_murder.ID == you.ID:
+            self.handle_self_harm_fail(you, accomplice, accompliced)
+            return
+        
         c_m = str(cat_to_murder.name)
 
         victim_injury_chance = 8
@@ -2340,7 +2416,150 @@ class MurderScreen(Screens):
     great_murder_skills = ["very clever", "formidable fighter", "keen eye","incredible runner"]
     best_murder_skills = ["incredibly clever", "unusually strong fighter", "unnatural senses","fast as the wind"]
 
+    def handle_self_harm(self, you, accomplice, accompliced):
+        """Handles successful self-harm attempts"""
+        
+        risk = randint(1, 100)
+        death_chance = 60 if self.method in ["attack", "accident"] else 75
+        
+        if self.holding_back:
+            death_chance = death_chance // 4
+        
+        if game.clan.clan_settings.get("player_crimes_success", False):
+            death = False
+        else:
+            death = risk < death_chance
+        
+        if death:
+            if you.status == "leader":
+                game.clan.leader_lives = 0
+            you.die()
+            if accomplice and accompliced:
+                History.add_death(
+                    you,
+                    f"{you.name} took their own life. {accomplice.name} was there but could not stop it.",
+                    other_cat=accomplice,
+                )
+            else:
+                History.add_death(
+                    you,
+                    f"{you.name} took their own life.",
+                    other_cat=None,
+                )
+        
+        owie = "sore"
+        if not death:
+            if self.method == "attack":
+                owie = choice(["claw-wound", "torn pelt", "scrapes", "sore"])
+            elif self.method == "poison":
+                owie = "poisoned"
+            elif self.method == "accident":
+                owie = choice(["broken bone", "sprain", "sore", "head damage"])
+            elif self.method == "predator":
+                owie = choice(["bite-wound", "torn pelt", "broken bone"])
+            
+            you.get_injured(owie)
+        
+        texts = []
+        if death:
+            if accomplice and accompliced:
+                texts = [
+                    f"{accomplice.name} couldn't stop you in time.",
+                    f"{accomplice.name} tried to help, but it was too late.",
+                    f"You didn't think it would feel like this. {accomplice.name} watched helplessly.",
+                    f"The darkness closes in. {accomplice.name} is calling your name.",
+                    f"{accomplice.name} will never forgive themselves for this."
+                ]
+            else:
+                texts = [
+                    "You didn't think it would feel like this.",
+                    "Too late to take it back now.",
+                    "This wasn't what you wanted.",
+                    "The darkness closes in. You feel afraid.",
+                    "You realize you made a mistake.",
+                    "It shouldn't have ended this way."
+                ]
+        else:
+            if accomplice and accompliced:
+                texts = [
+                    f"{accomplice.name} found you. You're still here.",
+                    f"You survive, but {accomplice.name} knows what you tried to do.",
+                    f"{accomplice.name} helped you, though they'll carry this burden too.",
+                    f"The pain reminds you that you're still here. {accomplice.name} won't leave your side.",
+                    f"{accomplice.name} is crying. You couldn't go through with it completely."
+                ]
+            else:
+                texts = [
+                    "The pain reminds you that you're still here.",
+                    "It helps, for a moment.",
+                    "A moment of relief, then back to reality.",
+                    "The physical pain drowns out the other kind.",
+                    "You couldn't go through with it completely."
+                ]
+        
+        text = choice(texts)
+        
+        involved_cats = [you.ID]
+        if accomplice:
+            involved_cats.append(accomplice.ID)
+        
+        game.cur_events_list.insert(
+            0,
+            Single_Event(
+                text,
+                ["alert", "birth_death"] if death else ["health"],
+                involved_cats
+            )
+        )
+        
+        game.clan.murdered = {
+            "moon": game.clan.age,
+            "murderer": you.ID,
+            "victim": you.ID,
+            "accomplice": [accomplice.ID if accomplice else None, accompliced if accomplice else False],
+            "success": death,
+            "discovered": False,
+            "complication": None
+        }
+
+    def handle_self_harm_fail(self, you, accomplice, accompliced):
+        """Handles failed self-harm attempts"""
+        
+        injury_chance = randint(1, 3)
+        
+        fail_texts = [
+            "You hesitated at the last moment.",
+            "Your paws wouldn't cooperate.",
+            "Something held you back.",
+            "You couldn't do it.",
+            "The moment passed."
+        ]
+        
+        text = choice(fail_texts)
+        
+        if injury_chance == 1:
+            owie = "sore"
+            if self.method == "attack":
+                owie = choice(["scrapes", "sore"])
+            elif self.method == "poison":
+                owie = choice(["stomachache", "sore"])
+            elif self.method == "accident":
+                owie = choice(["sprain", "sore", "bruises"])
+            elif self.method == "predator":
+                owie = "sore"
+            
+            you.get_injured(owie)
+            text = text + " You're left with minor injuries."
+        
+        game.cur_events_list.insert(0, Single_Event(
+            text,
+            ["health"],
+            [you.ID]))
+
     def get_kill(self, you, cat_to_murder, accomplice, accompliced):
+        if cat_to_murder.ID == you.ID:
+            return 85
+        
         chance = self.status_chances.get(you.status, 0)
 
         you_healthy = not you.is_ill() and not you.is_injured()
@@ -2891,42 +3110,42 @@ class MurderScreen(Screens):
                             object_id=get_text_box_theme("#text_box_22_horizcenter_spacing_95"),
                         manager=MANAGER
                         )
+            if self.stage == "choose accomplice":
+                if self.selected_cat is not None:
+                    a_text = ""
+                    chance = self.get_accomplice_chance(game.clan.your_cat, self.selected_cat, self.cat_to_murder)
+                    
+                    is_self_harm = self.cat_to_murder.ID == game.clan.your_cat.ID
+                    if not is_self_harm and game.config["accomplice_chance"] != -1:
+                        try:
+                            chance = game.config["accomplice_chance"]
+                        except:
+                            pass
+                    
+                    if chance < 0:
+                        a_text = "extremely low"
+                    elif chance < 10:
+                        a_text = "very low"
+                    elif chance < 30:
+                        a_text = "low"
+                    elif chance < 50:
+                        a_text = "average"
+                    elif chance < 80:
+                        a_text = "high"
+                    else:
+                        a_text = "very high"
 
-                        
-                if self.stage == "choose accomplice":
-                    if self.selected_cat is not None:
-                        a_text = ""
-                        chance = self.get_kill(game.clan.your_cat, self.cat_to_murder, accomplice=self.selected_cat, accompliced=False)
-
-                        chance = self.get_accomplice_chance(game.clan.your_cat, self.selected_cat, self.cat_to_murder)
-                        
-                        if game.config["accomplice_chance"] != -1:
-                            try:
-                                chance = game.config["accomplice_chance"]
-                            except:
-                                pass
-                        if chance < 20:
-                            a_text = "very low"
-                        elif chance < 30:
-                            a_text = "low"
-                        elif chance < 50:
-                            a_text = "average"
-                        elif chance < 80:
-                            a_text = "high"
-                        else:
-                            a_text = "very high"
-
-                        self.willingnesstext = pygame_gui.elements.UITextBox(
-                            "willingness: " + a_text,
-                            ui_scale(pygame.Rect((572, 345), (105, 125))),
-                            object_id=get_text_box_theme("#text_box_22_horizcenter_spacing_95"),
-                            manager=MANAGER)
-                else:
                     self.willingnesstext = pygame_gui.elements.UITextBox(
-                        "" ,
+                        "willingness: " + a_text,
                         ui_scale(pygame.Rect((572, 345), (105, 125))),
                         object_id=get_text_box_theme("#text_box_22_horizcenter_spacing_95"),
                         manager=MANAGER)
+            else:
+                self.willingnesstext = pygame_gui.elements.UITextBox(
+                    "" ,
+                    ui_scale(pygame.Rect((572, 345), (105, 125))),
+                    object_id=get_text_box_theme("#text_box_22_horizcenter_spacing_95"),
+                    manager=MANAGER)
         else:
             self.willingnesstext = None
             self.chancetext = None
@@ -2982,36 +3201,71 @@ class MurderScreen(Screens):
             
 
     def get_accomplice_chance(self, you, accomplice, cat_to_murder):
-        chance = 10
+        is_self_harm = cat_to_murder.ID == you.ID
+        
+        print(f"\n=== ACCOMPLICE CHANCE DEBUG ===")
+        print(f"You: {you.name} (ID: {you.ID})")
+        print(f"Victim: {cat_to_murder.name} (ID: {cat_to_murder.ID})")
+        print(f"Accomplice: {accomplice.name if accomplice else 'None'}")
+        print(f"Is Self-Harm: {is_self_harm}")
+        
+        chance = -20 if is_self_harm else 10
+        print(f"Base chance: {chance}")
+        
         if accomplice is not None:
-            if accomplice.relationships[you.ID].platonic_like > 10:
-                chance += 10
-            if accomplice.relationships[you.ID].dislike < 10:
-                chance += 10
-            if accomplice.relationships[you.ID].romantic_love > 10:
-                chance += 10
-            if accomplice.relationships[you.ID].comfortable > 10:
-                chance += 10
-            if accomplice.relationships[you.ID].trust > 10:
-                chance += 10
-            if accomplice.relationships[you.ID].admiration > 10:
-                chance += 10
-            if you.status in ['medicine cat', 'mediator', 'deputy', 'leader']:
-                chance += 10
-            if accomplice.status in ['medicine cat', 'mediator', 'deputy', 'leader']:
-                chance -= 20
-            if accomplice.ID in game.clan.your_cat.mates:
-                chance += 50
-            if game.clan.your_cat.is_related(accomplice, False):
-                chance += 30
+            if is_self_harm:
+                if accomplice.relationships[you.ID].platonic_like > 10:
+                    chance -= 10
+                if accomplice.relationships[you.ID].dislike < 10:
+                    chance -= 10
+                if accomplice.relationships[you.ID].romantic_love > 10:
+                    chance -= 15
+                if accomplice.relationships[you.ID].comfortable > 10:
+                    chance -= 10
+                if accomplice.relationships[you.ID].trust > 10:
+                    chance -= 10
+                if accomplice.relationships[you.ID].admiration > 10:
+                    chance -= 10
+                if you.status in ['medicine cat', 'mediator', 'deputy', 'leader']:
+                    chance -= 15
+                if accomplice.status in ['medicine cat', 'mediator', 'deputy', 'leader']:
+                    chance -= 20
+                if accomplice.ID in game.clan.your_cat.mates:
+                    chance -= 60
+                if game.clan.your_cat.is_related(accomplice, False):
+                    chance -= 40
+                if accomplice.relationships[you.ID].dislike > 30:
+                    chance += 20
+            else:
+                if accomplice.relationships[you.ID].platonic_like > 10:
+                    chance += 10
+                if accomplice.relationships[you.ID].dislike < 10:
+                    chance += 10
+                if accomplice.relationships[you.ID].romantic_love > 10:
+                    chance += 10
+                if accomplice.relationships[you.ID].comfortable > 10:
+                    chance += 10
+                if accomplice.relationships[you.ID].trust > 10:
+                    chance += 10
+                if accomplice.relationships[you.ID].admiration > 10:
+                    chance += 10
+                if you.status in ['medicine cat', 'mediator', 'deputy', 'leader']:
+                    chance += 10
+                if accomplice.status in ['medicine cat', 'mediator', 'deputy', 'leader']:
+                    chance -= 20
+                if accomplice.ID in game.clan.your_cat.mates:
+                    chance += 50
+                if game.clan.your_cat.is_related(accomplice, False):
+                    chance += 30
 
-            #relationship to the victim
-            # TODO: make these chances better lol
-            if cat_to_murder.ID in accomplice.relationships:
-                chance += accomplice.relationships[self.cat_to_murder.ID].dislike / 2
-                chance -= accomplice.relationships[self.cat_to_murder.ID].platonic_like
-                chance -= accomplice.relationships[self.cat_to_murder.ID].romantic_love
+                # TODO: make these chances better lol
+                if cat_to_murder.ID in accomplice.relationships:
+                    chance += accomplice.relationships[self.cat_to_murder.ID].dislike / 2
+                    chance -= accomplice.relationships[self.cat_to_murder.ID].platonic_like
+                    chance -= accomplice.relationships[self.cat_to_murder.ID].romantic_love
 
+        print(f"Final chance: {chance}")
+        print(f"=== END DEBUG ===\n")
         return chance
                     
     def update_selected_cat2(self):
@@ -3150,7 +3404,9 @@ class MurderScreen(Screens):
         valid_mentors = []
 
         for cat in Cat.all_cats_list:
-            if not cat.dead and not cat.outside and not cat.ID == game.clan.your_cat.ID and not cat.moons == 0:
+            if not cat.dead and not cat.outside and not cat.moons == 0:
+                if cat.ID == game.clan.your_cat.ID and not game.settings.get("enable_self_harm", False):
+                    continue
                 valid_mentors.append(cat)
         
         return valid_mentors

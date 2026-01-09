@@ -97,6 +97,13 @@
             false
         ]
     },
+    "content": {
+        "enable_self_harm": [
+            "Enable self-harm and suicide",
+            "When enabled, you will be able to target your player cat in the murder screen.",
+            false
+        ]
+    },
     "..": "these are special. they do not have a display name or a tooltip",
     "__other": {
         "language": [

@@ -175,14 +175,14 @@ class Game:
 
     _ = []
     _.append(_settings["general"])
+    _.append(_settings.get("content", {}))
 
-    for cat in _:  # Add all the settings to the settings dictionary
+    for cat in _:
         for setting_name, inf in cat.items():
             settings[setting_name] = inf[2]
             setting_lists[setting_name] = [inf[2], not inf[2]]
     del _settings
     del _
-    # End init settings
 
     settings_changed = False
 

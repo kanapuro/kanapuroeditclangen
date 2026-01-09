@@ -70,13 +70,6 @@ class StartScreen(Screens):
     def handle_event(self, event):
         """This is where events that occur on this page are handled.
         For the pygame_gui rewrite, button presses are also handled here."""
-        if event.type == pygame_gui.UI_TEXT_BOX_LINK_CLICKED:
-            if platform.system() == "Darwin":
-                subprocess.Popen(["open", "-u", event.link_target])
-            elif platform.system() == "Windows":
-                os.system(f'start "" {event.link_target}')
-            elif platform.system() == "Linux":
-                subprocess.Popen(["xdg-open", event.link_target])
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             self.mute_button_pressed(event)
             screens = {
@@ -84,6 +77,7 @@ class StartScreen(Screens):
                 self.switch_clan_button: "switch clan screen",
                 self.new_clan_button: "make clan screen",
                 self.settings_button: "settings screen",
+                self.warning_label_background: "content settings screen",
             }
             if event.ui_element in screens and not self.error_open:
                 self.change_screen(screens[event.ui_element])
@@ -163,7 +157,6 @@ class StartScreen(Screens):
         self.new_clan_button.kill()
         self.settings_button.kill()
         self.error_label.kill()
-        self.warning_label.kill()
         self.update_button.kill()
         self.quit.kill()
         self.closebtn.kill()
@@ -378,25 +371,12 @@ class StartScreen(Screens):
                     write_file.write(get_version_info().version_number)
 
         self.warning_label_background = UISurfaceImageButton(
-            ui_scale(pygame.Rect((50, 601), (700, 32))),
-            "",
-            get_button_dict(ButtonStyles.ROUNDED_RECT, (700, 32)),
+            ui_scale(pygame.Rect((420, 645), (300, 30))),
+            "CONTENT WARNING & TRIGGER SETTINGS",
+            get_button_dict(ButtonStyles.ROUNDED_RECT, (300, 30)),
             object_id="@buttonstyles_rounded_rect",
             manager=MANAGER
         )
-        self.warning_label_background.disable()
-        self.warning_label = pygame_gui.elements.UITextBox(
-            "Warning: this game includes descriptions of gore, violence, murder, kit death, and animal abuse",
-            ui_scale(pygame.Rect((0, 600), (800, 40))),
-            object_id=ObjectID("#text_box_30_horizcenter", "#dark"),
-            manager=MANAGER,
-            anchors={
-                "left": "left",
-                "right": "right",
-            },
-        )
-        self.warning_label.text_horiz_alignment = "center"
-        self.warning_label.rebuild()
 
         if game.clan is not None and game.switches["error_message"] == "":
             self.continue_button.enable()

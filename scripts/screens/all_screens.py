@@ -7,6 +7,7 @@ from .ChooseMateScreen import ChooseMateScreen
 from .ChooseMentorScreen import ChooseMentorScreen
 from .ClanScreen import ClanScreen
 from .ClanSettingsScreen import ClanSettingsScreen
+from .ContentSettingsScreen import ContentSettingsScreen
 from .TalkScreen import TalkScreen
 from .ChooseRebornScreen import ChooseRebornScreen
 from .AchievementScreen import AchievementScreen
@@ -82,6 +83,7 @@ class AllScreens:
 
     settings_screen = SettingsScreen("settings screen")
     clan_settings_screen = ClanSettingsScreen("clan settings screen")
+    content_settings_screen = ContentSettingsScreen("content settings screen")
     start_screen = StartScreen("start screen")
     switch_clan_screen = SwitchClanScreen("switch clan screen")
 
@@ -136,6 +138,7 @@ class AllScreens:
 
         cls.settings_screen = SettingsScreen("settings screen")
         cls.clan_settings_screen = ClanSettingsScreen("clan settings screen")
+        cls.content_settings_screen = ContentSettingsScreen("content settings screen")
         cls.start_screen = StartScreen("start screen")
         cls.switch_clan_screen = SwitchClanScreen("switch clan screen")
 
