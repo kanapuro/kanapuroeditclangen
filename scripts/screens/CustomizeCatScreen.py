@@ -804,7 +804,8 @@ class CustomizeCatScreen(Screens):
             ui_scale(pygame.Rect((480, 450), (30, 30))),
             "",
             object_id=checkbox_id,
-            starting_height=2
+            starting_height=2,
+            manager=MANAGER
         )
         self.cat_elements["heterochromia_checkbox"] = self.heterochromia_checkbox
 

@@ -300,7 +300,7 @@ class CustomizeStatsScreen(Screens):
         self.fur_textures.sort()
         self.fur_textures_label = None
         
-        self.builds = ["stocky", "slender", "lithe", "wiry", "muscular", "lanky", "delicate", "hunched", "hefty", "burly", "bulky", "plump", "brawny", "stout", "broad", "chubby", "fat", "stocky", "chunky", "big-boned"]
+        self.builds = ["stocky", "slender", "lithe", "wiry", "muscular", "lanky", "delicate", "hunched", "hefty", "burly", "bulky", "plump", "brawny", "stout", "broad", "chubby", "fat", "chunky", "big-boned"]
         self.builds.sort()
         self.builds_label = None
         
