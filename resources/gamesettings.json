@@ -99,8 +99,8 @@
     },
     "content": {
         "enable_self_harm": [
-            "Enable self-harm and suicide",
-            "When enabled, you will be able to target your player cat in the murder screen.",
+            "Enable self-targeting",
+            "When enabled, you will be able to target your player cat in the murder screen, and other cats may engage in suicidal or self-harming behaviors.",
             false
         ]
     },

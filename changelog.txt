@@ -1,5 +1,7 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
-- Allowed self-targeting on murder screen with custom results and history entries. Trigger setting.
+- Fixed a faith-related crash that occured when spamming the moonskip button, as well as crash related to strings in pregnancy/kitting.
+- (18+) Allowed self-targeting for NPCs on moonskip.
+- (18+) Allowed self-targeting on murder screen with custom results and history entries. Trigger setting.
 - Moved content warning and trigger settings to a seperate page.
 - Removed duplicate "stocky" listings and fixed buttons lingering in character customization.
 - Added setting to toggle deputies ascending to leaders automatically.

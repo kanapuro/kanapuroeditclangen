@@ -41,11 +41,9 @@ class ContentSettingsScreen(Screens):
                 self.update_save_button()
                 return
 
-            # Handle checkbox clicks
             if event.ui_element in self.checkboxes.values():
                 for key, value in self.checkboxes.items():
                     if value == event.ui_element:
-                        # Toggle the setting directly (don't use switch_setting for boolean content settings)
                         game.settings[key] = not game.settings[key]
                         value.change_object_id(
                             "@checked_checkbox"
@@ -67,12 +65,10 @@ class ContentSettingsScreen(Screens):
         self.show_mute_buttons()
         self.settings_changed = False
         
-        # Initialize content settings with defaults if they don't exist
         for code, desc in settings_dict.get("content", {}).items():
             if code not in game.settings:
-                game.settings[code] = desc[2]  # Use default value
+                game.settings[code] = desc[2]
 
-        # Main menu button
         self.main_menu_button = UISurfaceImageButton(
             ui_scale(pygame.Rect((25, 25), (152, 30))),
             get_arrow(3) + " Main Menu",
@@ -82,22 +78,19 @@ class ContentSettingsScreen(Screens):
             starting_height=1,
         )
 
-        # Description text
         self.checkboxes_text["instr"] = pygame_gui.elements.UITextBox(
-            "This game contains dark content not suitable for children. You can use these settings to control your experience. Manage content warnings and toggle sensitive features. These settings are saved globally.",
+            "This game contains dark content not suitable for children. You can use these settings to manage your experience and toggle sensitive features. These settings are saved globally.",
             ui_scale(pygame.Rect((100, 100), (600, 80))),
             object_id=get_text_box_theme("#text_box_30_horizcenter"),
             manager=MANAGER,
         )
 
-        # Container for checkboxes (matches SettingsScreen style)
         self.checkboxes_text["container_content"] = pygame_gui.elements.UIScrollingContainer(
             ui_scale(pygame.Rect((0, 200), (700, 320))),
             allow_scroll_x=False,
             manager=MANAGER,
         )
 
-        # Create text labels for checkboxes (matches SettingsScreen layout with anchoring)
         for i, (code, desc) in enumerate(settings_dict.get("content", {}).items()):
             self.checkboxes_text[code] = pygame_gui.elements.UITextBox(
                 desc[0],
@@ -113,12 +106,10 @@ class ContentSettingsScreen(Screens):
             )
             self.checkboxes_text[code].disable()
 
-        # Set scrollable area dimensions
         self.checkboxes_text["container_content"].set_scrollable_area_dimensions(
             ui_scale_dimensions((680, (len(settings_dict.get("content", {}).keys()) * 39 + 40)))
         )
 
-        # Save button
         self.save_settings_button = UISurfaceImageButton(
             ui_scale(pygame.Rect((0, 550), (150, 30))),
             "Save Settings",
@@ -140,7 +131,6 @@ class ContentSettingsScreen(Screens):
         self.checkboxes = {}
 
         for i, (code, desc) in enumerate(settings_dict.get("content", {}).items()):
-            # Ensure setting exists
             if code not in game.settings:
                 game.settings[code] = desc[2]
             
@@ -188,7 +178,6 @@ class ContentSettingsScreen(Screens):
             self.save_settings_button.kill()
             del self.save_settings_button
 
-        # Revert settings if they were changed but not saved
         if self.settings_changed:
             game.settings = self.settings_at_open.copy()
 

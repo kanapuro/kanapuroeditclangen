@@ -238,6 +238,9 @@ class Events:
             
                 
             Cat.grief_strings.clear()
+        
+        if game.settings.get("enable_self_harm", False):
+            self.handle_npc_self_harm_events()
 
         if Cat.dead_cats:
             ghost_names = []
@@ -4382,6 +4385,90 @@ class Events:
                 game.cur_events_list.insert(
                     0, Single_Event(f"{game.clan.name} has no deputy!", "alert")
                 )
+
+    def handle_npc_self_harm_events(self):
+        """Handle suicide/self-harm events for NPCs during moonskip"""
+        # 5% chance per moon to check for self-harm events
+        if random.randint(1, 20) != 1:
+            return
+        
+        potential_cats = []
+        for cat in Cat.all_cats.values():
+            if (cat.is_alive() and not cat.outside and not cat.dead 
+                and not cat.exiled and cat.ID != game.clan.your_cat.ID):
+                has_grief = False
+                if "grief stricken" in cat.illnesses:
+                    has_grief = True
+                for condition_name in cat.permanent_condition:
+                    if condition_name == "lasting grief":
+                        has_grief = True
+                        break
+                if has_grief:
+                    potential_cats.append(cat)
+        
+        if not potential_cats:
+            return
+        
+        target_cat = random.choice(potential_cats)
+        
+        chance_modifier = 1.0
+        if target_cat.status == "apprentice" or target_cat.status == "elder":
+            chance_modifier = 1.5
+        
+        if random.random() > (0.3 * chance_modifier):
+            return
+        
+        death = random.random() < 0.6
+        
+        is_obvious = random.random() < 0.4
+        
+        print(f"[SELF-HARM] Processing {target_cat.name}: death={death}, obvious={is_obvious}")
+        
+        if death:
+            pronoun_dict = target_cat.pronouns[0] if target_cat.pronouns else {"subject": "they", "object": "them", "poss": "their", "inposs": "theirs", "self": "themself", "conju": 1}
+            if is_obvious:
+                obvious_texts = [
+                    f"{target_cat.name} was found dead. Those closest to {pronoun_dict['subject']} say {pronoun_dict['subject']} had been struggling for some time.",
+                    f"The Clan finds {target_cat.name}'s lifeless body. It appears {pronoun_dict['subject']} took {pronoun_dict['poss']} own life.",
+                    f"{target_cat.name} is discovered dead. The circumstances suggest {pronoun_dict['subject']} hurt {pronoun_dict['self']}."
+                ]
+                text = random.choice(obvious_texts)
+            else:
+                subtle_texts = [
+                    f"{target_cat.name} was found dead. The cause is unclear.",
+                    f"{target_cat.name} doesn't return from a walk. Search parties find {target_cat.name} dead.",
+                    f"{target_cat.name} is found dead far from camp. No one knows what happened."
+                ]
+                text = random.choice(subtle_texts)
+            
+            target_cat.dead = True
+            target_cat.gone()
+            History.add_death(target_cat, f"{target_cat.name} took {pronoun_dict['poss']} own life.")
+        else:
+            if is_obvious:
+                pronoun_dict = target_cat.pronouns[0] if target_cat.pronouns else {"subject": "they", "object": "them", "poss": "their", "inposs": "theirs", "self": "themself", "conju": 1}
+                obvious_texts = [
+                    f"{target_cat.name} comes home badly injured. The Clan suspects {pronoun_dict['subject']} hurt {pronoun_dict['self']}. {game.clan.leader.name if game.clan.leader else 'The leader'} arranges for {pronoun_dict['object']} to get counseling.",
+                    f"{target_cat.name} returns to camp severely wounded. Clanmates look at {pronoun_dict['subject']} with pity and concern. Special care is arranged for {pronoun_dict['object']}.",
+                    f"{target_cat.name} staggers into camp with fresh wounds. The Clan worries deeply and assigns medicine cats to help {pronoun_dict['object']} through this dark time."
+                ]
+                text = random.choice(obvious_texts)
+                injury = random.choice(["claw-wound", "bite-wound", "torn pelt", "broken bone"])
+                target_cat.get_injured(injury)
+            else:
+                pronoun_dict = target_cat.pronouns[0] if target_cat.pronouns else {"subject": "they", "object": "them", "poss": "their", "inposs": "theirs", "self": "themself", "conju": 1}
+                subtle_texts = [
+                    f"{target_cat.name} comes home with new injuries but won't explain how {pronoun_dict['subject']} got {pronoun_dict['object']}.",
+                    f"{target_cat.name} returns with wounds that don't match any known patrol route.",
+                    f"{target_cat.name} is found hurt and confused, but refuses to say what happened."
+                ]
+                text = random.choice(subtle_texts)
+                injury = random.choice(["claw-wound", "sprain", "sore"])
+                target_cat.get_injured(injury)
+        
+        print(f"[SELF-HARM] Adding event for {target_cat.name} - {text[:50]}...")
+        game.cur_events_list.insert(0, Single_Event(text, ["birth_death"] if death else ["health"], target_cat.ID))
+        print(f"[SELF-HARM] Event added. Total events: {len(game.cur_events_list)}")
 
 
 events_class = Events()

@@ -376,7 +376,7 @@ class Pregnancy_Events:
 
         kits = Pregnancy_Events.get_kits(kits_amount, cat, other_cat, clan)
         if not kits:
-            print(f"[WARN] No kits were created for pregnancy event involving {cat.name}{' and ' + other_cat.name if other_cat else ''}.")
+            print(f"[WARN] No kits were created for pregnancy event involving {cat.name}{' and ' + str(other_cat.name) if other_cat else ''}.")
             del clan.pregnancy_data[cat.ID]
             return
         kits_amount = len(kits)

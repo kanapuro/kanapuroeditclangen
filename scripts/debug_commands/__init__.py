@@ -18,7 +18,7 @@ commandList: List[Command] = [
     CatsCommand(),
     ReturnCatCommand(),
     LocationCommand(),
-    ClansCommand()
+    ClansCommand(),
 ]
 
 helpCommand = HelpCommand(commandList)

@@ -1002,7 +1002,7 @@ class GenerateEvents:
                         if "affected" in event.m_c and event.m_c["affected"] is True:
                             if cat.faith < 0:
                                 event.weight -= round(event.weight / 3)
-                    if event.r_c:
+                    if event.r_c and random_cat:
                         if "affected" in event.m_c and event.m_c["affected"] is True:
                             if random_cat.faith < 0:
                                 event.weight -= round(event.weight / 3)
@@ -1011,7 +1011,7 @@ class GenerateEvents:
                         if "affected" in event.m_c and event.m_c["affected"] is True:
                             if cat.faith > 0:
                                 event.weight -= round(event.weight / 3)
-                    if event.r_c:
+                    if event.r_c and random_cat:
                         if "affected" in event.m_c and event.m_c["affected"] is True:
                             if random_cat.faith > 0:
                                 event.weight -= round(event.weight / 3)
@@ -1023,7 +1023,7 @@ class GenerateEvents:
                                 cat.faith < 2
                                 ):
                                 event.weight -= round(event.weight / 3)
-                    if event.r_c:
+                    if event.r_c and random_cat:
                         if "affected" in event.m_c and event.m_c["affected"] is True:
                             if (
                                 random_cat.faith > 2 or
