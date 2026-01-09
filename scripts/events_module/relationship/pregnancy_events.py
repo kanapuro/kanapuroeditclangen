@@ -960,7 +960,6 @@ class Pregnancy_Events:
             while kit.name.prefix in [kitty.name.prefix for kitty in all_kitten]:
                 kit.name = Name(cat=kit)
 
-            all_kitten.append(kit)
             # adoptive parents are set at the end, when everything else is decided
 
             # remove scars
@@ -979,6 +978,17 @@ class Pregnancy_Events:
                     elif kit.permanent_condition[condition] == "born without a tail":
                         kit.pelt.scars.append("NOTAIL")
                 Condition_Events.handle_already_disabled(kit)
+
+            # Check for kitten mortality if realistic litters is enabled
+            if realistic_litters and clan:
+                kit_survives = Pregnancy_Events.check_kit_mortality(kit, cat, clan)
+                if not kit_survives:
+                    # Record this as a stillborn/neonatal death for event purposes
+                    stillborn_kits.append(True)
+                    continue  # Don't add this kit to the clan
+            
+            # Only add to all_kitten if kit survived mortality check
+            all_kitten.append(kit)
 
             # create and update relationships
             for cat_id in clan.clan_cats:
@@ -1017,14 +1027,6 @@ class Pregnancy_Events:
             # kit.pelt.accessory = None
             kit.pelt.accessories = []
             kit.pelt.inventory = []
-            
-            # Check for kitten mortality if realistic litters is enabled
-            if realistic_litters and clan:
-                kit_survives = Pregnancy_Events.check_kit_mortality(kit, cat, clan)
-                if not kit_survives:
-                    # Record this as a stillborn/neonatal death for event purposes
-                    stillborn_kits.append(True)
-                    continue  # Don't add this kit to the clan
             
             clan.add_cat(kit)
 
