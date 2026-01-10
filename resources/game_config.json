@@ -193,11 +193,11 @@
 		"twelve_kit_modded": {"young adult": 2, "adult": 1, "senior adult": 1, "senior": 1},
 		"max_kit_modded": {"young adult": 1, "adult": 1, "senior adult": 1, "senior": 1},
 		"stillborn_chances": {
-			"small": 0.05,
-			"three": 0.15,
-			"mid": 0.25,
-			"big": 0.35,
-			"large": 0.45
+			"small": 0.02,
+			"three": 0.08,
+			"mid": 0.12,
+			"big": 0.18,
+			"large": 0.25
 		},
 		"post_birth_mortality": {
 			"no_queen": 0.25,
