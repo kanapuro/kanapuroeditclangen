@@ -1804,7 +1804,7 @@ class Events:
                         cat.ID,
                     )
                 )
-                cat.status_change("mediator")
+                cat.status_change("mediator apprentice")
         if game.clan.clan_settings['become_med']:
             # Note: These chances are large since it triggers every moon.
             # Checking every moon has the effect giving older cats more chances to become a mediator
@@ -1817,7 +1817,7 @@ class Events:
                         f"and commune with StarClan. A meeting is called, and they "
                         f"become the Clan's newest medicine cat. ", "ceremony",
                         cat.ID))
-                cat.status_change("medicine cat")
+                cat.status_change("medicine cat apprentice")
         if game.clan.clan_settings['become_queen']:
             # Note: These chances are large since it triggers every moon.
             # Checking every moon has the effect giving older cats more chances to become a mediator

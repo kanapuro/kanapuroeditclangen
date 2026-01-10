@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Cats now automatically swap to the apprentice forms of medicine cats and mediators when the settings are enabled!
 - Pregnancy events now show all kits born rather than kits survived. (Ie. 3/5 kits survive, previously showed 3, now shows 5 with follow up message explaining 2 stillbirths.)
 - Pregnancy system fixes + FOR REALISTIC LITTER SETTING ONLY - increase kitten mortality rate without queens, and reduce it with queens + stillbirthing & post-birth mortality logic.
 - Fixed a faith-related crash that occured when spamming the moonskip button, as well as crash related to strings in pregnancy/kitting.
