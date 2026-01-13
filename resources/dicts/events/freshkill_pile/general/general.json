@@ -7,7 +7,7 @@
             "Leaf-bare",
             "reduce_half"
         ],
-        "event_text": "The Clan worked hard to gather plenty of fresh-kill, but woke up to find pawprints leading away from the fresh-kill pile, and missing prey.",
+        "event_text": "The colony worked hard to gather plenty of fresh-kill, but woke up to find pawprints leading away from the fresh-kill pile, and missing prey.",
         "history_text": [
             null,
             null
@@ -26,7 +26,7 @@
             "death",
             "reduce_half"
         ],
-        "event_text": "m_c woke up in the middle of the night to a strange noise. No one else was awake, or so {PRONOUN/m_c/subject} thought, until seeing someone at the fresh-kill pile. Before m_c could realize {PRONOUN/m_c/poss} mistake, sharp canine teeth were at {PRONOUN/m_c/poss} throat, ensuring the Clan wakes up to find {PRONOUN/m_c/poss} nest empty, and the prey gone.",
+        "event_text": "m_c woke up in the middle of the night to a strange noise. No one else was awake, or so {PRONOUN/m_c/subject} thought, until seeing someone at the fresh-kill pile. Before m_c could realize {PRONOUN/m_c/poss} mistake, sharp canine teeth were at {PRONOUN/m_c/poss} throat, ensuring the colony wakes up to find {PRONOUN/m_c/poss} nest empty, and the prey gone.",
         "history_text": [
             "m_c was killed by a fox that snuck into camp.",
             "{VERB/m_c/were/was} killed by a fox that snuck into camp"

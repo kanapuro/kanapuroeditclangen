@@ -3322,7 +3322,7 @@
             "any"
         ],
         "weight": 20,
-        "event_text": "m_c was injured after a fight with a Clanmate that r_c encouraged.",
+        "event_text": "m_c was injured after a fight with a companion that r_c encouraged.",
         "m_c": {
             "age": [
                 "adolescent",
@@ -3377,8 +3377,8 @@
                 "cats": [
                     "m_c"
                 ],
-                "scar": "m_c was scarred by a Clanmate that r_c encouraged {PRONOUN/m_c/object} to fight.",
-                "reg_death": "m_c died from {PRONOUN/m_c/poss} wounds after a fight with a Clanmate that r_c encouraged."
+                "scar": "m_c was scarred by a companion that r_c encouraged {PRONOUN/m_c/object} to fight.",
+                "reg_death": "m_c died from {PRONOUN/m_c/poss} wounds after a fight with a companion that r_c encouraged."
             }
         ],
         "relationships": [
@@ -6732,7 +6732,7 @@
             "any"
         ],
         "weight": 20,
-        "event_text": "m_c caught a cat from another Clan trespassing on their territory and {PRONOUN/m_c/poss} ear was torn in the ensuing scuffle.",
+        "event_text": "m_c caught a cat from another colony trespassing on their territory and {PRONOUN/m_c/poss} ear was torn in the ensuing scuffle.",
         "m_c": {
             "age": [
                 "any"

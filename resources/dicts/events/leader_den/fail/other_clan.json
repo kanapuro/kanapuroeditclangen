@@ -409,7 +409,7 @@
   },
   {
     "interaction_type": "praise",
-    "event_text": "At the Gathering, o_c_n's leader sorrowfully announces the death of a Clanmate. m_c reminds them to chin up, they'll see the Clanmate again in StarClan someday! o_c_n's leader doesn't take this well.",
+    "event_text": "At the Gathering, o_c_n's leader sorrowfully announces the death of a companion. m_c reminds them to chin up, they'll see the companion again in StarClan someday! o_c_n's leader doesn't take this well.",
     "rel_change": -2,
     "m_c": {
       "skill": ["STAR,1"],
@@ -432,7 +432,7 @@
   },
   {
     "interaction_type": "praise",
-    "event_text": "At the Gathering, m_c compliments o_c_n's leader on how wibblish-wobblish and crungly their Clan seems these days. o_c_n's leader's eyes narrow in suspicion. Is m_c making fun of them?",
+    "event_text": "At the Gathering, m_c compliments o_c_n's leader on how wibblish-wobblish and crungly their colony seems these days. o_c_n's leader's eyes narrow in suspicion. Is m_c making fun of them?",
     "rel_change": -1,
     "m_c": {
       "trait": [
@@ -560,7 +560,7 @@
   },
   {
     "interaction_type": "praise",
-    "event_text": "When m_c reaches the meeting place with {PRONOUN/m_c/poss} Gathering patrol, {PRONOUN/m_c/subject} {VERB/m_c/discover/discovers} o_c_n isn't present. Rumors on the border tell of a greencough outbreak. m_c worries about the Clan's ally, especially when {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} missed this chance to strengthen the relationship.",
+    "event_text": "When m_c reaches the meeting place with {PRONOUN/m_c/poss} Gathering patrol, {PRONOUN/m_c/subject} {VERB/m_c/discover/discovers} o_c_n isn't present. Rumors on the border tell of a greencough outbreak. m_c worries about the colony's ally, especially when {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} missed this chance to strengthen the relationship.",
     "rel_change": 0,
     "m_c": {},
     "player_clan_temper": [
@@ -694,7 +694,7 @@
   },
   {
     "interaction_type": "praise",
-    "event_text": "At the Gathering, m_c suggests a friendly competition of hunting and sparring between o_c_n and c_n to take place during the next half-moon. o_c_n's leader declines, saying some Clans prioritize border safety and feeding the Clan over silly apprentice games.",
+    "event_text": "At the Gathering, m_c suggests a friendly competition of hunting and sparring between o_c_n and c_n to take place during the next half-moon. o_c_n's leader declines, saying some colonies prioritize border safety and feeding the colony over silly apprentice games.",
     "rel_change": -2,
     "m_c": {
       "trait": [
@@ -831,7 +831,7 @@
   },
   {
     "interaction_type": "provoke",
-    "event_text": "At the Gathering, m_c implies o_c_n is full of warmongering fox-hearts. o_c_n's leader puffs up with pride, agreeing that their Clan is one of the strongest in the forest.",
+    "event_text": "At the Gathering, m_c implies o_c_n is full of warmongering fox-hearts. o_c_n's leader puffs up with pride, agreeing that their colony is one of the strongest in the lands.",
     "rel_change": 1,
     "m_c": {},
     "player_clan_temper": [
@@ -921,7 +921,7 @@
   },
   {
     "interaction_type": "provoke",
-    "event_text": "m_c spends the whole Gathering remarking on o_c_n's recent shortcomings. o_c_n's leader sheepishly agrees they could be doing more to control their rowdy apprentices and alert fellow Clans to threats on the border.",
+    "event_text": "m_c spends the whole Gathering remarking on o_c_n's recent shortcomings. o_c_n's leader sheepishly agrees they could be doing more to control their rowdy apprentices and alert fellow colonies to threats on the border.",
     "rel_change": 0,
     "m_c": {},
     "player_clan_temper": [
@@ -1076,7 +1076,7 @@
   },
   {
     "interaction_type": "provoke",
-    "event_text": "During the Gathering, m_c repeatedly threatens o_c_n and its leader. o_c_n's leader is unimpressed and cracks jokes during their speech about how m_c is full of hot air and stirs up trouble like a bored kit. The other Clans laugh along at c_n's expense.",
+    "event_text": "During the Gathering, m_c repeatedly threatens o_c_n and its leader. o_c_n's leader is unimpressed and cracks jokes during their speech about how m_c is full of hot air and stirs up trouble like a bored kit. The other colonies laugh along at c_n's expense.",
     "rel_change": 0,
     "m_c": {
       "trait": [
@@ -1157,7 +1157,7 @@
   },
   {
     "interaction_type": "befriend",
-    "event_text": "During the Gathering, m_c tells a long, meandering story about inter-Clan friendship and alliances. o_c_n's leader yawns in the middle of it.",
+    "event_text": "During the Gathering, m_c tells a long, meandering story about inter-colony friendship and alliances. o_c_n's leader yawns in the middle of it.",
     "rel_change": 0,
     "m_c": {
       "trait": [
@@ -1207,7 +1207,7 @@
   },
   {
     "interaction_type": "befriend",
-    "event_text": "At the Gathering, o_c_n's leader discusses a complex problem their Clan faces. m_c offers a very simple solution, and o_c_n's leader is insulted m_c assumed they hadn't thought of that already.",
+    "event_text": "At the Gathering, o_c_n's leader discusses a complex problem their colony faces. m_c offers a very simple solution, and o_c_n's leader is insulted m_c assumed they hadn't thought of that already.",
     "rel_change": -3,
     "m_c": {
       "trait": [ "childish" ]
@@ -1250,7 +1250,7 @@
   },
   {
     "interaction_type": "befriend",
-    "event_text": "At the Gathering, m_c warns o_c_n's leader that {PRONOUN/m_c/subject} had a glimpse of the coming moons, and o_c_n may be headed for conflict with another Clan. o_c_n's leader interprets this as a threat, not an offer of allyship.",
+    "event_text": "At the Gathering, m_c warns o_c_n's leader that {PRONOUN/m_c/subject} had a glimpse of the coming moons, and o_c_n may be headed for conflict with another colony. o_c_n's leader interprets this as a threat, not an offer of allyship.",
     "rel_change": -4,
     "m_c": {
       "trait": [
@@ -1681,7 +1681,7 @@
   },
   {
     "interaction_type": "befriend",
-    "event_text": "During the Gathering, m_c proposes a friendship between o_c_n and c_n, describing a beautiful future for their Clans where no cat goes hungry and half-Clan families might thrive. o_c_n's leader replies that though o_c_n may be an easy-going Clan, even they know life isn't all mice and moonlight'",
+    "event_text": "During the Gathering, m_c proposes a friendship between o_c_n and c_n, describing a beautiful future for their colonies where no cat goes hungry and half-colony families might thrive. o_c_n's leader replies that though o_c_n may be an easy-going colony, even they know life isn't all mice and moonlight'",
     "rel_change": -1,
     "m_c": {},
     "player_clan_temper": [
@@ -1816,7 +1816,7 @@
   },
   {
     "interaction_type": "antagonize",
-    "event_text": "Neither o_c_n's leader nor m_c gets much of a chance to speak at the Gathering; another Clan's leader just won't shut up. They end up exchanging commiserating looks, and m_c never gets a chance to use all the insults {PRONOUN/m_c/subject} prepared.",
+    "event_text": "Neither o_c_n's leader nor m_c gets much of a chance to speak at the Gathering; another colony's leader just won't shut up. They end up exchanging commiserating looks, and m_c never gets a chance to use all the insults {PRONOUN/m_c/subject} prepared.",
     "rel_change": 0,
     "m_c": {},
     "player_clan_temper": [
@@ -1852,7 +1852,7 @@
   },
   {
     "interaction_type": "antagonize",
-    "event_text": "At the Gathering, m_c fabricates an accusation of o_c_n stealing prey from c_n. o_c_n's leader is more baffled than anything - with all the bad blood between their Clans, why did m_c feel the need to invent slights?",
+    "event_text": "At the Gathering, m_c fabricates an accusation of o_c_n stealing prey from c_n. o_c_n's leader is more baffled than anything - with all the bad blood between their colonies, why did m_c feel the need to invent slights?",
     "rel_change": 0,
     "m_c": {},
     "player_clan_temper": [
@@ -1864,7 +1864,7 @@
   },
   {
     "interaction_type": "antagonize",
-    "event_text": "During the Gathering, m_c's brilliant, cutting insults are drowned out by o_c_n's leader picking a fight with a whole other Clan. m_c is disappointed. {PRONOUN/m_c/subject/CAP} thought <i>c_n</i> was o_c_n's nemesis.",
+    "event_text": "During the Gathering, m_c's brilliant, cutting insults are drowned out by o_c_n's leader picking a fight with a whole other colony. m_c is disappointed. {PRONOUN/m_c/subject/CAP} thought <i>c_n</i> was o_c_n's nemesis.",
     "rel_change": 0,
     "m_c": {},
     "player_clan_temper": [
@@ -1912,7 +1912,7 @@
   },
   {
     "interaction_type": "antagonize",
-    "event_text": "No matter how much m_c berates and disrespects o_c_n, it seems Clan relations just can't get worse at the moment...",
+    "event_text": "No matter how much m_c berates and disrespects o_c_n, it seems colony relations just can't get worse at the moment...",
     "rel_change": 0,
     "m_c": {},
     "player_clan_temper": [
@@ -1969,7 +1969,7 @@
   },
   {
     "interaction_type": "antagonize",
-    "event_text": "Apparently insults are quite Clan-specific. m_c launches {PRONOUN/m_c/poss} sickest burn at o_c_n's leader during the Gathering, who blinks back in total confusion. {PRONOUN/m_c/subject/CAP} {VERB/m_c/have/has} to explain that o_c_n just got totally burned.",
+    "event_text": "Apparently insults are quite colony-specific. m_c launches {PRONOUN/m_c/poss} sickest burn at o_c_n's leader during the Gathering, who blinks back in total confusion. {PRONOUN/m_c/subject/CAP} {VERB/m_c/have/has} to explain that o_c_n just got totally burned.",
     "rel_change": 0,
     "m_c": {
       "trait": [
@@ -2069,7 +2069,7 @@
   },
   {
     "interaction_type": "appease",
-    "event_text": "During the Gathering, m_c awkwardly compliments o_c_n's strength in a recent border skirmish between their Clans. o_c_n's leader unsheathes their claws and promises {PRONOUN/m_c/subject} {VERB/m_c/has/have}n't seen anything yet.",
+    "event_text": "During the Gathering, m_c awkwardly compliments o_c_n's strength in a recent border skirmish between their colonies. o_c_n's leader unsheathes their claws and promises {PRONOUN/m_c/subject} {VERB/m_c/has/have}n't seen anything yet.",
     "rel_change": -1,
     "m_c": {},
     "player_clan_temper": [
@@ -2081,7 +2081,7 @@
   },
   {
     "interaction_type": "appease",
-    "event_text": "At the Gathering, m_c offers a few tepid compliments to o_c_n's leader, who snorts. {VERB/m_c/Do/Does} {PRONOUN/m_c/subject} really think these feeble words will close up the wound gaping between their Clans?",
+    "event_text": "At the Gathering, m_c offers a few tepid compliments to o_c_n's leader, who snorts. {VERB/m_c/Do/Does} {PRONOUN/m_c/subject} really think these feeble words will close up the wound gaping between their colonies?",
     "rel_change": 0,
     "m_c": {},
     "player_clan_temper": [
@@ -2226,7 +2226,7 @@
   },
   {
     "interaction_type": "appease",
-    "event_text": "m_c makes an appeal to o_c_n at the Gathering, convincing them that peace would benefit both Clans. o_c_n's leader hisses that they wouldn't trust {PRONOUN/m_c/object} as far as they could throw {PRONOUN/m_c/object}.",
+    "event_text": "m_c makes an appeal to o_c_n at the Gathering, convincing them that peace would benefit both colonies. o_c_n's leader hisses that they wouldn't trust {PRONOUN/m_c/object} as far as they could throw {PRONOUN/m_c/object}.",
     "rel_change": -1,
     "m_c": {
       "trait": [
@@ -2345,7 +2345,7 @@
   },
   {
     "interaction_type": "appease",
-    "event_text": "o_c_n's leader seems startled at the appearance of m_c leading a Clan. They peer sideways at m_c throughout the Gathering, but otherwise ignore {PRONOUN/m_c/object}.",
+    "event_text": "o_c_n's leader seems startled at the appearance of m_c leading a colony. They peer sideways at m_c throughout the Gathering, but otherwise ignore {PRONOUN/m_c/object}.",
     "rel_change": 0,
     "m_c": {
       "status": [
@@ -2438,7 +2438,7 @@
   },
   {
     "interaction_type": "appease",
-    "event_text": "The leader of o_c_n laughs at the sight of c_n being led by m_c. The cat makes a comment on how piteous m_c's clan must be, to have an apprentice leading them, and sneers that they'll soon have succeeded at wiping c_n out.",
+    "event_text": "The leader of o_c_n laughs at the sight of c_n being led by m_c. The cat makes a comment on how piteous m_c's colony must be, to have an apprentice leading them, and sneers that they'll soon have succeeded at wiping c_n out.",
     "rel_change": -1,
     "m_c": {
       "status": [
@@ -2457,7 +2457,7 @@
   },
   {
     "interaction_type": "appease",
-    "event_text": "When c_n arrives at the Gathering and m_c takes {PRONOUN/m_c/poss} place with the Clan leaders, o_c_n's leader gasps and inquires as to what happened to leave <i>m_c</i> as the only option to lead, the <i>poor dear</i>. Their words are sickly sweet; m_c finds {PRONOUN/m_c/self} unable to control the following narrative o_c_n spins. c_n is no better off at the end of it.",
+    "event_text": "When c_n arrives at the Gathering and m_c takes {PRONOUN/m_c/poss} place with the colony leaders, o_c_n's leader gasps and inquires as to what happened to leave <i>m_c</i> as the only option to lead, the <i>poor dear</i>. Their words are sickly sweet; m_c finds {PRONOUN/m_c/self} unable to control the following narrative o_c_n spins. c_n is no better off at the end of it.",
     "rel_change": 0,
     "m_c": {
       "status": [
@@ -2475,7 +2475,7 @@
   },
   {
     "interaction_type": "appease",
-    "event_text": "When m_c joins the Clan leaders at the Gathering, o_c_n's leader starts throwing nervous glances at the other leaders. No one else comments on the apprentice, though, despite the air of awkwardness. o_c_n's leader avoids m_c for the rest of the Gathering.",
+    "event_text": "When m_c joins the colony leaders at the Gathering, o_c_n's leader starts throwing nervous glances at the other leaders. No one else comments on the apprentice, though, despite the air of awkwardness. o_c_n's leader avoids m_c for the rest of the Gathering.",
     "rel_change": 0,
     "m_c": {
       "status": [

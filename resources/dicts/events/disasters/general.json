@@ -33,7 +33,7 @@
         "conclusion_events": [
             "Unable to stand the thirst anymore, a weak r_w stumbles to the river, knowing of the sickness that they might have to battle because of it. They take a sip, and are surprised when they taste and smell cool, fresh water. They look down through the clear river, finally able to see the pebbles on the bottom again. Rejuvenated, r_w takes a few gracious gulps before sprinting back to camp with the good news. The river is clean!",
             "The foul scent from the river has begun to fade, until one day, it seems to be completely gone. A border patrol visits the site of the pollution, and are elated to find it completely clear! Twoleg paw prints are evident in the mud. It seems that they've finally done something right!",
-            "The Clan has been closely monitoring the state of the river. Finally, lead_name has announced that the contamination is gone, and the water is once more safe to drink. Thirsty warriors rush to the camp entrance, clearing the medicine den of their moss stores, to fetch water for the ill."
+            "The colony has been closely monitoring the state of the river. Finally, lead_name has announced that the contamination is gone, and the water is once more safe to drink. Thirsty warriors rush to the camp entrance, clearing the medicine den of their moss stores, to fetch water for the ill."
         ],
         "collateral_damage": {}
     },
@@ -52,12 +52,12 @@
         "trigger_events": [
             "The first few flakes of snow drift down delicately in the yellowish light, some of the younger cats of c_n chasing them down playfully. Within a day, no cat can see past their whiskers and the territory blanketed in a blizzard.",
             "The snow is falling heavily this leaf-bare, thought cats are oblivious to the incoming danger as they play in the blanket of white flakes.",
-            "Leaf-bare is harsh, just like any other year. However, this time c_n strangely struggles with the never-ending flow of white flakes. Worry spreads through the Clan as they wonder how they'll keep themselves warm."
+            "Leaf-bare is harsh, just like any other year. However, this time c_n strangely struggles with the never-ending flow of white flakes. Worry spreads through the colony as they wonder how they'll keep themselves warm."
         ],
         "progress_events": {
             "moon1": [
                 "The snow doesn't seem to have an end to it. The nights and days have the same dreary shade of white. All c_n can do is dig themselves out of their nests each morning.",
-                "Cats make a collective effort to try to push the snow away from the Clan, but the snow is falling too quickly for anything to get done, despite their efforts.",
+                "Cats make a collective effort to try to push the snow away from the colony, but the snow is falling too quickly for anything to get done, despite their efforts.",
                 "The snow falls and falls and falls... In no time, everything is covered in a thick blanket of cold snow. Cats try their best to keep the dens cleared, yet it feels hopeless as the snow just keeps piling."
             ],
             "moon2": [
@@ -77,7 +77,7 @@
                 "chance": 5,
                 "trigger_events": [
                     "The snow has hidden all plants and trails, everything that c_n has relied on. Herbs, favorite moss gathering spots, best cobweb collections, all of it has been obliterated by white, icy flakes.",
-                    "Everything the clan has relied on has been vanquished by the never-ending snow. Medicine cats panic as herb supplies run dangerously low."
+                    "Everything the colony has relied on has been vanquished by the never-ending snow. Medicine cats panic as herb supplies run dangerously low."
                 ]
             },
             "Famine": {
@@ -128,19 +128,19 @@
         "rarity": "uncommon",
         "trigger_events": [
             "The air has sharper claws than any enemy warrior. Even the rising sun cannot make it gentler, only causing the new frozen land to glitter in grim beauty. A terrible cold has come, and sickness will soon follow.",
-            "It hurts to breathe, the cold air like daggers in their lungs. The Clan hunkers down in their dens, curling tightly around each other in shivering piles. This terrible cold will pass, they tell each other, it won't be for forever.",
+            "It hurts to breathe, the cold air like daggers in their lungs. The colony hunkers down in their dens, curling tightly around each other in shivering piles. This terrible cold will pass, they tell each other, it won't be for forever.",
             "The land is crying. lead_name's fur spikes with alarm, trying to keep calm and prevent panic as the terrible cold makes the trees creak and crack."
         ],
         "progress_events": {
             "moon1": [
                 "The younger cats have forgotten the warmth of greenleaf, some believe that they may never get warm again, and the older cats suffer the cold even more because of their memory of hot days. Both young and old curl around each other for warmth, and hope, despite the chill of these long nights.",
-                "It feels never ending, the cold. The wind doesn't even dare disturb it, the air so still it feels as though it could cut. Noses are covered by tails and paws are tucked tightly away as the Clan does all they can to avoid freezing.",
+                "It feels never ending, the cold. The wind doesn't even dare disturb it, the air so still it feels as though it could cut. Noses are covered by tails and paws are tucked tightly away as the colony does all they can to avoid freezing.",
                 "Whispers are beginning to spread through camp, rumors of what they might have done for the stars to turn their backs and freeze c_n into never ending stillness."
             ]
         },
         "conclusion_events": [
             "The sun rises one day, rainbow shards of ice glinting on the ground like so many days before, but as the day goes on... They melt and turn to mud. While everycat soon gets dirty, the sunlight feels so good on everycat's fur, no one can complain too much through their purrs.",
-            "When the Clan steps from their dens and finds the world no longer freezing, they're almost shocked by the change. It had been so cold for so long, they'd forgotten warmth's embrace.",
+            "When the colony steps from their dens and finds the world no longer freezing, they're almost shocked by the change. It had been so cold for so long, they'd forgotten warmth's embrace.",
             "As the cold loses its grip on their throats, the forest of c_n weeps with relief, trees oozing sap from their damaged trunks."
         ],
         "secondary_disasters": [],
@@ -180,12 +180,12 @@
         "progress_events": {
             "moon1": [
                 "There's something wrong with the prey in the territory. No matter how hard the warriors try to catch healthy prey, the fresh-kill still causes bellyaches or worse, and anything that smells even a little wrong is taken away and buried, far, far away from hungry mouths.",
-                "The warriors report back from their hunts without prey to feed the Clan. They state the animals they find were sick, and in some cases, already deceased. lead_name shakes {PRONOUN/lead_name/poss} head and glances to the ever lowering fresh-kill pile, worried about the Clan's survival.",
-                "The warriors rarely are able to bring animals of bigger sizes to the Clan. When they find one already deceased in the territory, they take the opportunity and drag the animal back to camp. However, the smell of smoke and sickness settle in the Clan's senses. The warriors big catch soon becomes buried far, far away."
+                "The warriors report back from their hunts without prey to feed the colony. They state the animals they find were sick, and in some cases, already deceased. lead_name shakes {PRONOUN/lead_name/poss} head and glances to the ever lowering fresh-kill pile, worried about the colony's survival.",
+                "The warriors rarely are able to bring animals of bigger sizes to the colony. When they find one already deceased in the territory, they take the opportunity and drag the animal back to camp. However, the smell of smoke and sickness settle in the colony's senses. The warriors big catch soon becomes buried far, far away."
             ]
         },
         "conclusion_events": [
-            "Fresh-kill tastes a little better, a little brighter, like it's cleaner. While the Clan might be a little thinner than they used to be, it seems as if they can now eat anything they catch again - if they can catch it!",
+            "Fresh-kill tastes a little better, a little brighter, like it's cleaner. While the colony might be a little thinner than they used to be, it seems as if they can now eat anything they catch again - if they can catch it!",
             "The Twolegs have moved on from their claim and c_n can rest a little easier knowing the foul beasts and their booming objects are gone. And on the plus side, the prey smells cleaner!"
         ],
         "secondary_disasters": [],
@@ -222,20 +222,20 @@
         "trigger_events": [],
         "progress_events": {
             "moon1": [
-                "The Clan hunts and scrounges for any hint of possible food, but they never seem to find enough.",
-                "As famine hunts the Clan, none of their own hunts seem enough to drive it from haunting their paws.",
-                "Everycat in the Clan seems a little sadder, a little more serious as the situation dawns on them all. They have to try find more prey, before it becomes too late."
+                "The colony hunts and scrounges for any hint of possible food, but they never seem to find enough.",
+                "As famine hunts the colony, none of their own hunts seem enough to drive it from haunting their paws.",
+                "Everycat in the colony seems a little sadder, a little more serious as the situation dawns on them all. They have to try find more prey, before it becomes too late."
             ],
             "moon2": [
-                "c_n has started wandering past their borders to find prey. While it might not be as much as they hoped for, any catch is considered a blessing from the stars, even if some prey might smell like a rival Clan. No questions are asked if it means not going hungry.",
-                "Every scrap, everycatch, every piece brought back to the Clan, it all carries such weight. With prey so scarce, every mouthful is critical.",
-                "Never before has the whispered prayers to the stars over everycatch seemed so heartful. All the cats of Clan can do with hunger dogging their pawsteps is their best. The rest is in the paws of the stars."
+                "c_n has started wandering past their borders to find prey. While it might not be as much as they hoped for, any catch is considered a blessing from the stars, even if some prey might smell like a rival colony. No questions are asked if it means not going hungry.",
+                "Every scrap, everycatch, every piece brought back to the colony, it all carries such weight. With prey so scarce, every mouthful is critical.",
+                "Never before has the whispered prayers to the stars over everycatch seemed so heartful. All the cats of colony can do with hunger dogging their pawsteps is their best. The rest is in the paws of the stars."
             ]
         },
         "conclusion_events": [
             "Prey has returned to the forest, the famine finally over.",
             "Though the prey has started to run well again, some of the warriors still seem to be taking every missed pounce as a claw-wound. It's a hard mindset to recover from.",
-            "The forest is once again humming with life, and slowly the Clan starts too as well, making up for the hard times with jokes and sharing tongues and basking together in the bright sun."
+            "The forest is once again humming with life, and slowly the colony starts too as well, making up for the hard times with jokes and sharing tongues and basking together in the bright sun."
         ],
         "secondary_disasters": [],
         "collateral_damage": {
@@ -399,14 +399,14 @@
             "moon2": [
                 "The drought continues. The cats of c_n pant in the shade, too hot to move, their tongues dry and tacky.",
                 "Not even night brings cool anymore. No cat can sleep through this, the power of the heat removing even the relief of rest.",
-                "lead_name looks out over their Clan, huddled in the meager relief of the shade of their dens. How are they supposed to fight a foe like heat? This drought is wasting away the heart of the forest like a disease.",
+                "lead_name looks out over their colony, huddled in the meager relief of the shade of their dens. How are they supposed to fight a foe like heat? This drought is wasting away the heart of the forest like a disease.",
                 "The heat has been proven unbearable as c_n struggles to find the many creeks and streams that once flowed through the territory. Pleading whispers for a miracle fill the camp as cats drop like flies from exhaustion and lack of water."
             ]
         },
         "conclusion_events": [
             "The cats of c_n turn their faces to the skies, collecting in the clearing at the heart of camp, thrumming with joy as rain washes their pelts sodden and dings off the drought-hardened ground. With water, life returns to c_n.",
             "The shade of the canopy, so often their only protection from the heat haunting their woods, now shelters c_n from a different sky. Rain patters off the ground before them as the cats bow their heads in thanks. StarClan has heard their prayers, and the drought has broken.",
-            "lead_name watches the clouds gather, trembling in anticipation and hope. When the skies open, the ground sucks away the water, as thirsty as the Clan that turns their heads towards the stars and lets the life-giving rain fill their throats."
+            "lead_name watches the clouds gather, trembling in anticipation and hope. When the skies open, the ground sucks away the water, as thirsty as the colony that turns their heads towards the stars and lets the life-giving rain fill their throats."
         ],
         "secondary_disasters": {
             "Barren Land": {
@@ -435,7 +435,7 @@
                 "chance": 0,
                 "trigger_events": [
                     "Deep in the trees, in a dried, dusty bed of leaves, a piece of glass catches the hot sunlight, and the leaf litter begins to smolder. A wildfire is born, hissing and crackling, racing through woods bone dry with the drought to become a towering, unstoppable inferno.",
-                    "As drought stalks c_n, fire follows on its heels. No cat knows how it was born, but the Clan scatters before it, gathering their vulnerable and running, running for their lives as red glowing death hunts them, the woods of their home falling as prey to wildfire's jaws.",
+                    "As drought stalks c_n, fire follows on its heels. No cat knows how it was born, but the colony scatters before it, gathering their vulnerable and running, running for their lives as red glowing death hunts them, the woods of their home falling as prey to wildfire's jaws.",
                     "The smoke reaches c_n first - but fire is hot on its heels. Their territory tinder-dry and dusty, c_n are forced to run before the flames, fleeing to the safety of the last scant water sources within the woods, warriors grabbing and hauling anyone who starts to fall behind."
                 ]
             }

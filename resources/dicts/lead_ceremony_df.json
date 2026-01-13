@@ -63,7 +63,7 @@
       "endurance in the face of hardship",
       "knowing when to fight and when to choose peace",
       "leadership through the darkest times",
-      "loyalty to their Clan",
+      "loyalty to their colony",
       "the strength to overcome their fears",
       "tireless energy"
     ]
@@ -328,7 +328,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c walks up to m_c next, offering a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} a wicked grin, telling m_c that {PRONOUN/m_c/poss} Clan will survive any threat.",
+          "text": "r_c walks up to m_c next, offering a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/give/gives} a wicked grin, telling m_c that {PRONOUN/m_c/poss} colony will survive any threat.",
           "virtue": [
             "bravery",
             "certainty",
@@ -589,7 +589,7 @@
       ],
       "life_giving": [
         {
-          "text": "With a taunting laugh, r_c approaches and gives m_c a life for [virtue]. r_c asks if {PRONOUN/m_c/poss} ambition to lead the Clan was worth the pain, but leaves before m_c could answer.",
+          "text": "With a taunting laugh, r_c approaches and gives m_c a life for [virtue]. r_c asks if {PRONOUN/m_c/poss} ambition to lead the colony was worth the pain, but leaves before m_c could answer.",
           "virtue": [
             "ambition",
             "bravery",
@@ -1150,7 +1150,7 @@
           ]
         },
         {
-          "text": "A sneer crosses r_c's face as {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c. Cruelly pressing {PRONOUN/r_c/poss} nose against the new leader's head, {PRONOUN/r_c/subject} {VERB/r_c/snarl/snarls} out a life for [virtue]. Perhaps that would keep m_c from being too friendly with the other Clans.",
+          "text": "A sneer crosses r_c's face as {PRONOUN/r_c/subject} {VERB/r_c/approach/approaches} m_c. Cruelly pressing {PRONOUN/r_c/poss} nose against the new leader's head, {PRONOUN/r_c/subject} {VERB/r_c/snarl/snarls} out a life for [virtue]. Perhaps that would keep m_c from being too friendly with the other colonies.",
           "virtue": [
             "ambition",
             "bravery",
@@ -1243,7 +1243,7 @@
           ]
         },
         {
-          "text": "r_c whispers sweetly for m_c to deafen {PRONOUN/m_c/self} from the cowardly, cautious cries of {PRONOUN/m_c/poss} Clan as the dark spirit gives a life for [virtue].",
+          "text": "r_c whispers sweetly for m_c to deafen {PRONOUN/m_c/self} from the cowardly, cautious cries of {PRONOUN/m_c/poss} colony as the dark spirit gives a life for [virtue].",
           "virtue": [
             "ambition",
             "bravery",
@@ -1438,7 +1438,7 @@
       ],
       "life_giving": [
         {
-          "text": "Only the strongest could survive being leader according to r_c's ferocious growl. {PRONOUN/r_c/subject/CAP} {VERB/r_c/press/presses} {PRONOUN/r_c/poss} claws against m_c's neck while giving a life for [virtue], encouraging the new leader to become a story to haunt the minds of the other Clan's kits.",
+          "text": "Only the strongest could survive being leader according to r_c's ferocious growl. {PRONOUN/r_c/subject/CAP} {VERB/r_c/press/presses} {PRONOUN/r_c/poss} claws against m_c's neck while giving a life for [virtue], encouraging the new leader to become a story to haunt the minds of the other colony's kits.",
           "virtue": [
             "ambition",
             "bravery",
@@ -1531,7 +1531,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c croons into m_c's ear, whispering about how now {PRONOUN/m_c/subject}'ll be able to prove everycat in the Clan wrong about {PRONOUN/m_c/poss} weak-willed mentality. A dark chuckle escapes r_c's throat as {PRONOUN/r_c/subject} {VERB/r_c/give/gives} {PRONOUN/m_c/subject} a life for [virtue].",
+          "text": "r_c croons into m_c's ear, whispering about how now {PRONOUN/m_c/subject}'ll be able to prove everycat in the colony wrong about {PRONOUN/m_c/poss} weak-willed mentality. A dark chuckle escapes r_c's throat as {PRONOUN/r_c/subject} {VERB/r_c/give/gives} {PRONOUN/m_c/subject} a life for [virtue].",
           "virtue": [
             "ambition",
             "bravery",
@@ -1717,7 +1717,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c walks up to m_c, offering a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/smile/smiles} , and {VERB/r_c/state/states} that the Clan will do well under m_c's leadership.",
+          "text": "r_c walks up to m_c, offering a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/smile/smiles} , and {VERB/r_c/state/states} that the colony will do well under m_c's leadership.",
           "virtue": [
             "ambition",
             "bravery",
@@ -1810,7 +1810,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c presses {PRONOUN/r_c/poss} nose against m_c's forehead, the virtue of [virtue] burning away the leader's previous life. Loyalty to {PRONOUN/m_c/poss} Clan must be absolute, and no weakness can be tolerated.",
+          "text": "r_c presses {PRONOUN/r_c/poss} nose against m_c's forehead, the virtue of [virtue] burning away the leader's previous life. Loyalty to {PRONOUN/m_c/poss} colony must be absolute, and no weakness can be tolerated.",
           "virtue": [
             "ambition",
             "bravery",
@@ -2551,7 +2551,7 @@
           ]
         },
         {
-          "text": "Whispering of a prank to pull on the other Clans, and how it would be SO funny, r_c gives m_c a life for [virtue].",
+          "text": "Whispering of a prank to pull on the other colonies, and how it would be SO funny, r_c gives m_c a life for [virtue].",
           "virtue": [
             "ambition",
             "bravery",
@@ -2596,7 +2596,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c walks up to m_c, offering a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/smile/smiles}, and {VERB/r_c/state/states} that the Clan will do well under m_c's leadership.",
+          "text": "r_c walks up to m_c, offering a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/smile/smiles}, and {VERB/r_c/state/states} that the colony will do well under m_c's leadership.",
           "virtue": [
             "ambition",
             "bravery",
@@ -2755,7 +2755,7 @@
       ],
       "life_giving": [
         {
-          "text": "m_c is the best of the warriors in c_n. The best in the whole Clan entirely. Maybe even the best warrior of all of history! That is what r_c croons into the new leader's ears as the life for [virtue] is given freely.",
+          "text": "m_c is the best of the warriors in c_n. The best in the whole colony entirely. Maybe even the best warrior of all of history! That is what r_c croons into the new leader's ears as the life for [virtue] is given freely.",
           "virtue": [
             "ambition",
             "bravery",
@@ -3106,7 +3106,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c approaches next, a sharp grin on {PRONOUN/r_c/poss} maw. {PRONOUN/r_c/subject/CAP} {VERB/r_c/offer/offers} a life for [virtue], whispering to make sure {PRONOUN/m_c/poss} Clan remains strong. No matter the cost.",
+          "text": "r_c approaches next, a sharp grin on {PRONOUN/r_c/poss} maw. {PRONOUN/r_c/subject/CAP} {VERB/r_c/offer/offers} a life for [virtue], whispering to make sure {PRONOUN/m_c/poss} colony remains strong. No matter the cost.",
           "virtue": [
             "clear sight",
             "devotion",
@@ -3155,7 +3155,7 @@
             "endurance in the face of hardship",
             "knowing when to fight and when to choose to lay in wait",
             "leadership through the darkest times",
-            "loyalty to their Clan",
+            "loyalty to their colony",
             "the strength to overcome their fears",
             "tireless energy"
           ]
@@ -3178,7 +3178,7 @@
             "endurance in the face of hardship",
             "knowing when to fight and when to choose to lay in wait",
             "leadership through the darkest times",
-            "loyalty to their Clan",
+            "loyalty to their colony",
             "the strength to overcome their fears",
             "tireless energy"
           ]
@@ -3201,7 +3201,7 @@
             "endurance in the face of hardship",
             "knowing when to fight and when to choose to lay in wait",
             "leadership through the darkest times",
-            "loyalty to their Clan",
+            "loyalty to their colony",
             "the strength to overcome their fears",
             "tireless energy"
           ]
@@ -3226,7 +3226,7 @@
             "endurance in the face of hardship",
             "knowing when to fight and when to choose to lay in wait",
             "leadership through the darkest times",
-            "loyalty to their Clan",
+            "loyalty to their colony",
             "the strength to overcome their fears",
             "tireless energy"
           ]
@@ -3239,7 +3239,7 @@
       "tags": [],
       "lead_trait": [],
       "text": [
-        "r_c hails m_c by {PRONOUN/m_c/poss} new name, m_c_star, telling {PRONOUN/m_c/object} that {PRONOUN/m_c/poss} old pathetic life is no more. {PRONOUN/m_c/subject/CAP} {VERB/m_c/are/is} granted guardianship of c_n, and {VERB/m_c/are/is} told to use {PRONOUN/m_c/poss} new power however {PRONOUN/m_c/subject} {VERB/m_c/wish/wishes}. The group of shadowy cats yowls m_c_star's name in support. m_c_star wakes up feeling a new strength within {PRONOUN/m_c/poss} body and knows that {PRONOUN/m_c/subject} {VERB/m_c/are/is} now ready to lead the Clan."
+        "r_c hails m_c by {PRONOUN/m_c/poss} new name, m_c_star, telling {PRONOUN/m_c/object} that {PRONOUN/m_c/poss} old pathetic life is no more. {PRONOUN/m_c/subject/CAP} {VERB/m_c/are/is} granted guardianship of c_n, and {VERB/m_c/are/is} told to use {PRONOUN/m_c/poss} new power however {PRONOUN/m_c/subject} {VERB/m_c/wish/wishes}. The group of shadowy cats yowls m_c_star's name in support. m_c_star wakes up feeling a new strength within {PRONOUN/m_c/poss} body and knows that {PRONOUN/m_c/subject} {VERB/m_c/are/is} now ready to lead the colony."
       ]
     },
     "new_clan": {

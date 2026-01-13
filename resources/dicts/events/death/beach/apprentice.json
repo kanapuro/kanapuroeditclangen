@@ -42,7 +42,7 @@
          "other_cat",
          "other_cat_adult"
         ],
-        "death_text": "r_c realizes {PRONOUN/r_c/subject} {VERB/r_c/haven't/hasn't} seen m_c around camp for a few days. Checking {PRONOUN/m_c/subject} favorite spots yields nothing, so r_c decides to go out and search for {PRONOUN/m_c/object} in the Clans' territory. However, r_c could never have expected to find m_c's shriveled-up body, clearly dead for some time now.",
+        "death_text": "r_c realizes {PRONOUN/r_c/subject} {VERB/r_c/haven't/hasn't} seen m_c around camp for a few days. Checking {PRONOUN/m_c/subject} favorite spots yields nothing, so r_c decides to go out and search for {PRONOUN/m_c/object} in the colonies' territory. However, r_c could never have expected to find m_c's shriveled-up body, clearly dead for some time now.",
         "history_text": {
                      "reg_death": "m_c died due to dehydration and heat exhaustion."
                  },

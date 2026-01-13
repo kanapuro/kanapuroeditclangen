@@ -314,7 +314,7 @@
         ],
         "tags": [],
         "weight": 20,
-        "event_text": "r_c realizes {PRONOUN/r_c/subject} {VERB/r_c/haven't/hasn't} seen m_c around camp for a few days. Checking {PRONOUN/m_c/poss} favorite spots yields nothing, so r_c decides to go out and search for {PRONOUN/m_c/object} in the Clan's territory. However, r_c could never have expected to find m_c's shriveled-up body, clearly dead for some time now.",
+        "event_text": "r_c realizes {PRONOUN/r_c/subject} {VERB/r_c/haven't/hasn't} seen m_c around camp for a few days. Checking {PRONOUN/m_c/poss} favorite spots yields nothing, so r_c decides to go out and search for {PRONOUN/m_c/object} in the colony's territory. However, r_c could never have expected to find m_c's shriveled-up body, clearly dead for some time now.",
         "m_c": {
             "age": [
                 "adolescent"
@@ -915,7 +915,7 @@
             "no_body"
         ],
         "weight": 40,
-        "event_text": "Usually m_c is well aware of when the high tide will come in, but today {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} distracted and run ragged with Clan business. Trapped against the cliffs with treacherous waves pulling at {PRONOUN/m_c/poss} paws, the last thing {PRONOUN/m_c/subject} {VERB/m_c/see/sees} is the smug grin of r_c sat high above on the rocks.",
+        "event_text": "Usually m_c is well aware of when the high tide will come in, but today {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} distracted and run ragged with colony business. Trapped against the cliffs with treacherous waves pulling at {PRONOUN/m_c/poss} paws, the last thing {PRONOUN/m_c/subject} {VERB/m_c/see/sees} is the smug grin of r_c sat high above on the rocks.",
         "m_c": {
             "status": [
                 "leader"

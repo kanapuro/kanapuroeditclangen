@@ -63,7 +63,7 @@
       "endurance in the face of hardship",
       "knowing when to fight and when to choose peace",
       "leadership through the darkest times",
-      "loyalty to {PRONOUN/m_c/poss} Clan",
+      "loyalty to {PRONOUN/m_c/poss} colony",
       "the strength to overcome {PRONOUN/m_c/poss} fears",
       "tireless energy"
     ]
@@ -317,7 +317,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c walks up to m_c, offering a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/smile/smiles}, and {VERB/r_c/state/states} that the Clan will do well under m_c's leadership.",
+          "text": "r_c walks up to m_c, offering a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/smile/smiles}, and {VERB/r_c/state/states} that the colony will do well under m_c's leadership.",
           "virtue": [
             "acceptance",
             "bravery",
@@ -857,7 +857,7 @@
           ]
         },
         {
-          "text": "r_c peers at m_c, witnessing the depths of {PRONOUN/m_c/poss} wisdom and calmness, like still waters that run deep. With an approving nod, r_c offers {PRONOUN/m_c/object} a life of [virtue], trusting that m_c will lead the Clan with care.",
+          "text": "r_c peers at m_c, witnessing the depths of {PRONOUN/m_c/poss} wisdom and calmness, like still waters that run deep. With an approving nod, r_c offers {PRONOUN/m_c/object} a life of [virtue], trusting that m_c will lead the colony with care.",
           "virtue": [
             "acceptance",
             "bravery",
@@ -918,7 +918,7 @@
           ]
         },
         {
-          "text": "r_c can't help but wonder if m_c will use {PRONOUN/m_c/poss} charm and popularity to make c_n a better Clan, or for {PRONOUN/m_c/poss} own selfish gain. Regardless, r_c bestows a life for [virtue].",
+          "text": "r_c can't help but wonder if m_c will use {PRONOUN/m_c/poss} charm and popularity to make c_n a better colony, or for {PRONOUN/m_c/poss} own selfish gain. Regardless, r_c bestows a life for [virtue].",
           "virtue": [
             "acceptance",
             "bravery",
@@ -1512,7 +1512,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c walks up to m_c, offering a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/smile/smiles}, and {VERB/r_c/state/states} that the Clan will do well under m_c's leadership.",
+          "text": "r_c walks up to m_c, offering a life for [virtue]. {PRONOUN/r_c/subject/CAP} {VERB/r_c/smile/smiles}, and {VERB/r_c/state/states} that the colony will do well under m_c's leadership.",
           "virtue": [
             "acceptance",
             "bravery",
@@ -1589,7 +1589,7 @@
       ],
       "life_giving": [
         {
-          "text": "m_c's ears perk up as {PRONOUN/m_c/subject} {VERB/m_c/begin/begins} to hear a deep, resonant rumbling. Reciprocating the intense purr, m_c gently bumps heads with r_c, a warrior known for the endless love {PRONOUN/r_c/subject} {VERB/r_c/hold/holds} for {PRONOUN/r_c/poss} Clan. A warm, sweet feeling cascades over m_c as {PRONOUN/m_c/subject} {VERB/m_c/receive/receives} a life for [virtue].",
+          "text": "m_c's ears perk up as {PRONOUN/m_c/subject} {VERB/m_c/begin/begins} to hear a deep, resonant rumbling. Reciprocating the intense purr, m_c gently bumps heads with r_c, a warrior known for the endless love {PRONOUN/r_c/subject} {VERB/r_c/hold/holds} for {PRONOUN/r_c/poss} colony. A warm, sweet feeling cascades over m_c as {PRONOUN/m_c/subject} {VERB/m_c/receive/receives} a life for [virtue].",
           "virtue": [
             "compassion",
             "empathy",
@@ -1723,7 +1723,7 @@
       ],
       "life_giving": [
         {
-          "text": "m_c tries to keep {PRONOUN/m_c/poss} whiskers from trembling as r_c pads forward. r_c looks at {PRONOUN/m_c/object} sympathetically before pressing {PRONOUN/r_c/poss} nose to m_c's head, giving a life for [virtue], and telling {PRONOUN/m_c/object} that {PRONOUN/m_c/poss} Clan needs {PRONOUN/m_c/object} now.",
+          "text": "m_c tries to keep {PRONOUN/m_c/poss} whiskers from trembling as r_c pads forward. r_c looks at {PRONOUN/m_c/object} sympathetically before pressing {PRONOUN/r_c/poss} nose to m_c's head, giving a life for [virtue], and telling {PRONOUN/m_c/object} that {PRONOUN/m_c/poss} colony needs {PRONOUN/m_c/object} now.",
           "virtue": [
             "bravery",
             "certainty",
@@ -2335,7 +2335,7 @@
           ]
         },
         {
-          "text": "Stepping lightly through the mist, r_c stops a limb-length away from m_c. {PRONOUN/r_c/subject/CAP} urges m_c to not poison {PRONOUN/m_c/self} and {PRONOUN/m_c/poss} Clan with petty grudges, and offers a life for [virtue].",
+          "text": "Stepping lightly through the mist, r_c stops a limb-length away from m_c. {PRONOUN/r_c/subject/CAP} urges m_c to not poison {PRONOUN/m_c/self} and {PRONOUN/m_c/poss} colony with petty grudges, and offers a life for [virtue].",
           "virtue": ["acceptance", "certainty", "clear judgement", "confidence", "courage", "determination", "endurance", "sympathy", "farsightedness", "forgiveness", "friendship", "instincts", "mercy", "unity"]
         },
         {
@@ -2437,7 +2437,7 @@
       ],
       "life_giving": [
         {
-          "text": "Puffing out {PRONOUN/r_c/poss} chest, r_c gives m_c a life for [virtue] and dares {PRONOUN/m_c/object} to make c_n an even better Clan than anyone ever could!",
+          "text": "Puffing out {PRONOUN/r_c/poss} chest, r_c gives m_c a life for [virtue] and dares {PRONOUN/m_c/object} to make c_n an even better colony than anyone ever could!",
           "virtue": [
             "acceptance",
             "bravery",
@@ -3210,7 +3210,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c assures m_c that {PRONOUN/m_c/subject} will do well as the leader of the Clan -- as long as they follow their predecessor's lead. r_c grants m_c a life for [virtue].",
+          "text": "r_c assures m_c that {PRONOUN/m_c/subject} will do well as the leader of the colony -- as long as they follow their predecessor's lead. r_c grants m_c a life for [virtue].",
           "virtue": [
             "intelligence",
             "adaptability",
@@ -3482,7 +3482,7 @@
       ],
       "life_giving": [
         {
-          "text": "r_c approaches, a warm smile on {PRONOUN/r_c/poss} face. {PRONOUN/r_c/subject/CAP} {VERB/r_c/offer/offers} a life for [virtue], whispering to take care of the Clan the best {PRONOUN/m_c/subject} can.",
+          "text": "r_c approaches, a warm smile on {PRONOUN/r_c/poss} face. {PRONOUN/r_c/subject/CAP} {VERB/r_c/offer/offers} a life for [virtue], whispering to take care of the colony the best {PRONOUN/m_c/subject} can.",
           "virtue": [
             "clear sight",
             "devotion",
@@ -3533,7 +3533,7 @@
             "endurance in the face of hardship",
             "knowing when to fight and when to choose peace",
             "leadership through the darkest times",
-            "loyalty to {PRONOUN/m_c/poss} Clan",
+            "loyalty to {PRONOUN/m_c/poss} colony",
             "the strength to overcome {PRONOUN/m_c/poss} fears",
             "tireless energy"
           ]
@@ -3556,7 +3556,7 @@
             "endurance in the face of hardship",
             "knowing when to fight and when to choose peace",
             "leadership through the darkest times",
-            "loyalty to {PRONOUN/m_c/poss} Clan",
+            "loyalty to {PRONOUN/m_c/poss} colony",
             "the strength to overcome {PRONOUN/m_c/poss} fears",
             "tireless energy"
           ]
@@ -3579,7 +3579,7 @@
             "endurance in the face of hardship",
             "knowing when to fight and when to choose peace",
             "leadership through the darkest times",
-            "loyalty to {PRONOUN/m_c/poss} Clan",
+            "loyalty to {PRONOUN/m_c/poss} colony",
             "the strength to overcome {PRONOUN/m_c/poss} fears",
             "tireless energy"
           ]
@@ -3604,7 +3604,7 @@
             "endurance in the face of hardship",
             "knowing when to fight and when to choose peace",
             "leadership through the darkest times",
-            "loyalty to {PRONOUN/m_c/poss} Clan",
+            "loyalty to {PRONOUN/m_c/poss} colony",
             "the strength to overcome {PRONOUN/m_c/poss} fears",
             "tireless energy"
           ]
@@ -3870,7 +3870,7 @@
       "rank": [],
       "life_giving": [
         {
-          "text": "r_c pads towards you. You wholeheartedly expect their wrath, but instead, r_c recounts all the things you did together in your shared lifetime, way back when there was still a chance to gain your laughter and understanding. There was that time they covered themself in leaves and pretended to be a bush, or all of the horrible puns they'd recount to you and the rest of the Clan at any given opportunity. r_c doesn't hesitate to offer you a life for [virtue], but asks that you treat it exactly how it should be treated - like the life of any cat. When r_c is finished giving you the life, they uncharacteristically leave without even giving you another look back.",
+          "text": "r_c pads towards you. You wholeheartedly expect their wrath, but instead, r_c recounts all the things you did together in your shared lifetime, way back when there was still a chance to gain your laughter and understanding. There was that time they covered themself in leaves and pretended to be a bush, or all of the horrible puns they'd recount to you and the rest of the colony at any given opportunity. r_c doesn't hesitate to offer you a life for [virtue], but asks that you treat it exactly how it should be treated - like the life of any cat. When r_c is finished giving you the life, they uncharacteristically leave without even giving you another look back.",
           "virtue": [
             "appreciating the small things",
             "giving second chances",
@@ -4136,7 +4136,7 @@
       "tags": [],
       "lead_trait": [],
       "text": [
-        "r_c hails m_c by {PRONOUN/m_c/poss} new name, m_c_star, telling {PRONOUN/m_c/object} that {PRONOUN/m_c/poss} old life is no more. {PRONOUN/m_c/subject/CAP} {VERB/m_c/are/is} granted guardianship of c_n, and {VERB/m_c/are/is} told to use {PRONOUN/m_c/poss} new power wisely. The group of starry cats yowls m_c_star's name in support. m_c_star wakes up feeling a new strength within {PRONOUN/m_c/poss} body and knows that {PRONOUN/m_c/subject} {VERB/m_c/are/is} now ready to lead the Clan."
+        "r_c hails m_c by {PRONOUN/m_c/poss} new name, m_c_star, telling {PRONOUN/m_c/object} that {PRONOUN/m_c/poss} old life is no more. {PRONOUN/m_c/subject/CAP} {VERB/m_c/are/is} granted guardianship of c_n, and {VERB/m_c/are/is} told to use {PRONOUN/m_c/poss} new power wisely. The group of starry cats yowls m_c_star's name in support. m_c_star wakes up feeling a new strength within {PRONOUN/m_c/poss} body and knows that {PRONOUN/m_c/subject} {VERB/m_c/are/is} now ready to lead the colony."
       ]
     },
     "new_clan": {

@@ -56,7 +56,7 @@
         "duration": 4,
         "rarity": "rare",
         "trigger_events": [
-            "Cats gather around the shore as a black liquid seeps into the ocean far in the distance. Worried whispers of the Dark Forest attempting to plague the Clan fill the air, planting seeds of fear.",
+            "Cats gather around the shore as a black liquid seeps into the ocean far in the distance. Worried whispers of the Dark Forest attempting to plague the colony fill the air, planting seeds of fear.",
             "Fish, once a vital source of prey, are washing up ashore. r_c looks upon the sea line, devastated by the unnatural black substance leaking into what was once blue. {PRONOUN/r_c/subject/CAP} {VERB/r_c/rush/rushes} to tell c_n {PRONOUN/r_c/poss} discovery before it's too late."
         ],
         "progress_events": {
@@ -67,7 +67,7 @@
             "moon2": [
                 "Cats are becoming skinnier and quicker to tire due to the loss of a convenient source of fresh-kill. Rumors are spreading that the Dark Forest is punishing c_n for an unknown reason, and the resentment is growing to a concerning amount.",
                 "Thankfully, there is still some opportunities to hunt prey outside of fish, but the new sources of fresh-kill struggle to feed every cat in c_n.",
-                "As the black in the ocean touches the shore, vital herbs wither away with no warning. With the lack of both fresh-kill and herbs, there is slight panic in the Clan as cats wonder how they can survive."
+                "As the black in the ocean touches the shore, vital herbs wither away with no warning. With the lack of both fresh-kill and herbs, there is slight panic in the colony as cats wonder how they can survive."
             ],
             "moon3": [
                 "Twolegs' water-monsters have been spotted in the horizon far more recently lately. The braver cats watch the water-monsters from a safe distance, noticing the black goop in the water has been slowly depleting as the Twolegs come and go.",

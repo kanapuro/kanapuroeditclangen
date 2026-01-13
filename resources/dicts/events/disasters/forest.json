@@ -20,19 +20,19 @@
             "moon1": [
                 "Even the trees look dry. The cats of c_n cart moss between camp and their water source, bringing back vital liquid to their youngest and oldest companions. But there are murmurs of discontented gossip - what will they do if their water dries up?",
                 "The prey that cats bring back to the fresh-kill pile is beginning to look weak. Difficult to say what's taking its toll - the heat, or the difficulty of finding water.",
-                "med_name feels the crunch of leaf litter so dry it shatters under {PRONOUN/med_name/poss} footsteps. {PRONOUN/med_name/subject/CAP} {VERB/med_name/swallow/swallows} {PRONOUN/med_name/poss} concern - drought cannot be fought by the Clan's warriors, but med_name can stock the medicine cat den with remedies against heat stroke and exhaustion."
+                "med_name feels the crunch of leaf litter so dry it shatters under {PRONOUN/med_name/poss} footsteps. {PRONOUN/med_name/subject/CAP} {VERB/med_name/swallow/swallows} {PRONOUN/med_name/poss} concern - drought cannot be fought by the colony's warriors, but med_name can stock the medicine cat den with remedies against heat stroke and exhaustion."
             ],
             "moon2": [
                 "The drought continues. The cats of c_n pant in the shade, too hot to move, their tongues dry and tacky.",
                 "Not even night brings cool anymore. No cat can sleep through this, the power of the heat removing even the relief of rest.",
                 "The forest's many creeks and streams burble no longer. No cat knows if they'll ever return.",
-                "lead_name looks out over {PRONOUN/lead_name/poss} Clan, huddled in the meager relief of the shade of their dens. How are they supposed to fight a foe like heat? This drought is wasting away the heart of the forest like a disease."
+                "lead_name looks out over {PRONOUN/lead_name/poss} colony, huddled in the meager relief of the shade of their dens. How are they supposed to fight a foe like heat? This drought is wasting away the heart of the forest like a disease."
             ]
         },
         "conclusion_events": [
             "The cats of c_n turn their faces to the skies, collecting in the clearing at the heart of camp, thrumming with joy as rain washes their pelts sodden and dings off the drought-hardened ground. With water, life returns to the forest.",
             "The shade of the canopy, so often their only protection from the heat haunting their woods, now shelters c_n from a different sky. Rain patters off the leaves above them as the cats bow their heads in thanks. The stars have heard their prayers, and the drought has broken.",
-            "lead_name watches the clouds gather, trembling in anticipation and hope. When the skies open, the ground sucks away the water, as thirsty as the Clan that turns their heads towards the stars and lets the life-giving rain fill their throats."
+            "lead_name watches the clouds gather, trembling in anticipation and hope. When the skies open, the ground sucks away the water, as thirsty as the colony that turns their heads towards the stars and lets the life-giving rain fill their throats."
         ],
         "secondary_disasters": {
             "Barren Land": {
@@ -61,7 +61,7 @@
                 "chance": 0,
                 "trigger_events": [
                     "Deep in the forest, in a dried, dusty bed of leaves, a piece of glass catches the hot sunlight, and the leaf litter begins to smolder. A wildfire is born, hissing and crackling, racing through woods bone dry with the drought to become a towering, unstoppable inferno.",
-                    "As drought stalks c_n, fire follows on its heels. No cat knows how it was born, but the Clan scatters before it, gathering their vulnerable and running, running for their lives as red glowing death hunts them, the woods of their home falling as prey to wildfire's jaws.",
+                    "As drought stalks c_n, fire follows on its heels. No cat knows how it was born, but the colony scatters before it, gathering their vulnerable and running, running for their lives as red glowing death hunts them, the woods of their home falling as prey to wildfire's jaws.",
                     "The smoke reaches c_n first - but fire is hot on its heels. Their forest tinder-dry and dusty, c_n are forced to run before the flames, fleeing to the safety of the last scant water sources within the woods, warriors grabbing and hauling anyone who starts to fall behind."
                 ]
             }
@@ -102,7 +102,7 @@
         ],
         "progress_events": {
             "moon1": [
-                "In the aftermath of the fire the forest lays still and quiet, but the Clan knows life will find its way back.",
+                "In the aftermath of the fire the forest lays still and quiet, but the colony knows life will find its way back.",
                 "The haze of smoke covers every sight, every smell, every sound. Until it lifts, there'll be no telling what c_n has lost - or what they've saved.",
                 "The ground feels hot underpaw, unnatural and wrong. Streaked with soot, the cats of c_n stare at each other with wide eyes, shocked into silence."
             ],
@@ -143,9 +143,9 @@
                 "triggers_during": "start",
                 "chance": 10,
                 "trigger_events": [
-                    "The fire tore through the camp, destroying the carefully built dens and burning up the fresh-kill and herbs. The Clan must rebuild or move on.",
+                    "The fire tore through the camp, destroying the carefully built dens and burning up the fresh-kill and herbs. The colony must rebuild or move on.",
                     "Standing in camp after the fire burns itself out is devastating. The landscape is unrecognizable, like a skeleton of a familiar friend. Can c_n repair it? Should they even try?",
-                    "What can c_n do, with nothing left? Their home is gone, eaten by the flames, and the Clan wavers with uncertainty. Do they rebuild, or move on?"
+                    "What can c_n do, with nothing left? Their home is gone, eaten by the flames, and the colony wavers with uncertainty. Do they rebuild, or move on?"
                 ]
             },
             "Barren Land": {
@@ -167,7 +167,7 @@
             "deaths": {
                 "death_text": [
                     "During the chaos of the rapidly spreading wildfire, m_c became trapped by a ring of fire, cut off from any escape.",
-                    "The Clan finds desperate claw-marks up a blackened tree, leading up to where m_c was overcome by the blaze.",
+                    "The colony finds desperate claw-marks up a blackened tree, leading up to where m_c was overcome by the blaze.",
                     "The smoke and heat became too much for m_c, who suddenly collapsed and succumbed to the encroaching inferno."
                 ],
                 "history_text": {
@@ -203,7 +203,7 @@
             ]
         },
         "conclusion_events": [
-            "As the days pass, the forest slowly dries more and more. Eventually the mud disappears and the Clan can finally feel clean and safe once more."
+            "As the days pass, the forest slowly dries more and more. Eventually the mud disappears and the colony can finally feel clean and safe once more."
         ],
         "secondary_disasters": {
             "Barren Land": {
@@ -211,7 +211,7 @@
                 "triggers_during": "during",
                 "chance": 1,
                 "trigger_events": [
-                    "The flood rips through the forest and leaves a muddy, dying mess behind it. The herbs the Clan depends upon will be scarce in this aftermath."
+                    "The flood rips through the forest and leaves a muddy, dying mess behind it. The herbs the colony depends upon will be scarce in this aftermath."
                 ]
             },
             "Famine": {
@@ -219,7 +219,7 @@
                 "triggers_during": "during",
                 "chance": 0,
                 "trigger_events": [
-                    "As the Clan tries to find food, they realize that the flood has left no living prey behind. The animals of the forest have either run away or drowned, their floating corpses hardly safe to eat."
+                    "As the colony tries to find food, they realize that the flood has left no living prey behind. The animals of the forest have either run away or drowned, their floating corpses hardly safe to eat."
                 ]
             }
         },
@@ -323,8 +323,8 @@
         "progress_events": {
             "moon1": [
                 "As the herb stores dwindle, reactions are divided. Those who dismiss the healing help of herbs strut, unconcerned, but wiser minds have already begun to worry.",
-                "As herb gathering patrols return, fruitless and exhausted, the Clan starts to track the growth of the forest plants with concern.",
-                "Surely the herbs will resprout soon. Or the Clan will be able to find potency in their roots. Or another Clan will send help. Surely."
+                "As herb gathering patrols return, fruitless and exhausted, the colony starts to track the growth of the forest plants with concern.",
+                "Surely the herbs will resprout soon. Or the colony will be able to find potency in their roots. Or another colony will send help. Surely."
             ],
             "moon2": [
                 "Hunting herbs is normally easier than hunting living breathing prey, but with the plants withering and dying, there's nothing c_n can do.",
@@ -346,7 +346,7 @@
             "deaths": {
                 "death_text": [
                     "A simple wound sealed m_c's fate. Without herbs to ward off infection, what should have been a swift recovery turned dire.",
-                    "m_c's cough began as a minor irritation but grew worse as the moons passed. With the land devoid of healing herbs, no remedy could ease their suffering. The Clan watched as it became harder and harder for m_c to breathe -- and their next breath would never come."
+                    "m_c's cough began as a minor irritation but grew worse as the moons passed. With the land devoid of healing herbs, no remedy could ease their suffering. The colony watched as it became harder and harder for m_c to breathe -- and their next breath would never come."
                 ],
                 "history_text": {
                     "reg_death": "m_c died when the land was too barren to grow herbs."
@@ -377,7 +377,7 @@
                 "As lead_name surveys the camp, full of their cats hauling the tattered wreckage of their lives out to the dirt-place, they wonder if staying here was the right decision. How can anything be the same after this? How can any cat ever feel safe here again, on the ground that was supposed to be their greatest and safest shelter?",
                 "lead_name announced their plans confidently, what needed to happen to repair the camp. But they can't watch as the  shattered wreckage of the apprentices' den is torn down and carted away. Maybe it's a weakness. But they can't watch.",
                 "As c_n works in frenzied activity, dep_name is called over. One of the oldest of c_n's cats won't give up their nest, not even as broken and shattered as it is. They can't be convinced, and eventually dep_name has to take it from them, over their protests. They'll get a new one, a better one, a perfect one in their rebuilt home, dep_name vows. But it's still not enough. dep_name can't fix this.",
-                "To rebuild their shattered camp and their shattered lives, the Clan must clear out the wreckage of their old home. But it is its own sort of death to process, the loss of their home, their safety, their innocence."
+                "To rebuild their shattered camp and their shattered lives, the colony must clear out the wreckage of their old home. But it is its own sort of death to process, the loss of their home, their safety, their innocence."
             ],
             "moon2": [
                 "Stiff from sleeping in a messy pile of disorganized companions, c_n nevertheless attacks the task ahead with purpose, as one bringing in new brambles, weaving new walls, and plucking fur from fresh-kill to line their new nests.",
@@ -388,9 +388,9 @@
         "conclusion_events": [
             "The walls and dens of the camp look so different now, the kittenhood paths that had been so comforting have all changed, but even with the slight sting of lost nostalgia, their home is, for now, once again safe and whole. The way it was will give way to how it is now, and while things have changed, the purrs and meows of c_n will make it sound like home just like they always have.",
             "As the sunlight is once again shaded out by the safety of bramble and bush, the camp is beginning to feel like home once more. Not the same, no, but perhaps it doesn't need to be.",
-            "Padding out from their den, lead_name yawns, swamping their nose with the scent of forest and Clan, once more intermingled into the specific mix of a healthy camp.",
+            "Padding out from their den, lead_name yawns, swamping their nose with the scent of forest and colony, once more intermingled into the specific mix of a healthy camp.",
             "The oldest of c_n are still complaining about the changes, but dep_name doesn't think they're actually serious anymore. The camp, though new, is once again beginning to feel like home.",
-            "It will take time, lead_name knows. It'll be many moons before they can pad through this new camp blindfolded and scent-struck like they used to be able to do in its previous incarnation, and nothing can bring back the home of their youth. But this can be home, and now when they look at it, all they can feel is the love of the Clan that rebuilt it.",
+            "It will take time, lead_name knows. It'll be many moons before they can pad through this new camp blindfolded and scent-struck like they used to be able to do in its previous incarnation, and nothing can bring back the home of their youth. But this can be home, and now when they look at it, all they can feel is the love of the colony that rebuilt it.",
             "med_name fusses with the herb stores. They like the new system, but it doesn't have the familiarity of the old. Still, that's the way of it, and isn't all of c_n feeling like this, to an extent? Their new camp is a labor of love and effort, but it's fine to miss what came before it."
         ],
         "secondary_disasters": [],
@@ -440,7 +440,7 @@
                 "chance": 0,
                 "trigger_events": [
                     "A Twoleg was seen playing with fire, seemingly enjoying the dangerous plaything like a kit does a moss ball and, just like a kit, they lost control of it. The forest is too dry in greenleaf to stop the fire, and it quickly spreads, the cats of c_n only able to run with the rest of the animals in the forest.",
-                    "The Twolegs seem to enjoy gathering around large fires, much to the terror of the Clan.  Though the fires seem to be put out before the Twolegs leave, it's no surprise when some embers persist and the forest begins to go up in flames."
+                    "The Twolegs seem to enjoy gathering around large fires, much to the terror of the colony.  Though the fires seem to be put out before the Twolegs leave, it's no surprise when some embers persist and the forest begins to go up in flames."
                 ]
             },
             "Prey Sickness": {
@@ -492,7 +492,7 @@
             ]
         },
         "conclusion_events": [
-            "Fresh-kill tastes a little better, a little brighter, like it's cleaner. While the Clan might be a little thinner than they used to be, it seems as if they can now eat anything they catch again - if they can catch it!"
+            "Fresh-kill tastes a little better, a little brighter, like it's cleaner. While the colony might be a little thinner than they used to be, it seems as if they can now eat anything they catch again - if they can catch it!"
         ],
         "secondary_disasters": [],
         "collateral_damage": {

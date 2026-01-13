@@ -215,7 +215,7 @@
             "Leaf-bare",
             "no_body"
         ],
-        "death_text": "Usually m_c is well aware of when the high tide will come in, but today {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} distracted and run ragged with Clan business. Trapped against the cliffs with treacherous waves pulling at {PRONOUN/m_c/poss} paws, the last thing {PRONOUN/m_c/subject} {VERB/m_c/see/sees} is the smug grin of r_c sat high above on the rocks.",
+        "death_text": "Usually m_c is well aware of when the high tide will come in, but today {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} distracted and run ragged with colony business. Trapped against the cliffs with treacherous waves pulling at {PRONOUN/m_c/poss} paws, the last thing {PRONOUN/m_c/subject} {VERB/m_c/see/sees} is the smug grin of r_c sat high above on the rocks.",
         "history_text": {
             "lead_death": "{VERB/m_c/were/was} trapped in the tides by r_c",
             "lead_murder_unrevealed": "{VERB/m_c/were/was} trapped by high tides"
@@ -269,7 +269,7 @@
             "Leaf-fall",
             "Leaf-bare"
         ],
-        "death_text": "m_c saves one of the Clan's kits from drowning, but loses a life in the process. The kit is well scolded for straying into the water, but is even more subdued than expected afterwards; sending nervous glances at r_c that no one else seems to catch.",
+        "death_text": "m_c saves one of the colony's kits from drowning, but loses a life in the process. The kit is well scolded for straying into the water, but is even more subdued than expected afterwards; sending nervous glances at r_c that no one else seems to catch.",
         "history_text": {
             "lead_death": "saved a drowning kit that was set up by r_c",
             "lead_murder_unrevealed": "saved a drowning kit"

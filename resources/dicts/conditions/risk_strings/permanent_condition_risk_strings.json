@@ -13,7 +13,7 @@
         "sore": [
             "While {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} adapted well to life with a missing limb, the strain of walking with only three legs has left m_c feeling sore all over. r_c devises a list of exercises that will ease the pain, not helping m_c's mood.",
             "m_c hasn't been sleeping right and feels bruised and tender on the side of {PRONOUN/m_c/poss} body where {PRONOUN/m_c/poss} limb used to be.",
-            "The muscles in m_c's stump don't seem to understand they aren't connected to anything any more - m_c purrs gratefully when a Clanmate helps massage them."
+            "The muscles in m_c's stump don't seem to understand they aren't connected to anything any more - m_c purrs gratefully when a companion helps massage them."
         ]
     },
     "born without a leg": {
@@ -157,7 +157,7 @@
     "cleft palate": {
         "whitecough": [
             "r_c immediately sends m_c over to the medicine cat den upon hearing a series of coughs. m_c is much more susceptible to whitecough due to {PRONOUN/m_c/poss} cleft palate, and r_c is determined to ensure the disease does not become worse.",
-            "As a result of m_c's cleft palate, {PRONOUN/m_c/subject} {VERB/m_c/are/is} left with whitecough. {PRONOUN/m_c/subject/CAP} {VERB/m_c/feel/feels} trapped in the medicine cat den, itching to go out and serve {PRONOUN/m_c/poss} Clan once more."
+            "As a result of m_c's cleft palate, {PRONOUN/m_c/subject} {VERB/m_c/are/is} left with whitecough. {PRONOUN/m_c/subject/CAP} {VERB/m_c/feel/feels} trapped in the medicine cat den, itching to go out and serve {PRONOUN/m_c/poss} colony once more."
             
         ]
     },

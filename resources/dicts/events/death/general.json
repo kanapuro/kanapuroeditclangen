@@ -920,7 +920,7 @@
                     "r_c"
                 ],
                 "reg_death": "This cat died when o_c_n tried to break into camp.",
-                "lead_death": "tried to defend the Clan from o_c_n"
+                "lead_death": "tried to defend the colony from o_c_n"
             }
         ],
         "other_clan": {
@@ -1292,8 +1292,8 @@
                     "m_c",
                     "r_c"
                 ],
-                "reg_death": "This cat drowned alongside a Clanmate.",
-                "lead_death": "drowned alongside a Clanmate"
+                "reg_death": "This cat drowned alongside a companion.",
+                "lead_death": "drowned alongside a companion"
             }
         ]
     },
@@ -1437,7 +1437,7 @@
             "classic"
         ],
         "weight": 20,
-        "event_text": "A bad case of greencough strikes the Clan, taking r_c and m_c's lives.",
+        "event_text": "A bad case of greencough strikes the colony, taking r_c and m_c's lives.",
         "m_c": {
             "age": [
                 "any"
@@ -1824,7 +1824,7 @@
         ],
         "tags": [],
         "weight": 20,
-        "event_text": "m_c sacrificed {PRONOUN/m_c/self} by taking on the role of a messenger, delivering important information that could save {PRONOUN/m_c/poss} Clan. {PRONOUN/m_c/subject/CAP} {VERB/m_c/were/was} killed while investigating enemy territory.",
+        "event_text": "m_c sacrificed {PRONOUN/m_c/self} by taking on the role of a messenger, delivering important information that could save {PRONOUN/m_c/poss} colony. {PRONOUN/m_c/subject/CAP} {VERB/m_c/were/was} killed while investigating enemy territory.",
         "m_c": {
             "status": [
                 "apprentice",
@@ -1965,8 +1965,8 @@
                 "cats": [
                     "m_c"
                 ],
-                "reg_death": "m_c fell into a pit trap set by an enemy Clan.",
-                "lead_death": "fell into a pit trap set by an enemy Clan."
+                "reg_death": "m_c fell into a pit trap set by an enemy colony.",
+                "lead_death": "fell into a pit trap set by an enemy colony."
             }
         ],
         "other_clan": {
@@ -4698,7 +4698,7 @@
                 "cats": [
                     "m_c"
                 ],
-                "reg_death": "m_c was killed by a o_c_n warrior while trying to aid an injured Clanmate."
+                "reg_death": "m_c was killed by a o_c_n warrior while trying to aid an injured companion."
             }
         ],
         "relationships": [
@@ -4772,7 +4772,7 @@
         "subtype": ["war"],
         "tags": [],
         "weight": 20,
-        "event_text": "m_c was killed by enemy warriors when {PRONOUN/m_c/subject} travelled to o_c_n in an attempt to ease tensions between the Clans.",
+        "event_text": "m_c was killed by enemy warriors when {PRONOUN/m_c/subject} travelled to o_c_n in an attempt to ease tensions between the colonies.",
         "m_c": {
             "status": [
                 "mediator",
@@ -6968,7 +6968,7 @@
             "kit_manipulated"
         ],
         "weight": 20,
-        "event_text": "m_c saves one of the Clan's kits from drowning, but loses a life in the process. The kit is well scolded for straying into the water but is even more subdued than expected afterwards; sending nervous glances at r_c that no one else seems to catch.",
+        "event_text": "m_c saves one of the colony's kits from drowning, but loses a life in the process. The kit is well scolded for straying into the water but is even more subdued than expected afterwards; sending nervous glances at r_c that no one else seems to catch.",
         "m_c": {
             "age": [
                 "young adult",
@@ -7531,7 +7531,7 @@
             "no_body"
         ],
         "weight": 20,
-        "event_text": "m_c can be heard boasting that {PRONOUN/m_c/subject}'{VERB/m_c/re/s} ready to be made an apprentice <i>right now</i>, and that {PRONOUN/m_c/subject}'{VERB/m_c/re/s} already one of the best hunters in the Clan. That evening, to prove {PRONOUN/m_c/poss} point, {PRONOUN/m_c/subject} {VERB/m_c/sneak/sneaks} out of camp, intending to catch something for the fresh-kill pile. A frantic search party follows {PRONOUN/m_c/poss} trail, only to find blood and the stench of raccoon at the end.",
+        "event_text": "m_c can be heard boasting that {PRONOUN/m_c/subject}'{VERB/m_c/re/s} ready to be made an apprentice <i>right now</i>, and that {PRONOUN/m_c/subject}'{VERB/m_c/re/s} already one of the best hunters in the colony. That evening, to prove {PRONOUN/m_c/poss} point, {PRONOUN/m_c/subject} {VERB/m_c/sneak/sneaks} out of camp, intending to catch something for the fresh-kill pile. A frantic search party follows {PRONOUN/m_c/poss} trail, only to find blood and the stench of raccoon at the end.",
         "m_c": {
             "status": [
                 "kitten"
@@ -7820,7 +7820,7 @@
             "any"
         ],
         "weight": 20,
-        "event_text": "m_c woke up in the middle of the night to a strange noise. No one else was awake, or so {PRONOUN/m_c/subject} thought, until seeing someone at the fresh-kill pile. Before m_c could realize {PRONOUN/m_c/poss} mistake, sharp canine teeth were at {PRONOUN/m_c/poss} throat, ensuring the Clan wakes up to find {PRONOUN/m_c/poss} nest empty, and the prey gone.",
+        "event_text": "m_c woke up in the middle of the night to a strange noise. No one else was awake, or so {PRONOUN/m_c/subject} thought, until seeing someone at the fresh-kill pile. Before m_c could realize {PRONOUN/m_c/poss} mistake, sharp canine teeth were at {PRONOUN/m_c/poss} throat, ensuring the colony wakes up to find {PRONOUN/m_c/poss} nest empty, and the prey gone.",
         "m_c": {
             "status": [
                 "any"
@@ -7919,7 +7919,7 @@
         ],
         "tags": [],
         "weight": 20,
-        "event_text": "Within the haze of battle and blood-lust it can be far too easy to mistake friend for foe.  Or, at least, that's what r_c tells the Clan after {PRONOUN/m_c/subject} {VERB/m_c/kill/kills} m_c during a fight with o_c_n.",
+        "event_text": "Within the haze of battle and blood-lust it can be far too easy to mistake friend for foe.  Or, at least, that's what r_c tells the colony after {PRONOUN/m_c/subject} {VERB/m_c/kill/kills} m_c during a fight with o_c_n.",
         "m_c": {
             "status": [
                 "warrior",
@@ -8196,7 +8196,7 @@
                 "cats": [
                     "r_c"
                 ],
-                "reg_death": "r_c died after launching a failed assassination attempt on the Clan's leader."
+                "reg_death": "r_c died after launching a failed assassination attempt on the colony's leader."
             }
         ]
     },
