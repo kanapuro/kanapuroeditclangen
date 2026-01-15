@@ -305,7 +305,7 @@
             "accept_dislike": "t_c skeptically pokes the egg. Won't this just spoil and stink up the whole camp?"
         },
         "MAPLE LEAF": {
-            "accept_like": "t_c pins the leaf to {PRONOUN/t_c/poss} pelt and poses. Another Clanmate comments that it accentuates t_c's fur nicely!",
+            "accept_like": "t_c pins the leaf to {PRONOUN/t_c/poss} pelt and poses. Another companion comments that it accentuates t_c's fur nicely!",
             "accept_dislike": "t_c tries to pin your gift behind {PRONOUN/t_c/poss} ear, but part of the brittle leaf crumbles and scatters pieces all over {PRONOUN/t_c/poss} pelt. t_c groans and begins cleaning it off.",
             "accept_neutral": "The leaf reminds t_c of leaffall. You're not sure whether that's a good thing or not, and {PRONOUN/t_c/subject} {VERB/t_c/don't/doesn't} seem sure either."
         },
@@ -342,8 +342,8 @@
             "accept_dislike": "t_c comments that the rabbit will probably get mistaken for prey by one of your companions. {PRONOUN/t_c/subject/CAP} reluctantly {VERB/t_c/accept/accepts} your gift, but {VERB/t_c/don't/doesn't} seem to think the creature will last long in a camp full of cats."
         },
         "BLACK AND WHITE RABBIT": {
-            "accept_like": "The black and white rabbit doesn't move as you urge t_c towards it. Your Clanmate stretches a paw out and suppresses an excited gasp as the creature sniffs it. When t_c moves away, the rabbit follows!",
-            "accept_dislike": "t_c is doubtful about the idea of befriending a rabbit, but {PRONOUN/t_c/subject} {VERB/t_c/follow/follows} you over to it anyways. At the first sight of t_c, the rabbit thumps its back foot in irritation. Your Clanmate is unconvinced that they'll get along with each other, but reluctantly accepts your gift."
+            "accept_like": "The black and white rabbit doesn't move as you urge t_c towards it. Your companion stretches a paw out and suppresses an excited gasp as the creature sniffs it. When t_c moves away, the rabbit follows!",
+            "accept_dislike": "t_c is doubtful about the idea of befriending a rabbit, but {PRONOUN/t_c/subject} {VERB/t_c/follow/follows} you over to it anyways. At the first sight of t_c, the rabbit thumps its back foot in irritation. Your companion is unconvinced that they'll get along with each other, but reluctantly accepts your gift."
         },
         "WHITE AND FAWN RABBIT": {
             "accept_like": "t_c seems enraptured by the rabbit, watching it hop around {PRONOUN/t_c/object} and twitch its tiny nose. {PRONOUN/t_c/subject/CAP} {VERB/t_c/purr/purrs} {PRONOUN/t_c/poss} thanks, not taking {PRONOUN/t_c/poss} eyes off of the creature.",
@@ -371,11 +371,11 @@
         },
         "TAN VITILIGO RABBIT": {
             "accept_like": "The rabbit seems a bit uncertain around t_c, but t_c seems enthusiastic about gradually winning its trust. {PRONOUN/t_c/subject/CAP} {VERB/t_c/say/says} {PRONOUN/t_c/subject}'ll keep you updated!",
-            "accept_dislike": "The rabbit pins its ears back and makes a grumbling noise as t_c approaches. Your Clanmate seems equally as unenthusiastic about taking care of this creature."
+            "accept_dislike": "The rabbit pins its ears back and makes a grumbling noise as t_c approaches. Your companion seems equally as unenthusiastic about taking care of this creature."
         },
         "GRAY RABBIT": {
             "accept_like": "Shortly after you give {PRONOUN/t_c/object} the rabbit, t_c is already brainstorming names for it based on its soft gray coat. Fogpelt? Mistfur? Raindapple?",
-            "accept_dislike": "The rabbit pins its ears back and makes a grumbling noise as t_c approaches. Your Clanmate seems equally as unenthusiastic about taking care of this creature."
+            "accept_dislike": "The rabbit pins its ears back and makes a grumbling noise as t_c approaches. Your companion seems equally as unenthusiastic about taking care of this creature."
         },
         "GRAY AND WHITE RABBIT": {
             "accept_like": "As soon as t_c realizes you're giving {PRONOUN/t_c/object} the rabbit, {PRONOUN/t_c/subject}{VERB/t_c/'re/'s} already calling the closest cats over to admire it! {PRONOUN/t_c/subject/CAP} {VERB/t_c/thank/thanks} you profusely.",

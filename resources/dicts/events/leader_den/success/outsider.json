@@ -38,7 +38,7 @@
   },
   {
     "interaction_type": "invite",
-    "event_text": "m_c was found and invited into the Clan.",
+    "event_text": "m_c was found and invited into the colony.",
     "reputation": [
       "any"
     ],
@@ -49,7 +49,7 @@
         "rogue",
         "kittypet"
       ],
-      "new_thought": "Is curious about the Clan that sought {PRONOUN/m_c/object} out",
+      "new_thought": "Is curious about the colony that sought {PRONOUN/m_c/object} out",
       "kit_thought": "Is curious about the new place {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} in",
       "relationships": [
         {
@@ -83,7 +83,7 @@
   },
   {
     "interaction_type": "invite",
-    "event_text": "m_c was found and invited back into the Clan.",
+    "event_text": "m_c was found and invited back into the colony.",
     "reputation": [
       "any"
     ],
@@ -92,7 +92,7 @@
       "status": [
         "exiled"
       ],
-      "new_thought": "Is curious why the Clan has allowed {PRONOUN/m_c/object} back",
+      "new_thought": "Is curious why the colony has allowed {PRONOUN/m_c/object} back",
       "kit_thought": "Is curious why {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} been brought here",
       "relationships": [
         {
@@ -126,7 +126,7 @@
   },
   {
     "interaction_type": "search",
-    "event_text": "m_c was found and brought back to the safety of the Clan",
+    "event_text": "m_c was found and brought back to the safety of the colony",
     "reputation": [
       "any"
     ],
@@ -189,7 +189,7 @@
       "skill": [
         "HUNTER,3"
       ],
-      "new_thought": "Can't wait to help provide for {PRONOUN/m_c/poss} new Clan",
+      "new_thought": "Can't wait to help provide for {PRONOUN/m_c/poss} new colony",
       "kit_thought": "Is curious about the new place {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} in",
       "relationships": [
         {
@@ -299,13 +299,13 @@
       "skill": [
         "MEDIATOR,1"
       ],
-      "new_thought": "Wishes the Clan cats had listened to {PRONOUN/m_c/object}",
+      "new_thought": "Wishes the colony cats had listened to {PRONOUN/m_c/object}",
       "kit_thought": "Is unsure why {PRONOUN/m_c/poss} parent hasn't come back."
     }
   },
   {
     "interaction_type": "invite",
-    "event_text": "Some of c_n's best hunters challenge m_c to a hunt-off. The stakes are simple: if c_n wins, m_c leaves the territory; if m_c wins, then {PRONOUN/m_c/subject} will be allowed to hunt within the Clan's borders undisturbed. m_c wins by a landslide but, in a surprising twist, requests that {PRONOUN/m_c/poss} prize be the chance to join c_n.",
+    "event_text": "Some of c_n's best hunters challenge m_c to a hunt-off. The stakes are simple: if c_n wins, m_c leaves the territory; if m_c wins, then {PRONOUN/m_c/subject} will be allowed to hunt within the colony's borders undisturbed. m_c wins by a landslide but, in a surprising twist, requests that {PRONOUN/m_c/poss} prize be the chance to join c_n.",
     "reputation": [
       "any"
     ],
@@ -325,7 +325,7 @@
       "skill": [
         "HUNTER,3"
       ],
-      "new_thought": "Can't wait to help provide for {PRONOUN/m_c/poss} new Clan",
+      "new_thought": "Can't wait to help provide for {PRONOUN/m_c/poss} new colony",
       "kit_thought": "Is curious about the new place {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} in",
       "relationships": [
         {
@@ -383,7 +383,7 @@
   },
   {
     "interaction_type": "invite",
-    "event_text": "c_n finds m_c and invites {PRONOUN/m_c/object} in, but m_c replies c_n would only slow m_c down. A challenge is set: if m_c can outhunt a full patrol of c_n warriors by sundown, then c_n will acknowledge {PRONOUN/m_c/poss} superiority. By moonhigh, m_c is c_n's newest Clanmate.",
+    "event_text": "c_n finds m_c and invites {PRONOUN/m_c/object} in, but m_c replies c_n would only slow m_c down. A challenge is set: if m_c can outhunt a full patrol of c_n warriors by sundown, then c_n will acknowledge {PRONOUN/m_c/poss} superiority. By moonhigh, m_c is c_n's newest companion.",
     "reputation": ["any"],
     "rep_change": -10,
     "m_c": {
@@ -400,7 +400,7 @@
   },
   {
     "interaction_type": "invite",
-    "event_text": "While {PRONOUN/m_c/subject} may have been cast out for a reason, there's no denying that m_c is a skilled hunter. The Clan could definitely learn a thing or two from {PRONOUN/m_c/object} so, after much deliberation, a decision is made to welcome m_c back to c_n.",
+    "event_text": "While {PRONOUN/m_c/subject} may have been cast out for a reason, there's no denying that m_c is a skilled hunter. The colony could definitely learn a thing or two from {PRONOUN/m_c/object} so, after much deliberation, a decision is made to welcome m_c back to c_n.",
     "reputation": [
       "any"
     ],
@@ -465,7 +465,7 @@
   },
   {
     "interaction_type": "drive",
-    "event_text": "Some of c_n's best hunters challenge m_c to a hunt-off. The stakes are simple: if c_n wins, m_c leaves the territory; if m_c wins, then {PRONOUN/m_c/subject} will be allowed to hunt within the Clan's borders undisturbed. It's a close contest but, in the end, the Clan cats claim victory, and m_c has no choice but to find somewhere else to call home.",
+    "event_text": "Some of c_n's best hunters challenge m_c to a hunt-off. The stakes are simple: if c_n wins, m_c leaves the territory; if m_c wins, then {PRONOUN/m_c/subject} will be allowed to hunt within the colony's borders undisturbed. It's a close contest but, in the end, the colony cats claim victory, and m_c has no choice but to find somewhere else to call home.",
     "reputation": [
       "any"
     ],
@@ -552,7 +552,7 @@
   },
   {
     "interaction_type": "search",
-    "event_text": "Patrol after patrol has been sent out in search of m_c, always returning without their lost Clanmate. Then, just as the Clan is about to give up all hope, m_c manages to track them down, resulting in a joyful reunion.",
+    "event_text": "Patrol after patrol has been sent out in search of m_c, always returning without their lost companion. Then, just as the colony is about to give up all hope, m_c manages to track them down, resulting in a joyful reunion.",
     "reputation": [
       "any"
     ],
@@ -842,7 +842,7 @@
   },
   {
     "interaction_type": "invite",
-    "event_text": "c_n finds m_c just outside {PRONOUN/m_c/poss} Twoleg nest and makes {PRONOUN/m_c/object} an offer. Though m_c asks a few questions about leaf-bare, sickness, and injury, {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} persuaded that Clan life is worth it.",
+    "event_text": "c_n finds m_c just outside {PRONOUN/m_c/poss} Twoleg nest and makes {PRONOUN/m_c/object} an offer. Though m_c asks a few questions about leaf-bare, sickness, and injury, {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} persuaded that colony life is worth it.",
     "reputation": [
       "any"
     ],
@@ -926,12 +926,12 @@
   },
   {
     "interaction_type": "invite",
-    "event_text": "c_n finds m_c and offers {PRONOUN/m_c/object} a position in c_n. m_c admits {PRONOUN/m_c/subject} {VERB/m_c/have/has} missed Clan life and agrees to join.",
+    "event_text": "c_n finds m_c and offers {PRONOUN/m_c/object} a position in c_n. m_c admits {PRONOUN/m_c/subject} {VERB/m_c/have/has} missed colony life and agrees to join.",
     "reputation": ["any"],
     "rep_change": 1,
     "m_c": {
       "status": ["former colonycat"],
-      "new_thought": "Readjusts to Clan life",
+      "new_thought": "Readjusts to colony life",
       "kit_thought": "Is learning the truth behind all the stories"
     }
   },
@@ -952,13 +952,13 @@
     "rep_change": -3,
     "m_c": {
       "status": ["former colonycat"],
-      "new_thought": "Thinks bitterly of {PRONOUN/m_c/poss} old Clan, wishing it had protected {PRONOUN/m_c/object}",
+      "new_thought": "Thinks bitterly of {PRONOUN/m_c/poss} old colony, wishing it had protected {PRONOUN/m_c/object}",
       "kit_thought": "Wonders where m_c has gone"
     }
   },
   {
     "interaction_type": "search",
-    "event_text": "c_n turns the world upside down searching for their lost Clanmate. They cannot rest until m_c is safely home - and they don't. When they come upon {PRONOUN/m_c/object} at last, c_n is overjoyed to bring {PRONOUN/m_c/object} back to camp where {PRONOUN/m_c/subject} {VERB/m_c/belong/belongs}.",
+    "event_text": "c_n turns the world upside down searching for their lost companion. They cannot rest until m_c is safely home - and they don't. When they come upon {PRONOUN/m_c/object} at last, c_n is overjoyed to bring {PRONOUN/m_c/object} back to camp where {PRONOUN/m_c/subject} {VERB/m_c/belong/belongs}.",
     "reputation": [
       "any"
     ],
@@ -973,7 +973,7 @@
   },
   {
     "interaction_type": "search",
-    "event_text": "c_n scours the outside territory for m_c, and eventually, their old Clanmate turns up. m_c joyfully reunites with the Clan, swearing that {PRONOUN/m_c/poss} faith in {PRONOUN/m_c/poss} companions never wavered.",
+    "event_text": "c_n scours the outside territory for m_c, and eventually, their old companion turns up. m_c joyfully reunites with the colony, swearing that {PRONOUN/m_c/poss} faith in {PRONOUN/m_c/poss} companions never wavered.",
     "reputation": ["any"],
     "rep_change": 1,
     "m_c": {
