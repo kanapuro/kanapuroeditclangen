@@ -97,7 +97,7 @@ class MakeClanScreen(Screens):
         'resources/images/custom_choice_bg_dark.png').convert_alpha(), (1600, 1400))
     
 
-    with open(f"resources/dicts/acc_display.json", "r") as read_file:
+    with open(f"resources/dicts/acc_display.json", "r", encoding="utf-8") as read_file:
         ACC_DISPLAY = ujson.loads(read_file.read())
 
 

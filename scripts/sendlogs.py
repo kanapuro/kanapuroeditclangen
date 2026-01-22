@@ -38,7 +38,7 @@ def upload_logs(token: str, progress: UITextBoxTweaked, callback: callable):
     files = {}
 
     for log in logs:
-        with open(os.path.join(get_log_dir(), log), 'r') as f:
+        with open(os.path.join(get_log_dir(), log), 'r', encoding='utf-8') as f:
             files[log] = f.read()
 
 

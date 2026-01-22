@@ -315,7 +315,7 @@ class Game:
                         print(f"Warning: Could not migrate {item.name}: {e}")
 
     def read_clans(self):
-        """with open(get_save_dir() + '/clanlist.txt', 'r') as read_file:
+        """with open(get_save_dir() + '/clanlist.txt', 'r', encoding='utf-8') as read_file:
             clan_list = read_file.read()
             if_clans = len(clan_list)
         if if_clans > 0:
@@ -356,7 +356,7 @@ class Game:
             if loaded_clan:
                 self.safe_save(get_save_dir() + "/currentclan.txt", loaded_clan)
         elif os.path.exists(get_save_dir() + "/currentclan.txt"):
-            with open(get_save_dir() + "/currentclan.txt", "r") as f:
+            with open(get_save_dir() + "/currentclan.txt", "r", encoding="utf-8") as f:
                 loaded_clan = f.read().strip()
         else:
             loaded_clan = None
@@ -381,7 +381,7 @@ class Game:
                 clans.append(f"{clan_name}\n")
 
         if clans:
-            with open(get_save_dir() + '/clanlist.txt', 'w') as f:
+            with open(get_save_dir() + '/clanlist.txt', 'w', encoding='utf-8') as f:
                 f.writelines(clans)"""
         if loaded_clan:
             if os.path.exists(get_save_dir() + "/clanlist.txt"):
@@ -607,7 +607,7 @@ class Game:
         events_path = f"{get_save_dir()}/{clanname}/events.json"
         events_list = []
         try:
-            with open(events_path, "r") as f:
+            with open(events_path, "r", encoding="utf-8") as f:
                 events_list = ujson.loads(f.read())
             for event_dict in events_list:
                 event_obj = Single_Event.from_dict(event_dict)

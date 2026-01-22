@@ -1678,7 +1678,9 @@ class ChangelogPopup(UIWindow):
 
         dynamic_changelog = False
         
-        with open("changelog.txt", "r") as read_file:
+        with open("changelog.txt", "r", encoding="utf-8") as read_file:
+            file_cont = read_file.read()
+        with open("changelog.txt", "r", encoding="utf-8") as read_file:
             file_cont = read_file.read()
 
         self.changelog_text = UITextBoxTweaked(
@@ -2354,7 +2356,7 @@ class DeathScreen(UIWindow):
                 # Show revive flavor text INSTANTLY in the event log
                 import ujson
                 from random import choice
-                with open("resources/dicts/events/lifegen_events/revival.json", "r") as read_file:
+                with open("resources/dicts/events/lifegen_events/revival.json", "r", encoding="utf-8") as read_file:
                     revival_json = ujson.loads(read_file.read())['revival']
                 game.cur_events_list.insert(0, Single_Event(choice(revival_json), 'alert'))
                 game.switches['cur_screen'] = "events screen"

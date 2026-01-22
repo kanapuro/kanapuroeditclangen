@@ -36,7 +36,7 @@ def reformat(path):
         if item in path:
             return
     try:
-        with open(path, "r") as read_file:
+        with open(path, "r", encoding="utf-8") as read_file:
             events = read_file.read()
             event_ujson = ujson.loads(events)
 

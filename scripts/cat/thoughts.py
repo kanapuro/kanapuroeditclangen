@@ -364,16 +364,16 @@ class Thoughts:
         # newborns only pull from their status thoughts. this is done for convenience
         try:
             if main_cat.age == 'newborn':
-                with open(f"{base_path}{life_dir}{spec_dir}/newborn.json", 'r') as read_file:
+                with open(f"{base_path}{life_dir}{spec_dir}/newborn.json", 'r', encoding='utf-8') as read_file:
                     thoughts = ujson.loads(read_file.read())
                 loaded_thoughts = thoughts
             elif main_cat.shunned > 0 and not main_cat.dead and not main_cat.outside:
-                with open(f"{base_path}{life_dir}{spec_dir}/shunned.json", 'r') as read_file:
+                with open(f"{base_path}{life_dir}{spec_dir}/shunned.json", 'r', encoding='utf-8') as read_file:
                     loaded_thoughts = ujson.loads(read_file.read())
             else:
-                with open(f"{base_path}{life_dir}{spec_dir}/{status}.json", 'r') as read_file:
+                with open(f"{base_path}{life_dir}{spec_dir}/{status}.json", 'r', encoding='utf-8') as read_file:
                     thoughts = ujson.loads(read_file.read())
-                with open(f"{base_path}{life_dir}{spec_dir}/general.json", 'r') as read_file:
+                with open(f"{base_path}{life_dir}{spec_dir}/general.json", 'r', encoding='utf-8') as read_file:
                     genthoughts = ujson.loads(read_file.read())
                 loaded_thoughts = thoughts + genthoughts
 
@@ -420,14 +420,14 @@ class Thoughts:
         THOUGHTS: []
         try:
             if lives_left > 0:
-                with open(f"{base_path}{spec_dir}/leader_life.json", 'r') as read_file:
+                with open(f"{base_path}{spec_dir}/leader_life.json", 'r', encoding='utf-8') as read_file:
                     THOUGHTS = ujson.loads(read_file.read())
                 loaded_thoughts = THOUGHTS
                 thought_group = choice(Thoughts.create_death_thoughts(self, loaded_thoughts))
                 chosen_thought = choice(thought_group["thoughts"])
                 return chosen_thought
             else:
-                with open(f"{base_path}{spec_dir}/leader_death.json", 'r') as read_file:
+                with open(f"{base_path}{spec_dir}/leader_death.json", 'r', encoding='utf-8') as read_file:
                     THOUGHTS = ujson.loads(read_file.read())
                 loaded_thoughts = THOUGHTS
                 thought_group = choice(Thoughts.create_death_thoughts(self, loaded_thoughts))
@@ -448,7 +448,7 @@ class Thoughts:
             spec_dir = "/darkforest"
         THOUGHTS: []
         try:
-            with open(f"{base_path}{spec_dir}/general.json", 'r') as read_file:
+            with open(f"{base_path}{spec_dir}/general.json", 'r', encoding='utf-8') as read_file:
                 THOUGHTS = ujson.loads(read_file.read())
             loaded_thoughts = THOUGHTS
             thought_group = choice(Thoughts.create_death_thoughts(self, loaded_thoughts))

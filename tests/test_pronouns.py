@@ -157,7 +157,7 @@ def test():
     if failed:
         # Set the GITHUB_OUTPUT environment variable to the list of failed files
         if "GITHUB_OUTPUT" in os.environ:
-            with open(os.environ["GITHUB_OUTPUT"], "a") as handle:
+            with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
                 print(f"files={':'.join(failed_files)}", file=handle)
         else:
             print(f"files={':'.join(failed_files)}")
@@ -173,7 +173,7 @@ def test_replacement_failure(path: str, repl_dict: dict) -> bool:
 
     success = True
 
-    with open(path, "r") as file:
+    with open(path, "r", encoding="utf-8") as file:
         try:
             contents = ujson.loads(file.read())
         except ujson.JSONDecodeError as _e:

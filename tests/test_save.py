@@ -42,7 +42,7 @@ class LoadSave(unittest.TestCase):
             shutil.move("saves_backup", get_save_dir())
 
     def old_implimentation(self):
-        with open(get_save_dir() + "/clanlist.txt", "r") as read_file:
+        with open(get_save_dir() + "/clanlist.txt", "r", encoding="utf-8") as read_file:
             clan_list = read_file.read()
             if_clans = len(clan_list)
         if if_clans > 0:
@@ -133,7 +133,7 @@ class MigrateSave(unittest.TestCase):
                 if "currentclan.txt" in file_list:
                     self.skipTest("Save " + str(i) + " already migrated")
 
-                with open(get_save_dir() + "/clanlist.txt", "r") as read_file:
+                with open(get_save_dir() + "/clanlist.txt", "r", encoding="utf-8") as read_file:
                     clan_name = read_file.read().strip().splitlines()[0]
 
                 Game().read_clans()  # the load save function should migrate the save
@@ -143,7 +143,7 @@ class MigrateSave(unittest.TestCase):
                     "currentclan.txt", file_list, "Save " + str(i) + " not migrated"
                 )
 
-                with open(get_save_dir() + "/currentclan.txt", "r") as read_file:
+                with open(get_save_dir() + "/currentclan.txt", "r", encoding="utf-8") as read_file:
                     curclan = read_file.read().strip()
 
                 self.assertEqual(

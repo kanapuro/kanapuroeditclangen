@@ -20,13 +20,13 @@ from ..ui.get_arrow import get_arrow
 from ..ui.icon import Icon
 
 
-with open("resources/dicts/acc_display.json", "r") as read_file:
+with open("resources/dicts/acc_display.json", "r", encoding="utf-8") as read_file:
     ACC_DISPLAY = ujson.loads(read_file.read())
 
-with open("resources/dicts/events/lifegen_events/gift.json", "r") as read_file:
+with open("resources/dicts/events/lifegen_events/gift.json", "r", encoding="utf-8") as read_file:
     ACC_REACTION_TXT = ujson.loads(read_file.read())
 
-with open("resources/dicts/accessory_preferences.json", "r") as read_file:
+with open("resources/dicts/accessory_preferences.json", "r", encoding="utf-8") as read_file:
     ACC_REACTION = ujson.loads(read_file.read())
 
 class GiftScreen(Screens):

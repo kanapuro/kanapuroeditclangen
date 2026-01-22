@@ -667,62 +667,62 @@ class TalkScreen(Screens):
         special_date = get_special_date()
 
         if game.switches["talk_category"] == "insult":
-            with open(f"{self.resource_dir}insults.json", 'r') as read_file:
+            with open(f"{self.resource_dir}insults.json", 'r', encoding='utf-8') as read_file:
                 possible_texts = ujson.loads(read_file.read())
         elif game.switches["talk_category"] == "flirt":
-            with open(f"{self.resource_dir}flirt.json", 'r') as read_file:
+            with open(f"{self.resource_dir}flirt.json", 'r', encoding='utf-8') as read_file:
                 possible_texts.update(ujson.loads(read_file.read()))
         else:
             if cat.status != 'exiled':
-                with open(f"{self.resource_dir}{cat.status}.json", 'r') as read_file:
+                with open(f"{self.resource_dir}{cat.status}.json", 'r', encoding='utf-8') as read_file:
                     possible_texts = ujson.loads(read_file.read())
 
             if cat.status in ["rogue", "loner", "kittypet"]:
                 # former colonycats only get their own file so we can write general dialogue about not knowing what a clan is
-                with open(f"{self.resource_dir}general_outsider.json", 'r') as read_file:
+                with open(f"{self.resource_dir}general_outsider.json", 'r', encoding='utf-8') as read_file:
                     possible_texts4 = ujson.loads(read_file.read())
                     possible_texts.update(possible_texts4)
             else:
                 if cat.status == "newborn":
                     # newborns will no longer participate in nuanced discussion (focus + choices)
-                    with open(f"{self.resource_dir}newborn.json", 'r') as read_file:
+                    with open(f"{self.resource_dir}newborn.json", 'r', encoding='utf-8') as read_file:
                         possible_texts.update(ujson.loads(read_file.read()))
                 else:
-                    with open(f"{self.resource_dir}choice_dialogue.json", 'r') as read_file:
+                    with open(f"{self.resource_dir}choice_dialogue.json", 'r', encoding='utf-8') as read_file:
                         possible_texts.update(ujson.loads(read_file.read()))
 
                     if cat.status not in ['kitten', "newborn"] and you.status not in ['kitten', 'newborn']:
-                        with open(f"{self.resource_dir}general_no_kit.json", 'r') as read_file:
+                        with open(f"{self.resource_dir}general_no_kit.json", 'r', encoding='utf-8') as read_file:
                             possible_texts2 = ujson.loads(read_file.read())
                             possible_texts.update(possible_texts2)
 
                     if cat.status not in ["newborn"] and you.status not in ['newborn']:
-                        with open(f"{self.resource_dir}general_no_newborn.json", 'r') as read_file:
+                        with open(f"{self.resource_dir}general_no_newborn.json", 'r', encoding='utf-8') as read_file:
                             possible_texts4 = ujson.loads(read_file.read())
                             possible_texts.update(possible_texts4)
 
                     if cat.status not in ['kitten', "newborn"] and you.status in ['kitten', 'newborn']:
-                        with open(f"{self.resource_dir}general_you_kit.json", 'r') as read_file:
+                        with open(f"{self.resource_dir}general_you_kit.json", 'r', encoding='utf-8') as read_file:
                             possible_texts3 = ujson.loads(read_file.read())
                             possible_texts.update(possible_texts3)
 
                     if cat.status not in ['kitten', 'newborn'] and you.status not in ['kitten', 'newborn'] and randint(1,3)==1:
-                        with open(f"{self.resource_dir}crush.json", 'r') as read_file:
+                        with open(f"{self.resource_dir}crush.json", 'r', encoding='utf-8') as read_file:
                             possible_texts3 = ujson.loads(read_file.read())
                             possible_texts.update(possible_texts3)
 
                     if game.clan.focus:
-                        with open(f"{self.resource_dir}focuses/{game.clan.focus}.json", 'r') as read_file:
+                        with open(f"{self.resource_dir}focuses/{game.clan.focus}.json", 'r', encoding='utf-8') as read_file:
                             possible_texts5 = ujson.loads(read_file.read())
                             possible_texts.update(possible_texts5)
 
                     if special_date:
-                        with open(f"{self.resource_dir}focuses/{special_date.patrol_tag}.json", 'r') as read_file:
+                        with open(f"{self.resource_dir}focuses/{special_date.patrol_tag}.json", 'r', encoding='utf-8') as read_file:
                             special_dialogue = ujson.loads(read_file.read())
                             possible_texts.update(special_dialogue)
                             
                     if game.config['fun']['april_fools']:
-                        with open(f"{self.resource_dir}focuses/aprilfools.json", 'r') as read_file:
+                        with open(f"{self.resource_dir}focuses/aprilfools.json", 'r', encoding='utf-8') as read_file:
                             aprilfools_dialogue = ujson.loads(read_file.read())
                             possible_texts.update(aprilfools_dialogue)
  
@@ -1691,7 +1691,7 @@ class TalkScreen(Screens):
         return True
 
     def load_and_replace_placeholders(self, file_path, cat, you):
-        with open(file_path, 'r') as read_file:
+        with open(file_path, 'r', encoding='utf-8') as read_file:
             possible_texts = ujson.loads(read_file.read())
 
             y_c_text = f"y_c: {you.status} "
@@ -1926,7 +1926,7 @@ class TalkScreen(Screens):
     
 
     def backstory_text(self, cat):
-        with open(f"resources/dicts/backstories.json", 'r') as read_file:
+        with open(f"resources/dicts/backstories.json", 'r', encoding='utf-8') as read_file:
             BACKSTORIES = ujson.loads(read_file.read())
 
         backstory = cat.backstory

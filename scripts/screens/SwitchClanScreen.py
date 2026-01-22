@@ -196,7 +196,7 @@ class SwitchClanScreen(Screens):
                     clan_json_path = f"{get_save_dir()}/{clan}clan.json"
                 
                 if os.path.exists(clan_json_path):
-                    with open(clan_json_path, "r") as read_file:
+                    with open(clan_json_path, "r", encoding="utf-8") as read_file:
                         clan_json = ujson.loads(read_file.read())
                         you = clan_json["your_cat"]
                         clan_age = clan_json["clanage"]
@@ -207,7 +207,7 @@ class SwitchClanScreen(Screens):
             your_name = ""
             try:
                 if os.path.exists(clan_cats_json_path):
-                    with open(clan_cats_json_path, "r") as read_file:
+                    with open(clan_cats_json_path, "r", encoding="utf-8") as read_file:
                         clan_cats_json = ujson.loads(read_file.read())
                     for item in clan_cats_json:
                         if item["ID"] == you:

@@ -592,7 +592,7 @@ class Events:
             acc = random.choice(acc_list)
         game.clan.your_cat.pelt.inventory.append(acc)
         ACC_DISPLAY = None
-        with open(f"resources/dicts/acc_display.json", 'r') as read_file:
+        with open(f"resources/dicts/acc_display.json", 'r', encoding='utf-8') as read_file:
             ACC_DISPLAY = ujson.loads(read_file.read())
         string = f"You found a new accessory, acc_singular! You choose to store it in a safe place for now."
         string = string.replace("acc_singular", str(ACC_DISPLAY[acc]["singular"]))
