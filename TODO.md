@@ -1,7 +1,7 @@
 - merge w genemod
-- merge wreincarnation lifegen mod
-- merge wlifegen infection mod
-- merge wdadm? ik some of it weird
+- merge w reincarnation lifegen mod
+- merge w lifegen infection mod
+- merge w dadm? ik some of it weird
 - merge w dnd mod (dnd stats and patrols)
 - merge: dumb potato's extras (https://ptb.discord.com/channels/1125069186985640063/1202061506997657612), sprout's text expansions (https://ptb.discord.com/channels/1003759225522110524/1188095282915848202), cypress' more grief thoughts (https://ptb.discord.com/channels/1125069186985640063/1226623287283552296), bits from bingle's strange add-ons (https://ptb.discord.com/channels/1345739018792599643/1358826134602645725), caliiriin's extra pelts (https://ptb.discord.com/channels/1345739018792599643/1360109835005460538), multiroles
 - trailblazers themed content (horns, wings, stuff!) / horn/antler accessories!!!!!!!! yay!!!!!!!!!!!
@@ -13,3 +13,5 @@
 - add scrolling to clans on leader page so  U can ummmmm have more than 5 
 - the acquisition of an illness/condition should be listed in the history tab, alongside its cause. ie. a broken back from a badger, or grief stricken from losing (name).
 - add new subpatrols. date patrol - outing/date buttons. "dark forest" = dreams - parasite dream (dark forest), ascender dream (stc), wandering dream (wanderers) (names for these pending!). rename lifegen to daily life?
+- plotlines? long term events like wars with many interconnected events
+- new f3 command to change a clans (saves) name. needs to rename the folder, the associated json, and the name inside the clan dataa)
