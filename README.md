@@ -8,6 +8,8 @@ To run LGMMKE from source code, you'll need:
 
 - **Python 3.11.9 or earlier** (no later than 3.11.9)
 - **Poetry** (Python dependency manager)
+  
+> **Note**: Poetry is optional — a simple local virtualenv or the embedded Python can also be used.
 
 > **Note**: Python 3.12+ is not supported. Install Python 3.11.9 or earlier from [python.org](https://www.python.org/downloads)
 
@@ -44,6 +46,11 @@ poetry --version
 
 **Windows:**
 Double click the `run.bat` file in the game folder.
+
+**Simple double-click (Windows, no global tools required):**
+If you prefer a non-invasive way to run the game without installing Poetry or changing system state, use the provided `run_local.bat`. It prefers a project-local `.venv` (created for you) and falls back to the embedded Python at `C:\Users\henry.brown2\python-3.11.9-embed-amd64\python.exe` if present.
+
+To run: double-click `run_local.bat` in the project root.
 
 **Linux / macOS:**
 Double click the `run.sh` file, or open a terminal in the game folder and run:
