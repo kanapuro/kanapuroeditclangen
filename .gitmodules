@@ -1,6 +1,3 @@
-[submodule "saves/lgmmkesaves"]
-	path = saves/lgmmkesaves
-	url = https://github.com/kanapuro/lgmmkesaves
 [submodule "saves"]
 	path = saves
 	url = https://github.com/kanapuro/lgmmkesaves
