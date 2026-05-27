@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed crash at shared cat-target gathering layer in utility.py (gather_cat_objects now drops None before returning, patrol outcome code no longer dereferences a missing cat and hits an AttributeError) (i hope.)
 - Ensured all open() lines had UTF-8 encoding to prevent crashes caused by coding on Linux.
 - A buncha string fixes (clan -> colony and such) x2
 - Cats now automatically swap to the apprentice forms of medicine cats and mediators when the settings are enabled!

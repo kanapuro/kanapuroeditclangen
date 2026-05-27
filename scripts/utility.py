@@ -1596,6 +1596,8 @@ def gather_cat_objects(
         pass
     # ----------------------------------------
 
+    out_set.discard(None)
+
     return list(out_set)
 
 
