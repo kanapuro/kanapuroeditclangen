@@ -3534,7 +3534,7 @@
                 6
             ]
         },
-        "weight": 40,
+        "weight": 20,
         "pl_skill_constraint": [
             "LORE,1"
         ],

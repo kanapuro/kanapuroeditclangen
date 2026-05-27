@@ -4985,7 +4985,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 60,
+        "weight": 40,
         "intro_text": "p_l suggests this might be a good chance to practice teamwork with {PRONOUN/p_l/poss} mate.",
         "decline_text": "They decide to focus on working on a different skill instead.",
         "chance_of_success": 60,
@@ -5190,7 +5190,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 60,
+        "weight": 40,
         "intro_text": "p_l suggests this might be a good chance to practice teamwork with {PRONOUN/p_l/poss} mates.",
         "decline_text": "They decide to focus on working on a different skill instead.",
         "chance_of_success": 60,
@@ -5370,7 +5370,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 60,
+        "weight": 40,
         "intro_text": "p_l suggests this might be a good chance to practice teamwork with {PRONOUN/p_l/poss} mates.",
         "decline_text": "They decide to focus on working on a different skill instead.",
         "chance_of_success": 60,
@@ -7749,7 +7749,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 100,
+        "weight": 40,
         "intro_text": "r_c finds p_l out training in r_c's favorite spot - and not only does r_c have to share the spot, but the pounce p_l is practicing looks all wrong!",
         "decline_text": "Nope, nopedy nope, r_c isn't hanging around that mouse-brain!",
         "chance_of_success": 60,
@@ -7804,7 +7804,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 100,
+        "weight": 40,
         "intro_text": "p_l is working on {PRONOUN/p_l/poss} battle moves when r_c sticks {PRONOUN/r_c/poss} head around the corner. Perfect - not only will p_l get a training partner, but battering r_c (with sheathed claws, {PRONOUN/p_l/subject} {VERB/p_l/promise/promises}!) will be just a little more satisfying than putting a paw in any other Clanmate's face.",
         "decline_text": "A sudden rain shower puts a damper on any thoughts of battle training.",
         "chance_of_success": 60,
@@ -7866,7 +7866,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 100,
+        "weight": 40,
         "intro_text": "p_l and r_c find themselves hanging out together. Without any other companions. This is... sure to go well. p_l tries to start up a safe conversation about prey types.",
         "decline_text": "You know what's safer? Not talking.",
         "chance_of_success": 60,
@@ -7907,7 +7907,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 100,
+        "weight": 40,
         "intro_text": "p_l is an annoying furball of a Clanmate, but there's no one else available for training. Another Clanmate spots r_c leading p_l out of camp and makes a <i>comment</i> about romantic sunset walks. r_c burns under {PRONOUN/r_c/poss} fur. Certainly not!",
         "decline_text": "Actually, r_c is headed straight back to camp to find whoever said that and box their ears!",
         "chance_of_success": 60,
@@ -7962,7 +7962,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 100,
+        "weight": 40,
         "intro_text": "p_l spots r_c padding out of camp and makes a beeline to follow {PRONOUN/r_c/object}. Because, of course, {PRONOUN/p_l/subject}{VERB/p_l/'re/'s} simply that dedicated to taking every opportunity to train, even with a tick like r_c.",
         "decline_text": "p_l is waylaid by a Clanmate with an actual need for help, disrupting {PRONOUN/p_l/poss} cunning plans.",
         "chance_of_success": 60,
@@ -8024,7 +8024,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 100,
+        "weight": 40,
         "intro_text": "Maybe it's a little immature to be so invested in an argument - ahem, refined conversation about battle strategies.",
         "decline_text": "Yeah, time to take a breather from this conversation, p_l and r_c decide.",
         "chance_of_success": 60,
@@ -8089,7 +8089,7 @@
             "leader": [-1, -1],
             "all apprentices": [-1, -1]
         },
-        "weight": 100,
+        "weight": 40,
         "intro_text": "p_l can't believe that r_c is <i>such</i> a fox-heart that the leader of c_n sent them both out together to work out their problems. Like, what?",
         "decline_text": "Maybe this rivalry has gotten a little... excessive.",
         "chance_of_success": 60,
@@ -8140,7 +8140,7 @@
             "leader": [1, 6],
             "all apprentices": [-1, -1]
         },
-        "weight": 100,
+        "weight": 40,
         "intro_text": "Out for training with r_c, p_l is reaching the limit of {PRONOUN/p_l/poss} patience.",
         "decline_text": "Time for training to end. Now.",
         "chance_of_success": 60,
@@ -8190,7 +8190,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 100,
+        "weight": 40,
         "intro_text": "Everyone agrees that p_l and r_c get along like a forest fire, but surely they can hold it together for one afternoon's worth of training?",
         "decline_text": "...Best not to try it.",
         "chance_of_success": 60,
@@ -8254,7 +8254,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 100,
+        "weight": 40,
         "intro_text": "Everyone agrees that p_l and r_c get along like a forest fire, but surely they can hold it together for one afternoon's worth of training?",
         "decline_text": "...Best not to try it.",
         "chance_of_success": 60,
@@ -8319,7 +8319,7 @@
         "min_max_status": {
             "all apprentices": [-1, -1]
         },
-        "weight": 100,
+        "weight": 40,
         "intro_text": "r_c, sick of hearing other cats gossip about how much p_l hates {PRONOUN/r_c/object}, pulls p_l aside to confront {PRONOUN/p_l/object}.",
         "decline_text": "r_c's nerves make {PRONOUN/r_c/object} think better of the idea.",
         "chance_of_success": 60,
@@ -10140,7 +10140,7 @@
         "min_max_status": {
             "normal adult": [1, 6]
         },
-        "weight": 50,
+        "weight": 40,
         "intro_text": "p_l shifts uneasily as {PRONOUN/p_l/subject} {VERB/p_l/bask/basks}. r_c stretches {PRONOUN/r_c/poss} tail across {PRONOUN/p_l/poss} back - what's wrong?",
         "decline_text": "Just a stone digging into p_l's shoulder, nothing serious.",
         "chance_of_success": 60,
@@ -10297,7 +10297,7 @@
         "min_max_status": {
             "normal adult": [1, 6]
         },
-        "weight": 50,
+        "weight": 40,
         "intro_text": "Among {PRONOUN/p_l/poss} friends and with a little sunshine to brighten {PRONOUN/p_l/poss} dark mood, p_l opens up about what's been shared with {PRONOUN/p_l/object} through the powers of the stars: prophecy_list/p_l.",
         "decline_text": "No one wants to talk about it. p_l doesn't blame them and lets the conversation move on.",
         "chance_of_success": 60,

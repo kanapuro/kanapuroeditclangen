@@ -4117,6 +4117,9 @@ def lifegen_text_adjust(Cat, text, cat, cat_dict, r_c_allowed, o_c_allowed):
         return ""
     chosen_cat = choice(alive_cats)
 
+    if not o_c_allowed and re.search(r"(?<!\\w)o_c[1-4](?!\\w)", text):
+        return ""
+
     # this is a throwaway cat just so i can grab the abbrevs dict
     abbrevs = lifegen_abbrevs(Cat, text, you, cat, chosen_cat, cat_dict)
 

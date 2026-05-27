@@ -3,11 +3,14 @@ import unittest
 
 from scripts.cat.cats import Cat
 from scripts.cat_relations.relationship import Relationship
+from scripts.clan import Clan
+from scripts.game_structure.game_essentials import game
 from scripts.utility import (
     get_highest_romantic_relation,
     get_personality_compatibility,
     get_amount_of_cats_with_relation_value_towards,
-    get_alive_clan_queens
+    get_alive_clan_queens,
+    lifegen_text_adjust,
 )
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
@@ -332,3 +335,25 @@ class TestGetQueens(unittest.TestCase):
         # then
         living_cats = [self.test_cat1, self.test_cat2, self.test_cat3, self.test_cat4, self.test_cat5, self.test_cat6]
         self.assertEqual([self.test_cat2.ID], list(get_alive_clan_queens(living_cats)[0].keys()))
+
+
+class TestLifegenTextAdjust(unittest.TestCase):
+    def test_rejects_other_cat_placeholders_when_disallowed(self):
+        previous_clan = game.clan
+        game.clan = Clan(name="test")
+        try:
+            player = Cat()
+            game.clan.your_cat = player
+
+            adjusted = lifegen_text_adjust(
+                Cat,
+                "You walk with r_c and o_c1 along the border.",
+                player,
+                {},
+                r_c_allowed=True,
+                o_c_allowed=False,
+            )
+
+            self.assertEqual(adjusted, "")
+        finally:
+            game.clan = previous_clan
