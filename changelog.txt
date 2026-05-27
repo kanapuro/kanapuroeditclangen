@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed a bug faiing to protect the Wanderer afterlife's guide from fading. Retroactive fix. (Updated fade logic to exclude all three guides, enforced anti-fade flags in new clans, and enforced anti-fade flags when loading old formats)
 - Fixed crash at shared cat-target gathering layer in utility.py (gather_cat_objects now drops None before returning, patrol outcome code no longer dereferences a missing cat and hits an AttributeError) (i hope.)
 - Ensured all open() lines had UTF-8 encoding to prevent crashes caused by coding on Linux.
 - A buncha string fixes (clan -> colony and such) x2

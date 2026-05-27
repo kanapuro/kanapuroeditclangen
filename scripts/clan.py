@@ -239,6 +239,7 @@ class Clan:
                             )
         self.instructor.dead = True
         self.instructor.dead_for = randint(20, 200)
+        self.instructor.prevent_fading = True
         if self.clan_age == "new":
             self.instructor.backstory = choice(BACKSTORIES["backstory_categories"]["new_sc_guide_backstories"])
         else:
@@ -253,6 +254,7 @@ class Clan:
         self.demon.df = True
         self.demon.dead = True
         self.demon.dead_for = randint(20, 200)
+        self.demon.prevent_fading = True
         if self.clan_age == "new":
             self.demon.backstory = choice(BACKSTORIES["backstory_categories"]["new_df_guide_backstories"])
         else:
@@ -267,6 +269,7 @@ class Clan:
         self.wanderer.outside = True
         self.wanderer.dead = True
         self.wanderer.dead_for = randint(20, 200)
+        self.wanderer.prevent_fading = True
         if self.clan_age == "new":
             self.wanderer.backstory = choice(BACKSTORIES["backstory_categories"]["new_wanderer_guide_backstories"])
         else:
@@ -1137,6 +1140,7 @@ class Clan:
             # update_sprite(game.clan.instructor)
             game.clan.instructor.dead = True
             game.clan.add_cat(game.clan.instructor)
+        game.clan.instructor.prevent_fading = True
             
         if len(sections) > 4:
             if demon_info in Cat.all_cats:
@@ -1148,6 +1152,7 @@ class Clan:
             # update_sprite(game.clan.demon)
             game.clan.demon.dead = True
             game.clan.add_cat(game.clan.demon)
+        game.clan.demon.prevent_fading = True
 
         if other_clans != [""]:
             for other_clan in other_clans:
@@ -1275,6 +1280,7 @@ class Clan:
             # update_sprite(game.clan.instructor)
             game.clan.instructor.dead = True
             game.clan.add_cat(game.clan.instructor)
+        game.clan.instructor.prevent_fading = True
             
         # demon Info
         if "demon" in clan_data and clan_data["demon"] in Cat.all_cats:
@@ -1287,6 +1293,7 @@ class Clan:
             game.clan.demon.dead = True
             game.clan.add_cat(game.clan.demon)
             game.clan.demon.df = True
+        game.clan.demon.prevent_fading = True
         
         # Wanderer Info (Backwards compatible)
         if "wanderer" in clan_data and clan_data["wanderer"] in Cat.all_cats:
@@ -1299,6 +1306,7 @@ class Clan:
             game.clan.wanderer.dead = True
             game.clan.wanderer.outside = True
             game.clan.add_cat(game.clan.wanderer)
+        game.clan.wanderer.prevent_fading = True
    
         ##Commented this out because I don't know why it's in here twice. If lead/dep/med stuff starts sobbing... ye ##
         # game.clan.leader_lives = leader_lives

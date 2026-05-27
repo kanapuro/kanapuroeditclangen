@@ -2417,8 +2417,13 @@ class Events:
         """
         TODO: DOCS
         """
+        guide_ids = {
+            game.clan.instructor.ID if game.clan.instructor else None,
+            game.clan.demon.ID if game.clan.demon else None,
+            game.clan.wanderer.ID if game.clan.wanderer else None,
+        }
         if game.clan.clan_settings["fading"] and not cat.prevent_fading \
-                and cat.ID != game.clan.instructor.ID and cat.ID != game.clan.demon.ID and not cat.faded:
+                and cat.ID not in guide_ids and not cat.faded:
 
             age_to_fade = game.config["fading"]["age_to_fade"]
             opacity_at_fade = game.config["fading"]["opacity_at_fade"]
