@@ -14,4 +14,5 @@
 - the acquisition of an illness/condition should be listed in the history tab, alongside its cause. ie. a broken back from a badger, or grief stricken from losing (name).
 - add new subpatrols. date patrol - outing/date buttons. "dark forest" = dreams - parasite dream (dark forest), ascender dream (stc), wandering dream (wanderers) (names for these pending!). rename lifegen to daily life?
 - plotlines? long term events like wars with many interconnected events
-- new f3 command to change a clans (saves) name. needs to rename the folder, the associated json, and the name inside the clan dataa)
+- new f3 command to change a clans (saves) name. needs to rename the folder, the associated json, and the name inside the clan data)
+- new f3 command to change the location - either random or selected. in doing so will wipe the other clans and generate new ones. maybe optional append command to wipe the outsider cats as well? (ie. otrue/ofalse at the end, or just add "wipe"/leave empty?)
