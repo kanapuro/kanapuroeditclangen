@@ -35,7 +35,7 @@ class AllegiancesScreen(Screens):
         super().screen_switches()
         # Heading
         self.heading = pygame_gui.elements.UITextBox(
-            f"<b>{game.clan.name} Allegiances</b>",
+            "<b>Allegiances</b>",
             ui_scale(pygame.Rect((0, 115), (400, 40))),
             object_id=get_text_box_theme("#text_box_34_horizcenter_vertcenter"),
             manager=MANAGER,
@@ -46,7 +46,7 @@ class AllegiancesScreen(Screens):
         self.show_menu_buttons()
         self.show_mute_buttons()
         self.set_disabled_menu_buttons(["allegiances"])
-        self.update_heading_text(f"{game.clan.name}")
+        self.update_heading_text("<b>Allegiances</b>")
         allegiance_list = self.get_allegiances_text()
 
 
@@ -60,51 +60,81 @@ class AllegiancesScreen(Screens):
         self.ranks_boxes = []
         self.names_boxes = []
         allegiances_height = 0
+        last_row_box = None
         for x in allegiance_list:
-            self.ranks_boxes.append(
-                pygame_gui.elements.UITextBox(
-                    x[0],
-                    ui_scale(pygame.Rect((0, 0), (150, -1))),
-                    object_id=get_text_box_theme("#text_box_30_horizleft"),
+            if x[1] == "":
+                header_text = x[0]
+                header_height = 50
+                header_theme = "#text_box_30_horizcenter"
+                if header_text == "<b>CARETAKERS</b>":
+                    header_text = "<b>CARETAKERS</b><br><b>& YOUNG</b>"
+                    header_height = 74
+                    header_theme = "#text_box_30_horizcenter"
+                elif header_text == "<i>& YOUNG</i>":
+                    header_height = 1
+                    header_theme = "#text_box_30_horizcenter"
+                section_box = pygame_gui.elements.UITextBox(
+                    header_text,
+                    ui_scale(pygame.Rect((0, 0), (715, header_height))),
+                    object_id=get_text_box_theme(header_theme),
                     container=self.scroll_container,
                     manager=MANAGER,
-                    anchors={"top_target": self.names_boxes[-1]}
-                    if len(self.names_boxes) > 0
-                    else None,
+                    anchors={"top_target": last_row_box} if last_row_box else None,
                 )
-            )
-            self.ranks_boxes[-1].disable()
+                section_box.disable()
+                self.ranks_boxes.append(section_box)
+                self.names_boxes.append(None)
+                last_row_box = section_box
+                allegiances_height += section_box.get_relative_rect()[3] + 8
+            else:
+                self.ranks_boxes.append(
+                    pygame_gui.elements.UITextBox(
+                        x[0],
+                        ui_scale(pygame.Rect((0, 0), (150, -1))),
+                        object_id=get_text_box_theme("#text_box_30_horizleft"),
+                        container=self.scroll_container,
+                        manager=MANAGER,
+                        anchors={"top_target": last_row_box} if last_row_box else None,
+                    )
+                )
+                self.ranks_boxes[-1].disable()
 
-            self.names_boxes.append(
-                pygame_gui.elements.UITextBox(
-                    x[1],
-                    pygame.Rect(
-                        (0, -self.ranks_boxes[-1].get_relative_rect()[3]),
-                        ui_scale_offset((565, -1)),
-                    ),
-                    object_id=get_text_box_theme("#text_box_30_horizleft"),
-                    container=self.scroll_container,
-                    manager=MANAGER,
-                    anchors={
-                        "top_target": self.ranks_boxes[-1],
-                        "left_target": self.ranks_boxes[-1],
-                        "left": "left",
-                        "right": "right",
-                    },
+                self.names_boxes.append(
+                    pygame_gui.elements.UITextBox(
+                        x[1],
+                        pygame.Rect(
+                            (0, -self.ranks_boxes[-1].get_relative_rect()[3]),
+                            ui_scale_offset((565, -1)),
+                        ),
+                        object_id=get_text_box_theme("#text_box_30_horizleft"),
+                        container=self.scroll_container,
+                        manager=MANAGER,
+                        anchors={
+                            "top_target": self.ranks_boxes[-1],
+                            "left_target": self.ranks_boxes[-1],
+                            "left": "left",
+                            "right": "right",
+                        },
+                    )
                 )
-            )
-            self.names_boxes[-1].disable()
-            allegiances_height += 1
+                self.names_boxes[-1].disable()
+                last_row_box = self.names_boxes[-1]
+                allegiances_height += max(
+                    self.ranks_boxes[-1].get_relative_rect()[3],
+                    self.names_boxes[-1].get_relative_rect()[3],
+                )
         
-        self.scroll_container.set_scrollable_area_dimensions((715, 470 + allegiances_height*20))
+        self.scroll_container.set_scrollable_area_dimensions((715, 470 + allegiances_height))
 
 
     def exit_screen(self):
         for x in self.ranks_boxes:
-            x.kill()
+            if x:
+                x.kill()
         del self.ranks_boxes
         for x in self.names_boxes:
-            x.kill()
+            if x:
+                x.kill()
         del self.names_boxes
         self.scroll_container.kill()
         del self.scroll_container
@@ -120,9 +150,9 @@ class AllegiancesScreen(Screens):
             return output
 
         output += (
-            "\n      APPRENTICE: "
+            "\n      TUTORING: "
             if len(cat.apprentice) == 1
-            else "\n      APPRENTICES: "
+            else "\n      TUTORING: "
         )
         output += ", ".join(
             [
@@ -138,6 +168,7 @@ class AllegiancesScreen(Screens):
         """Determine Text. Ouputs list of tuples."""
 
         living_cats = [i for i in Cat.all_cats.values() if not (i.dead or i.outside or i.moons < 0)]
+        outside_cats = [i for i in Cat.all_cats.values() if not (i.dead or not i.outside or i.moons < 0)]
         living_meds = []
         living_mediators = []
         living_warriors = []
@@ -177,24 +208,26 @@ class AllegiancesScreen(Screens):
         # Clan Leader Box:
         # Pull the Clan leaders
         outputs = []
+        if living_cats:
+            outputs.append([f"<b>{str(game.clan.name).upper()}</b>", ""])
         if game.clan.leader and not (game.clan.leader.dead or game.clan.leader.outside):
             outputs.append(
-                ["<b><u>LEADER</u></b>", self.generate_one_entry(game.clan.leader)]
+                ["<b>LEADER</b>", self.generate_one_entry(game.clan.leader)]
             )
 
         # Deputy Box:
         if game.clan.deputy and not (game.clan.deputy.dead or game.clan.deputy.outside):
             outputs.append(
-                ["<b><u>DEPUTY</u></b>", self.generate_one_entry(game.clan.deputy)]
+                ["<b>DEPUTY</b>", self.generate_one_entry(game.clan.deputy)]
             )
 
         # Medicine Cat Box:
         if living_meds:
             _box = ["", ""]
             if len(living_meds) == 1:
-                _box[0] = "<b><u>MEDICINE CAT</u></b>"
+                _box[0] = "<b>HEALER</b>"
             else:
-                _box[0] = "<b><u>MEDICINE CATS</u></b>"
+                _box[0] = "<b>HEALERS</b>"
 
             _box[1] = "\n".join([self.generate_one_entry(i) for i in living_meds])
             outputs.append(_box)
@@ -203,9 +236,9 @@ class AllegiancesScreen(Screens):
         if living_mediators:
             _box = ["", ""]
             if len(living_mediators) == 1:
-                _box[0] = "<b><u>MEDIATOR</u></b>"
+                _box[0] = "<b>MEDIATOR</b>"
             else:
-                _box[0] = "<b><u>MEDIATORS</u></b>"
+                _box[0] = "<b>MEDIATORS</b>"
 
             _box[1] = "\n".join([self.generate_one_entry(i) for i in living_mediators])
             outputs.append(_box)
@@ -214,9 +247,9 @@ class AllegiancesScreen(Screens):
         if living_warriors:
             _box = ["", ""]
             if len(living_warriors) == 1:
-                _box[0] = "<b><u>WARRIOR</u></b>"
+                _box[0] = "<b>MEMBER</b>"
             else:
-                _box[0] = "<b><u>WARRIORS</u></b>"
+                _box[0] = "<b>MEMBERS</b>"
 
             _box[1] = "\n".join([self.generate_one_entry(i) for i in living_warriors])
             outputs.append(_box)
@@ -225,9 +258,9 @@ class AllegiancesScreen(Screens):
         if living_apprentices:
             _box = ["", ""]
             if len(living_apprentices) == 1:
-                _box[0] = "<b><u>APPRENTICE</u></b>"
+                _box[0] = "<b>JUVENILE</b>"
             else:
-                _box[0] = "<b><u>APPRENTICES</u></b>"
+                _box[0] = "<b>JUVENILES</b>"
 
             _box[1] = "\n".join(
                 [self.generate_one_entry(i) for i in living_apprentices]
@@ -237,7 +270,7 @@ class AllegiancesScreen(Screens):
         # Queens and Kits Box:
         if queen_dict or living_kits or living_queens:
             _box = ["", ""]
-            _box[0] = "<b><u>QUEENS AND KITS</u></b>"
+            _box[0] = ""
 
             # This one is a bit different.  First all the queens, and the kits they are caring for.
             all_entries = []
@@ -265,17 +298,27 @@ class AllegiancesScreen(Screens):
                 )
 
             _box[1] = "\n".join(all_entries)
+            outputs.append(["<b>CARETAKERS<br>& YOUNG</b>", " "])
             outputs.append(_box)
 
         # Elder Box:
         if living_elders:
             _box = ["", ""]
             if len(living_elders) == 1:
-                _box[0] = "<b><u>ELDER</u></b>"
+                _box[0] = "<b>SENIOR</b>"
             else:
-                _box[0] = "<b><u>ELDERS</u></b>"
+                _box[0] = "<b>SENIORS</b>"
 
             _box[1] = "\n".join([self.generate_one_entry(i) for i in living_elders])
             outputs.append(_box)
+
+        if outside_cats:
+            outputs.append(["<b>OUTSIDERS</b>", ""])
+            outputs.append(
+                [
+                    "",
+                    "\n".join([self.generate_one_entry(i) for i in outside_cats]),
+                ]
+            )
 
         return outputs
