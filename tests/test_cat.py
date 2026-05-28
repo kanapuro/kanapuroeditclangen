@@ -4,6 +4,7 @@ from copy import deepcopy
 from unittest.mock import patch
 
 from scripts.cat.cats import Cat
+from scripts.cat.names import Name
 from scripts.cat_relations.relationship import Relationship
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"

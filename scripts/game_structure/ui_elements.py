@@ -417,7 +417,7 @@ class UIModifiedScrollingContainer(pygame_gui.elements.UIScrollingContainer):
             )
             self.join_focus_sets(self.vert_scroll_bar)
 
-            self.vert_scroll_bar.set_container_this_will_scroll(
+            self.vert_scroll_bar.set_container_this_will_scroll(  # pylint: disable=no-member
                 self.scrollable_container
             )
 
@@ -450,7 +450,7 @@ class UIModifiedScrollingContainer(pygame_gui.elements.UIScrollingContainer):
             )
             self.horiz_scroll_bar.set_dimensions((self.relative_rect.width, 0))
             self.horiz_scroll_bar.set_relative_position((0, 0))
-            self.horiz_scroll_bar.set_container_this_will_scroll(
+            self.horiz_scroll_bar.set_container_this_will_scroll(  # pylint: disable=no-member
                 self.scrollable_container
             )
 

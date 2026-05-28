@@ -1,5 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
-- Fixed date/outing bug where resolver allows a non-existent third cat to slip through during a 2-cat-only patrol.
+- ACTUALLY fixed leader/deputy strings showing up when there are no leaders or deputies!
+- Fixed date/outing bug where resolver allows a non-existent third cat to slip through during a 2-cat-only patrol. x2
 - Patrol weight changes!
 - Fixed a bug faiing to protect the Wanderer afterlife's guide from fading. Retroactive fix. (Updated fade logic to exclude all three guides, enforced anti-fade flags in new clans, and enforced anti-fade flags when loading old formats)
 - Fixed crash at shared cat-target gathering layer in utility.py (gather_cat_objects now drops None before returning, patrol outcome code no longer dereferences a missing cat and hits an AttributeError) (i hope.)

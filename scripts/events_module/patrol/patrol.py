@@ -1370,13 +1370,13 @@ class Patrol:
             if len(new_cats) == 1:
                 names = str(new_cats[0].name)
                 pronoun = choice(new_cats[0].pronouns)
-            elif len(new_cats) == 1:
+            elif len(new_cats) == 2:
                 names = f"{new_cats[0].name} and {new_cats[1].name}"
                 pronoun = Cat.default_pronouns[0]  # They/them for muliple cats
             else:
                 names = (
                     ", ".join([str(x.name) for x in new_cats[:-1]])
-                    + f", and {new_cats[1].name}"
+                    + f", and {new_cats[-1].name}"
                 )
                 pronoun = Cat.default_pronouns[0]  # They/them for muliple cats
 

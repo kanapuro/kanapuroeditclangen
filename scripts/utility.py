@@ -2331,7 +2331,10 @@ def event_text_adjust(
 
     # other_cats
     if patrol_cats:
-        other_cats = [i for i in patrol_cats if i not in [patrol_leader, random_cat, patrol_apprentices]]
+        excluded_cats = [patrol_leader, random_cat]
+        if patrol_apprentices:
+            excluded_cats.extend(patrol_apprentices)
+        other_cats = [i for i in patrol_cats if i not in excluded_cats]
         other_cat_abbr = ["o_c1", "o_c2", "o_c3", "o_c4"]
         for i, abbr in enumerate(other_cat_abbr):
             if abbr not in text:
