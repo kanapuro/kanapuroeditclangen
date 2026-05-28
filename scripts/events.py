@@ -50,15 +50,13 @@ from scripts.utility import (
     adjust_list_text,
     ongoing_event_text_adjust,
     event_text_adjust,
-    choose_rank_text,
     get_other_clan,
     history_text_adjust,
     unpack_rel_block,
     pronoun_repl,
     create_new_cat,
     lifegen_text_adjust,
-    get_cluster,
-    process_text,
+    get_cluster
 )
 class BirthType(Enum):
     NO_PARENTS = "birth_no_parents"
@@ -68,23 +66,6 @@ class BirthType(Enum):
     TWO_ADOPTIVE_PARENTS = "birth_two_adoptive_parents"
     ONE_OUTSIDER_PARENT = "birth_one_parent_outsider"
     TWO_OUTSIDER_PARENTS = "birth_two_parent_outsiders"
-
-
-LEADERLESS_WARRIOR_CEREMONIES = [
-    "The colony gathers around the Great Rock. Your name is announced, and you are welcomed into your new role as y_c.",
-    "The colony falls quiet beneath the Great Rock as your name echoes through the clearing. You step forward and receive your new warrior name, y_c.",
-    "With the colony gathered around the Great Rock, your new name is announced and you are welcomed as a full warrior of c_n.",
-]
-
-LEADERLESS_ELDER_CEREMONIES = [
-    "The colony gathers quietly as you step forward. Your years of service are honored, and you are welcomed into the elders' den as y_c.",
-    "The colony falls silent as your name is spoken with respect. You are granted a place among the elders as y_c.",
-]
-
-LEADERLESS_GAIN_APP_CEREMONIES = [
-    "The colony gathers to witness your new path. Your apprentice name is announced, and you are welcomed into your training as y_c.",
-    "The colony falls quiet as you are given your apprentice name. You step forward, ready to begin your training as y_c.",
-]
 
 class Events:
     """
@@ -1223,11 +1204,7 @@ class Events:
         try:
             ceremony_txt = ""
             if game.clan.your_cat.shunned != 0:
-                ceremony_txt = choose_rank_text(
-                    self.b_txt['apprentice ceremony shunned'],
-                    leader_available=bool(game.clan.has_leader()),
-                    deputy_available=bool(game.clan.has_deputy()),
-                )
+                ceremony_txt = ceremony_txt = random.choice(self.b_txt['apprentice ceremony shunned'])
             else:
                 add_on_lead = ""
                 if len(game.clan.clan_cats) == 1:
@@ -1240,32 +1217,29 @@ class Events:
                     add_on_lead = " no leader"
 
                 add_on_mentor = " no mentor" if not game.clan.your_cat.mentor else ""
-                ceremony_txt = choose_rank_text(
-                    self.b_txt[f"{game.clan.your_cat.status} ceremony{add_on_lead}{add_on_mentor}"],
-                    leader_available=bool(game.clan.has_leader()),
-                    deputy_available=bool(game.clan.has_deputy()),
-                )
-
-            if not ceremony_txt:
-                return
+                ceremony_txt = random.choice(self.b_txt[f"{game.clan.your_cat.status} ceremony{add_on_lead}{add_on_mentor}"])
 
             ceremony_txt = ceremony_txt.replace('c_n', str(game.clan.name) + "Clan")
             ceremony_txt = ceremony_txt.replace('y_c', str(game.clan.your_cat.name))
             if game.clan.leader and not game.clan.leader.dead and not game.clan.leader.outside:
+                ceremony_txt = re.sub(r'(?<!\/)l_n(?!\/)', str(game.clan.leader.name), ceremony_txt)
                 self.cat_dict["l_n"] = game.clan.leader
             if game.clan.deputy and not game.clan.deputy.dead and not game.clan.deputy.outside:
+                ceremony_txt = re.sub(r'(?<!\/)d_n(?!\/)', str(game.clan.deputy.name), ceremony_txt)
                 self.cat_dict["d_n"] = game.clan.deputy
             if len(get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"], sort=True)) > 0:
                 random_med = random.choice(get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"], sort=True))
+                ceremony_txt = re.sub(r'(?<!\/)r_m(?!\/)', str(random_med.name), ceremony_txt)
                 self.cat_dict["r_m"] = random_med
             if game.clan.your_cat.mentor:
+                ceremony_txt = re.sub(r'(?<!\/)m_n(?!\/)', str(Cat.all_cats[game.clan.your_cat.mentor].name), ceremony_txt)
                 self.cat_dict["m_n"] = Cat.all_cats[game.clan.your_cat.mentor]
 
             process_text_dict = self.cat_dict.copy()
             for abbrev in process_text_dict.keys():
                 abbrev_cat = process_text_dict[abbrev]
                 process_text_dict[abbrev] = (abbrev_cat, random.choice(abbrev_cat.pronouns))
-            ceremony_txt = process_text(ceremony_txt, process_text_dict, omit_missing=True)
+            ceremony_txt = re.sub(r"\{(.*?)\}", lambda x: pronoun_repl(x, process_text_dict, False), ceremony_txt)
             
             game.cur_events_list.insert(0, Single_Event(ceremony_txt, ["alert", "ceremony"], game.clan.your_cat.ID))
         except Exception as e:
@@ -1274,69 +1248,35 @@ class Events:
     def generate_ceremony(self):
         if game.clan.your_cat.former_mentor:
             if Cat.all_cats[game.clan.your_cat.former_mentor[-1]].dead and game.clan.your_cat.status == 'medicine cat':
-                ceremony_txt = choose_rank_text(
-                    self.b_txt[game.clan.your_cat.status + '_ceremony_no_mentor'],
-                    leader_available=bool(game.clan.has_leader()),
-                    deputy_available=bool(game.clan.has_deputy()),
-                )
+                ceremony_txt = random.choice(self.b_txt[game.clan.your_cat.status + '_ceremony_no_mentor'])
 
             if game.clan.your_cat.forgiven < 10 and game.clan.your_cat.forgiven > 0:
                 try:
-                    ceremony_txt = choose_rank_text(
-                        self.b_txt[game.clan.your_cat.status + '_ceremony forgiven'],
-                        leader_available=bool(game.clan.has_leader()),
-                        deputy_available=bool(game.clan.has_deputy()),
-                    )
+                    ceremony_txt = random.choice(self.b_txt[game.clan.your_cat.status + '_ceremony forgiven'])
                 except:
-                    ceremony_txt = choose_rank_text(
-                        self.b_txt[game.clan.your_cat.status + '_ceremony'],
-                        leader_available=bool(game.clan.has_leader()),
-                        deputy_available=bool(game.clan.has_deputy()),
-                    )
+                    ceremony_txt = random.choice(self.b_txt[game.clan.your_cat.status + '_ceremony'])
             else:
-                ceremony_txt = choose_rank_text(
-                    self.b_txt[game.clan.your_cat.status + '_ceremony'],
-                    leader_available=bool(game.clan.has_leader()),
-                    deputy_available=bool(game.clan.has_deputy()),
-                )
-            if not ceremony_txt:
-                ceremony_txt = random.choice(LEADERLESS_WARRIOR_CEREMONIES)
-                self.cat_dict.pop("l_n", None)
-                self.cat_dict.pop("d_n", None)
+                ceremony_txt = random.choice(self.b_txt[game.clan.your_cat.status + '_ceremony'])
             former_mentor = Cat.all_cats[game.clan.your_cat.former_mentor[-1]]
             ceremony_txt = re.sub(r'(?<!\/)m_n(?!\/)', str(former_mentor.name), ceremony_txt)
             self.cat_dict["m_n"] = former_mentor
         else:
             if game.clan.your_cat.forgiven < 10:
                 try:
-                    ceremony_txt = choose_rank_text(
-                        self.b_txt[game.clan.your_cat.status + '_ceremony_no_mentor forgiven'],
-                        leader_available=bool(game.clan.has_leader()),
-                        deputy_available=bool(game.clan.has_deputy()),
-                    )
+                    ceremony_txt = random.choice(self.b_txt[game.clan.your_cat.status + '_ceremony_no_mentor forgiven'])
                 except:
-                    ceremony_txt = choose_rank_text(
-                        self.b_txt[game.clan.your_cat.status + '_ceremony_no_mentor'],
-                        leader_available=bool(game.clan.has_leader()),
-                        deputy_available=bool(game.clan.has_deputy()),
-                    )
+                    ceremony_txt = random.choice(self.b_txt[game.clan.your_cat.status + '_ceremony_no_mentor'])
             else:
-                ceremony_txt = choose_rank_text(
-                    self.b_txt[game.clan.your_cat.status + '_ceremony_no_mentor'],
-                    leader_available=bool(game.clan.has_leader()),
-                    deputy_available=bool(game.clan.has_deputy()),
-                )
-            if not ceremony_txt:
-                ceremony_txt = random.choice(LEADERLESS_WARRIOR_CEREMONIES)
-                self.cat_dict.pop("l_n", None)
-                self.cat_dict.pop("d_n", None)
+                ceremony_txt = random.choice(self.b_txt[game.clan.your_cat.status + '_ceremony_no_mentor'])
         
         ceremony_txt = ceremony_txt.replace('c_n', str(game.clan.name) + "Clan")
         ceremony_txt = ceremony_txt.replace('y_c', str(game.clan.your_cat.name))
         
         if game.clan.leader and not game.clan.leader.dead and not game.clan.leader.outside:
+            ceremony_txt = re.sub(r'(?<!\/)l_n(?!\/)', str(game.clan.leader.name), ceremony_txt)
             self.cat_dict["l_n"] = game.clan.leader
         elif game.clan.deputy and not game.clan.deputy.dead and not game.clan.deputy.outside:
+            ceremony_txt = re.sub(r'(?<!\/)l_n(?!\/)', str(game.clan.deputy.name), ceremony_txt)
             self.cat_dict["d_n"] = game.clan.deputy
 
 
@@ -1353,31 +1293,25 @@ class Events:
         for abbrev in process_text_dict.keys():
             abbrev_cat = process_text_dict[abbrev]
             process_text_dict[abbrev] = (abbrev_cat, random.choice(abbrev_cat.pronouns))
-        ceremony_txt = process_text(ceremony_txt, process_text_dict, omit_missing=True)
+        ceremony_txt = re.sub(r"\{(.*?)\}", lambda x: pronoun_repl(x, process_text_dict, False), ceremony_txt)
         game.cur_events_list.insert(0, Single_Event(ceremony_txt, ["alert", "ceremony"], game.clan.your_cat.ID))
         game.clan.your_cat.w_done = True
         
     def generate_elder_ceremony(self):
-        ceremony_txt = choose_rank_text(
-            self.b_txt['elder_ceremony'],
-            leader_available=bool(game.clan.has_leader()),
-            deputy_available=bool(game.clan.has_deputy()),
-        )
-        if not ceremony_txt:
-            ceremony_txt = random.choice(LEADERLESS_ELDER_CEREMONIES)
-            self.cat_dict.pop("l_n", None)
-            self.cat_dict.pop("d_n", None)
+        ceremony_txt = random.choice(self.b_txt['elder_ceremony'])
         ceremony_txt = ceremony_txt.replace('c_n', str(game.clan.name) + "Clan")
         ceremony_txt = ceremony_txt.replace('y_c', str(game.clan.your_cat.name))
         if game.clan.leader and not game.clan.leader.dead and not game.clan.leader.outside:
+            ceremony_txt = re.sub(r'(?<!\/)l_n(?!\/)', str(game.clan.leader.name), ceremony_txt)
             self.cat_dict["l_n"] = game.clan.leader
         elif game.clan.deputy and not game.clan.deputy.dead and not game.clan.deputy.outside:
-            self.cat_dict["d_n"] = game.clan.deputy
+            ceremony_txt = re.sub(r'(?<!\/)l_n(?!\/)', str(game.clan.deputy.name), ceremony_txt)
+            self.cat_dict["l_n"] = game.clan.deputy
         process_text_dict = self.cat_dict.copy()
         for abbrev in process_text_dict.keys():
             abbrev_cat = process_text_dict[abbrev]
             process_text_dict[abbrev] = (abbrev_cat, random.choice(abbrev_cat.pronouns))
-        ceremony_txt = process_text(ceremony_txt, process_text_dict, omit_missing=True)
+        ceremony_txt = re.sub(r"\{(.*?)\}", lambda x: pronoun_repl(x, process_text_dict, False), ceremony_txt)
         game.cur_events_list.insert(0, Single_Event(ceremony_txt, ["alert", "ceremony"], game.clan.your_cat.ID))
     
     
@@ -1390,26 +1324,21 @@ class Events:
             resource_dir = "resources/dicts/events/lifegen_events/"
             with open(f"{resource_dir}ceremonies.json", encoding="utf-8") as read_file:
                 self.d_txt = ujson.loads(read_file.read())
-            ceremony_txt = choose_rank_text(
-                self.d_txt['gain_app ' + game.clan.your_cat.status],
-                leader_available=bool(game.clan.has_leader()),
-                deputy_available=bool(game.clan.has_deputy()),
-            )
-            if not ceremony_txt:
-                ceremony_txt = random.choice(LEADERLESS_GAIN_APP_CEREMONIES)
-                self.cat_dict.pop("l_n", None)
-                self.cat_dict.pop("d_n", None)
+            ceremony_txt = random.choice(self.d_txt['gain_app ' + game.clan.your_cat.status])
             if game.clan.leader and not game.clan.leader.dead and not game.clan.leader.outside:
+                ceremony_txt = re.sub(r'(?<!\/)l_n(?!\/)', str(game.clan.leader.name), ceremony_txt)
                 self.cat_dict["l_n"] = game.clan.leader
             elif game.clan.deputy and not game.clan.deputy.dead and not game.clan.deputy.outside:
-                self.cat_dict["d_n"] = game.clan.deputy
+                ceremony_txt = re.sub(r'(?<!\/)l_n(?!\/)', str(game.clan.deputy.name), ceremony_txt)
+                self.cat_dict["l_n"] = game.clan.deputy
             app = Cat.all_cats[game.clan.your_cat.apprentice[-1]]
             self.cat_dict["app1"] = app
+            ceremony_txt = re.sub(r'(?<!\/)app1(?!\/)', str(app.name), ceremony_txt)
             process_text_dict = self.cat_dict.copy()
             for abbrev in process_text_dict.keys():
                 abbrev_cat = process_text_dict[abbrev]
                 process_text_dict[abbrev] = (abbrev_cat, random.choice(abbrev_cat.pronouns))
-            ceremony_txt = process_text(ceremony_txt, process_text_dict, omit_missing=True)
+            ceremony_txt = re.sub(r"\{(.*?)\}", lambda x: pronoun_repl(x, process_text_dict, False), ceremony_txt)
             game.cur_events_list.insert(0, Single_Event(ceremony_txt, ["alert", "ceremony"], game.clan.your_cat.ID))
 
     def check_gain_mate(self, checks):

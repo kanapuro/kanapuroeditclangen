@@ -4,7 +4,7 @@ from scripts.cat.cats import Cat
 from scripts.event_class import Single_Event
 from scripts.events_module.generate_events import GenerateEvents
 from scripts.game_structure.game_essentials import game
-from scripts.utility import get_alive_status_cats, process_text, choose_rank_text
+from scripts.utility import get_alive_status_cats
 
 
 # ---------------------------------------------------------------------------- #
@@ -67,9 +67,7 @@ class DisasterEvents():
 
         # display trigger event
         event = self.disaster_text(chosen_disaster.trigger_events)
-        if not event:
-            return
-        event = event.replace("c_n", f"{game.clan.name}")
+        event.replace("c_n", f"{game.clan.name}")
         game.cur_events_list.append(Single_Event(event, "misc"))
 
     def handle_current_primary_disaster(self):
@@ -85,8 +83,6 @@ class DisasterEvents():
         # triggering conclusion if duration reaches 0
         if game.clan.primary_disaster.current_duration >= game.clan.primary_disaster.duration:
             event = self.disaster_text(game.clan.primary_disaster.conclusion_events)
-            if not event:
-                return
             game.cur_events_list.append(
                 Single_Event(event, "misc"))
             game.clan.primary_disaster = None
@@ -95,8 +91,6 @@ class DisasterEvents():
             # giving a progression event
             event_list = game.clan.primary_disaster.progress_events[f"moon{game.clan.primary_disaster.current_duration}"]
             event = self.disaster_text(event_list)
-            if not event:
-                return
             game.cur_events_list.append(
                 Single_Event(event, "misc"))
 
@@ -125,8 +119,6 @@ class DisasterEvents():
                     secondary_disaster = random.choice(picked_disasters)
                     print("chosen secondary", secondary_disaster)
                     event = self.disaster_text(secondary_disaster["trigger_events"])
-                    if not event:
-                        return
                     game.cur_events_list.append(
                         Single_Event(event, "misc"))
 
@@ -149,8 +141,6 @@ class DisasterEvents():
         # triggering conclusion if duration reaches 0
         if game.clan.secondary_disaster.current_duration >= game.clan.secondary_disaster.duration:
             event = self.disaster_text(game.clan.secondary_disaster.conclusion_events)
-            if not event:
-                return
             game.cur_events_list.append(
                 Single_Event(event, "misc"))
             game.clan.secondary_disaster = None
@@ -159,26 +149,25 @@ class DisasterEvents():
             # giving a progression event
             event_list = game.clan.secondary_disaster.progress_events[f"moon{game.clan.secondary_disaster.current_duration}"]
             event = self.disaster_text(event_list)
-            if not event:
-                return
             game.cur_events_list.append(
                 Single_Event(event, "misc"))
 
         return
 
     def disaster_text(self, text_list):
+
         leader_exists = False
         dep_exists = False
         med_exists = False
 
-        leader = Cat.fetch_cat(game.clan.leader) if game.clan.leader else None
-        deputy = Cat.fetch_cat(game.clan.deputy) if game.clan.deputy else None
+        leader = Cat.fetch_cat(game.clan.leader)
+        deputy = Cat.fetch_cat(game.clan.deputy)
         med_cats = get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"], sort=True)
 
         # checking if there are cats of the specified rank
-        if leader and not leader.dead and not leader.outside:
+        if not leader.dead and not leader.outside:
             leader_exists = True
-        if deputy and not deputy.dead and not deputy.outside:
+        if not deputy.dead and not deputy.outside:
             dep_exists = True
         if med_cats:
             med_exists = True
@@ -192,25 +181,11 @@ class DisasterEvents():
             if (event.find('lead_name') == -1 or event.find('leader') == -1) and not leader_exists:
                 text_list.remove(event)
 
-        text = choose_rank_text(
-            text_list,
-            leader_available=bool(leader_exists),
-            deputy_available=bool(dep_exists),
-        )
-        if not text:
-            return ""
+        text = random.choice(text_list)
 
-        replace_dict = {}
-        if leader:
-            replace_dict["lead_name"] = (str(leader.name), random.choice(leader.pronouns))
-        if deputy:
-            replace_dict["dep_name"] = (str(deputy.name), random.choice(deputy.pronouns))
-        if med_cats:
-            med = random.choice(med_cats)
-            replace_dict["med_name"] = (str(med.name), random.choice(med.pronouns))
-
-        if replace_dict:
-            text = process_text(text, replace_dict, omit_missing=True)
+        text = text.replace("lead_name", str(leader.name))
+        text = text.replace("dep_name", str(deputy.name))
+        text = text.replace("med_name", str(random.choice(med_cats).name))
         text = text.replace("c_n", f"{game.clan.name}")
 
         return text

@@ -615,18 +615,16 @@ class MoonplaceScreen(Screens):
                 text = text.replace("r_i", str(alive_app.name))
             if "l_n" in text:
                 if game.clan.leader is None:
-                    text = text.replace("l_n", "")
-                elif game.clan.leader.dead or game.clan.leader.outside or game.clan.leader.ID == game.clan.your_cat.ID or game.clan.leader.ID == cat.ID:
-                    text = text.replace("l_n", "")
-                else:
-                    text = text.replace("l_n", str(game.clan.leader.name))
+                    return ""
+                if game.clan.leader.dead or game.clan.leader.outside or game.clan.leader.ID == game.clan.your_cat.ID or game.clan.leader.ID == cat.ID:
+                    return ""
+                text = text.replace("l_n", str(game.clan.leader.name))
             if "d_n" in text:
                 if game.clan.deputy is None:
-                    text = text.replace("d_n", "")
-                elif game.clan.deputy.dead or game.clan.deputy.outside or game.clan.deputy.ID == game.clan.your_cat.ID or game.clan.deputy.ID == cat.ID:
-                    text = text.replace("d_n", "")
-                else:
-                    text = text.replace("d_n", str(game.clan.deputy.name))
+                    return ""
+                if game.clan.deputy.dead or game.clan.deputy.outside or game.clan.deputy.ID == game.clan.your_cat.ID or game.clan.deputy.ID == cat.ID:
+                    return ""
+                text = text.replace("d_n", str(game.clan.deputy.name))
             if "y_s" in text:
                 if len(game.clan.your_cat.inheritance.get_siblings()) == 0:
                     return ""

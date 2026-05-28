@@ -1324,7 +1324,7 @@ class MurderScreen(Screens):
         if you.skills.primary:
             your_skills.append(you.skills.primary.skill)
         if you.skills.secondary:
-            your_skills.append(you.skills.secondary.skill)
+                your_skills.append(you.skills.secondary.skill)
 
         their_skills = []
         if cat_to_murder.skills.primary:
@@ -1807,17 +1807,15 @@ class MurderScreen(Screens):
 
         replace_dict = {
             "v_c": (str(self.cat_to_murder.name), choice(self.cat_to_murder.pronouns)),
+            "l_n": (str(game.clan.leader.name), choice(game.clan.leader.pronouns)),
             "y_c": (str(game.clan.your_cat.name), choice(game.clan.your_cat.pronouns)),
             "r_m": (str(random_medcat.name), random_medcat_prns)
         }
 
-        if game.clan.leader:
-            replace_dict["l_n"] = (str(game.clan.leader.name), choice(game.clan.leader.pronouns))
-
         if accomplice:
             replace_dict.update({"a_n": (str(accomplice.name), choice(accomplice.pronouns))})
 
-        ceremony_txt = process_text(ceremony_txt, replace_dict, omit_missing=True)
+        ceremony_txt = process_text(ceremony_txt, replace_dict)
 
         if cat_to_murder.status == 'leader' and all_leader_lives:
             game.clan.leader_lives = 0

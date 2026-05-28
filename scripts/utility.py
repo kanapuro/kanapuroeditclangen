@@ -623,8 +623,7 @@ def create_new_cat_block(
         if possible_outsiders:
             chosen_cat = choice(possible_outsiders)
             game.clan.add_to_clan(chosen_cat)
-            if status is not None:
-                chosen_cat.status = status
+            chosen_cat.status = status
             chosen_cat.outside = outside
             if not alive:
                 chosen_cat.die()
@@ -1024,17 +1023,17 @@ def create_new_cat(
                     continue
                 possible_conditions.append(condition)
                 if "excess testosterone" in possible_conditions:
-                    possible_conditions.remove("excess testosterone")
+                        possible_conditions.remove("excess testosterone")
                 if "testosterone deficiency" in possible_conditions:
-                    possible_conditions.remove("testosterone deficiency")
+                        possible_conditions.remove("testosterone deficiency")
                 if "chimerism" in possible_conditions:
-                    possible_conditions.remove("chimerism")
+                        possible_conditions.remove("chimerism")
                 if "mosaicism" in possible_conditions:
-                    possible_conditions.remove("mosaicism")
+                        possible_conditions.remove("mosaicism")
                 if "aneuploidy" in possible_conditions:
-                    possible_conditions.remove("aneuploidy")
+                        possible_conditions.remove("aneuploidy")
                 if possible_conditions:
-                    chosen_condition = choice(possible_conditions)
+                        chosen_condition = choice(possible_conditions)
 
             if possible_conditions:
                 chosen_condition = choice(possible_conditions)
@@ -1921,7 +1920,7 @@ def get_other_clan_relation(relation):
         return "neutral"
 
 
-def pronoun_repl(m, cat_pronouns_dict, raise_exception=False, omit_missing=False):
+def pronoun_repl(m, cat_pronouns_dict, raise_exception=False):
     """Helper function for add_pronouns. If raise_exception is
     False, any error in pronoun formatting will not raise an
     exception, and will use a simple replacement "error" """
@@ -1967,9 +1966,6 @@ def pronoun_repl(m, cat_pronouns_dict, raise_exception=False, omit_missing=False
             print("ERROR HERE:", e)
             raise
 
-        if omit_missing:
-            return ""
-
         logger.exception("Failed to find pronoun: " + m.group(1))
         print("Failed to find pronoun:", m.group(1))
         return "error2"
@@ -1980,79 +1976,17 @@ def name_repl(m, cat_dict):
     return cat_dict[m.group(0)][0]
 
 
-def process_text(text, cat_dict, raise_exception=False, omit_missing=False):
+def process_text(text, cat_dict, raise_exception=False):
     """Add the correct name and pronouns into a string."""
     adjust_text = re.sub(
-        r"\{(.*?)\}",
-        lambda x: pronoun_repl(x, cat_dict, raise_exception, omit_missing=bool(omit_missing)),
-        text,
+        r"\{(.*?)\}", lambda x: pronoun_repl(x, cat_dict, raise_exception), text
     )
 
     name_patterns = [r"(?<!\{)" + re.escape(l) + r"(?!\})" for l in cat_dict]
-    if name_patterns:
-        adjust_text = re.sub(
-            "|".join(name_patterns), lambda x: name_repl(x, cat_dict), adjust_text
-        )
-
-    if omit_missing:
-        if omit_missing is True:
-            tokens_to_drop = {
-                token for token in re.findall(r"\b[a-z]+_[a-z]+\b", adjust_text) if token not in cat_dict
-            }
-        else:
-            tokens_to_drop = set(omit_missing)
-
-        for token in tokens_to_drop:
-            adjust_text = re.sub(rf"(?<!\{{)\b{re.escape(token)}\b", "", adjust_text)
-
-        adjust_text = re.sub(r",\s*,+", ",", adjust_text)
-        adjust_text = re.sub(r",\s*([\.)])", r"\1", adjust_text)
-        adjust_text = re.sub(r"\s+([.,:;!?])", r"\1", adjust_text)
-        adjust_text = re.sub(r"\s{2,}", " ", adjust_text)
-        adjust_text = adjust_text.replace(" ,", ",")
-        adjust_text = adjust_text.strip()
+    adjust_text = re.sub(
+        "|".join(name_patterns), lambda x: name_repl(x, cat_dict), adjust_text
+    )
     return adjust_text
-
-
-def rank_text_is_usable(text, leader_available=True, deputy_available=True):
-    """Return True when a template does not depend on missing leader/deputy text."""
-    lowered = text.casefold()
-
-    if not leader_available:
-        if (
-            "lead_name" in lowered
-            or "l_n" in lowered
-            or "{pronoun/l_n" in lowered
-            or "{verb/l_n" in lowered
-            or "leader" in lowered
-        ):
-            return False
-
-    if not deputy_available:
-        if (
-            "dep_name" in lowered
-            or "d_n" in lowered
-            or "{pronoun/d_n" in lowered
-            or "{verb/d_n" in lowered
-            or "deputy" in lowered
-        ):
-            return False
-
-    return True
-
-
-def choose_rank_text(text_list, leader_available=True, deputy_available=True):
-    """Pick a text option that does not require missing leader/deputy references."""
-    usable_texts = [
-        text
-        for text in text_list
-        if rank_text_is_usable(text, leader_available, deputy_available)
-    ]
-
-    if not usable_texts:
-        return None
-
-    return choice(usable_texts)
 
 
 def adjust_list_text(list_of_items) -> str:
@@ -2290,7 +2224,7 @@ def ongoing_event_text_adjust(Cat, text, clan=None, other_clan_name=None):
         cat_dict["med_name"] = (str(kitty.name), choice(kitty.pronouns))
 
     if cat_dict:
-        text = process_text(text, cat_dict, omit_missing=True)
+        text = process_text(text, cat_dict)
 
     if other_clan_name:
         text = text.replace("o_c_n", other_clan_name)
@@ -2432,17 +2366,13 @@ def event_text_adjust(
 
     # lead_name
     if "lead_name" in text:
-        if game.clan.leader:
-            leader = Cat.fetch_cat(game.clan.leader)
-            if leader:
-                replace_dict["lead_name"] = (str(leader.name), choice(leader.pronouns))
+        leader = Cat.fetch_cat(game.clan.leader)
+        replace_dict["lead_name"] = (str(leader.name), choice(leader.pronouns))
 
     # dep_name
     if "dep_name" in text:
-        if game.clan.deputy:
-            deputy = Cat.fetch_cat(game.clan.deputy)
-            if deputy:
-                replace_dict["dep_name"] = (str(deputy.name), choice(deputy.pronouns))
+        deputy = Cat.fetch_cat(game.clan.deputy)
+        replace_dict["dep_name"] = (str(deputy.name), choice(deputy.pronouns))
 
     # med_name
     if "med_name" in text:
@@ -2451,7 +2381,7 @@ def event_text_adjust(
 
     # assign all names and pronouns
     if replace_dict:
-        text = process_text(text, replace_dict, omit_missing=True)
+        text = process_text(text, replace_dict)
 
     # multi_cat
     if "multi_cat" in text:
@@ -2607,13 +2537,13 @@ def ceremony_text_adjust(
             if previous_alive_mentor
             else ("previous_mentor_name", None)
         ),
+        "l_n": (
+            (str(game.clan.leader.name), choice(game.clan.leader.pronouns))
+            if game.clan.leader
+            else ("leader_name", None)
+        ),
         "c_n": (clanname, None),
     }
-
-    if game.clan.leader:
-        cat_dict["l_n"] = (
-            str(game.clan.leader.name), choice(game.clan.leader.pronouns)
-        )
 
     if old_name:
         cat_dict["(old_name)"] = (old_name, None)
@@ -2665,7 +2595,7 @@ def ceremony_text_adjust(
             get_pronouns(random_dead_parent),
         )
 
-    adjust_text = process_text(adjust_text, cat_dict, omit_missing=True)
+    adjust_text = process_text(adjust_text, cat_dict)
 
     return adjust_text, random_living_parent, random_dead_parent
 
