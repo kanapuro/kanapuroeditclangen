@@ -1807,7 +1807,7 @@ class MurderScreen(Screens):
 
         replace_dict = {
             "v_c": (str(self.cat_to_murder.name), choice(self.cat_to_murder.pronouns)),
-            "l_n": (str(game.clan.leader.name), choice(game.clan.leader.pronouns)),
+            "l_n": (str(game.clan.leader.name), choice(game.clan.leader.pronouns)) if game.clan.leader else ("the leader", {"subject": "they", "object": "them", "possessive": "their", "SUBJECT": "They", "OBJECT": "Them", "POSSESSIVE": "Their"}),
             "y_c": (str(game.clan.your_cat.name), choice(game.clan.your_cat.pronouns)),
             "r_m": (str(random_medcat.name), random_medcat_prns)
         }

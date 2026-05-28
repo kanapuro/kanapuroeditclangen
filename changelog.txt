@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed murder-screen crash caused by leader subtitution variables being pre-loaded when a murder occurs, which can error when there is no leader in the colony.
 - Allegiances now shows outsiders, changed wording for this neverending fucking process of un-warrior-catsing everything.
 - ACTUALLY fixed leader/deputy strings showing up when there are no leaders or deputies!
 - Fixed date/outing bug where resolver allows a non-existent third cat to slip through during a 2-cat-only patrol. x2
