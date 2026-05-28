@@ -770,6 +770,22 @@ class Clan:
         else:
             return "No Clan"
 
+    def has_leader(self):
+        """Return True if a leader exists and is currently present."""
+        return bool(
+            self.leader
+            and not getattr(self.leader, "dead", False)
+            and not getattr(self.leader, "outside", False)
+        )
+
+    def has_deputy(self):
+        """Return True if a deputy exists and is currently present."""
+        return bool(
+            self.deputy
+            and not getattr(self.deputy, "dead", False)
+            and not getattr(self.deputy, "outside", False)
+        )
+
     def new_leader(self, leader):
         """
         TODO: DOCS

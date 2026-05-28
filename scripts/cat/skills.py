@@ -933,7 +933,9 @@ class CatSkills:
         this function should be run every moon for every cat to progress their skills accordingly
         :param the_cat: the cat object for affected cat
         """
-        if the_cat.status == "newborn" or the_cat.moons <= 0:
+        status = the_cat.status if isinstance(the_cat.status, str) else ""
+
+        if status == "newborn" or the_cat.moons <= 0:
             return
 
         # Give a primary is there isn't one already, and the cat is older than one moon.
@@ -953,19 +955,19 @@ class CatSkills:
                     random.choice(parental_paths),
                     points=0,
                     interest_only=(
-                        True if the_cat.status in ["apprentice", "kitten"] else False
+                        True if status in ["apprentice", "kitten"] else False
                     ),
                 )
             else:
                 self.primary = Skill.get_random_skill(
                     points=0,
                     interest_only=(
-                        True if the_cat.status in ["apprentice", "kitten"] else False
+                        True if status in ["apprentice", "kitten"] else False
                     ),
                 )
 
         if not (the_cat.outside or the_cat.exiled):
-            if the_cat.status == "kitten":
+            if status == "kitten":
                 # Check to see if the cat gains a secondary
                 if not self.secondary and not int(random.random() * 22):
                     # if there's no secondary skill, try to give one!
@@ -984,7 +986,7 @@ class CatSkills:
                     elif self.primary:
                         self.primary.points += amount_effect
 
-            elif "apprentice" in the_cat.status:
+            elif "apprentice" in status:
                 # Check to see if the cat gains a secondary
                 if not self.secondary and not int(random.random() * 22):
                     # if there's no secondary skill, try to give one!
