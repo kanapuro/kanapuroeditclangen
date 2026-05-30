@@ -152,7 +152,7 @@ class MurderScreen(Screens):
                 self.location = choice(["camp", "territory", "border"])
                 self.time = choice(["dawn", "day", "night"])
             
-            elif event.ui_element == self.hold_back_button and self.hold_back_button:
+            elif getattr(self, 'hold_back_button', None) and event.ui_element == self.hold_back_button:
                 self.holding_back = not self.holding_back
                 self.hold_back_button.change_object_id(
                     "@checked_checkbox" if self.holding_back else "@unchecked_checkbox"
