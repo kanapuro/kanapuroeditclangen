@@ -1,7 +1,7 @@
 from typing import List
 
 from scripts.debug_commands.cat import CatsCommand
-from scripts.debug_commands.territory import LocationCommand, ClansCommand
+from scripts.debug_commands.territory import ChangeClanCommand, LocationCommand, ClansCommand
 from scripts.debug_commands.return_cat import ReturnCatCommand
 from scripts.debug_commands.command import Command
 from scripts.debug_commands.eval import EvalCommand, UnderstandRisksCommand
@@ -17,6 +17,7 @@ commandList: List[Command] = [
     FpsCommand(),
     CatsCommand(),
     ReturnCatCommand(),
+    ChangeClanCommand(),
     LocationCommand(),
     ClansCommand(),
 ]

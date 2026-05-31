@@ -37,6 +37,24 @@ from scripts.utility import (
 )  # pylint: disable=redefined-builtin
 
 
+def generate_clan_name(prefixes, suffixes=None, existing_names=None):
+    """Generate a clan-style name using the standard spacing and optional 'The' rule."""
+    suffixes = suffixes or names.names_dict.get("clan_suffixes", ["Clan"])
+    existing_names = {
+        str(name).casefold() for name in existing_names or []
+    }
+
+    while True:
+        prefix = choice(prefixes)
+        suffix = choice(suffixes)
+        space = " " if choice([True, False]) else ""
+        chosen_name = prefix + space + suffix
+        if randint(1, 10) <= 3:
+            chosen_name = "The " + chosen_name
+        if not existing_names or chosen_name.casefold() not in existing_names:
+            return chosen_name, prefix
+
+
 class Clan:
     """
 
@@ -252,7 +270,6 @@ class Clan:
                                             "medicine cat", "leader", "mediator", "queen", "queen's apprentice", "deputy", "elder"]),
                             )
         self.demon.df = True
-        self.demon.dead = True
         self.demon.dead_for = randint(20, 200)
         self.demon.prevent_fading = True
         if self.clan_age == "new":
@@ -313,7 +330,7 @@ class Clan:
             Cat.all_cats.get(cat_id).thoughts()
 
         game.save_cats()
-        number_other_clans = randint(3, 5)
+        number_other_clans = randint(1, 5)
         for _ in range(number_other_clans):
             other_clan_names = [str(i.name) for i in self.all_clans] + [game.clan.name]
             clan_prefixes = names.names_dict["clan_prefixes"]
@@ -777,17 +794,14 @@ class Clan:
         if leader:
             self.history.add_lead_ceremony(leader)
             self.leader = leader
-            Cat.all_cats[leader.ID].status_change("leader")
             self.leader_predecessors += 1
             self.leader_lives = 9
             for clan_cat in game.clan.clan_cats:
                 clan_cat_cat = Cat.fetch_cat(clan_cat)
                 if clan_cat_cat:
-                    if game.clan.followingsc:
-                        clan_cat_cat.faith += round(random.uniform(0,1), 2)
-                    else:
-                        clan_cat_cat.faith -= round(random.uniform(0,1), 2)
-        game.switches['new_leader'] = None
+                    clan_cat_cat.faith += round(random.uniform(0,1), 2)
+                else:
+                    clan_cat_cat.faith -= round(random.uniform(0,1), 2)
 
     def new_deputy(self, deputy):
         """
@@ -998,12 +1012,12 @@ class Clan:
         """
 
         if game.switches["clan_list"] == "":
-            number_other_clans = randint(3, 5)
+            number_other_clans = randint(1, 5)
             for _ in range(number_other_clans):
                 self.all_clans.append(OtherClan())
             return
         if game.switches["clan_list"][0].strip() == "":
-            number_other_clans = randint(3, 5)
+            number_other_clans = randint(1, 5)
             for _ in range(number_other_clans):
                 self.all_clans.append(OtherClan())
             return
@@ -1164,7 +1178,7 @@ class Clan:
                 )
 
         else:
-            number_other_clans = randint(3, 5)
+            number_other_clans = randint(1, 5)
             for _ in range(number_other_clans):
                 self.all_clans.append(OtherClan())
 
@@ -1187,12 +1201,12 @@ class Clan:
         """
         other_clans = []
         if game.switches["clan_list"] == "":
-            number_other_clans = randint(3, 5)
+            number_other_clans = randint(1, 5)
             for _ in range(number_other_clans):
                 self.all_clans.append(OtherClan())
             return
         if game.switches["clan_list"][0].strip() == "":
-            number_other_clans = randint(3, 5)
+            number_other_clans = randint(1, 5)
             for _ in range(number_other_clans):
                 self.all_clans.append(OtherClan())
             return
@@ -1909,15 +1923,7 @@ class OtherClan:
 
     def __init__(self, name="", relations=0, temperament="", chosen_symbol="", clan_prefix=None, clan_age="established"):
         if not name:
-            # Generate clan name using clan_prefixes + clan_suffixes with random spacing
-            clan_prefixes = names.names_dict["clan_prefixes"]
-            clan_suffix = choice(names.names_dict.get("clan_suffixes", ["Clan"]))
-            self.clan_prefix = choice(clan_prefixes)
-            space = " " if choice([True, False]) else ""
-            self.name = self.clan_prefix + space + clan_suffix
-            # 30% chance to prepend 'The'
-            if randint(1, 10) <= 3:
-                self.name = "The " + self.name
+            self.name, self.clan_prefix = generate_clan_name(names.names_dict["clan_prefixes"])
         else:
             self.name = name
             self.clan_prefix = clan_prefix

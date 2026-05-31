@@ -15,7 +15,7 @@ from scripts.cat.cats import create_example_cats, Cat
 from scripts.cat.pelts import Pelt
 from scripts.cat.personality import Personality
 from scripts.cat.names import names
-from scripts.clan import Clan
+from scripts.clan import Clan, generate_clan_name
 from scripts.game_structure.game_essentials import (
     game,
 )
@@ -520,17 +520,12 @@ class MakeClanScreen(Screens):
         if not clan_prefixes:
             clan_prefixes = all_prefixes
         
-        while True:
-            self.generated_clan_prefix = choice(clan_prefixes)
-            suffix = choice(clan_suffixes)
-            space = " " if choice([True, False]) else ""
-            chosen_name = self.generated_clan_prefix + space + suffix
-            # 30% chance to prepend 'The'
-            if randrange(1, 11) <= 3:
-                chosen_name = "The " + chosen_name
-            if chosen_name.casefold() not in [clan.casefold() for clan in game.switches['clan_list']]:
-                return chosen_name
-            print("Generated colony name was already in use! Rerolling...")
+        chosen_name, self.generated_clan_prefix = generate_clan_name(
+            clan_prefixes,
+            clan_suffixes,
+            existing_names=game.switches['clan_list'],
+        )
+        return chosen_name
     
     def handle_name_clan_key(self, event):
         if event.key == pygame.K_ESCAPE:
@@ -662,10 +657,10 @@ class MakeClanScreen(Screens):
                     break
         
         elif event.ui_element == self.elements['next_step']:
-            # Regenerate names for all example cats with the new settings
-            from scripts.cat.names import Name
-            for cat in game.choose_cats.values():
-                cat.name = Name(cat=cat, biome=game.clan.biome)
+            # Rebuild the example cats so they are generated from the active naming settings.
+            # The initial batch is created before these settings exist.
+            game.choose_cats = {}
+            create_example_cats()
             
             # Proceed to leader selection
             self.open_choose_leader()
@@ -4432,13 +4427,18 @@ class MakeClanScreen(Screens):
         # Create a temporary clan with the name so settings can be configured
         if not game.clan:
             game.clan = Clan(name=self.clan_name, clan_prefix=self.generated_clan_prefix)
-        
-        # Reset naming settings to defaults (only warrior_names and kit_inherit_naming enabled)
-        game.clan.clan_settings["warrior_names"] = True
-        game.clan.clan_settings["ancient_names"] = False
-        game.clan.clan_settings["single_names"] = False
-        game.clan.clan_settings["syllable_names"] = False
-        game.clan.clan_settings["kit_inherit_naming"] = True
+
+        # Only seed defaults the first time this temporary clan is created.
+        # Re-opening the screen should preserve the player's current selections.
+        default_naming_settings = {
+            "warrior_names": True,
+            "ancient_names": False,
+            "single_names": False,
+            "syllable_names": False,
+            "kit_inherit_naming": True,
+        }
+        for setting_name, default_value in default_naming_settings.items():
+            game.clan.clan_settings.setdefault(setting_name, default_value)
         
         self.clear_all_page()
         self.sub_screen = "game settings"

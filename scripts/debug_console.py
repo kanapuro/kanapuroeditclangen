@@ -3,18 +3,16 @@ Stores the DebugMenu class and the DebugMode class
 """
 import pygame
 import pygame_gui
-import html
 
-from pygame_gui.elements import UIWindow, UITextBox, UITextEntryLine
+from scripts.utility import get_text_box_theme
 from scripts.utility import ui_scale
 from scripts.debug_commands import commandList
 from scripts.debug_commands.utils import set_debug_class
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER, offset, screen_scale
-from scripts.utility import get_text_box_theme
 
 
-class DebugMenu(UIWindow):
+class DebugMenu(pygame_gui.windows.UIConsoleWindow):
     """
     The ClanGen debug menu, useful for debugging.
     """
@@ -23,45 +21,12 @@ class DebugMenu(UIWindow):
         super().__init__(
             rect=rect,
             manager=manager,
-            window_display_title="Debug Console",
+            window_title="Debug Console",
             object_id="#debug_console",
-            resizable=False,
             visible=0
         )
         self.set_blocking(False)
         set_debug_class(self)
-
-        self.log = UITextBox(
-            "",
-            relative_rect=ui_scale(
-                pygame.Rect(
-                    (2, 2),
-                    (self.get_container().get_size()[0]-4, self.get_container().get_size()[1]-36)
-                )
-            ),
-            container=self,
-            object_id="#log",
-            manager=MANAGER
-        )
-
-        self.command_line = UITextEntryLine(
-            relative_rect=ui_scale(
-                pygame.Rect(
-                    (2, -32),
-                    (self.get_container().get_size()[0]-4, 30)
-                )
-            ),
-            container=self,
-            anchors = {
-                "top": "bottom"
-            }
-        )
-
-        # self.submit_command = UIButton(
-
-        # )
-
-        self.change_layer(1000)
 
         ev = pygame.event.Event(
             pygame_gui.UI_CONSOLE_COMMAND_ENTERED, {"command": "help"}
@@ -111,30 +76,30 @@ class DebugMenu(UIWindow):
                 try:
                     cmd.callback(args)
                 except Exception as e:
-                    self.push_line(
+                    self.add_output_line_to_log(
                         f"Error while executing command {command}: {e}"
                     )
                     raise e
                 break
         if command in ["self", "clear"]:
-            self.log.set_text("")
+            self._clear()
         elif not commandFound:
-            self.push_line(f"Command {command} not found")
+            self.add_output_line_to_log(f"Command {command} not found")
 
     def process_event(self, event: pygame.Event):
         if (
             event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED
-            and event.ui_element == self.command_line
+            and event.ui_element == self.command_entry
         ):
             pygame.event.post(
                 pygame.Event(
                     pygame_gui.UI_CONSOLE_COMMAND_ENTERED,
                     {
-                        "command": self.command_line.get_text()
+                        "command": self.command_entry.get_text()
                     }
                 )
             )
-            self.command_line.clear()
+            self.command_entry.clear()
         if event.type == pygame_gui.UI_CONSOLE_COMMAND_ENTERED:
             self.process_command(event.command)
         return super().process_event(event)
@@ -143,7 +108,7 @@ class DebugMenu(UIWindow):
         """
         Appends a string and a newline to the command log.
         """
-        self.log.append_html_text(html.escape(line + "\n"))
+        self.add_output_line_to_log(line)
 
     def push_multiline(self, lines : str):
         """
@@ -151,6 +116,9 @@ class DebugMenu(UIWindow):
         """
         for line in lines.split('\n'):
             self.push_line(line)
+
+    def _clear(self):
+        self.clear_log()
 
 class DebugMode:
     """
@@ -171,9 +139,11 @@ class DebugMode:
         """
         if self.debug_menu.visible == 0:
             self.debug_menu.show()
-            self.debug_menu.command_line.focus()
+            self.debug_menu.command_entry.focus()
+            self.debug_menu.set_blocking(True)
         else:
             self.debug_menu.hide()
+            self.debug_menu.set_blocking(False)
 
     def rebuild_console(self):
         """
@@ -200,7 +170,7 @@ class DebugMode:
                 (0, 0),
                 (
                     pygame.display.get_surface().get_width()/1.35,
-                    pygame.display.get_surface().get_height()/1.35,
+                    pygame.display.get_surface().get_height()/1.18,
                 ),
             ),
             MANAGER,

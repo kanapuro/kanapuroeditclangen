@@ -1,11 +1,13 @@
 import os
 import unittest
 from copy import deepcopy
+from types import SimpleNamespace
 from unittest.mock import patch
 
-from scripts.cat.cats import Cat
+from scripts.cat.cats import Cat, create_example_cats
 from scripts.cat.names import Name
 from scripts.cat_relations.relationship import Relationship
+from scripts.game_structure.game_essentials import game
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 os.environ["SDL_AUDIODRIVER"] = "dummy"
@@ -634,3 +636,43 @@ class TestNameSpecialSuffixGuardrails(unittest.TestCase):
     def test_syllable_never_forces_special(self):
         n = self._name(status="apprentice", suffix="", name_type="syllable", specsuffix_hidden=True)
         self.assertEqual(str(n), "Test")
+
+
+class TestExampleCatNamingRules(unittest.TestCase):
+    def test_example_cats_follow_enabled_name_style(self):
+        dummy_clan = SimpleNamespace(
+            clan_settings={
+                "warrior_names": False,
+                "ancient_names": False,
+                "single_names": True,
+                "syllable_names": False,
+                "kit_inherit_naming": False,
+            },
+            faded_ids=[],
+            biome=None,
+            followingsc=False,
+            leader_lives=0,
+            age=0,
+            your_cat=None,
+            starclan_cats=[],
+            darkforest_cats=[],
+            unknown_cats=[],
+            current_season="Newleaf",
+            herbs={},
+            game_mode="expanded",
+        )
+
+        with patch("scripts.cat.names.game.clan", dummy_clan), patch(
+            "scripts.cat.cats.game.clan", dummy_clan
+        ):
+            original_choose_cats = game.choose_cats
+            try:
+                game.choose_cats = {}
+                create_example_cats()
+
+                self.assertEqual(len(game.choose_cats), 12)
+                self.assertTrue(
+                    all(cat.name.name_type == "single" for cat in game.choose_cats.values())
+                )
+            finally:
+                game.choose_cats = original_choose_cats
