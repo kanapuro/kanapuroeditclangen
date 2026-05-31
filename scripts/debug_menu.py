@@ -176,4 +176,7 @@ class debugMode:
                     pygame.draw.rect(screen, (255, 0, 0), rect, 1)
 
 
-debugmode = debugMode()
+# Disabled automatic instantiation to avoid creating a second debug console
+# when `scripts.debug_console` is used. Instantiate `debugMode()` explicitly
+# elsewhere if needed.
+# debugmode = debugMode()

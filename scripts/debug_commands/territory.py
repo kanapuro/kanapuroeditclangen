@@ -355,8 +355,9 @@ class ChangeClanCommand(Command):
             add_output_line_to_log(f"Usage: {self.name} {self.usage}")
             return
 
-        regenerate_other_clans = True
-        wipe_outsiders = False
+        # Defer defaults until after parsing so booleans can be specified freely
+        regenerate_other_clans = None
+        wipe_outsiders = None
         other_count = None
         outsider_count = None
 
@@ -391,45 +392,51 @@ class ChangeClanCommand(Command):
                     return
                 camp_bg = camp_arg
 
-        if len(remaining_args) >= 1:
-            # Allow specifying an integer for number of other clans first
+        # More flexible parsing: accept integers and booleans in any order
+        parsed_tokens = list(remaining_args)
+        i = 0
+        while i < len(parsed_tokens):
+            tok = parsed_tokens[i]
+            # try integer
             try:
-                maybe_int = int(remaining_args[0])
-                other_count = maybe_int
-                remaining_args = remaining_args[1:]
-            except Exception:
-                parsed = _parse_bool(remaining_args[0])
-                if parsed is None:
-                    add_output_line_to_log("Expected an integer (other_count) or boolean for regenerate_other_clans.")
+                val = int(tok)
+                if other_count is None:
+                    other_count = val
+                elif outsider_count is None:
+                    outsider_count = val
+                else:
+                    add_output_line_to_log(f"Unexpected integer token '{tok}'.")
                     add_output_line_to_log(f"Usage: {self.name} {self.usage}")
                     return
-                regenerate_other_clans = parsed
-
-        if len(remaining_args) >= 1:
-            # Next token may be outsider_count or the wipe boolean
-            try:
-                maybe_int = int(remaining_args[0])
-                outsider_count = maybe_int
-                remaining_args = remaining_args[1:]
+                i += 1
+                continue
             except Exception:
-                parsed = _parse_bool(remaining_args[0])
-                if parsed is None:
-                    add_output_line_to_log("Expected an integer (outsider_count) or boolean for wipe_outsiders.")
+                pass
+
+            # try boolean
+            parsed_bool = _parse_bool(tok)
+            if parsed_bool is not None:
+                if regenerate_other_clans is None:
+                    regenerate_other_clans = parsed_bool
+                elif wipe_outsiders is None:
+                    wipe_outsiders = parsed_bool
+                else:
+                    add_output_line_to_log(f"Unexpected boolean token '{tok}'.")
                     add_output_line_to_log(f"Usage: {self.name} {self.usage}")
                     return
-                wipe_outsiders = parsed
+                i += 1
+                continue
 
-        if len(remaining_args) >= 1:
-            parsed = _parse_bool(remaining_args[0])
-            if parsed is None:
-                add_output_line_to_log("Expected a boolean value for wipe_outsiders.")
-                add_output_line_to_log(f"Usage: {self.name} {self.usage}")
-                return
-            wipe_outsiders = parsed
-
-        if len(remaining_args) > 1:
+            # unrecognized token
+            add_output_line_to_log(f"Unrecognized token '{tok}'.")
             add_output_line_to_log(f"Usage: {self.name} {self.usage}")
             return
+
+        # Apply defaults if booleans weren't provided
+        if regenerate_other_clans is None:
+            regenerate_other_clans = True
+        if wipe_outsiders is None:
+            wipe_outsiders = False
 
         old_biome = game.clan.biome
         old_camp = game.clan.camp_bg

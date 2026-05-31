@@ -74,6 +74,8 @@ class DebugMenu(pygame_gui.windows.UIConsoleWindow):
                             cmd = subcommand
                             break
                 try:
+                    # Diagnostic: show which command matched and the args passed
+                    self.add_output_line_to_log(f"Matched command '{cmd.name}' (alias '{command}') with args: {args}")
                     cmd.callback(args)
                 except Exception as e:
                     self.add_output_line_to_log(
