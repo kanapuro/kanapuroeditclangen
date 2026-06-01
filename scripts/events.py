@@ -2156,7 +2156,17 @@ class Events:
             elif warrior_amount <= 0 and herb_amount <= 0:
                 focus_text = "Despite closing the borders, no extra prey or herbs were gathered."
             else:
-                focus_text = "This is a bug, report it - closed borders focus - ref: scripts/events.py line 2097"
+                prey_part = (
+                    f"{warrior_amount} pieces of prey"
+                    if warrior_amount > 1
+                    else ("1 piece of prey" if warrior_amount == 1 else "no prey")
+                )
+                herb_part = (
+                    f"{herb_amount} herbs"
+                    if herb_amount > 1
+                    else ("1 herb" if herb_amount == 1 else "no herbs")
+                )
+                focus_text = f"With the colony turning inward, {prey_part} and {herb_part} were gathered."
 
         elif game.clan.clan_settings.get("threaten outsiders"):
             amount = game.config["focus"]["outsiders"]["reputation"]
