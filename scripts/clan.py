@@ -200,6 +200,9 @@ class Clan:
                 self.clan_settings[setting_name] = inf[2]
                 self.setting_lists[setting_name] = [inf[2], not inf[2]]
 
+        # Apply default leader lives from settings
+        self.leader_lives = self.get_default_leader_lives()
+
         # Reputation is for loners/kittypets/outsiders in general that wish to join the clan.
         # it's a range from 1-100, with 30-70 being neutral, 71-100 being "welcoming",
         # and 1-29 being "hostile". if you're hostile to outsiders, they will VERY RARELY show up.
@@ -795,13 +798,30 @@ class Clan:
             self.history.add_lead_ceremony(leader)
             self.leader = leader
             self.leader_predecessors += 1
-            self.leader_lives = 9
+            # Determine starting lives for this leader: per-cat override takes precedence,
+            # otherwise use clan default setting `leader_life_default`.
+            override = getattr(leader, "leader_life_override", None)
+            if override is True:
+                self.leader_lives = 1
+            elif override is False:
+                self.leader_lives = 9
+            else:
+                self.leader_lives = self.get_default_leader_lives()
             for clan_cat in game.clan.clan_cats:
                 clan_cat_cat = Cat.fetch_cat(clan_cat)
                 if clan_cat_cat:
                     clan_cat_cat.faith += round(random.uniform(0,1), 2)
                 else:
                     clan_cat_cat.faith -= round(random.uniform(0,1), 2)
+
+    def get_default_leader_lives(self):
+        setting = self.clan_settings.get("leader_life_default", False)
+        if isinstance(setting, bool):
+            return 1 if setting else 9
+        try:
+            return 1 if int(setting) == 1 else 9
+        except Exception:
+            return 9
 
     def new_deputy(self, deputy):
         """

@@ -466,7 +466,7 @@ class ChangeCatName(UIWindow):
 
     def __init__(self, cat):
         super().__init__(
-            ui_scale(pygame.Rect((300, 215), (400, 185))),
+            ui_scale(pygame.Rect((300, 215), (400, 220))),
             window_display_title="Change Cat Name",
             object_id="#change_cat_name_window",
             resizable=False,
@@ -2700,6 +2700,11 @@ class ChangeCatToggles(UIWindow):
                                                     ui_scale(pygame.Rect(60, 125, -1, 50)), 
                                                     object_id="#text_box_30_horizleft_pad_0_8",
                                                     container=self)
+
+        self.text_6 = pygame_gui.elements.UITextBox("One life leader",
+                                ui_scale(pygame.Rect(60, 150, -1, 50)),
+                                object_id="#text_box_30_horizleft_pad_0_8",
+                                container=self)
         
         # Text
 
@@ -2789,6 +2794,20 @@ class ChangeCatToggles(UIWindow):
                                                          object_id=box_type,
                                                          tool_tip_text=tool_tip)
 
+        # One-life leader override
+        leader_override = getattr(self.the_cat, "leader_life_override", None)
+        use_one_life = leader_override if leader_override is not None else bool(game.clan.clan_settings.get("leader_life_default", False))
+        box_type = "@checked_checkbox" if use_one_life else "@unchecked_checkbox"
+        tool_tip = "Make this cat use one life when they become leader."
+
+        self.checkboxes["leader_life_override"] = UIImageButton(
+            ui_scale(pygame.Rect(22, 150, 34, 34)),
+            "",
+            container=self,
+            object_id=box_type,
+            tool_tip_text=tool_tip,
+        )
+
     def process_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             if event.ui_element == self.back_button:
@@ -2809,6 +2828,12 @@ class ChangeCatToggles(UIWindow):
                 self.refresh_checkboxes()
             elif event.ui_element == self.checkboxes["no_faith"]:
                 self.the_cat.no_faith = not self.the_cat.no_faith
+                self.refresh_checkboxes()
+            elif event.ui_element == self.checkboxes["leader_life_override"]:
+                current = getattr(self.the_cat, "leader_life_override", None)
+                if current is None:
+                    current = bool(game.clan.clan_settings.get("leader_life_default", False))
+                self.the_cat.leader_life_override = not current
                 self.refresh_checkboxes()
         
         return super().process_event(event)

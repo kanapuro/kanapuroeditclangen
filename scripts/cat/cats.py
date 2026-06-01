@@ -741,6 +741,7 @@ class Cat:
         self.injuries = {}
         self.healed_condition = None
         self.leader_death_heal = None
+        self.leader_life_override = None
         self.also_got = False
         self.permanent_condition = {}
         self.df = False
@@ -4750,6 +4751,7 @@ class Cat:
                 "adoptive_parents": self.adoptive_parents,
                 "df": self.df,
                 "faded_offspring": self.faded_offspring,
+                "leader_life_override": getattr(self, "leader_life_override", None),
             }
         else:
             return {
@@ -4856,6 +4858,8 @@ class Cat:
                 "old_status": self.old_status if self.old_status else "",
                 "moons_in_apprenticeship": self.moons_in_apprenticeship if hasattr(self, 'moons_in_apprenticeship') else 0,
                 "required_apprenticeship_moons": self.required_apprenticeship_moons if hasattr(self, 'required_apprenticeship_moons') else 6
+                ,
+                "leader_life_override": getattr(self, "leader_life_override", None)
             }
 
     def determine_next_and_previous_cats(self, filter_func: Callable[[Cat], bool] = None):

@@ -311,6 +311,11 @@ def json_load():
             new_cat.moons_in_apprenticeship = cat["moons_in_apprenticeship"] if "moons_in_apprenticeship" in cat else 0
             new_cat.required_apprenticeship_moons = cat["required_apprenticeship_moons"] if "required_apprenticeship_moons" in cat else 6
 
+            leader_override = cat.get("leader_life_override", None)
+            new_cat.leader_life_override = True if leader_override in (True, 1, "1") else None
+            if leader_override in (False, 0, "0"):
+                new_cat.leader_life_override = False
+
             if "died_by" in cat or "scar_event" in cat or "mentor_influence" in cat:
                 new_cat.convert_history(
                     cat["died_by"] if "died_by" in cat else [],

@@ -655,7 +655,6 @@ class MakeClanScreen(Screens):
                     # Refresh checkboxes to update disabled state if needed
                     self.refresh_game_settings_checkboxes()
                     break
-        
         elif event.ui_element == self.elements['next_step']:
             # Rebuild the example cats so they are generated from the active naming settings.
             # The initial batch is created before these settings exist.
@@ -4436,6 +4435,7 @@ class MakeClanScreen(Screens):
             "single_names": False,
             "syllable_names": False,
             "kit_inherit_naming": True,
+            "leader_life_default": False,
         }
         for setting_name, default_value in default_naming_settings.items():
             game.clan.clan_settings.setdefault(setting_name, default_value)
@@ -4465,6 +4465,7 @@ class MakeClanScreen(Screens):
             ("single_names", "Enable single names"),
             ("syllable_names", "Enable syllable-based names"),
             ("kit_inherit_naming", "Kits inherit parents' naming style"),
+            ("leader_life_default", "Leaders use one life by default"),
         ]
         
         # Create text boxes for settings
@@ -4487,7 +4488,7 @@ class MakeClanScreen(Screens):
         
         # Create checkboxes
         self.refresh_game_settings_checkboxes()
-        
+
         # Navigation buttons
         self.elements["previous_step"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((253, 645), (147, 30))),
@@ -4528,6 +4529,7 @@ class MakeClanScreen(Screens):
             ("single_names", "Cats can have single-word names from a curated list (e.g., Aurora, Luna, Storm). At least one name type must be enabled."),
             ("syllable_names", "Cats can have names generated from 1-3 syllables (e.g., Kima, Dolu, Bajako). At least one name type must be enabled."),
             ("kit_inherit_naming", "Kits of the same litter use one naming style inherited from their parents when enabled."),
+            ("leader_life_default", "Leaders use one life by default when enabled; otherwise they start with nine."),
         ]
         
         for i, code in enumerate(self.game_settings_codes):
@@ -5055,8 +5057,15 @@ class MakeClanScreen(Screens):
             # Store the naming settings from the pre-game settings screen before creating the new clan
             saved_naming_settings = {}
             if game.clan:
-                # Save settings from temporary clan
-                for key in ["warrior_names", "ancient_names", "single_names", "syllable_names", "kit_inherit_naming"]:
+                # Save settings from temporary clan (include leader life default)
+                for key in [
+                    "warrior_names",
+                    "ancient_names",
+                    "single_names",
+                    "syllable_names",
+                    "kit_inherit_naming",
+                    "leader_life_default",
+                ]:
                     if key in game.clan.clan_settings:
                         saved_naming_settings[key] = game.clan.clan_settings[key]
             
@@ -5081,7 +5090,8 @@ class MakeClanScreen(Screens):
             game.clan.your_cat.moons = -1
             game.clan.create_clan()
             if self.clan_age == "established":
-                game.clan.leader_lives = random.randint(1,9)
+                # Use clan default leader lives from settings rather than random
+                game.clan.leader_lives = game.clan.get_default_leader_lives()
             game.cur_events_list.clear()
             game.herb_events_list.clear()
             Cat.grief_strings.clear()

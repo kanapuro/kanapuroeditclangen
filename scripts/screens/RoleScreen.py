@@ -53,6 +53,7 @@ class RoleScreen(Screens):
             elif event.ui_element == self.promote_leader:
                 if self.the_cat == game.clan.deputy:
                     game.clan.deputy = None
+                self.the_cat.status_change("leader", resort=True)
                 game.clan.new_leader(self.the_cat)
                 if game.sort_type == "rank":
                     Cat.sort_cats()
@@ -159,7 +160,6 @@ class RoleScreen(Screens):
             object_id="@buttonstyles_ladder_middle",
             anchors={"top_target": self.promote_leader},
         )
-
         # ADULT CAT ROLES
         self.switch_warrior = UISurfaceImageButton(
             ui_scale(pygame.Rect((225, 0), (172, 36))),

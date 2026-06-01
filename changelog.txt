@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Added toggle to clan settings both pre-game and mid-game to give leaders 9-lives or 1-life, as well as an individual toggle on each character page. Finally, leaders that die easy!
 - Reduced external clan generation range from 3-5 to 1-5, and made clan name generation in a shared helper, so you can modify it in one location, and fixed naming in cat generation.
 - Added new command: "changeclan" ("rehome", "relocate"). You can now change the location of your clan, and optionally regenerate the other clans and outsiders. ("changeclan <random | biome camp|random> [other_count] [outsider_count] [regenerate_other_clans] [wipe_outsiders]", so "changeclan random", "changeclan Forest camp3 4 true", "changeclan false 5 true", etc.)
 - Fixed murder-screen crash caused by leader subtitution variables being pre-loaded when a murder occurs, which can error when there is no leader in the colony.
