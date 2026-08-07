@@ -7,7 +7,6 @@ import os
 import random
 
 import ujson
-from typing import Optional, Tuple
 
 from scripts.game_structure.game_essentials import game
 from scripts.housekeeping.datadir import get_save_dir
@@ -61,16 +60,18 @@ class Name:
         shunned=0,
         load_existing_name=False,
         cat=None,
-
-        # LG
-        status=None,
     ):
         self.prefix = prefix
-        self.suffix = suffix
+        self._suffix = None
         self.specsuffix_hidden = specsuffix_hidden
         self.shunned = shunned
         self.cat = cat
         self.name_type = None  # Track what type of name this is
+        self._initializing = True
+        self._explicit_suffix_override = False
+
+        if suffix is not None:
+            self.suffix = suffix
 
         # Determine name type for new names
         if not load_existing_name and prefix is None and suffix is None:
@@ -115,6 +116,10 @@ class Name:
         else:  # Default to warrior-style
             self.name_type = "warrior"
             self._generate_warrior_name(prefix, suffix, eyes, color, pelt, biome, tortiepattern, load_existing_name)
+
+        self._initializing = False
+        if self.suffix is not None:
+            self._sync_name_style_for_suffix()
 
     def _choose_name_type(self):
         """Choose an appropriate name type based on settings and context."""
@@ -419,7 +424,38 @@ class Name:
             else:
                 self.suffix = random.choice(self.names_dict["normal_suffixes"]).strip()
 
+    @property
+    def suffix(self):
+        return self._suffix
+
+    @suffix.setter
+    def suffix(self, value):
+        self._suffix = value
+        if getattr(self, "_initializing", False):
+            return
+        self._sync_name_style_for_suffix()
+
+    def _sync_name_style_for_suffix(self):
+        """Align the name style with the stored suffix when a suffix is introduced."""
+        if self.suffix is None:
+            return
+
+        stripped_suffix = str(self.suffix).strip()
+        if not stripped_suffix:
+            return
+
+        if self.name_type in ("single", "syllable"):
+            self.name_type = "warrior"
+            self.specsuffix_hidden = False
+            self._explicit_suffix_override = True
+
+        if self.name_type == "ancient" and " " in stripped_suffix:
+            self.specsuffix_hidden = False
+
     def __repr__(self):
+        if getattr(self, "_explicit_suffix_override", False) and self.suffix:
+            return self.prefix.strip() + str(self.suffix).strip()
+
         # Apply special suffixes first whenever they are not hidden,
         # regardless of name type (including single/syllable/ancient).
         # This ensures kits/apprentices/leaders render as expected.
@@ -449,7 +485,9 @@ class Name:
 
         # For single and syllable names, return just the trimmed prefix
         if self.name_type in ["single", "syllable"]:
-            return self.prefix.strip()
+            self._sync_name_style_for_suffix()
+            if self.name_type in ["single", "syllable"]:
+                return self.prefix.strip()
 
         # Ancient names: use stored custom suffix when special suffix is hidden
         if self.name_type == "ancient":

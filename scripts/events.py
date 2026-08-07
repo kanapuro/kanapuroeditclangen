@@ -670,9 +670,18 @@ class Events:
                 ##Check if wildcard colour combo
                 if (Cat.all_cats.get(cat).pelt.colour == "WHITE" and not Cat.all_cats.get(cat).pelt.tortiecolour == "WHITE"):
                     achievements.add("6")
-                elif ((Cat.all_cats.get(cat).pelt.colour in Pelt.black_colours or Cat.all_cats.get(cat).pelt.colour in Pelt.white_colours) and Cat.all_cats.get(cat).pelt.tortiecolour in Pelt.black_colours or Cat.all_cats.get(cat).pelt.tortiecolour in Pelt.white_colours):
+                elif (
+                    (
+                        Cat.all_cats.get(cat).pelt.colour in Pelt.black_colours
+                        or Cat.all_cats.get(cat).pelt.colour in Pelt.white_colours
+                    )
+                    and Cat.all_cats.get(cat).pelt.tortiecolour in Pelt.black_colours
+                ) or Cat.all_cats.get(cat).pelt.tortiecolour in Pelt.white_colours:
                     achievements.add("6")
-                elif ((Cat.all_cats.get(cat).pelt.colour in Pelt.ginger_colours) and Cat.all_cats.get(cat).pelt.tortiecolour in Pelt.ginger_colours or Cat.all_cats.get(cat).pelt.tortiecolour in Pelt.white_colours):
+                elif (
+                    Cat.all_cats.get(cat).pelt.colour in Pelt.ginger_colours
+                    and Cat.all_cats.get(cat).pelt.tortiecolour in Pelt.ginger_colours
+                ) or Cat.all_cats.get(cat).pelt.tortiecolour in Pelt.white_colours:
                     achievements.add("6")
                 elif ((Cat.all_cats.get(cat).pelt.colour in Pelt.brown_colours) and Cat.all_cats.get(cat).pelt.tortiecolour in Pelt.white_colours):
                     achievements.add("6")

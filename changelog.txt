@@ -1,4 +1,13 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Added regression coverage around short-event new-cat handling and tightened the birth/recovery path so this logic is exercised more reliably.
+- Removed non-ASCII characters from pregnancy text and tutorial strings so encoding-safe content now loads cleanly across the project.
+- Fixed several murder-screen skill checks that were written as constant-truthy expressions, so the intended chance modifiers now apply correctly.
+- Fixed a malformed scar-generation condition in cat creation and a mentor-history trait check that was always evaluating truthily.
+- Removed a few no-op self-assignment branches in relationship and utility logic to keep the behavior clearer and avoid misleading code paths.
+- Hardened personality compatibility checks so missing or incomplete personality data no longer causes crashes in relationship and condition flows.
+- Added an option to automatically set everyone's default setting to "never retire".
+- Fixed a naming bug where cats using single/syllable-style names would not display custom suffixes correctly after a suffix was added.
+- Fixed a bug where newly added cats with the "add" command couldn't have their name edited.
 - Added toggle to clan settings both pre-game and mid-game to give leaders 9-lives or 1-life, as well as an individual toggle on each character page. Finally, leaders that die easy!
 - Reduced external clan generation range from 3-5 to 1-5, and made clan name generation in a shared helper, so you can modify it in one location, and fixed naming in cat generation.
 - Added new command: "changeclan" ("rehome", "relocate"). You can now change the location of your clan, and optionally regenerate the other clans and outsiders. ("changeclan <random | biome camp|random> [other_count] [outsider_count] [regenerate_other_clans] [wipe_outsiders]", so "changeclan random", "changeclan Forest camp3 4 true", "changeclan false 5 true", etc.)

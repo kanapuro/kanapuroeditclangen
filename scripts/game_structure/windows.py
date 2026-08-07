@@ -700,11 +700,19 @@ class ChangeCatName(UIWindow):
                         self.name_changed.show()
                     # Else: keep special suffix visible and do not modify stored custom suffix
 
-                # Apply pending name type from dice; else derive ancient if suffix has spaces
+                # Apply pending name type from dice; else derive sensible defaults.
                 if self.pending_name_type:
                     self.the_cat.name.name_type = self.pending_name_type
                 elif self.the_cat.name.name_type not in ["warrior", "ancient", "single", "syllable"]:
                     self.the_cat.name.name_type = "warrior"
+
+                # If the user provided a non-empty custom suffix while the cat currently
+                # has a `single` or `syllable` name type, treat that as an intent to use
+                # a warrior-style name so the suffix is applied and displayed.
+                if raw_suffix.strip() != "" and self.the_cat.name.name_type in ("single", "syllable"):
+                    self.the_cat.name.name_type = "warrior"
+
+                # If the user typed a space in the suffix field, prefer the ancient format.
                 if " " in self.suffix_entry_box.get_text():
                     self.the_cat.name.name_type = "ancient"
 
@@ -1739,15 +1747,15 @@ class TutorialPopup(UIWindow):
         tutorial_text = (
             "<strong>Welcome to LGMMKE!</strong><br>"
             "LGMMKE is a game about taking care of both a colony and an individual character. Here's what you need to know!<br>"
-            "• This game is played with a mouse, however you can use keybinds.<br>"
-            "• Pick a name for your colony, select a main character, and load up your save.<br>"
-            "• Press \"timeskip one moon\" to advance time by a month and watch your colony grow.<br>"
-            "• View your save's cats in \"camp\" or \"cat list\", and click on them for more gameplay such as murder, mate selection, having kits/apprentices, accessories, and affairs.<br>"
-            "• Send your colony on patrol in the \"patrol\" tab to hunt, fight, and meet new cats.<br>"
-            "• Explore the camp buttons for more gameplay, and modify the settings to your liking!<br>"
-            "• If your cat dies, press the button to the right of \"timeskip one moon\" to revive, pick a new main character, or start over!<br>"
-            "• Play however you like! Build your lineage, experiment, breed, strategize, or watch your colony grow!<br>"
-            "• Advanced Tip: Press F3 for debugging commands such as changing camp & other colonies, or returning lost and exiled cats.<br>"
+            "- This game is played with a mouse, however you can use keybinds.<br>"
+            "- Pick a name for your colony, select a main character, and load up your save.<br>"
+            "- Press \"timeskip one moon\" to advance time by a month and watch your colony grow.<br>"
+            "- View your save's cats in \"camp\" or \"cat list\", and click on them for more gameplay such as murder, mate selection, having kits/apprentices, accessories, and affairs.<br>"
+            "- Send your colony on patrol in the \"patrol\" tab to hunt, fight, and meet new cats.<br>"
+            "- Explore the camp buttons for more gameplay, and modify the settings to your liking!<br>"
+            "- If your cat dies, press the button to the right of \"timeskip one moon\" to revive, pick a new main character, or start over!<br>"
+            "- Play however you like! Build your lineage, experiment, breed, strategize, or watch your colony grow!<br>"
+            "- Advanced Tip: Press F3 for debugging commands such as changing camp & other colonies, or returning lost and exiled cats.<br>"
         )
 
         self.tutorial_text = UITextBoxTweaked(

@@ -33,10 +33,10 @@ class Pregnancy_Events:
     @staticmethod
     def handle_post_birth_mortality(kit, clan):
         """
-        Checks post-birth mortality for kittens aged 1–6 moons, with decreasing risk as they age.
+        Checks post-birth mortality for kittens aged 1-6 moons, with decreasing risk as they age.
         Applies queen modifiers. Adds history entry if the kitten dies.
         """
-        # Explicitly only process kittens aged 1–6 moons
+        # Explicitly only process kittens aged 1-6 moons
         if not (1 <= getattr(kit, 'moons', 0) <= 6):
             return
         # Base risk curve: highest at 1 moon, lowest at 6 moons
@@ -410,7 +410,7 @@ class Pregnancy_Events:
             kits_amount == 0
         ):  # safety check, sometimes pregnancies were ending up with 0 due to save rollbacks
             kits_amount = 1
-        other_cat_id = clan.pregnancy_data[cat.ID]["second_parent"]
+        other_cat_id = clan.pregnancy_data[cat.ID].get("second_parent")
         other_cat = Cat.all_cats.get(other_cat_id)
 
         kits = Pregnancy_Events.get_kits(kits_amount, cat, other_cat, clan)
@@ -564,10 +564,11 @@ class Pregnancy_Events:
         # display event
         if kits_amount != 0:
             game.cur_events_list.append(Single_Event(print_event, ["health", "birth_death"], involved_cats))
-            for clan_cat in game.clan.clan_cats:
-                clan_cat_cat = Cat.fetch_cat(clan_cat)
-                if clan_cat_cat:
-                    clan_cat_cat.faith+= round(random.uniform(0,1), 2)
+            if getattr(game, "clan", None) and getattr(game.clan, "clan_cats", None):
+                for clan_cat in game.clan.clan_cats:
+                    clan_cat_cat = Cat.fetch_cat(clan_cat)
+                    if clan_cat_cat:
+                        clan_cat_cat.faith += round(random.uniform(0, 1), 2)
         
         # Handle stillbirths if any occurred
         if stillborn_count > 0 and "stillborn" in events["birth"]:
@@ -601,12 +602,15 @@ class Pregnancy_Events:
 
         # check for mate
         if len(cat.mates) > 0:
-            for mate_id in cat.mates:
+            valid_mates = []
+            for mate_id in list(cat.mates):
                 if mate_id not in cat.all_cats:
                     print(
                         f"WARNING: {cat.name}  has an invalid mate # {mate_id}. This has been unset."
                     )
-                    cat.mates.remove(mate_id)
+                    continue
+                valid_mates.append(mate_id)
+            cat.mates = valid_mates
 
         # If the "single parentage setting in on, we should only allow cats that have mates to have kits.
         if not single_parentage and len(cat.mates) < 1 and not allow_affair:

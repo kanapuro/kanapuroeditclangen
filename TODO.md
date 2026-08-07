@@ -7,7 +7,6 @@
 - trailblazers themed content (horns, wings, stuff!) / horn/antler accessories!!!!!!!! yay!!!!!!!!!!!
 - leader update pt2: one primary leader, optional ordered subleaders that replace the deputy system. how do pick? player chosen or auto-fill list by rule (think feeding order: oldest first, family first, highest rank, etc.).
 - lock button on character customizer, where when randomizing kitty, it keeps that trait... and undo button for alla ctions, ( undo left of randomizae, redo right of it!) additionally make some stuff on the customisze cat page like checklists rather than nonsensically as it is now
-- namefixes: loners should populate with regular prefixes sometmes.
 - fix the fuck outta clangen/lifegen buglist: https://docs.google.com/document/d/1hlOsVhGfFTuR1ep8QayjFCHLry8xR-QKb57tJC1RFbM/edit?tab=t.0
 - tab either in dangerous section or roles page to add/remove shunned status
 - add scrolling to clans on leader page so  U can ummmmm have more than 5 
@@ -21,7 +20,5 @@
 - allegiances: make the cat list in caretakers line up with the caretakers line so it look better ::3
 - ghost fixses,,,,,,,,::::::: uuuuuuuumm   leader ceremony :) needs to work with third afterlifek!!! :> i forgot what else to write here
 - fix naming? add more naming types (ie. the tribal-esque naming... "Trout-in-Rivers", "Magpie-in-Dusk", "Herald-of-Skies"...)
-- cats will never retire option (automatically sets everyones default setting to never retire)
-- fix bug: i made a new cat using my f3 "cats add" command and when i changed his name it wouldn't accept the suffix no matter what.
 - "cats add" crash 6/2/2026 7:04 PM
 - proper early stage miscarriages + abortions? idk man. + fix that bug where you get extended prengancies if you turn off kits for a cat on their personal settings While they are actively carrying. oops.

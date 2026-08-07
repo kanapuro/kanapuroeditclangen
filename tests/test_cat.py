@@ -637,6 +637,29 @@ class TestNameSpecialSuffixGuardrails(unittest.TestCase):
         n = self._name(status="apprentice", suffix="", name_type="syllable", specsuffix_hidden=True)
         self.assertEqual(str(n), "Test")
 
+    def test_suffix_on_single_name_switches_to_warrior_style(self):
+        cat = self._DummyCat(status="kitten", moons=6, outside=False)
+        n = Name(cat=cat, prefix="Moss", suffix="", load_existing_name=True)
+        n.name_type = "single"
+        n.suffix = "heart"
+
+        self.assertEqual(n.name_type, "warrior")
+        self.assertEqual(str(n), "Mossheart")
+
+
+class TestRetirementSettings(unittest.TestCase):
+    def test_no_retire_is_enabled_by_default_when_setting_is_on(self):
+        from scripts.cat.cats import Cat
+        from scripts.game_structure.game_essentials import game
+        from scripts.clan import Clan
+
+        clan = Clan(name="TestClan")
+        clan.clan_settings["retirement"] = True
+        game.clan = clan
+
+        cat = Cat(status="warrior", moons=24)
+        self.assertTrue(cat.no_retire)
+
 
 class TestExampleCatNamingRules(unittest.TestCase):
     def test_example_cats_follow_enabled_name_style(self):

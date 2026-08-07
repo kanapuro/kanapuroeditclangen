@@ -756,6 +756,8 @@ class Cat:
         self.no_kits = False
         self.no_mates = False
         self.no_retire = False
+        if game.clan and getattr(game.clan, "clan_settings", None):
+            self.no_retire = bool(game.clan.clan_settings.get("retirement", False))
         self.no_faith = False
         self.backstory_str = ""
         self.courage = 0
@@ -3189,14 +3191,12 @@ class Cat:
             rate = cat.illnesses[illness]["infectiousness"]
             if self.is_injured():
                 for y in self.injuries:
-                    illness_infect = list(
-                        filter(
-                            lambda ill: ill["name"] == illness_name,
-                            self.injuries[y]["illness_infectiousness"],
-                        )
-                    )
-                    if illness_infect is not None and len(illness_infect) > 0:
-                        illness_infect = illness_infect[0]
+                    illness_infect = None
+                    for illness_data in self.injuries[y].get("illness_infectiousness", []):
+                        if illness_data.get("name") == illness_name:
+                            illness_infect = illness_data
+                            break
+                    if illness_infect is not None:
                         rate -= illness_infect["lower_by"]
 
                     # prevent rate lower 0 and print warning message

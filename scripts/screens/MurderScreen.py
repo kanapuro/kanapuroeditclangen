@@ -1390,13 +1390,13 @@ class MurderScreen(Screens):
         if self.method == "attack":
             if you.joined_df:
                 chance -= 35
-            if ("steps lightly" or "mossball hunter" or "avid play-fighter") in your_skills:
+            if any(skill in your_skills for skill in ["steps lightly", "mossball hunter", "avid play-fighter"]):
                 chance -= 3
-            if ("graceful" or "good hunter" or "good fighter") in your_skills:
+            if any(skill in your_skills for skill in ["graceful", "good hunter", "good fighter"]):
                 chance -= 7
-            if ("elegant" or "great hunter" or "formidable fighter") in your_skills:
+            if any(skill in your_skills for skill in ["elegant", "great hunter", "formidable fighter"]):
                 chance -= 11
-            if ("radiates elegance" or "renowned hunter" or "unusually strong fighter") in your_skills:
+            if any(skill in your_skills for skill in ["radiates elegance", "renowned hunter", "unusually strong fighter"]):
                 chance -= 15
             if you.status == "warrior" and you_healthy:
                 chance -= 23
@@ -2719,13 +2719,13 @@ class MurderScreen(Screens):
             if you.joined_df:
                 chance += 15
 
-            if ("steps lightly" or "mossball hunter" or "avid play-fighter") in your_skills:
+            if any(skill in your_skills for skill in ["steps lightly", "mossball hunter", "avid play-fighter"]):
                 chance += 3
-            if ("graceful" or "good hunter" or "good fighter") in your_skills:
+            if any(skill in your_skills for skill in ["graceful", "good hunter", "good fighter"]):
                 chance += 7
-            if ("elegant" or "great hunter" or "formidable fighter") in your_skills:
+            if any(skill in your_skills for skill in ["elegant", "great hunter", "formidable fighter"]):
                 chance += 11
-            if ("radiates elegance" or "renowned hunter" or "unusually strong fighter") in your_skills:
+            if any(skill in your_skills for skill in ["radiates elegance", "renowned hunter", "unusually strong fighter"]):
                 chance += 15
 
             if you.status == "warrior":

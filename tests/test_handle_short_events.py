@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 
 from scripts.cat.cats import Cat
 from scripts.events_module.short.handle_short_events import HandleShortEvents
@@ -9,7 +10,35 @@ class TestHandleEvent(unittest.TestCase):
 
 
 class TestHandleNewCats(unittest.TestCase):
-    pass
+    def test_recovering_from_birth_is_added_for_new_litter_with_parent(self):
+        handle = HandleShortEvents()
+        handle.chosen_event = type("Event", (), {"new_cat": [{}, {}], "text": "", "sub_type": []})()
+        handle.types = []
+        handle.new_cats = []
+        handle.new_cat_objects = []
+        handle.involved_cats = []
+
+        parent = Cat()
+        parent.ID = "parent"
+        parent.gender = "female"
+        parent.dead = False
+        parent.outside = False
+
+        kit = Cat()
+        kit.ID = "kit"
+        kit.moons = 1
+        kit.parent1 = "parent"
+        kit.parent2 = None
+        kit.dead = False
+        kit.outside = False
+
+        with patch(
+            "scripts.events_module.short.handle_short_events.create_new_cat_block",
+            side_effect=[[parent], [kit]],
+        ), patch("scripts.events_module.short.handle_short_events.Relation_Events.welcome_new_cats"):
+            handle.handle_new_cats()
+
+        self.assertIn("recovering from birth", parent.injuries)
 
 
 class TestHandleAccessories(unittest.TestCase):

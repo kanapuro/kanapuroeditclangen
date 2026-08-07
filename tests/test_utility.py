@@ -94,6 +94,16 @@ class TestPersonalityCompatibility(unittest.TestCase):
         self.assertIsNone(get_personality_compatibility(cat1, cat2))
         self.assertIsNone(get_personality_compatibility(cat2, cat1))
 
+    def test_missing_personality_data_is_safe(self):
+        cat1 = Cat()
+        cat2 = Cat()
+
+        cat1.personality = None
+        self.assertIsNone(get_personality_compatibility(cat1, cat2))
+        self.assertIsNone(get_personality_compatibility(cat2, cat1))
+        self.assertIsNone(get_personality_compatibility(None, cat2))
+        self.assertIsNone(get_personality_compatibility(cat1, None))
+
 
 class TestCountRelation(unittest.TestCase):
     def test_2_cats_jealousy(self):

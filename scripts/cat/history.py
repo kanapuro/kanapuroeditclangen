@@ -198,7 +198,13 @@ class History:
         if not cat.history.mentor_influence["trait"]:
             return
 
-        if ("Benevolent" or "Abrasive" or "Reserved" or "Outgoing") in cat.history.mentor_influence["trait"]:
+        trait = cat.history.mentor_influence["trait"]
+        if isinstance(trait, str) and trait in {
+            "Benevolent",
+            "Abrasive",
+            "Reserved",
+            "Outgoing",
+        }:
             cat.history.mentor_influence["trait"] = None
             return
 

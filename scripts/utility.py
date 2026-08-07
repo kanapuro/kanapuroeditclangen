@@ -294,8 +294,6 @@ def change_clan_relations(other_clan, difference):
     """
     will change the Clan's relation with other clans according to the difference parameter.
     """
-    # grab the clan that has been indicated
-    other_clan = other_clan
     # grab the relation value for that clan
     y = game.clan.all_clans.index(other_clan)
     clan_relations = int(game.clan.all_clans[y].relations)
@@ -968,7 +966,7 @@ def create_new_cat(
         if df is True:
             if status != "kitten":
                 scarchance = randint(1,5)
-                if scarchance == 1 or 2 or 3:
+                if scarchance in {1, 2, 3}:
                     scar = choice(Pelt.scars1)
                     new_cat.pelt.scars.append(scar)
                     if new_cat.status in ["warrior", "deputy", "leader"]:
@@ -1022,18 +1020,17 @@ def create_new_cat(
                 if age > leeway:
                     continue
                 possible_conditions.append(condition)
-                if "excess testosterone" in possible_conditions:
-                        possible_conditions.remove("excess testosterone")
-                if "testosterone deficiency" in possible_conditions:
-                        possible_conditions.remove("testosterone deficiency")
-                if "chimerism" in possible_conditions:
-                        possible_conditions.remove("chimerism")
-                if "mosaicism" in possible_conditions:
-                        possible_conditions.remove("mosaicism")
-                if "aneuploidy" in possible_conditions:
-                        possible_conditions.remove("aneuploidy")
-                if possible_conditions:
-                        chosen_condition = choice(possible_conditions)
+
+            if "excess testosterone" in possible_conditions:
+                possible_conditions.remove("excess testosterone")
+            if "testosterone deficiency" in possible_conditions:
+                possible_conditions.remove("testosterone deficiency")
+            if "chimerism" in possible_conditions:
+                possible_conditions.remove("chimerism")
+            if "mosaicism" in possible_conditions:
+                possible_conditions.remove("mosaicism")
+            if "aneuploidy" in possible_conditions:
+                possible_conditions.remove("aneuploidy")
 
             if possible_conditions:
                 chosen_condition = choice(possible_conditions)
@@ -1147,18 +1144,27 @@ def get_personality_compatibility(cat1, cat2):
     False - if personalities have a negative compatibility
     None - if personalities have a neutral compatibility
     """
-    personality1 = cat1.personality.trait
-    personality2 = cat2.personality.trait
+    if cat1 is None or cat2 is None:
+        return None
+
+    personality1 = getattr(getattr(cat1, "personality", None), "trait", None)
+    personality2 = getattr(getattr(cat2, "personality", None), "trait", None)
+
+    if personality1 is None or personality2 is None:
+        return None
 
     if personality1 == personality2:
-        if personality1 is None:
-            return None
         return True
 
-    lawfulness_diff = abs(cat1.personality.lawfulness - cat2.personality.lawfulness)
-    sociability_diff = abs(cat1.personality.sociability - cat2.personality.sociability)
-    aggression_diff = abs(cat1.personality.aggression - cat2.personality.aggression)
-    stability_diff = abs(cat1.personality.stability - cat2.personality.stability)
+    def _safe_value(cat, attr):
+        personality = getattr(cat, "personality", None)
+        value = getattr(personality, attr, None)
+        return value if value is not None else 0
+
+    lawfulness_diff = abs(_safe_value(cat1, "lawfulness") - _safe_value(cat2, "lawfulness"))
+    sociability_diff = abs(_safe_value(cat1, "sociability") - _safe_value(cat2, "sociability"))
+    aggression_diff = abs(_safe_value(cat1, "aggression") - _safe_value(cat2, "aggression"))
+    stability_diff = abs(_safe_value(cat1, "stability") - _safe_value(cat2, "stability"))
     list_of_differences = [
         lawfulness_diff,
         sociability_diff,
@@ -2515,7 +2521,6 @@ def ceremony_text_adjust(
 ):
     clanname = str(game.clan.name)
 
-    random_honor = random_honor
     random_living_parent = None
     random_dead_parent = None
 

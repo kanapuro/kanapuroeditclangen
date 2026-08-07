@@ -73,6 +73,24 @@ class SameSexAdoptions(unittest.TestCase):
 
 
 class Pregnancy(unittest.TestCase):
+    def test_active_pregnancy_is_aborted_when_no_kits_is_enabled(self):
+        clan = Clan(name="clan")
+        cat = Cat(gender='female', age="adult", moons=40)
+        clan.pregnancy_data = {cat.ID: {"moons": 2, "amount": 1}}
+        cat.no_kits = True
+
+        Pregnancy_Events.handle_having_kits(cat, clan)
+
+        self.assertNotIn(cat.ID, clan.pregnancy_data)
+
+    def test_invalid_mates_are_pruned_without_skipping_entries(self):
+        cat = Cat(gender='female', age="adult", moons=40)
+        cat.mates = ["missing-1", "missing-2"]
+        cat.all_cats = {}
+
+        self.assertFalse(Pregnancy_Events.check_if_can_have_kits(cat, single_parentage=False, allow_affair=False))
+        self.assertEqual(cat.mates, [])
+
     @patch('scripts.events_module.relationship.pregnancy_events.Pregnancy_Events.check_if_can_have_kits')
     def test_single_cat_female(self, check_if_can_have_kits):
         # given

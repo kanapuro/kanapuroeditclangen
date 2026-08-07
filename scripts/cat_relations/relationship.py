@@ -74,10 +74,10 @@ class Relationship:
 
     def start_interaction(self) -> None:
         """This function handles the simple interaction of this relationship."""
-        # such interactions are only allowed for living Clan members
-        if self.cat_from.dead or self.cat_from.outside or self.cat_from.exiled:
+        # such interactions are only allowed for living cats that are not exiled
+        if self.cat_from.dead or self.cat_from.exiled:
             return
-        if self.cat_to.dead or self.cat_to.outside or self.cat_to.exiled:
+        if self.cat_to.dead or self.cat_to.exiled:
             return
 
         # update relationship
@@ -275,7 +275,7 @@ class Relationship:
         compatibility = get_personality_compatibility(self.cat_from, self.cat_to)
         if compatibility is None:
             # neutral compatibility
-            amount = amount
+            pass
         elif compatibility:
             # positive compatibility
             amount += game.config["relationship"]["compatibility_effect"]
