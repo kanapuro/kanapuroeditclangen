@@ -692,6 +692,26 @@ class TestNameSpecialSuffixGuardrails(unittest.TestCase):
 
         self.assertEqual(cat.get_save_dict()["name_type"], "ancient")
 
+    def test_loading_preserves_saved_name_components_and_suffix_toggle(self):
+        for name_type, suffix in (("single", ""), ("syllable", ""), ("ancient", "bee")):
+            for hidden in (True, False):
+                with self.subTest(name_type=name_type, hidden=hidden):
+                    name = Name(
+                        prefix="Bee", suffix=suffix, name_type=name_type,
+                        specsuffix_hidden=hidden, load_existing_name=True,
+                    )
+                    self.assertEqual(name.prefix, "Bee")
+                    self.assertEqual(name.suffix, suffix)
+                    self.assertEqual(name.name_type, name_type)
+                    self.assertEqual(name.specsuffix_hidden, hidden)
+
+    def test_loading_legacy_single_name_preserves_prefix(self):
+        name = Name(
+            prefix="SavedName", suffix="", specsuffix_hidden=True,
+            load_existing_name=True,
+        )
+        self.assertEqual(str(name), "SavedName")
+
     def test_saved_name_formatter_respects_style_and_special_suffix_toggle(self):
         ancient = {
             "name_prefix": "Paisele",
@@ -713,6 +733,24 @@ class TestNameSpecialSuffixGuardrails(unittest.TestCase):
 
 
 class TestLeaderLifeSettings(unittest.TestCase):
+    def test_new_leader_skips_missing_clan_cats(self):
+        from scripts.clan import Clan
+
+        clan = Clan(name="TestClan")
+        leader = SimpleNamespace(leader_life_override=None)
+        member = SimpleNamespace(faith=1.0)
+        clan.clan_cats = ["missing", "member"]
+
+        with patch("scripts.clan.game.clan", clan), patch.object(
+            clan.history, "add_lead_ceremony"
+        ), patch.object(Cat, "fetch_cat", side_effect=[None, member]), patch(
+            "scripts.clan.random.uniform", return_value=0.5
+        ):
+            clan.new_leader(leader)
+
+        self.assertIs(clan.leader, leader)
+        self.assertEqual(member.faith, 1.5)
+
     def test_colony_default_and_cat_override_are_resolved_consistently(self):
         from scripts.clan import Clan
 

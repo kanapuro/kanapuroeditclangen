@@ -106,7 +106,9 @@ class Name:
             tortiepattern = None
 
         # Generate name based on type
-        if self.name_type == "single":
+        if load_existing_name:
+            self._generate_warrior_name(prefix, suffix, eyes, color, pelt, biome, tortiepattern, True)
+        elif self.name_type == "single":
             self._generate_single_name()
         elif self.name_type == "syllable":
             self._generate_syllable_name()

@@ -808,8 +808,6 @@ class Clan:
                 clan_cat_cat = Cat.fetch_cat(clan_cat)
                 if clan_cat_cat:
                     clan_cat_cat.faith += round(random.uniform(0,1), 2)
-                else:
-                    clan_cat_cat.faith -= round(random.uniform(0,1), 2)
 
     def get_starting_leader_lives(self, leader):
         """Resolve a leader's initial lives from their override and the colony default."""
