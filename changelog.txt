@@ -1,4 +1,6 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed event-generated mates bypassing the existing apprentice restriction.
+- Fixed adoption events crashing when an adoptive parent's mate could no longer be found.
 - Fixed recruitment age checks rejecting existing outsiders in the middle of an age range.
 - Fixed recruited cats remaining in the outsider list after joining the colony.
 - Fixed generated elder-aged cats defaulting to warrior status when no role was specified.

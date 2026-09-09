@@ -369,11 +369,12 @@ def create_new_cat_block(
         # TODO: make this less ugly
         for index in mate_indexes:
             if index in in_event_cats:
-                if in_event_cats[index] in ["apprentice", "medicine cat apprentice", "mediator apprentice"]:
+                if in_event_cats[index].status in ["apprentice", "medicine cat apprentice", "mediator apprentice"]:
                     print("Can't give apprentices mates")
                     continue
 
                 give_mates.append(in_event_cats[index])
+                continue
 
             try:
                 index = int(index)
@@ -755,6 +756,8 @@ def create_new_cat_block(
                     continue
 
                 par = Cat.fetch_cat(par)
+                if par is None:
+                    continue
 
                 y = randrange(0, 20)
                 start_relation = Relationship(par, n_c, False, True)

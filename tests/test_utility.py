@@ -45,6 +45,41 @@ class TestNewCatGeneration(unittest.TestCase):
                 cat = create_new_cat(Cat, age=age, other_clan=True)[0]
                 self.assertEqual(cat.status, expected)
 
+    def test_event_mates_respect_apprentice_restriction(self):
+        for status in ("apprentice", "medicine cat apprentice", "mediator apprentice", "warrior"):
+            with self.subTest(status=status):
+                existing = Cat(status=status, moons=30)
+                newcomer = Cat(status="warrior", moons=30)
+                with patch("scripts.utility.create_new_cat", return_value=[newcomer]), patch(
+                    "scripts.utility.History.get_beginning", return_value={}
+                ), patch.object(newcomer, "create_inheritance_new_cat"), patch.object(newcomer, "set_mate") as mate:
+                    create_new_cat_block(
+                        Cat, Relationship, SimpleNamespace(new_cats=[]), {"m_c": existing}, 0,
+                        ["loner", "old_name", "status:warrior", "mate:m_c"],
+                    )
+                if status == "warrior":
+                    mate.assert_called_once_with(existing)
+                else:
+                    mate.assert_not_called()
+
+    def test_adoption_relationships_skip_missing_parent_mate(self):
+        parent = Cat(status="warrior", moons=30)
+        parent.mates = ["missing-mate"]
+        kit = Cat(status="kitten", moons=2)
+        with patch("scripts.utility.create_new_cat", return_value=[kit]), patch(
+            "scripts.utility.History.get_beginning", return_value={}
+        ), patch.object(kit, "create_inheritance_new_cat"), patch.object(
+            Cat, "fetch_cat", side_effect=lambda cat_id: Cat.all_cats.get(cat_id)
+        ):
+            cats = create_new_cat_block(
+                Cat, Relationship, SimpleNamespace(new_cats=[]), {"m_c": parent}, 0,
+                ["loner", "old_name", "status:kitten", "adoptive:m_c"],
+            )
+        self.assertEqual(cats, [kit])
+        self.assertIn(parent.ID, kit.relationships)
+        self.assertIn(kit.ID, parent.relationships)
+        self.assertNotIn("missing-mate", kit.relationships)
+
     def test_existing_outsider_matches_middle_of_age_range(self):
         outsider = Cat(status="loner", moons=30)
         outsider.outside = True
