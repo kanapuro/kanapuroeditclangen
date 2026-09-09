@@ -104,6 +104,7 @@ def json_load():
                 ID=cat["ID"],
                 prefix=cat["name_prefix"],
                 suffix=cat["name_suffix"],
+                name_type=cat.get("name_type"),
                 specsuffix_hidden=(
                     cat["specsuffix_hidden"] if "specsuffix_hidden" in cat else False
                 ),

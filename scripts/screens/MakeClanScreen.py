@@ -615,6 +615,8 @@ class MakeClanScreen(Screens):
             
             self.your_cat.name.prefix = new_prefix
             self.your_cat.name.suffix = new_suffix
+            if new_suffix and new_suffix[0].isspace():
+                self.your_cat.name.name_type = "ancient"
 
             if game.switches["customise_new_life"] is True:
                 self.open_clan_saved_screen()
@@ -5086,12 +5088,9 @@ class MakeClanScreen(Screens):
             # Restore the naming settings to the new clan
             for key, value in saved_naming_settings.items():
                 game.clan.clan_settings[key] = value
-            
+
             game.clan.your_cat.moons = -1
             game.clan.create_clan()
-            if self.clan_age == "established":
-                # Use clan default leader lives from settings rather than random
-                game.clan.leader_lives = game.clan.get_default_leader_lives()
             game.cur_events_list.clear()
             game.herb_events_list.clear()
             Cat.grief_strings.clear()

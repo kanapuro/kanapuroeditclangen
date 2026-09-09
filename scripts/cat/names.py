@@ -60,21 +60,22 @@ class Name:
         shunned=0,
         load_existing_name=False,
         cat=None,
+        name_type=None,
     ):
         self.prefix = prefix
         self._suffix = None
         self.specsuffix_hidden = specsuffix_hidden
         self.shunned = shunned
         self.cat = cat
-        self.name_type = None  # Track what type of name this is
+        self.name_type = name_type if name_type in ("warrior", "ancient", "single", "syllable") else None
         self._initializing = True
-        self._explicit_suffix_override = False
 
         if suffix is not None:
             self.suffix = suffix
 
-        # Determine name type for new names
-        if not load_existing_name and prefix is None and suffix is None:
+        # Determine name type for new names. Loaded names use their persisted type
+        # when available and only fall back to legacy inference for older saves.
+        if self.name_type is None and not load_existing_name and prefix is None and suffix is None:
             # Outsiders use single names; clan cats follow settings/defaults
             if self.cat and (
                 getattr(self.cat, 'outside', False)
@@ -84,12 +85,10 @@ class Name:
             else:
                 self.name_type = self._choose_name_type()
 
-        # If loading existing name or has prefix/suffix, assume warrior-style
-        if load_existing_name or prefix is not None or suffix is not None:
-            if prefix is not None and suffix is not None and suffix and " " in suffix:
-                self.name_type = "ancient"
-            elif prefix is not None and suffix is not None:
-                self.name_type = "warrior"
+        if self.name_type is None and (load_existing_name or prefix is not None or suffix is not None):
+            self.name_type = self.infer_legacy_name_type(
+                suffix, specsuffix_hidden=specsuffix_hidden, loading=load_existing_name
+            )
 
         # Ancient names should default to hiding special suffixes unless explicitly requested
         if self.name_type == "ancient" and not load_existing_name:
@@ -251,11 +250,11 @@ class Name:
         """Generate an ancient-style name (capitalized prefix + space + capitalized suffix)."""
         # Use warrior name generation logic but format as ancient; allow prefix/suffix overrides
         self._generate_warrior_name(prefix, suffix, eyes, color, pelt, biome, tortiepattern, False)
-        # Convert to ancient format: store capitalized suffix WITH a leading space for persistence
+        # Ancient spacing is a display concern; keep the saved suffix canonical.
         if self.suffix:
             base = self.suffix.strip()
             if base:
-                self.suffix = " " + base[0].upper() + base[1:]
+                self.suffix = base[0].upper() + base[1:]
             # Only force specsuffix_hidden if we generated the name (not user input)
             if suffix is None:
                 self.specsuffix_hidden = True
@@ -446,16 +445,55 @@ class Name:
 
         if self.name_type in ("single", "syllable"):
             self.name_type = "warrior"
-            self.specsuffix_hidden = False
-            self._explicit_suffix_override = True
+            # An explicit custom suffix should be shown immediately. The user can
+            # still re-enable -kit/-paw/-star through the special-suffix toggle.
+            self.specsuffix_hidden = True
 
-        if self.name_type == "ancient" and " " in stripped_suffix:
-            self.specsuffix_hidden = False
+    @staticmethod
+    def infer_legacy_name_type(suffix, specsuffix_hidden=False, loading=False):
+        """Infer the style used by saves created before name_type was persisted."""
+        if suffix and any(character.isspace() for character in str(suffix)):
+            return "ancient"
+        if loading and suffix == "" and specsuffix_hidden:
+            # Single and syllable names render the same way, so single is the
+            # safest backward-compatible representation when the source is unknown.
+            return "single"
+        return "warrior"
+
+    @staticmethod
+    def format_components(prefix, suffix, name_type, special_suffix=None):
+        """Format stored name components without mutating their style or content."""
+        prefix = str(prefix or "").strip()
+        suffix = "" if suffix is None else str(suffix)
+        if special_suffix is not None:
+            return prefix + str(special_suffix).strip()
+        if name_type in ("single", "syllable"):
+            return prefix
+        if name_type == "ancient":
+            return f"{prefix} {suffix.strip()}" if suffix.strip() else prefix
+        return prefix + suffix
+
+    @classmethod
+    def format_saved_name(cls, cat_data):
+        """Render a cat name directly from save data for save-selection screens."""
+        suffix = cat_data.get("name_suffix", "")
+        hidden = cat_data.get("specsuffix_hidden", False)
+        name_type = cat_data.get("name_type")
+        if name_type not in ("warrior", "ancient", "single", "syllable"):
+            name_type = cls.infer_legacy_name_type(
+                suffix, specsuffix_hidden=hidden, loading=True
+            )
+
+        special_suffix = None
+        status = cat_data.get("status")
+        if not hidden and status in cls.names_dict.get("special_suffixes", {}):
+            special_suffix = cls.names_dict["special_suffixes"][status]
+
+        return cls.format_components(
+            cat_data.get("name_prefix", ""), suffix, name_type, special_suffix
+        )
 
     def __repr__(self):
-        if getattr(self, "_explicit_suffix_override", False) and self.suffix:
-            return self.prefix.strip() + str(self.suffix).strip()
-
         # Apply special suffixes first whenever they are not hidden,
         # regardless of name type (including single/syllable/ancient).
         # This ensures kits/apprentices/leaders render as expected.
@@ -477,31 +515,38 @@ class Name:
                     adjusted_status = "warrior"
 
                 if adjusted_status != "warrior" and adjusted_status in self.names_dict.get("special_suffixes", {}):
-                    return self.prefix.strip() + self.names_dict["special_suffixes"][adjusted_status].strip()
+                    return self.format_components(
+                        self.prefix,
+                        self.suffix,
+                        self.name_type,
+                        self.names_dict["special_suffixes"][adjusted_status],
+                    )
 
             # Normal clan cat statuses
             if self.cat.status in self.names_dict.get("special_suffixes", {}):
-                return self.prefix.strip() + self.names_dict["special_suffixes"][self.cat.status].strip()
+                return self.format_components(
+                    self.prefix,
+                    self.suffix,
+                    self.name_type,
+                    self.names_dict["special_suffixes"][self.cat.status],
+                )
 
         # For single and syllable names, return just the trimmed prefix
         if self.name_type in ["single", "syllable"]:
             self._sync_name_style_for_suffix()
             if self.name_type in ["single", "syllable"]:
-                return self.prefix.strip()
+                return self.format_components(self.prefix, self.suffix, self.name_type)
 
         # Ancient names: use stored custom suffix when special suffix is hidden
         if self.name_type == "ancient":
-            suffix = self.suffix
-            if suffix:
-                return self.prefix.strip() + suffix
-            return self.prefix.strip()
+            return self.format_components(self.prefix, self.suffix, self.name_type)
 
         # April Fools easter egg
         if game.config["fun"]["april_fools"]:
             return f"{self.prefix.strip()}egg"
 
         # Base formatting - keep user input as-is for warrior/other
-        return self.prefix.strip() + self.suffix
+        return self.format_components(self.prefix, self.suffix, self.name_type)
 
 
 names = Name()

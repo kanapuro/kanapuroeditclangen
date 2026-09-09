@@ -10,6 +10,7 @@ from pygame_gui.elements import UIImage
 import os
 import ujson
 from scripts.housekeeping.datadir import get_save_dir
+from scripts.cat.names import Name
 
 import scripts.game_structure.screen_settings
 from scripts.clan import Clan
@@ -211,23 +212,7 @@ class SwitchClanScreen(Screens):
                         clan_cats_json = ujson.loads(read_file.read())
                     for item in clan_cats_json:
                         if item["ID"] == you:
-                            # if theres a better way to do this Keep it to yourself
-                            if item["name_suffix"] != "":
-                                if item["status"] in ["kitten", "newborn"]:
-                                    suffix = "kit"
-                                elif item["status"] in [
-                                    "apprentice", "queen's apprentice",
-                                    "mediator apprentice", "medicine cat apprentice"
-                                    ]:
-                                    suffix = "paw"
-                                elif item["status"] == "leader":
-                                    suffix = "star"
-                                else:
-                                    suffix = item["name_suffix"]
-                            else:
-                                suffix = item["name_suffix"]
-
-                            your_name = item["name_prefix"] + suffix
+                            your_name = Name.format_saved_name(item)
                             break
             except:
                 pass

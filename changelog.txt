@@ -1,4 +1,7 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed the generated Parasite/Dark Forest guide being treated as a living colony cat during starter-cat creation.
+- Fixed one-life leaders being saved with nine lives when creating a new colony.
+- Overhauled name-style persistence and display so two-part names keep their space after saving/loading and custom names can switch back to -kit/-paw/-star.
 - Added regression coverage around short-event new-cat handling and tightened the birth/recovery path so this logic is exercised more reliably.
 - Removed non-ASCII characters from pregnancy text and tutorial strings so encoding-safe content now loads cleanly across the project.
 - Fixed several murder-screen skill checks that were written as constant-truthy expressions, so the intended chance modifiers now apply correctly.

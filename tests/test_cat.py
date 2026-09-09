@@ -646,6 +646,112 @@ class TestNameSpecialSuffixGuardrails(unittest.TestCase):
         self.assertEqual(n.name_type, "warrior")
         self.assertEqual(str(n), "Mossheart")
 
+    def test_custom_suffix_can_revert_to_special_suffix(self):
+        cat = self._DummyCat(status="kitten", moons=3, outside=False)
+        n = Name(cat=cat, prefix="Moss", suffix="", load_existing_name=True)
+        n.name_type = "single"
+
+        n.suffix = "heart"
+        self.assertEqual(str(n), "Mossheart")
+
+        n.specsuffix_hidden = False
+        self.assertEqual(str(n), "Mosskit")
+
+    def test_ancient_name_always_has_one_separator(self):
+        cat = self._DummyCat(status="warrior", moons=20, outside=False)
+
+        for suffix in ("Legionn", " Legionn"):
+            with self.subTest(suffix=suffix):
+                n = Name(
+                    cat=cat,
+                    prefix="Paisele",
+                    suffix=suffix,
+                    load_existing_name=True,
+                    name_type="ancient",
+                    specsuffix_hidden=True,
+                )
+                self.assertEqual(str(n), "Paisele Legionn")
+
+    def test_persisted_name_type_overrides_legacy_inference(self):
+        cat = self._DummyCat(status="warrior", moons=20, outside=False)
+        n = Name(
+            cat=cat,
+            prefix="Paisele",
+            suffix="Legionn",
+            load_existing_name=True,
+            name_type="ancient",
+            specsuffix_hidden=True,
+        )
+
+        self.assertEqual(n.name_type, "ancient")
+        self.assertEqual(str(n), "Paisele Legionn")
+
+    def test_name_type_is_in_cat_save_data(self):
+        cat = Cat(status="warrior", moons=20)
+        cat.name.name_type = "ancient"
+
+        self.assertEqual(cat.get_save_dict()["name_type"], "ancient")
+
+    def test_saved_name_formatter_respects_style_and_special_suffix_toggle(self):
+        ancient = {
+            "name_prefix": "Paisele",
+            "name_suffix": "Legionn",
+            "name_type": "ancient",
+            "specsuffix_hidden": True,
+            "status": "warrior",
+        }
+        kitten = {
+            "name_prefix": "Moss",
+            "name_suffix": "heart",
+            "name_type": "warrior",
+            "specsuffix_hidden": False,
+            "status": "kitten",
+        }
+
+        self.assertEqual(Name.format_saved_name(ancient), "Paisele Legionn")
+        self.assertEqual(Name.format_saved_name(kitten), "Mosskit")
+
+
+class TestLeaderLifeSettings(unittest.TestCase):
+    def test_colony_default_and_cat_override_are_resolved_consistently(self):
+        from scripts.clan import Clan
+
+        clan = Clan(name="TestClan")
+        leader = SimpleNamespace(leader_life_override=None)
+
+        clan.clan_settings["leader_life_default"] = True
+        self.assertEqual(clan.get_starting_leader_lives(leader), 1)
+
+        leader.leader_life_override = False
+        self.assertEqual(clan.get_starting_leader_lives(leader), 9)
+
+    def test_created_dark_forest_guide_is_dead_before_registration(self):
+        from scripts.clan import Clan
+
+        class GuideChecked(Exception):
+            pass
+
+        original_cats = Cat.all_cats.copy()
+        original_cat_list = list(Cat.all_cats_list)
+        leader = Cat(status="warrior", moons=20)
+        clan = Clan(name="TestClan", leader=leader, starting_members=[])
+
+        def check_guide(guide):
+            self.assertTrue(guide.df)
+            self.assertTrue(guide.dead)
+            raise GuideChecked
+
+        try:
+            with patch.object(clan, "add_cat"), patch.object(
+                clan, "add_to_starclan"
+            ), patch.object(clan, "add_to_darkforest", side_effect=check_guide):
+                with self.assertRaises(GuideChecked):
+                    clan.create_clan()
+        finally:
+            Cat.all_cats.clear()
+            Cat.all_cats.update(original_cats)
+            Cat.all_cats_list[:] = original_cat_list
+
 
 class TestRetirementSettings(unittest.TestCase):
     def test_no_retire_is_enabled_by_default_when_setting_is_on(self):

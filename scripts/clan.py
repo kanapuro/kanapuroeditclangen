@@ -255,6 +255,10 @@ class Clan:
         created in the 'clan created' screen, not every time
         the program starts
         """
+        # create_clan() writes the first save itself, so leader lives must be
+        # finalized before any of that save work begins.
+        self.leader_lives = self.get_starting_leader_lives(self.leader)
+
         self.instructor = Cat(status=choice(["apprentice", "mediator apprentice", "medicine cat apprentice", "warrior",
                                             "medicine cat", "leader", "mediator", "queen", "queen's apprentice", "deputy", "elder"]),
                             )
@@ -273,6 +277,7 @@ class Clan:
                                             "medicine cat", "leader", "mediator", "queen", "queen's apprentice", "deputy", "elder"]),
                             )
         self.demon.df = True
+        self.demon.dead = True
         self.demon.dead_for = randint(20, 200)
         self.demon.prevent_fading = True
         if self.clan_age == "new":
@@ -798,21 +803,22 @@ class Clan:
             self.history.add_lead_ceremony(leader)
             self.leader = leader
             self.leader_predecessors += 1
-            # Determine starting lives for this leader: per-cat override takes precedence,
-            # otherwise use clan default setting `leader_life_default`.
-            override = getattr(leader, "leader_life_override", None)
-            if override is True:
-                self.leader_lives = 1
-            elif override is False:
-                self.leader_lives = 9
-            else:
-                self.leader_lives = self.get_default_leader_lives()
+            self.leader_lives = self.get_starting_leader_lives(leader)
             for clan_cat in game.clan.clan_cats:
                 clan_cat_cat = Cat.fetch_cat(clan_cat)
                 if clan_cat_cat:
                     clan_cat_cat.faith += round(random.uniform(0,1), 2)
                 else:
                     clan_cat_cat.faith -= round(random.uniform(0,1), 2)
+
+    def get_starting_leader_lives(self, leader):
+        """Resolve a leader's initial lives from their override and the colony default."""
+        override = getattr(leader, "leader_life_override", None)
+        if override is True:
+            return 1
+        if override is False:
+            return 9
+        return self.get_default_leader_lives()
 
     def get_default_leader_lives(self):
         setting = self.clan_settings.get("leader_life_default", False)

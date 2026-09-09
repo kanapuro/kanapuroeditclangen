@@ -662,6 +662,7 @@ class Cat:
         skill_dict=None,
         pelt: Pelt = None,
         loading_cat=False,  # Set to true if you are loading a cat at start-up.
+        name_type=None,
         **kwargs,
     ):
         """Initialise the cat.
@@ -689,7 +690,7 @@ class Cat:
         if (
             faded
         ):  # This must be at the top. It's a smaller list of things to init, which is only for faded cats
-            self.init_faded(ID, status, prefix, suffix, moons, **kwargs)
+            self.init_faded(ID, status, prefix, suffix, moons, name_type=name_type, **kwargs)
             return
 
         self.generate_events = GenerateEvents()
@@ -889,6 +890,7 @@ class Cat:
                 specsuffix_hidden=self.specsuffix_hidden,
                 load_existing_name=loading_cat,
                 cat=self,
+                name_type=name_type,
             )
         else:
             self.name = Name(
@@ -898,6 +900,7 @@ class Cat:
                 specsuffix_hidden=self.specsuffix_hidden,
                 load_existing_name=loading_cat,
                 cat=self,
+                name_type=name_type,
             )
 
         # Private Sprite
@@ -934,7 +937,13 @@ class Cat:
         self.outside = False
         self.exiled = False
         self.inheritance = None  # This should never be used, but just for safety
-        self.name = Name(prefix=prefix, suffix=suffix, cat=self)
+        self.name = Name(
+            prefix=prefix,
+            suffix=suffix,
+            cat=self,
+            load_existing_name=True,
+            name_type=kwargs.get("name_type"),
+        )
         if "df" in kwargs:
             self.df = kwargs["df"]
         else:
@@ -4564,6 +4573,7 @@ class Cat:
             ID=cat_info["ID"],
             prefix=cat_info["name_prefix"],
             suffix=cat_info["name_suffix"],
+            name_type=cat_info.get("name_type"),
             status=cat_info["status"],
             moons=cat_info["moons"],
             faded=True,
@@ -4743,6 +4753,7 @@ class Cat:
                 "ID": self.ID,
                 "name_prefix": self.name.prefix,
                 "name_suffix": self.name.suffix,
+                "name_type": self.name.name_type,
                 "status": self.status,
                 "moons": self.moons,
                 "dead_for": self.dead_for,
@@ -4758,6 +4769,7 @@ class Cat:
                 "ID": self.ID,
                 "name_prefix": self.name.prefix,
                 "name_suffix": self.name.suffix,
+                "name_type": self.name.name_type,
                 "specsuffix_hidden": self.name.specsuffix_hidden,
                 "gender": self.gender,
                 "gender_align": self.genderalign,
