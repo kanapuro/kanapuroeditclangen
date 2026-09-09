@@ -1,4 +1,5 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed one-life toggles leaving the current leader with nine lives; existing saves now apply the one-life limit when loaded, without restoring lost lives.
 - Fixed event-generated mates bypassing the existing apprentice restriction.
 - Fixed adoption events crashing when an adoptive parent's mate could no longer be found.
 - Fixed recruitment age checks rejecting existing outsiders in the middle of an age range.

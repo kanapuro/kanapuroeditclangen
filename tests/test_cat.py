@@ -733,6 +733,49 @@ class TestNameSpecialSuffixGuardrails(unittest.TestCase):
 
 
 class TestLeaderLifeSettings(unittest.TestCase):
+    def test_current_lives_follow_one_life_limit_without_refilling(self):
+        from scripts.clan import Clan
+
+        for default, override, lives, expected in (
+            (True, True, 9, 1), (True, None, 7, 1),
+            (False, True, 9, 1), (True, False, 7, 7),
+            (False, None, 3, 3), (True, True, 0, 0),
+        ):
+            with self.subTest(default=default, override=override, lives=lives):
+                clan = Clan(name="TestClan")
+                clan.leader = SimpleNamespace(leader_life_override=override)
+                clan.clan_settings["leader_life_default"] = default
+                clan.leader_lives = lives
+                clan.apply_leader_life_limit()
+                self.assertEqual(clan.leader_lives, expected)
+
+    def test_switching_default_updates_current_leader(self):
+        from scripts.clan import Clan
+
+        clan = Clan(name="TestClan")
+        clan.leader = SimpleNamespace(leader_life_override=None)
+        clan.clan_settings["leader_life_default"] = False
+        clan.leader_lives = 9
+        clan.switch_setting("leader_life_default")
+        self.assertEqual(clan.leader_lives, 1)
+        clan.switch_setting("leader_life_default")
+        self.assertEqual(clan.leader_lives, 1)
+
+    def test_load_applies_limit_after_loading_settings(self):
+        from scripts.clan import Clan
+
+        clan = Clan(name="TestClan")
+        clan.leader = SimpleNamespace(leader_life_override=None)
+        clan.leader_lives = 9
+        clan.clan_settings["leader_life_default"] = False
+        with patch.object(game, "clan", clan), patch.dict(game.switches, {"clan_list": ["TestClan"]}), patch(
+            "scripts.clan.os.path.exists", return_value=True
+        ), patch.object(clan, "load_clan_json"), patch.object(
+            clan, "load_clan_settings", side_effect=lambda: clan.clan_settings.update(leader_life_default=True)
+        ):
+            clan.load_clan()
+        self.assertEqual(clan.leader_lives, 1)
+
     def test_new_leader_skips_missing_clan_cats(self):
         from scripts.clan import Clan
 

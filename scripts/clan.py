@@ -827,6 +827,10 @@ class Clan:
         except Exception:
             return 9
 
+    def apply_leader_life_limit(self):
+        if self.leader and self.get_starting_leader_lives(self.leader) == 1:
+            self.leader_lives = min(self.leader_lives, 1)
+
     def new_deputy(self, deputy):
         """
         TODO: DOCS
@@ -999,6 +1003,9 @@ class Clan:
                 list_index + 1
             ]
 
+        if setting_name == "leader_life_default":
+            self.apply_leader_life_limit()
+
     def save_clan_settings(self):
         game.safe_save(
             get_save_dir() + f"/{self.name}/clan_settings.json", self.clan_settings
@@ -1027,6 +1034,7 @@ class Clan:
             game.switches["error_message"] = "There was an error loading the clan.json"
 
         game.clan.load_clan_settings()
+        game.clan.apply_leader_life_limit()
 
         return version_info
 

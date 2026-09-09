@@ -2842,6 +2842,7 @@ class ChangeCatToggles(UIWindow):
                 if current is None:
                     current = bool(game.clan.clan_settings.get("leader_life_default", False))
                 self.the_cat.leader_life_override = not current
+                game.clan.apply_leader_life_limit()
                 self.refresh_checkboxes()
         
         return super().process_event(event)
