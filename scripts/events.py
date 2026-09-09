@@ -2866,7 +2866,6 @@ class Events:
                 not game.clan.deputy.outside and \
                 (leader_dead or leader_outside or leader_shunned):
                 game.clan.new_leader(game.clan.deputy)
-                game.clan.leader_lives = 9
                 text = ''
 
                 if game.clan.deputy.personality.trait == 'bloodthirsty':
@@ -4223,6 +4222,11 @@ class Events:
 
                             try:
                                 game.clan.leader_lives = history[-1]["remaining_lives"]
+                                game.clan.leader_lives_reserve = history[-1].get(
+                                    "leader_lives_reserve", game.clan.leader_lives
+                                )
+                                game.clan.leader_lives_last_applied = game.clan.leader_lives
+                                game.clan.apply_leader_life_limit()
                             except:
                                 print("No remaining lives specified. 9 given.")
                         elif old_status == "deputy":

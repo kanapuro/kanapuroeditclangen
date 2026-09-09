@@ -2327,6 +2327,8 @@ class DeathScreen(UIWindow):
                 self.kill()
                 game.all_screens['events screen'].exit_screen()
             elif event.ui_element == self.mediator_button2:
+                if game.clan.leader is game.clan.your_cat:
+                    game.clan.apply_leader_life_limit()
                 game.clan.your_cat.revives += 1
                 game.clan.your_cat.dead = False
                 game.clan.your_cat.df = False
@@ -2359,6 +2361,8 @@ class DeathScreen(UIWindow):
                 game.clan.your_cat.thought = "Is surprised to find themselves back in the colony"
                 # Add history event for revival
                 History.add_return_from_death(you, "returned from death by a higher power.")
+                if game.clan.leader is you:
+                    game.clan.apply_leader_life_limit()
                 game.last_screen_forupdate = None
                 game.switches['window_open'] = False
                 # Show revive flavor text INSTANTLY in the event log

@@ -1,4 +1,9 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed repeated deaths after revival being numbered as leader lives; one-life deaths also use plain death history, and new records remember their life mode.
+- Revived leaders can use their unspent stored lives again; those with none left get one living life without replenishing their nine-life balance.
+- One/nine-life toggles now preserve the remaining nine-life balance across toggles and saves, without reviving dead leaders or refilling spent lives.
+- Fixed automatic deputy promotion overriding the one-life setting with nine lives.
+- Fixed ordinary cats with multiple deaths after revival being described as losing leader lives in history.
 - Fixed one-life toggles leaving the current leader with nine lives; existing saves now apply the one-life limit when loaded, without restoring lost lives.
 - Fixed event-generated mates bypassing the existing apprentice restriction.
 - Fixed adoption events crashing when an adoptive parent's mate could no longer be found.

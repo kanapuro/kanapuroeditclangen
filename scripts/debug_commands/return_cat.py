@@ -30,6 +30,8 @@ class ReturnCatCommand(Command):
         # Save previous status if available
         prev_status = getattr(cat, 'old_status', None)
         was_dead = cat.dead
+        if was_dead and game.clan.leader is cat:
+            game.clan.apply_leader_life_limit()
         cat.exiled = False
         cat.outside = False
         cat.dead = False
@@ -58,4 +60,6 @@ class ReturnCatCommand(Command):
         # Add history event for return from death (only if cat was actually dead)
         if was_dead:
             History.add_return_from_death(cat, f"returned from death.")
+            if game.clan.leader is cat and cat.status == "leader":
+                game.clan.apply_leader_life_limit()
         add_output_line_to_log(f"Returned {cat.name} (ID {cat.ID}) to the colony as {cat.status}.")

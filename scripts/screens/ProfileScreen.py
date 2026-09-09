@@ -2998,6 +2998,14 @@ class ProfileScreen(Screens):
             all_deaths = []
             death_number = len(death_history)
             multi_life_count = 0
+            has_revivals = bool(self.the_cat.history.return_from_death)
+            one_life_history = any(death.get("leader_life_mode") == 1 for death in death_history)
+            if any("leader_life_mode" not in death for death in death_history):
+                one_life_history = one_life_history or (
+                    game.clan is not None
+                    and self.the_cat.status == "leader"
+                    and game.clan.get_starting_leader_lives(self.the_cat) == 1
+                )
             for index, death in enumerate(death_history):
                 found_murder = (
                     False  # Add this line to track if a matching murder event is found
@@ -3025,7 +3033,11 @@ class ProfileScreen(Screens):
                         random_cat=Cat.fetch_cat(death["involved"]),
                     )
 
-                if self.the_cat.status == "leader":
+                if has_revivals or one_life_history:
+                    if text == "multi_lives":
+                        continue
+                    life_text = ""
+                elif self.the_cat.status == "leader":
                     if text == "multi_lives":
                         multi_life_count += 1
                         continue
@@ -3064,7 +3076,7 @@ class ProfileScreen(Screens):
                             + adjust_list_text(lives)
                             + (" life" if len(lives) == 1 else " lives")
                         )
-                elif death_number > 1:
+                elif death_number > 1 and self.the_cat.history.lead_ceremony:
                     # for retired leaders
                     if index == death_number - 1 and self.the_cat.dead:
                         life_text = "lost {PRONOUN/m_c/poss} last remaining life"
@@ -3088,6 +3100,8 @@ class ProfileScreen(Screens):
                         text += f" (Moon {death['moon']})"
                     all_deaths.append(text)
 
+            if not all_deaths:
+                return None
             if self.the_cat.status == "leader" or death_number > 1:
                 if death_number > 1:
                     deaths = str("\n" + str(self.the_cat.name) + " ").join(all_deaths)

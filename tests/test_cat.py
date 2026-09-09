@@ -733,6 +733,72 @@ class TestNameSpecialSuffixGuardrails(unittest.TestCase):
 
 
 class TestLeaderLifeSettings(unittest.TestCase):
+    def test_revival_and_one_life_history_do_not_number_deaths(self):
+        from scripts.cat.history import History
+        from scripts.clan import Clan
+        from scripts.screens.ProfileScreen import ProfileScreen
+
+        for revived, recorded_mode, current_mode in ((True, None, False), (False, 1, False), (False, None, True)):
+            with self.subTest(revived=revived, recorded_mode=recorded_mode):
+                cat = Cat(status="leader", moons=40)
+                cat.leader_life_override = current_mode
+                deaths = [{"text": "died in battle", "moon": moon, "involved": None} for moon in range(12)]
+                if recorded_mode is not None:
+                    for death in deaths:
+                        death["leader_life_mode"] = recorded_mode
+                cat.history = History(died_by=deaths, return_from_death=[{"text": "returned from death", "moon": 1}] if revived else [])
+                with patch.object(game, "clan", Clan(name="TestClan")), patch.dict(
+                    game.switches, {"show_history_moons": True}
+                ), patch("scripts.screens.ProfileScreen.event_text_adjust", side_effect=lambda cls, text, **kwargs: text):
+                    text = ProfileScreen.get_death_text(SimpleNamespace(the_cat=cat))
+                self.assertEqual(text.count("died in battle"), 12)
+                self.assertIn("(Moon 11)", text)
+                self.assertNotIn("lost", text)
+                self.assertNotIn("unknown life", text)
+
+    def test_nine_life_history_keeps_normal_numbering(self):
+        from scripts.cat.history import History
+        from scripts.screens.ProfileScreen import ProfileScreen
+
+        cat = Cat(status="leader", moons=40)
+        cat.leader_life_override = True
+        cat.history = History(died_by=[{"text": "died in battle", "moon": 1, "involved": None, "leader_life_mode": 9}])
+        with patch.dict(game.switches, {"show_history_moons": False}), patch(
+            "scripts.screens.ProfileScreen.event_text_adjust", side_effect=lambda cls, text, **kwargs: text
+        ):
+            text = ProfileScreen.get_death_text(SimpleNamespace(the_cat=cat))
+        self.assertIn("first life", text)
+
+    def test_new_death_records_remember_life_mode(self):
+        from scripts.cat.history import History
+        from scripts.clan import Clan
+
+        cat = Cat(status="leader", moons=40)
+        cat.history = History()
+        with patch.object(game, "clan", Clan(name="TestClan")):
+            for setting in (True, False):
+                cat.leader_life_override = setting
+                History.add_death(cat, "died in battle")
+        self.assertEqual([death["leader_life_mode"] for death in cat.history.died_by], [1, 9])
+
+    def test_revived_nonleader_deaths_are_not_labeled_as_lost_lives(self):
+        from scripts.cat.history import History
+        from scripts.screens.ProfileScreen import ProfileScreen
+
+        cat = Cat(status="warrior", moons=40)
+        cat.history = History(died_by=[
+            {"text": "died in battle", "moon": 1, "involved": None},
+            {"text": "died of illness", "moon": 3, "involved": None},
+        ], return_from_death=[{"text": "returned from death", "moon": 2}])
+        with patch.dict(game.switches, {"show_history_moons": False}), patch(
+            "scripts.screens.ProfileScreen.event_text_adjust", side_effect=lambda cls, text, **kwargs: text
+        ):
+            text = ProfileScreen.get_death_text(SimpleNamespace(the_cat=cat))
+        self.assertIn("died in battle", text)
+        self.assertIn("died of illness", text)
+        self.assertNotIn("lost a life", text)
+        self.assertNotIn("remaining life", text)
+
     def test_current_lives_follow_one_life_limit_without_refilling(self):
         from scripts.clan import Clan
 
@@ -743,7 +809,7 @@ class TestLeaderLifeSettings(unittest.TestCase):
         ):
             with self.subTest(default=default, override=override, lives=lives):
                 clan = Clan(name="TestClan")
-                clan.leader = SimpleNamespace(leader_life_override=override)
+                clan.leader = SimpleNamespace(leader_life_override=override, dead=lives == 0)
                 clan.clan_settings["leader_life_default"] = default
                 clan.leader_lives = lives
                 clan.apply_leader_life_limit()
@@ -759,6 +825,118 @@ class TestLeaderLifeSettings(unittest.TestCase):
         clan.switch_setting("leader_life_default")
         self.assertEqual(clan.leader_lives, 1)
         clan.switch_setting("leader_life_default")
+        self.assertEqual(clan.leader_lives, 9)
+
+    def test_spent_lives_survive_toggle_and_saved_balance(self):
+        from scripts.clan import Clan
+
+        clan = Clan(name="TestClan")
+        clan.leader = SimpleNamespace(leader_life_override=False, dead=False)
+        clan.leader_lives = 5
+        clan.leader.leader_life_override = True
+        clan.apply_leader_life_limit()
+        self.assertEqual(clan.leader_lives, 1)
+        self.assertEqual(clan.leader_lives_reserve, 5)
+        loaded = Clan(name="Loaded")
+        loaded.leader = clan.leader
+        loaded.leader_lives = clan.leader_lives
+        loaded.leader_lives_reserve = clan.leader_lives_reserve
+        loaded.leader_lives_last_applied = clan.leader_lives_last_applied
+        loaded.leader.leader_life_override = False
+        loaded.apply_leader_life_limit()
+        self.assertEqual(loaded.leader_lives, 5)
+        loaded.apply_leader_life_limit()
+        self.assertEqual(loaded.leader_lives, 5)
+
+    def test_save_records_hidden_balance_without_writing_files(self):
+        from contextlib import ExitStack
+        from scripts.clan import Clan
+
+        clan = Clan(name="TestClan")
+        leader = SimpleNamespace(ID="leader", leader_life_override=True, dead=False)
+        clan.leader = leader
+        clan.your_cat = leader
+        clan.instructor = clan.demon = clan.wanderer = SimpleNamespace(ID="guide")
+        clan.leader_lives = 5
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(game, "clan", clan))
+            stack.enter_context(patch("scripts.clan.os.path.exists", return_value=False))
+            for method in ("save_herbs", "save_disaster", "save_pregnancy", "save_clan_settings", "save_freshkill_pile"):
+                stack.enter_context(patch.object(clan, method))
+            save = stack.enter_context(patch.object(game, "safe_save"))
+            clan.save_clan()
+        data = save.call_args.args[1]
+        self.assertEqual(data["leader_lives"], 1)
+        self.assertEqual(data["leader_lives_reserve"], 5)
+        self.assertEqual(data["leader_lives_last_applied"], 1)
+
+    def test_revival_restores_only_unspent_balance(self):
+        from scripts.clan import Clan
+
+        clan = Clan(name="TestClan")
+        clan.leader = SimpleNamespace(leader_life_override=True, dead=False)
+        clan.leader_lives = 5
+        clan.apply_leader_life_limit()
+        clan.leader_lives = 0
+        clan.leader.dead = True
+        clan.apply_leader_life_limit()
+        self.assertEqual(clan.leader_lives_reserve, 4)
+        self.assertEqual(clan.leader_lives, 0)
+        clan.leader.dead = False
+        clan.leader.leader_life_override = False
+        clan.apply_leader_life_limit()
+        self.assertEqual(clan.leader_lives, 4)
+        self.assertEqual(clan.leader_lives_reserve, 4)
+        clan.leader_lives = 0
+        clan.leader.dead = True
+        clan.apply_leader_life_limit()
+        clan.leader.dead = False
+        clan.apply_leader_life_limit()
+        self.assertEqual(clan.leader_lives, 1)
+        self.assertEqual(clan.leader_lives_reserve, 0)
+        for one_life in (True, False, True, False):
+            clan.leader.leader_life_override = one_life
+            clan.apply_leader_life_limit()
+            self.assertEqual(clan.leader_lives, 1)
+            self.assertEqual(clan.leader_lives_reserve, 0)
+
+    def test_return_command_does_not_grant_new_lives(self):
+        from scripts.clan import Clan
+        from scripts.cat.history import History
+        from scripts.debug_commands.return_cat import ReturnCatCommand
+
+        clan = Clan(name="TestClan")
+        cat = Cat(status="leader", moons=40)
+        cat.old_status = "leader"
+        cat.leader_life_override = True
+        cat.history = History()
+        clan.leader = cat
+        clan.leader_lives = 5
+        clan.apply_leader_life_limit()
+        clan.leader_lives = 0
+        cat.dead = True
+        with patch.object(game, "clan", clan), patch.object(Cat, "add_to_clan"), patch.object(
+            cat, "status_change"
+        ), patch("scripts.debug_commands.return_cat.add_output_line_to_log"):
+            ReturnCatCommand().callback([cat.ID])
+        self.assertFalse(cat.dead)
+        self.assertEqual(clan.leader_lives, 1)
+        self.assertEqual(clan.leader_lives_reserve, 4)
+        self.assertEqual(len(cat.history.return_from_death), 1)
+        self.assertEqual(cat.history.died_by, [])
+        cat.leader_life_override = False
+        clan.apply_leader_life_limit()
+        self.assertEqual(clan.leader_lives, 4)
+
+    def test_legacy_balance_is_not_invented(self):
+        from scripts.clan import Clan
+
+        clan = Clan(name="TestClan")
+        clan.leader = SimpleNamespace(leader_life_override=False)
+        clan.leader_lives = 1
+        clan.leader_lives_reserve = None
+        clan.leader_lives_last_applied = None
+        clan.apply_leader_life_limit()
         self.assertEqual(clan.leader_lives, 1)
 
     def test_load_applies_limit_after_loading_settings(self):

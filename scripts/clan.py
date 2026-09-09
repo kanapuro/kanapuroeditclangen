@@ -202,6 +202,8 @@ class Clan:
 
         # Apply default leader lives from settings
         self.leader_lives = self.get_default_leader_lives()
+        self.leader_lives_reserve = 9
+        self.leader_lives_last_applied = self.leader_lives
 
         # Reputation is for loners/kittypets/outsiders in general that wish to join the clan.
         # it's a range from 1-100, with 30-70 being neutral, 71-100 being "welcoming",
@@ -258,6 +260,8 @@ class Clan:
         # create_clan() writes the first save itself, so leader lives must be
         # finalized before any of that save work begins.
         self.leader_lives = self.get_starting_leader_lives(self.leader)
+        self.leader_lives_reserve = 9
+        self.leader_lives_last_applied = self.leader_lives
 
         self.instructor = Cat(status=choice(["apprentice", "mediator apprentice", "medicine cat apprentice", "warrior",
                                             "medicine cat", "leader", "mediator", "queen", "queen's apprentice", "deputy", "elder"]),
@@ -804,6 +808,8 @@ class Clan:
             self.leader = leader
             self.leader_predecessors += 1
             self.leader_lives = self.get_starting_leader_lives(leader)
+            self.leader_lives_reserve = 9
+            self.leader_lives_last_applied = self.leader_lives
             for clan_cat in game.clan.clan_cats:
                 clan_cat_cat = Cat.fetch_cat(clan_cat)
                 if clan_cat_cat:
@@ -828,8 +834,20 @@ class Clan:
             return 9
 
     def apply_leader_life_limit(self):
-        if self.leader and self.get_starting_leader_lives(self.leader) == 1:
-            self.leader_lives = min(self.leader_lives, 1)
+        if not self.leader:
+            return
+        current = max(0, self.leader_lives)
+        reserve = getattr(self, "leader_lives_reserve", None)
+        previous = getattr(self, "leader_lives_last_applied", None)
+        if reserve is None or previous is None:
+            reserve = current
+            previous = current
+        reserve = max(0, reserve - max(0, previous - current))
+        self.leader_lives_reserve = reserve
+        if not getattr(self.leader, "dead", False):
+            # Revival permits one living life without replenishing the stored balance.
+            self.leader_lives = min(max(1, reserve), self.get_starting_leader_lives(self.leader))
+        self.leader_lives_last_applied = max(0, self.leader_lives)
 
     def new_deputy(self, deputy):
         """
@@ -884,7 +902,10 @@ class Clan:
         TODO: DOCS
         """
 
+        self.apply_leader_life_limit()
         clan_data = {
+            "leader_lives_reserve": self.leader_lives_reserve,
+            "leader_lives_last_applied": self.leader_lives_last_applied,
             "clanname": self.name,
             "clanage": self.age,
             "biome": self.biome,
@@ -1170,6 +1191,8 @@ class Clan:
         game.clan.leader_lives, game.clan.leader_predecessors = int(
             leader_info[1]
         ), int(leader_info[2])
+        game.clan.leader_lives_reserve = None
+        game.clan.leader_lives_last_applied = None
 
         if len(deputy_info) > 1:
             game.clan.deputy_predecessors = int(deputy_info[1])
@@ -1305,6 +1328,8 @@ class Clan:
 
         game.switches["error_message"] = "Error loading ---clan.json. Check Leader related info"
         game.clan.leader_lives = leader_lives
+        game.clan.leader_lives_reserve = clan_data.get("leader_lives_reserve")
+        game.clan.leader_lives_last_applied = clan_data.get("leader_lives_last_applied")
         game.clan.leader_predecessors = clan_data["leader_predecessors"]
 
         game.switches["error_message"] = "Error loading ---clan.json. Check Deputy related info"

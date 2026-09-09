@@ -485,7 +485,8 @@ class History:
         cat.history.died_by.append({
             "involved": other_cat,
             "text": death_text,
-            "moon": game.clan.age
+            "moon": game.clan.age,
+            "leader_life_mode": game.clan.get_starting_leader_lives(cat) if cat.status == "leader" else None,
         })
 
     @staticmethod
@@ -785,7 +786,9 @@ class History:
                 if cat.status not in ["apprentice", "kitten", "elder", "warrior"]:
                     murder_history["demoted_from"] = cat.status
                 if cat.status == "leader":
+                    game.clan.apply_leader_life_limit()
                     murder_history["remaining_lives"] = game.clan.leader_lives
+                    murder_history["leader_lives_reserve"] = game.clan.leader_lives_reserve
 
                 if not other_cat:
                     murder_history["revelation_text"] = \
