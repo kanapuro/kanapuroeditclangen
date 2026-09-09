@@ -1,4 +1,13 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Fixed recruitment age checks rejecting existing outsiders in the middle of an age range.
+- Fixed recruited cats remaining in the outsider list after joining the colony.
+- Fixed generated elder-aged cats defaulting to warrior status when no role was specified.
+- Fixed random cat generation skipping adjacent disabling scars when removing them.
+- Fixed family-size checks adding duplicate entries to cats' cached relatives lists.
+- Fixed entirely stillborn litters skipping the birth report, recovery, and birth cooldown.
+- Fixed childbirth text filtering permanently removing event options and overlooking healer mates.
+- Fixed saved single/syllable names regenerating and ancient suffixes changing when loaded.
+- Fixed leader promotion crashing when a colony member could not be found.
 - Fixed the generated Parasite/Dark Forest guide being treated as a living colony cat during starter-cat creation.
 - Fixed one-life leaders being saved with nine lives when creating a new colony.
 - Overhauled name-style persistence and display so two-part names keep their space after saving/loading and custom names can switch back to -kit/-paw/-star.

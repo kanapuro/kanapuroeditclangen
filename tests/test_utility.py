@@ -1,5 +1,7 @@
 import os
 import unittest
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
 from scripts.cat.cats import Cat
 from scripts.cat_relations.relationship import Relationship
@@ -11,10 +13,73 @@ from scripts.utility import (
     get_amount_of_cats_with_relation_value_towards,
     get_alive_clan_queens,
     lifegen_text_adjust,
+    create_new_cat,
+    create_new_cat_block,
 )
 
 os.environ["SDL_VIDEODRIVER"] = "dummy"
 os.environ["SDL_AUDIODRIVER"] = "dummy"
+
+
+class TestNewCatGeneration(unittest.TestCase):
+    def setUp(self):
+        clan = Clan(name="TestClan")
+        clan.clan_cats = []
+        for target, attribute, value in (
+            (Cat, "all_cats", {}),
+            (Cat, "all_cats_list", []),
+            (Cat, "outside_cats", {}),
+            (game, "clan", clan),
+        ):
+            replacement = patch.object(target, attribute, value)
+            replacement.start()
+            self.addCleanup(replacement.stop)
+
+    def test_generated_status_matches_age_when_no_status_is_given(self):
+        for age, expected in ((0, "newborn"), (5, "kitten"), (6, "apprentice"),
+                              (11, "apprentice"), (12, "warrior"), (119, "warrior"),
+                              (120, "elder"), (140, "elder")):
+            with self.subTest(age=age), patch("scripts.utility.History"), patch.object(
+                Cat, "create_relationships_new_cat"
+            ), patch("scripts.utility.random", return_value=1.0):
+                cat = create_new_cat(Cat, age=age, other_clan=True)[0]
+                self.assertEqual(cat.status, expected)
+
+    def test_existing_outsider_matches_middle_of_age_range(self):
+        outsider = Cat(status="loner", moons=30)
+        outsider.outside = True
+        with patch("scripts.utility.randint", return_value=30), patch(
+            "scripts.utility.create_new_cat", return_value=[]
+        ) as generate:
+            cats = create_new_cat_block(
+                Cat, Relationship, SimpleNamespace(new_cats=[]), {}, 0,
+                ["exists", "loner", "old_name", "age:young adult", "status:warrior"],
+            )
+        self.assertEqual(cats, [outsider])
+        generate.assert_not_called()
+
+    def test_recruited_outsider_is_removed_from_outsider_registry(self):
+        outsider = Cat(status="loner", moons=30)
+        outsider.outside = True
+        Cat.outside_cats[outsider.ID] = outsider
+        with patch("scripts.utility.randint", return_value=Cat.age_moons[outsider.age][0]):
+            cats = create_new_cat_block(
+                Cat, Relationship, SimpleNamespace(new_cats=[]), {}, 0,
+                ["exists", "loner", "old_name", "status:warrior"],
+            )
+        self.assertEqual(cats, [outsider])
+        self.assertFalse(outsider.outside)
+        self.assertNotIn(outsider.ID, Cat.outside_cats)
+        self.assertEqual(outsider.clan, game.clan.name)
+
+    def test_generation_removes_adjacent_disabling_scars(self):
+        cat = Cat(status="warrior", moons=30)
+        cat.pelt.scars = ["NOPAW", "NOTAIL", "ONE"]
+        with patch("scripts.utility.History"), patch.object(
+            cat, "create_relationships_new_cat"
+        ), patch("scripts.utility.random", return_value=1.0):
+            create_new_cat(Mock(return_value=cat), age=30, other_clan=True)
+        self.assertEqual(cat.pelt.scars, ["ONE"])
 
 
 class TestPersonalityCompatibility(unittest.TestCase):

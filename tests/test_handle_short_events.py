@@ -2,6 +2,8 @@ import unittest
 from unittest.mock import patch
 
 from scripts.cat.cats import Cat
+from scripts.clan import Clan
+from scripts.game_structure.game_essentials import game
 from scripts.events_module.short.handle_short_events import HandleShortEvents
 
 
@@ -18,7 +20,7 @@ class TestHandleNewCats(unittest.TestCase):
         handle.new_cat_objects = []
         handle.involved_cats = []
 
-        parent = Cat()
+        parent = Cat(status="warrior", moons=40)
         parent.ID = "parent"
         parent.gender = "female"
         parent.dead = False
@@ -35,7 +37,9 @@ class TestHandleNewCats(unittest.TestCase):
         with patch(
             "scripts.events_module.short.handle_short_events.create_new_cat_block",
             side_effect=[[parent], [kit]],
-        ), patch("scripts.events_module.short.handle_short_events.Relation_Events.welcome_new_cats"):
+        ), patch("scripts.events_module.short.handle_short_events.Relation_Events.welcome_new_cats"), patch.object(
+            game, "clan", Clan(name="TestClan")
+        ), patch("scripts.events_module.short.handle_short_events.random.random", return_value=0.9):
             handle.handle_new_cats()
 
         self.assertIn("recovering from birth", parent.injuries)

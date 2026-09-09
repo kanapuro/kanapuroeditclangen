@@ -614,15 +614,15 @@ def create_new_cat_block(
                 continue
             if gender and gender != cat.gender:
                 continue
-            if age and age not in Cat.age_moons[cat.age]:
+            if age is not None and not Cat.age_moons[cat.age][0] <= age <= Cat.age_moons[cat.age][1]:
                 continue
             possible_outsiders.append(cat)
 
         if possible_outsiders:
             chosen_cat = choice(possible_outsiders)
-            game.clan.add_to_clan(chosen_cat)
             chosen_cat.status = status
             chosen_cat.outside = outside
+            game.clan.add_to_clan(chosen_cat)
             if not alive:
                 chosen_cat.die()
 
@@ -872,10 +872,10 @@ def create_new_cat(
             status = "kitten"
         elif 6 <= age <= 11:
             status = "apprentice"
-        elif age >= 12:
-            status = "warrior"
         elif age >= 120:
             status = "elder"
+        elif age >= 12:
+            status = "warrior"
 
     # cat creation and naming time
     for index in range(number_of_cats):
@@ -995,7 +995,7 @@ def create_new_cat(
         if not df: 
             not_allowed = ['NOPAW', 'NOTAIL', 'HALFTAIL', 'NOEAR', 'BOTHBLIND', 'RIGHTBLIND', 
                         'LEFTBLIND', 'BRIGHTHEART', 'NOLEFTEAR', 'NORIGHTEAR', 'MANLEG']
-            for scar in new_cat.pelt.scars:
+            for scar in new_cat.pelt.scars.copy():
                 if scar in not_allowed:
                     new_cat.pelt.scars.remove(scar)
 

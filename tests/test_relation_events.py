@@ -1,10 +1,13 @@
 import os
 import unittest
+from copy import deepcopy
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from scripts.cat.cats import Cat
 from scripts.cat_relations.relationship import Relationship
 from scripts.clan import Clan
+from scripts.game_structure.game_essentials import game
 from scripts.events_module.relationship.pregnancy_events import Pregnancy_Events
 from scripts.events_module.relationship.romantic_events import Romantic_Events
 
@@ -73,6 +76,96 @@ class SameSexAdoptions(unittest.TestCase):
 
 
 class Pregnancy(unittest.TestCase):
+    def setUp(self):
+        cats = Cat.all_cats.copy()
+        cat_list = list(Cat.all_cats_list)
+        family = Pregnancy_Events.biggest_family
+        clan_patch = patch.object(game, "clan", None)
+        clan_patch.start()
+        self.addCleanup(clan_patch.stop)
+
+        def restore_cats():
+            Cat.all_cats.clear()
+            Cat.all_cats.update(cats)
+            Cat.all_cats_list[:] = cat_list
+            Pregnancy_Events.biggest_family = family
+
+        self.addCleanup(restore_cats)
+
+    def test_family_size_check_does_not_modify_cached_relatives(self):
+        cat = Cat(moons=40)
+        relatives = ["relative"]
+        cat.inheritance = SimpleNamespace(all_involved=relatives)
+        with patch.object(Cat, "all_cats", {cat.ID: cat}), patch.object(
+            Pregnancy_Events, "biggest_family", []
+        ):
+            Pregnancy_Events.set_biggest_family()
+            Pregnancy_Events.set_biggest_family()
+            self.assertEqual(Pregnancy_Events.biggest_family, ["relative", cat.ID])
+            self.assertEqual(cat.get_relatives(), ["relative"])
+
+    def test_family_size_check_handles_no_cats(self):
+        with patch.object(Cat, "all_cats", {}), patch.object(
+            Pregnancy_Events, "biggest_family", []
+        ):
+            Pregnancy_Events.set_biggest_family()
+            self.assertFalse(Pregnancy_Events.biggest_family_is_big())
+
+    def test_entirely_stillborn_litter_still_completes_childbirth(self):
+        clan = Clan(name="clan")
+        cat = Cat(gender="female", moons=40)
+        cat.injuries["pregnant"] = {"mortality": 40}
+        clan.pregnancy_data = {cat.ID: {"moons": 2, "amount": 3}}
+        with patch.object(game, "clan", clan), patch.object(game, "cur_events_list", []), patch.object(
+            Pregnancy_Events, "get_kits", return_value=[]
+        ), patch.object(Pregnancy_Events, "set_biggest_family"), patch.object(
+            Pregnancy_Events, "handle_stillbirths"
+        ) as stillbirths, patch(
+            "scripts.events_module.relationship.pregnancy_events.random.random", return_value=0.5
+        ), patch.object(cat, "get_injured") as get_injured:
+            Pregnancy_Events.handle_two_moon_pregnant(cat, clan)
+            get_injured.assert_called_once_with("recovering from birth", event_triggered=True)
+            stillbirths.assert_called_once_with(cat, None, 3, clan)
+            self.assertTrue(game.cur_events_list)
+            self.assertNotIn("pregnant", cat.injuries)
+            self.assertEqual(cat.birth_cooldown, game.config["pregnancy"]["birth_cooldown"])
+            self.assertNotIn(cat.ID, clan.pregnancy_data)
+
+    def test_childbirth_filters_do_not_modify_shared_event_strings(self):
+        for branch, roll, mate_is_medic in (
+            ("death", 0.0, False), ("difficult_birth", 0.5, False),
+            ("death", 0.0, True), ("difficult_birth", 0.5, True),
+        ):
+            with self.subTest(branch=branch, mate_is_medic=mate_is_medic):
+                clan = Clan(name="clan")
+                cat = Cat(gender="female", moons=40)
+                cat.injuries["pregnant"] = {"mortality": 40}
+                if branch == "difficult_birth":
+                    cat.injuries["blood loss"] = {}
+                clan.pregnancy_data = {cat.ID: {"moons": 2, "amount": 1}}
+                strings = deepcopy(Pregnancy_Events.PREGNANT_STRINGS)
+                options = ["A medicine cat arrives.", "Another medicine cat arrives.", "The birth is difficult."]
+                strings["birth"][branch] = list(options)
+                kit = SimpleNamespace(ID="kit")
+                med = SimpleNamespace(ID="med")
+                if mate_is_medic:
+                    cat.mates = [med.ID]
+                with patch.object(game, "clan", clan), patch.object(game, "cur_events_list", []), patch.object(
+                    Pregnancy_Events, "PREGNANT_STRINGS", strings
+                ), patch.object(Pregnancy_Events, "get_kits", return_value=[kit]), patch.object(
+                    Pregnancy_Events, "set_biggest_family"
+                ), patch("scripts.events_module.relationship.pregnancy_events.random.random", return_value=roll), patch(
+                    "scripts.events_module.relationship.pregnancy_events.get_alive_status_cats",
+                    return_value=[med] if mate_is_medic else [],
+                ), patch(
+                    "scripts.events_module.relationship.pregnancy_events.choice", side_effect=lambda choices: choices[0]
+                ), patch("scripts.events_module.relationship.pregnancy_events.History"), patch.object(
+                    cat, "get_injured"
+                ), patch.object(cat, "die"):
+                    Pregnancy_Events.handle_two_moon_pregnant(cat, clan)
+                    self.assertNotIn("medicine cat", game.cur_events_list[0].text)
+                self.assertEqual(strings["birth"][branch], options)
+
     def test_active_pregnancy_is_aborted_when_no_kits_is_enabled(self):
         clan = Clan(name="clan")
         cat = Cat(gender='female', age="adult", moons=40)

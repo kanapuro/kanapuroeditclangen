@@ -71,9 +71,9 @@ class Pregnancy_Events:
     @staticmethod
     def set_biggest_family():
         """Gets the biggest family of the clan."""
-        biggest_family = None
+        biggest_family = []
         for cat in Cat.all_cats.values():
-            ancestors = cat.get_relatives()
+            ancestors = list(cat.get_relatives())
             if not biggest_family:
                 biggest_family = ancestors
                 biggest_family.append(cat.ID)
@@ -418,7 +418,7 @@ class Pregnancy_Events:
         # Track attempted vs successful kits
         attempted_kits = kits_amount  # Original number attempted
         kits_amount = len(kits)  # Number that survived
-        stillborn_count = attempted_kits - kits_amount if kits else 0
+        stillborn_count = attempted_kits - kits_amount
         
         if not kits and stillborn_count == 0:
             print(f"[WARN] No kits were created for pregnancy event involving {cat.name}{' and ' + str(other_cat.name) if other_cat else ''}.")
@@ -506,11 +506,9 @@ class Pregnancy_Events:
             meds = get_alive_status_cats(
                 Cat, ["medicine cat", "medicine cat apprentice"], sort=True
             )
-            mate_is_med = [mate_id for mate_id in cat.mates if mate_id in meds]
+            mate_is_med = [med for med in meds if med.ID in cat.mates]
             if not meds or cat in meds or len(mate_is_med) > 0:
-                for event in possible_events:
-                    if "medicine cat" in event:
-                        possible_events.remove(event)
+                possible_events = [event for event in possible_events if "medicine cat" not in event]
 
             if cat.outside:
                 possible_events = events["birth"]["outside_death"]
@@ -539,11 +537,9 @@ class Pregnancy_Events:
                 meds = get_alive_status_cats(
                     Cat, ["medicine cat", "medicine cat apprentice"]
                 )
-                mate_is_med = [mate_id for mate_id in cat.mates if mate_id in meds]
+                mate_is_med = [med for med in meds if med.ID in cat.mates]
                 if not meds or cat in meds or len(mate_is_med) > 0:
-                    for event in possible_events:
-                        if "medicine cat" in event:
-                            possible_events.remove(event)
+                    possible_events = [event for event in possible_events if "medicine cat" not in event]
 
                 event_list.append(choice(possible_events))
         if not cat.dead:
@@ -562,8 +558,8 @@ class Pregnancy_Events:
         )
 
         # display event
+        game.cur_events_list.append(Single_Event(print_event, ["health", "birth_death"], involved_cats))
         if kits_amount != 0:
-            game.cur_events_list.append(Single_Event(print_event, ["health", "birth_death"], involved_cats))
             if getattr(game, "clan", None) and getattr(game.clan, "clan_cats", None):
                 for clan_cat in game.clan.clan_cats:
                     clan_cat_cat = Cat.fetch_cat(clan_cat)
