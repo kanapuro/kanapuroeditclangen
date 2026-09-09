@@ -166,15 +166,32 @@ class Pregnancy(unittest.TestCase):
                     self.assertNotIn("medicine cat", game.cur_events_list[0].text)
                 self.assertEqual(strings["birth"][branch], options)
 
-    def test_active_pregnancy_is_aborted_when_no_kits_is_enabled(self):
+    def test_no_kits_does_not_interrupt_an_existing_pregnancy(self):
         clan = Clan(name="clan")
         cat = Cat(gender='female', age="adult", moons=40)
         clan.pregnancy_data = {cat.ID: {"moons": 2, "amount": 1}}
         cat.no_kits = True
 
-        Pregnancy_Events.handle_having_kits(cat, clan)
+        with patch.object(Pregnancy_Events, "handle_two_moon_pregnant") as birth, patch.object(
+            Pregnancy_Events, "check_if_can_have_kits"
+        ) as conceive:
+            Pregnancy_Events.handle_having_kits(cat, clan)
+        birth.assert_called_once_with(cat, clan)
+        conceive.assert_not_called()
 
-        self.assertNotIn(cat.ID, clan.pregnancy_data)
+    def test_birth_relationships_skip_missing_colony_member(self):
+        clan = Clan(name="clan")
+        parent = Cat(status="warrior", gender="female", moons=40)
+        clan.clan_cats = ["missing-cat", parent.ID]
+        clan.clan_settings["bigger_litters"] = False
+        with patch.object(game, "clan", clan), patch.object(Cat, "all_cats", {parent.ID: parent}), patch(
+            "scripts.events_module.relationship.pregnancy_events.History"
+        ), patch("scripts.events_module.relationship.pregnancy_events.random.random", return_value=1.0):
+            kits = Pregnancy_Events.get_kits(1, parent, clan=clan)
+        self.assertEqual(len(kits), 1)
+        self.assertIn(parent.ID, kits[0].relationships)
+        self.assertIn(kits[0].ID, parent.relationships)
+        self.assertNotIn("missing-cat", kits[0].relationships)
 
     def test_invalid_mates_are_pruned_without_skipping_entries(self):
         cat = Cat(gender='female', age="adult", moons=40)

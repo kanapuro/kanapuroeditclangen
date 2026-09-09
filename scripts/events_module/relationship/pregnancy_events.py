@@ -1073,7 +1073,7 @@ class Pregnancy_Events:
                 if cat_id == kit.ID:
                     continue
                 the_cat = Cat.all_cats.get(cat_id)
-                if the_cat.dead or the_cat.outside:
+                if the_cat is None or the_cat.dead or the_cat.outside:
                     continue
                 if the_cat.ID in kit.get_parents():
                     parent_to_kit = game.config["new_cat"]["parent_buff"][

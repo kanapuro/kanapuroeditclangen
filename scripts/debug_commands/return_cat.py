@@ -32,6 +32,7 @@ class ReturnCatCommand(Command):
         was_dead = cat.dead
         if was_dead and game.clan.leader is cat:
             game.clan.apply_leader_life_limit()
+            prev_status = "leader"
         cat.exiled = False
         cat.outside = False
         cat.dead = False
@@ -46,10 +47,12 @@ class ReturnCatCommand(Command):
         else:
             if cat.moons > 119:
                 cat.status_change("elder")
-            elif cat.moons > 12:
+            elif cat.moons >= 12:
                 cat.status_change("warrior")
-            elif cat.moons > 6:
+            elif cat.moons >= 6:
                 cat.status_change("apprentice")
+            elif cat.moons == 0:
+                cat.status_change("newborn")
             else:
                 cat.status_change("kitten")
         # Set a positive thought for feedback

@@ -22,6 +22,21 @@ os.environ["SDL_AUDIODRIVER"] = "dummy"
 
 
 class TestNewCatGeneration(unittest.TestCase):
+    def test_return_command_uses_correct_age_boundaries(self):
+        from scripts.debug_commands.return_cat import ReturnCatCommand
+
+        for age, status in ((0, "newborn"), (1, "kitten"), (5, "kitten"),
+                            (6, "apprentice"), (11, "apprentice"), (12, "warrior"),
+                            (119, "warrior"), (120, "elder")):
+            with self.subTest(age=age):
+                cat = Cat(status="loner", moons=age)
+                cat.outside = True
+                cat.old_status = None
+                game.clan.your_cat = cat
+                with patch.object(Cat, "add_to_clan"), patch("scripts.debug_commands.return_cat.add_output_line_to_log"):
+                    ReturnCatCommand().callback([cat.ID])
+                self.assertEqual(cat.status, status)
+
     def setUp(self):
         clan = Clan(name="TestClan")
         clan.clan_cats = []

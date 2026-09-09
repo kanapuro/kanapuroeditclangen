@@ -907,19 +907,22 @@ class TestLeaderLifeSettings(unittest.TestCase):
 
         clan = Clan(name="TestClan")
         cat = Cat(status="leader", moons=40)
-        cat.old_status = "leader"
+        cat.old_status = None
         cat.leader_life_override = True
         cat.history = History()
         clan.leader = cat
+        clan.your_cat = cat
         clan.leader_lives = 5
         clan.apply_leader_life_limit()
         clan.leader_lives = 0
         cat.dead = True
-        with patch.object(game, "clan", clan), patch.object(Cat, "add_to_clan"), patch.object(
-            cat, "status_change"
-        ), patch("scripts.debug_commands.return_cat.add_output_line_to_log"):
+        with patch.object(game, "clan", clan), patch.object(Cat, "add_to_clan"), patch(
+            "scripts.debug_commands.return_cat.add_output_line_to_log"
+        ):
             ReturnCatCommand().callback([cat.ID])
         self.assertFalse(cat.dead)
+        self.assertEqual(cat.status, "leader")
+        self.assertIs(clan.leader, cat)
         self.assertEqual(clan.leader_lives, 1)
         self.assertEqual(clan.leader_lives_reserve, 4)
         self.assertEqual(len(cat.history.return_from_death), 1)
