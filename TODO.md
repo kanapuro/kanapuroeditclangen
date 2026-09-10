@@ -2,7 +2,7 @@
 - merge w genemod
 - merge w reincarnation lifegen mod
 - merge w lifegen infection mod
-- merge w dadm? ik some of it weird
+- merge w dadm? ik some of it weird ~a
 - merge w dnd mod (dnd stats and patrols)
 - merge: dumb potato's extras (https://ptb.discord.com/channels/1125069186985640063/1202061506997657612), sprout's text expansions (https://ptb.discord.com/channels/1003759225522110524/1188095282915848202), cypress' more grief thoughts (https://ptb.discord.com/channels/1125069186985640063/1226623287283552296), bits from bingle's strange add-ons (https://ptb.discord.com/channels/1345739018792599643/1358826134602645725), caliiriin's extra pelts (https://ptb.discord.com/channels/1345739018792599643/1360109835005460538), multiroles
 - trailblazers themed content (horns, wings, stuff!) / horn/antler accessories!!!!!!!! yay!!!!!!!!!!!
@@ -23,3 +23,17 @@
 - fix naming? add more naming types (ie. the tribal-esque naming... "Trout-in-Rivers", "Magpie-in-Dusk", "Herald-of-Skies"...)
 - "cats add" crash 6/2/2026 7:04 PM
 - proper early stage miscarriages + abortions? idk man. + fix that bug where you get extended prengancies if you turn off kits for a cat on their personal settings While they are actively carrying. oops.
+- more gameplay this is boring asf
+- different roles you can customize throughout gameplay
+- setting to make the background randomly light or dark (and change positions of cats when you switch back to the page) instead of dependent on light/dark mode because its more simulator-like
+- potentially going full sims mode?
+- make it so that you can select multiple feeding modes to act in priority order (rather than defaulting secondarily to rank order)
+- "allow cats to choose role" settings should not apply to the player's selected character, more specifically, we can make an option for this (seems like personal preference)
+- murder/crime/violence rate; maybe not a setting but a variable that occurs as a result of existing variables (wars, negative relationships, religious alignment, etc.) presumably can be changed with commands but is overall a background thing. maybe toggled on and off in settings HOWEVER this depends on how complex the social systems get
+- be able to murder cats from outside (other clans, when that system is in place, and loners/lost) (lower chance; you need to find them) 
+- pregnant or recovering from birth characters should pull from the same lifegen patrol library as queens; allow them to use those patrols despite "condition" status
+- ~a / additionally look into adding unique patrols for each condition
+- allow stacking permanant conditions (akin to multi-white-patches, which btw, needs a checklist deisgn rather than dropdown)
+- word wrap on cat list instead of cutoff
+- different colonies' views of murder; individual perception per layers. aka. cats have their own perceptions, colonies have their own generalized perceptions (likely born through the cats perceptions, though perhaps some way to override this?). would result in different effects. ie. in the base game you WILL get shunned if caught. however if you succeed and are revealed to have murdered, say, the leader, perhaps that earns you enough appeal to be considered leader in another colony? worth exploring
+- dementia :D 
