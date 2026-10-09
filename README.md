@@ -1,117 +1,82 @@
 # LifeGen Mega Merge - Kanapuro Edit (LGMMKE)
 
-A ClanGen mod where you control your own cat! Choose your path and live out your life as a warrior. Personalized for Kanapuro's tastes!
+An edit of LifeGen MegaMerge, a ClanGen mod where you play as your own cat and live out their life in a Clan.
 
-## Requirements
+## Getting started
 
-To run LGMMKE from source code, you'll need:
+These instructions are for running the game from source. You don't need a code editor, but you do need Python and Poetry. Poetry installs the game's Python dependencies for you.
 
-- **Python 3.11.9 or earlier** (no later than 3.11.9)
-- **Poetry** (Python dependency manager)
-  
-> **Note**: Poetry is optional — a simple local virtualenv or the embedded Python can also be used.
+1. Open [this repository](https://github.com/kanapuro/kanapuroeditclangen), click **Code**, then **Download ZIP**.
+2. Extract the ZIP into a folder. Don't run the game from inside the ZIP.
+3. Install **Python 3.11** from [python.org](https://www.python.org/downloads/). On Windows, tick **Add python.exe to PATH** in the installer.
+4. Follow the instructions below for your operating system.
 
-> **Note**: Python 3.12+ is not supported. Install Python 3.11.9 or earlier from [python.org](https://www.python.org/downloads)
+Use Python 3.11 for this setup; the project's builds use that version. You don't need the exact 3.11.9 patch version.
 
-## Installation & Setup
+### Windows
 
-### 1. Install Python
+Open PowerShell from the Start menu. Run these commands one at a time to install Poetry:
 
-Download Python 3.11.9 or earlier from [python.org](https://www.python.org/downloads)
-
-Verify installation:
-```bash
-python3 --version
+```powershell
+py -3.11 -m pip install --user pipx
+py -3.11 -m pipx ensurepath
+py -3.11 -m pipx install poetry
 ```
 
-### 2. Install Poetry
+Close PowerShell and open it again so it can find Poetry. Check that the installation worked:
 
-Follow the [official Poetry installation guide](https://python-poetry.org/docs/#installing-with-pipx):
-
-**Linux, macOS, or Windows (WSL/PowerShell):**
-```bash
-python3 -m pip install pipx --user
-python3 -m pipx install poetry
-python3 -m pipx ensurepath
-```
-
-Verify installation:
-```bash
+```powershell
 poetry --version
 ```
 
-## How to Play
+Next, open the extracted game folder in File Explorer. This is the folder containing `main.py` and `pyproject.toml`. Click the address bar, type `powershell`, and press Enter to open PowerShell in that folder.
 
-### Option 1: Run Script (Recommended)
+Run:
 
-**Windows:**
-Double click the `run.bat` file in the game folder.
+```powershell
+poetry env use 3.11
+poetry install --no-root
+poetry run python main.py
+```
 
-**Simple double-click (Windows, no global tools required):**
-If you prefer a non-invasive way to run the game without installing Poetry or changing system state, use the provided `run_local.bat`. It prefers a project-local `.venv` (created for you) and falls back to the embedded Python at `C:\Users\henry.brown2\python-3.11.9-embed-amd64\python.exe` if present.
+The first installation may take a few minutes. Once setup is complete, you can double-click `run.bat` in the game folder to play again.
 
-To run: double-click `run_local.bat` in the project root.
+### Linux / macOS
 
-**Linux / macOS:**
-Double click the `run.sh` file, or open a terminal in the game folder and run:
-```bash
+Install Poetry using the [Poetry installation instructions](https://python-poetry.org/docs/#installation). Close and reopen your terminal afterward, then check:
+
+```sh
+poetry --version
+```
+
+Open a terminal in the extracted game folder, the one containing `main.py` and `pyproject.toml`. If your file manager doesn't offer an option to open a terminal there, type `cd ` followed by the folder's path in quotes, then press Enter.
+
+Run:
+
+```sh
+poetry env use python3.11
+poetry install --no-root
+poetry run python main.py
+```
+
+The first installation may take a few minutes. To play again, open a terminal in the same folder and run:
+
+```sh
 bash run.sh
 ```
 
-**Chromebook (Optimized):**
-Double click the `chosrun.sh` file, or open a terminal in the game folder and run:
-```bash
-bash chosrun.sh
-```
+## If the game won't start
 
-### Option 2: Run from Terminal
-
-Navigate to the game directory and use one of the following:
-
-**Linux / macOS:**
-```bash
-cd kanapuroeditclangen
-bash run.sh
-```
-
-**Windows:**
-```bash
-cd kanapuroeditclangen
-run.bat
-```
-
-**Chromebook (Optimized):**
-```bash
-cd kanapuroeditclangen
-bash chosrun.sh
-```
-
-### Option 3: Run from Visual Studio Code
-
-1. Open the `kanapuroeditclangen` folder in VS Code
-2. Open the integrated terminal (Ctrl + `)
-3. Run:
-   ```bash
-   poetry config virtualenvs.in-project true
-   poetry install --no-root
-   ```
-4. Select the Poetry virtual environment as your Python interpreter (Ctrl+Shift+P → "Python: Select Interpreter")
-5. Open `main.py` and click the play button in the top right corner
-
-## Features
-
-- Play as your own custom cat
-- Multiple life path choices
-- Rich storytelling and events
-- Colony management gameplay
+- **`poetry` isn't recognized:** Close and reopen your terminal after installing it. If it still isn't found, check the [Poetry installation instructions](https://python-poetry.org/docs/#installation).
+- **Python 3.11 can't be found:** Check that you installed it. On Windows, run `py -3.11 --version`; on Linux or macOS, run `python3.11 --version`.
+- **Poetry can't find `pyproject.toml`:** Your terminal is in the wrong folder. Open it in the folder containing `main.py` and `pyproject.toml`.
+- **The game window closes immediately:** Run `poetry run python main.py` from a terminal in the game folder so you can read the error. Include that error when asking for help.
 
 ## Support & Community
 
-Have questions or found a bug? 
-
-- Join our **Discord server** at [discord.gg/pB3XnFqenm](https://discord.gg/pB3XnFqenm) - check the `#lgmmke` channel for updates
-- Visit my **Linktree** at [linktr.ee/kanapuro](https://linktr.ee/kanapuro) for multiple ways to contact me
-- Check the **GitHub repository** for the latest source code and issue tracking
+- [Discord server](https://discord.gg/pB3XnFqenm): check the `#lgmmke` channel for updates and help.
+- [GitHub issues](https://github.com/kanapuro/kanapuroeditclangen/issues): report bugs here, including what happened and any error message.
+- [Linktree](https://linktr.ee/kanapuro): other ways to contact me.
 
 ## Credits
 
