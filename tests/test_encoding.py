@@ -25,12 +25,14 @@ os.environ["SDL_VIDEODRIVER"] = "dummy"
 os.environ["SDL_AUDIODRIVER"] = "dummy"
 
 
-def test():
+def validate():
     """Iterate through all files in 'resources'
     and verify all characters are ascii decodable."""
     failed = False
     failed_files = []
-    for root, _, files in os.walk("."):
+    for root, directories, files in os.walk("."):
+        if root == ".":
+            directories[:] = [d for d in directories if d not in (".venv", ".temp")]
         for file in files:
             if file.endswith(".json") or file.endswith(".py"):
                 path = os.path.join(root, file)
@@ -77,7 +79,7 @@ class TestEncoding(unittest.TestCase):
     def test_encoding(self):
         """Test that all files are ascii decodable."""
         with self.assertRaises(SystemExit) as cm:
-            test()
+            validate()
         self.assertEqual(cm.exception.code, 0)
 
 
@@ -117,11 +119,11 @@ def fix():
 if __name__ == "__main__":
     if len(sys.argv) == 2:
         if sys.argv[1] == "test":
-            test()
+            validate()
         elif sys.argv[1] == "fix":
             fix()
         else:
             print("Unknown argument. Use 'test' or 'fix'. Running 'test' instead.")
-            test()
+            validate()
     else:
-        test()
+        validate()

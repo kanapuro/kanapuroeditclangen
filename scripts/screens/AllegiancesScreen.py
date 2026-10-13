@@ -118,7 +118,10 @@ class AllegiancesScreen(Screens):
                     )
                 )
                 self.names_boxes[-1].disable()
-                last_row_box = self.names_boxes[-1]
+                last_row_box = max(
+                    (self.ranks_boxes[-1], self.names_boxes[-1]),
+                    key=lambda box: box.get_relative_rect().height,
+                )
                 allegiances_height += max(
                     self.ranks_boxes[-1].get_relative_rect()[3],
                     self.names_boxes[-1].get_relative_rect()[3],
@@ -298,7 +301,7 @@ class AllegiancesScreen(Screens):
                 )
 
             _box[1] = "\n".join(all_entries)
-            outputs.append(["<b>CARETAKERS<br>& YOUNG</b>", " "])
+            _box[0] = "<b>CARETAKERS<br>& YOUNG</b>"
             outputs.append(_box)
 
         # Elder Box:

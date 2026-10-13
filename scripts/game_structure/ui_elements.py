@@ -17,7 +17,6 @@ from scripts.game_structure import image_cache
 from scripts.game_structure.game_essentials import game
 from scripts.utility import (
     ui_scale,
-    shorten_text_to_fit,
     ui_scale_dimensions,
     ui_scale_value,
 )
@@ -1329,9 +1328,12 @@ class UICatListDisplay(UIContainer):
         )
 
     def create_name(self, i, kitty, container):
-        self.cat_names[f"name{i}"] = pygame_gui.elements.UILabel(
-            pygame.Rect((0, 0), (container.rect[2], ui_scale_value(30))),
-            shorten_text_to_fit(str(kitty.name), 220, 30),
+        self.cat_names[f"name{i}"] = pygame_gui.elements.UITextBox(
+            html.escape(str(kitty.name)),
+            pygame.Rect((0, 0), (
+                container.rect[2],
+                container.rect.bottom - self.cat_sprites[f"sprite{i}"].get_abs_rect().bottom,
+            )),
             container=container,
             object_id=self.text_theme,
             anchors={

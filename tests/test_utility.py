@@ -50,6 +50,57 @@ class TestNewCatGeneration(unittest.TestCase):
             replacement.start()
             self.addCleanup(replacement.stop)
 
+    def test_add_command_initializes_relationships_and_inheritance(self):
+        from scripts.debug_commands.cat import AddCatCommand
+
+        resident = Cat(status="warrior", moons=30)
+        game.clan.add_cat(resident)
+        with patch("scripts.debug_commands.cat.add_output_line_to_log"), patch.dict(
+            game.switches, {"clan_name": "__command_test__", "clan_list": ["__command_test__"]}
+        ):
+            AddCatCommand().callback([])
+        newcomer = next(cat for cat in Cat.all_cats.values() if cat != resident)
+        self.assertIn(newcomer.ID, game.clan.clan_cats)
+        self.assertIn(resident.ID, newcomer.relationships)
+        self.assertIn(newcomer.ID, resident.relationships)
+        self.assertIsNotNone(newcomer.inheritance)
+        self.assertIsNotNone(newcomer.history)
+
+    def test_add_command_requires_a_loaded_clan(self):
+        from scripts.debug_commands.cat import AddCatCommand
+
+        with patch.object(game, "clan", None), patch(
+            "scripts.debug_commands.cat.add_output_line_to_log"
+        ) as output:
+            AddCatCommand().callback([])
+        self.assertFalse(Cat.all_cats)
+        output.assert_called_once()
+
+    def test_age_command_rejects_invalid_input_without_changing_age(self):
+        from scripts.debug_commands.cat import AgeCatsCommand
+
+        cat = Cat(status="warrior", moons=30)
+        for value in ("abc", "+abc", "-31", "-1.5"):
+            with self.subTest(value=value), patch("scripts.debug_commands.cat.add_output_line_to_log"):
+                AgeCatsCommand().callback([cat.ID, value])
+            self.assertEqual(cat.moons, 30)
+
+    def test_age_command_preserves_absolute_and_relative_inputs(self):
+        from scripts.debug_commands.cat import AgeCatsCommand
+
+        cat = Cat(status="warrior", moons=30)
+        with patch("scripts.debug_commands.cat.add_output_line_to_log"):
+            for value, expected in (("40", 40), ("+2", 42), ("-3", 39), ("0", 0)):
+                AgeCatsCommand().callback([cat.ID, value])
+                self.assertEqual(cat.moons, expected)
+
+    def test_leader_ceremony_preserves_ancient_name_spacing(self):
+        from scripts.utility import leader_ceremony_text_adjust
+
+        cat = Cat(status="leader", moons=30, prefix="Herald", suffix="of Skies", name_type="ancient")
+        cat.name.specsuffix_hidden = True
+        self.assertEqual(leader_ceremony_text_adjust(Cat, "m_c arrives.", cat), f"{cat.name} arrives.")
+
     def test_generated_status_matches_age_when_no_status_is_given(self):
         for age, expected in ((0, "newborn"), (5, "kitten"), (6, "apprentice"),
                               (11, "apprentice"), (12, "warrior"), (119, "warrior"),
@@ -213,11 +264,11 @@ class TestPersonalityCompatibility(unittest.TestCase):
         cat1 = Cat()
         cat2 = Cat()
 
-        cat1.personality = None
-        self.assertIsNone(get_personality_compatibility(cat1, cat2))
-        self.assertIsNone(get_personality_compatibility(cat2, cat1))
-        self.assertIsNone(get_personality_compatibility(None, cat2))
-        self.assertIsNone(get_personality_compatibility(cat1, None))
+        with patch.object(cat1, "personality", None):
+            self.assertIsNone(get_personality_compatibility(cat1, cat2))
+            self.assertIsNone(get_personality_compatibility(cat2, cat1))
+            self.assertIsNone(get_personality_compatibility(None, cat2))
+            self.assertIsNone(get_personality_compatibility(cat1, None))
 
 
 class TestCountRelation(unittest.TestCase):

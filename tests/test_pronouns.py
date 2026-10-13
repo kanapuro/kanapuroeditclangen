@@ -22,7 +22,7 @@ os.environ["SDL_VIDEODRIVER"] = "dummy"
 os.environ["SDL_AUDIODRIVER"] = "dummy"
 
 
-def test():
+def validate():
     """Iterate through all files in 'resources'
     and verify that any detected pronoun tags are
     formatted correctly."""
@@ -150,7 +150,7 @@ def test():
                 path = os.path.join(root, file)
 
                 if "lifegen_talk/old" not in path:
-                    if not test_replacement_failure(path, replacement_dict):
+                    if not validate_replacement(path, replacement_dict):
                         failed = True
                         failed_files.append(path)
 
@@ -166,7 +166,7 @@ def test():
         sys.exit(0)
 
 
-def test_replacement_failure(path: str, repl_dict: dict) -> bool:
+def validate_replacement(path: str, repl_dict: dict) -> bool:
     """Reads in a file, and finds strings, and runs pronoun replacment on those strings.
     Returns False if there were any issues with the pronoun replacement, or if the
     json is incorrectly formatted."""
@@ -255,5 +255,5 @@ class TestPronouns(unittest.TestCase):
     def test_pronouns(self):
         """Test that all files are ascii decodable."""
         with self.assertRaises(SystemExit) as cm:
-            test()
+            validate()
         self.assertEqual(cm.exception.code, 0)

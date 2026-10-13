@@ -663,8 +663,8 @@ class ListScreen(Screens):
             self.current_listed_cats = self.full_cat_list.copy()
 
         self.all_pages = (
-            int(ceil(len(self.current_listed_cats) / 20.0))
-            if len(self.current_listed_cats) > 20
+            int(ceil(len(self.current_listed_cats) / 15.0))
+            if len(self.current_listed_cats) > 15
             else 1
         )
         if self.current_page > self.all_pages:
@@ -699,7 +699,7 @@ class ListScreen(Screens):
                 object_id="#cat_list_display",
                 starting_height=1,
                 cat_list=self.current_listed_cats,
-                cats_displayed=20,
+                cats_displayed=15,
                 x_px_between=ui_scale_value(240),
                 y_px_between=ui_scale_value(200),
                 columns=5,

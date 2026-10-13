@@ -2042,6 +2042,7 @@ class Cat:
                     murder=history_data["murder"] if "murder" in history_data else {},
                     wrong_placement=history_data["wrong_placement"] if "wrong_placement" in history_data else False,
                     return_from_death=history_data["return_from_death"] if "return_from_death" in history_data else [],
+                    condition_events=history_data.get("condition_events", []),
                 )
         except Exception:
             self.history = None
@@ -2177,16 +2178,13 @@ class Cat:
                 # guides aren't allowed here
                 if kitty == game.clan.instructor or kitty == game.clan.demon:
                     continue
-                else:
-                    dead_relations.append(rel)
-
                 if starclan:
                     if kitty.ID not in game.clan.starclan_cats:
                         continue
                 else:
                     if kitty.ID not in game.clan.darkforest_cats:
                         continue
-                
+                dead_relations.append(rel)
 
         # sort relations by the strength of their relationship
         dead_relations.sort(
@@ -2205,7 +2203,7 @@ class Cat:
                 if i == 8:
                     break
                 if rel.cat_to.status == "leader":
-                    life_giving_leader = rel.cat_to
+                    life_giving_leader = rel.cat_to.ID
                     continue
                 life_givers.append(rel.cat_to.ID)
                 i += 1
@@ -2254,7 +2252,7 @@ class Cat:
                 # pick the oldest leader in SC
                 ancient_leader = True
                 if starclan:
-                    sc_cats = game.clan.starclan_cats.copy()
+                    sc_cats = [i for i in game.clan.starclan_cats if Cat.fetch_cat(i)]
                     sc_cats.sort(key=lambda x: -1 * int(Cat.fetch_cat(x).dead_for))
                     for kitty in sc_cats:
                         if (
@@ -2264,7 +2262,7 @@ class Cat:
                             life_giving_leader = kitty
                             break
                 else:
-                    df_kitties = game.clan.darkforest_cats.copy()
+                    df_kitties = [i for i in game.clan.darkforest_cats if Cat.fetch_cat(i)]
                     df_kitties.sort(key=lambda x: -1 * int(Cat.fetch_cat(x).dead_for))
                     for kitty in df_kitties:
                         if (
@@ -2276,7 +2274,7 @@ class Cat:
             else:
                 # pick previous leader
                 if starclan:
-                    sc_cats = game.clan.starclan_cats.copy()
+                    sc_cats = [i for i in game.clan.starclan_cats if Cat.fetch_cat(i)]
                     sc_cats.sort(key=lambda x: int(Cat.fetch_cat(x).dead_for))
                     for kitty in sc_cats:
                         if (
@@ -2286,7 +2284,7 @@ class Cat:
                             life_giving_leader = kitty
                             break
                 else:
-                    df_kitties = game.clan.darkforest_cats.copy()
+                    df_kitties = [i for i in game.clan.darkforest_cats if Cat.fetch_cat(i)]
                     df_kitties.sort(key=lambda x: int(Cat.fetch_cat(x).dead_for))
                     for kitty in df_kitties:
                         if (
@@ -2322,7 +2320,7 @@ class Cat:
             if game.clan.your_cat.ID == self.ID:
                 victim_in_lifegiver = False
                 if game.clan.your_cat.history:
-                    if game.clan.your_cat.history.murder and "murdered" in tags:
+                    if game.clan.your_cat.history.murder:
                         if "is_murderer" in game.clan.your_cat.history.murder:
                             if len(game.clan.your_cat.history.murder["is_murderer"]) > 0:
                                 for i in game.clan.your_cat.history.murder["is_murderer"]:
@@ -2749,6 +2747,7 @@ class Cat:
             and self.permanent_condition[condition]["born_with"] is True
         ):
             self.permanent_condition[condition]["moons_until"] = -2
+            History.add_condition(self, condition, "congenital", "Present from birth.")
             return "reveal"
 
         # leader should have a higher chance of death
@@ -2845,7 +2844,7 @@ class Cat:
     #                                  conditions                                  #
     # ---------------------------------------------------------------------------- #
 
-    def get_ill(self, name, event_triggered=False, lethal=True, severity="default", grief_cat=None):
+    def get_ill(self, name, event_triggered=False, lethal=True, severity="default", grief_cat=None, cause=None):
         """Add an illness to this cat.
 
         :param name: name of the illness (str)
@@ -2911,8 +2910,11 @@ class Cat:
             }
             if grief_cat:
                 self.illnesses[new_illness.name]['grief_cat'] = grief_cat.ID
+                if cause is None:
+                    cause = f"After the death of {grief_cat.name}."
+            History.add_condition(self, name, "illness", cause)
 
-    def get_injured(self, name, event_triggered=False, lethal=True, severity="default"):
+    def get_injured(self, name, event_triggered=False, lethal=True, severity="default", cause=None):
         """Add an injury to this cat.
 
         :param name: The injury to add
@@ -2986,6 +2988,7 @@ class Cat:
                 "event_triggered": new_injury.new,
                 "predetermined_scar": predetermined_scar,  # Store the predetermined scar
             }
+            History.add_condition(self, name, "injury", cause)
 
         if len(new_injury.also_got) > 0 and not int(random() * 5):
             avoided = False
@@ -3014,14 +3017,14 @@ class Cat:
                 self.also_got = True
                 additional_injury = choice(new_injury.also_got)
                 if additional_injury in INJURIES:
-                    self.additional_injury(additional_injury)
+                    self.additional_injury(additional_injury, cause=f"Following {name}.")
                 else:
-                    self.get_ill(additional_injury, event_triggered=True)
+                    self.get_ill(additional_injury, event_triggered=True, cause=f"Following {name}.")
         else:
             self.also_got = False
 
-    def additional_injury(self, injury):
-        self.get_injured(injury, event_triggered=True)
+    def additional_injury(self, injury, cause=None):
+        self.get_injured(injury, event_triggered=True, cause=cause)
 
     def congenital_condition(self, cat):
         possible_conditions = []
@@ -3040,7 +3043,7 @@ class Cat:
 
         self.get_permanent_condition(new_condition, born_with=True)
 
-    def get_permanent_condition(self, name, born_with=False, event_triggered=False):
+    def get_permanent_condition(self, name, born_with=False, event_triggered=False, cause=None):
         if name not in PERMANENT:
             print(
                 self.name,
@@ -3126,15 +3129,18 @@ class Cat:
                 "event_triggered": new_perm_condition.new,
             }
             new_condition = True
+            if not born_with or new_perm_condition.moons_until == -2:
+                History.add_condition(self, name, "permanent", "Present from birth." if born_with else cause)
         return new_condition
 
-    def not_working(self):
+    def not_working(self, ignored_injuries=()):
         """returns True if the cat cannot work, False if the cat can work"""
         for illness in self.illnesses:
             if self.illnesses[illness]["severity"] != "minor":
                 return True
         return any(
-            self.injuries[injury]["severity"] != "minor" for injury in self.injuries
+            self.injuries[injury]["severity"] != "minor"
+            for injury in self.injuries if injury not in ignored_injuries
         )
 
     def not_work_because_hunger(self):
@@ -3222,7 +3228,7 @@ class Cat:
                 game.cur_events_list.append(
                     Single_Event(text, "health", [self.ID, cat.ID])
                 )
-                self.get_ill(illness_name)
+                self.get_ill(illness_name, cause=text)
 
     def save_condition(self):
         # save conditions for each cat
@@ -3291,8 +3297,8 @@ class Cat:
     # ---------------------------------------------------------------------------- #
 
     def is_valid_mentor(self, potential_mentor: Cat):
-        # Dead or outside cats can't be mentors
-        if potential_mentor.dead or potential_mentor.outside:
+        # Dead, outside, or shunned cats can't be mentors
+        if potential_mentor.dead or potential_mentor.outside or potential_mentor.shunned > 0:
             return False
         # Match jobs
         if (
@@ -3393,7 +3399,7 @@ class Cat:
                         priority_mentors.append(cat)
             # First try for a cat who currently has no apprentices and is working
             if 'request apprentice' in game.switches:
-                if game.switches['request apprentice'] and self.moons == 6 and not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.status in ["warrior", "medicine cat", "mediator", "queen", "deputy", "leader"]:
+                if game.switches['request apprentice'] and self.moons == 6 and not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.shunned == 0 and game.clan.your_cat.status in ["warrior", "medicine cat", "mediator", "queen", "deputy", "leader"]:
                     new_mentor = game.clan.your_cat
                 else:
                     if priority_mentors:  # length of list > 0

@@ -412,6 +412,9 @@ class Patrol:
             else:
                 status = game.clan.your_cat.status
 
+            if "pregnant" in game.clan.your_cat.injuries or "recovering from birth" in game.clan.your_cat.injuries:
+                status = "queen"
+
             if status == 'kitten':
                 possible_patrols.extend(self.generate_patrol_events(self.kit_lifegen))
             else:

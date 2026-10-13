@@ -199,6 +199,7 @@ class ProfileScreen(Screens):
         self.your_tab = None
         self.backstory_tab_button = None
         self.dangerous_tab_button = None
+        self.shun_button = None
         self.personal_tab_button = None
         self.roles_tab_button = None
         self.relations_tab_button = None
@@ -477,6 +478,22 @@ class ProfileScreen(Screens):
                 self.change_screen("role screen")
             elif event.ui_element == self.change_mentor_button:
                 self.change_screen("choose mentor screen")
+            elif event.ui_element == self.shun_button:
+                if self.the_cat.shunned:
+                    self.the_cat.shunned = 0
+                    self.the_cat.forgiven = 1
+                else:
+                    self.the_cat.shunned = 1
+                    self.the_cat.forgiven = 0
+                    self.the_cat.shunned_demotion()
+                self.the_cat.update_mentor()
+                for apprentice in self.the_cat.apprentice.copy():
+                    cat = Cat.fetch_cat(apprentice)
+                    if cat:
+                        cat.update_mentor()
+                self.clear_profile()
+                self.build_profile()
+                self.update_disabled_buttons_and_text()
         # Personal Tab
         elif self.open_tab == "personal":
             if event.ui_element == self.change_name_button:
@@ -2603,6 +2620,20 @@ class ProfileScreen(Screens):
 
             # now go get the scar history and add that if any exists
             body_history = []
+            History.check_load(self.the_cat)
+            for event in self.the_cat.history.condition_events:
+                if event["kind"] == "congenital":
+                    verb = "was found to have"
+                elif event["condition"] in ("grief stricken", "heartbroken", "recovering from birth"):
+                    verb = "became"
+                else:
+                    verb = "developed"
+                text = f"{self.the_cat.name} {verb} {event['condition']}."
+                if event["cause"]:
+                    text += " " + event["cause"]
+                if game.switches["show_history_moons"]:
+                    text += f" (Moon {event['moon']})"
+                body_history.append(text)
             scar_history = self.get_scar_text()
             if scar_history:
                 body_history.append(scar_history)
@@ -3776,8 +3807,17 @@ class ProfileScreen(Screens):
             self.change_mentor_button = UISurfaceImageButton(
                 ui_scale(pygame.Rect((226, 486), (172, 36))),
                 "change mentor",
+                get_button_dict(ButtonStyles.LADDER_MIDDLE, (172, 36)),
+                object_id="@buttonstyles_ladder_middle",
+                starting_height=2,
+                manager=MANAGER,
+            )
+            self.shun_button = UISurfaceImageButton(
+                ui_scale(pygame.Rect((226, 522), (172, 36))),
+                "remove shun" if self.the_cat.shunned else "shun cat",
                 get_button_dict(ButtonStyles.LADDER_BOTTOM, (172, 36)),
                 object_id="@buttonstyles_ladder_bottom",
+                tool_tip_text="Removing the shun does not restore a former role.",
                 starting_height=2,
                 manager=MANAGER,
             )
@@ -3942,6 +3982,11 @@ class ProfileScreen(Screens):
 
         # Roles Tab
         elif self.open_tab == "roles":
+            self.shun_button.set_text("remove shun" if self.the_cat.shunned else "shun cat")
+            if self.the_cat.dead or self.the_cat.outside:
+                self.shun_button.disable()
+            else:
+                self.shun_button.enable()
             if self.the_cat.dead or self.the_cat.outside:
                 self.manage_roles.disable()
             else:
@@ -4320,6 +4365,7 @@ class ProfileScreen(Screens):
         elif self.open_tab == "roles":
             self.manage_roles.kill()
             self.change_mentor_button.kill()
+            self.shun_button.kill()
         elif self.open_tab == "personal":
             self.change_name_button.kill()
             self.cat_toggles_button.kill()

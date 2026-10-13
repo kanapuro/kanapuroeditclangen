@@ -272,7 +272,7 @@ class Condition_Events():
                                 History.add_possible_history(cat, injury_event.injury, scar_text=possible_scar, 
                                                              death_text=possible_death, other_cat=other_cat)
                             
-                        cat.get_injured(injury_event.injury)
+                        cat.get_injured(injury_event.injury, cause=text)
 
         # just double-checking that trigger is only returned True if the cat is dead
         if cat.status != "leader":
@@ -436,7 +436,7 @@ class Condition_Events():
             perm_condition = condition
 
         if perm_condition is not None:
-            got_condition = cat.get_permanent_condition(perm_condition, born_with)
+            got_condition = cat.get_permanent_condition(perm_condition, born_with, cause=f"Following {injury_name}." if injury_name else None)
 
         if got_condition is True:
             return perm_condition
@@ -916,10 +916,10 @@ class Condition_Events():
                 game.switches['skip_conditions'].append(new_condition_name)
                 # here we give the new condition
                 if new_condition_name in Condition_Events.INJURIES:
-                    cat.get_injured(new_condition_name, event_triggered=event_triggered)
+                    cat.get_injured(new_condition_name, event_triggered=event_triggered, cause=event)
                     break
                 elif new_condition_name in Condition_Events.ILLNESSES:
-                    cat.get_ill(new_condition_name, event_triggered=event_triggered)
+                    cat.get_ill(new_condition_name, event_triggered=event_triggered, cause=event)
                     if dictionary == cat.illnesses or removed_condition:
                         break
                     keys = dictionary[condition].keys()
@@ -935,7 +935,7 @@ class Condition_Events():
                             dictionary[condition].update({'complication': complication})
                     break
                 elif new_condition_name in Condition_Events.PERMANENT:
-                    cat.get_permanent_condition(new_condition_name, event_triggered=event_triggered)
+                    cat.get_permanent_condition(new_condition_name, event_triggered=event_triggered, cause=event)
                     break
 
                 # break out of risk giving loop cus we don't want to give multiple risks for one condition

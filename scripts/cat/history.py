@@ -19,7 +19,8 @@ class History:
                 scar_events=None,
                 murder=None,
                 wrong_placement=False,
-                return_from_death=None
+                return_from_death=None,
+                condition_events=None
                 ):
         self.beginning = beginning if beginning else {}
         self.mentor_influence = mentor_influence if mentor_influence else {"trait": {}, "skill": {}}
@@ -31,6 +32,7 @@ class History:
         self.murder = murder if murder else {}
         self.wrong_placement = wrong_placement if wrong_placement else False
         self.return_from_death = return_from_death if return_from_death else []
+        self.condition_events = condition_events if condition_events else []
 
         # fix 'old' history save bugs
         if type(self.mentor_influence["trait"]) is type(None):
@@ -153,13 +155,27 @@ class History:
             "scar_events": cat.history.scar_events,
             "murder": cat.history.murder,
             "wrong_placement": cat.history.wrong_placement,
-            "return_from_death": cat.history.return_from_death
+            "return_from_death": cat.history.return_from_death,
+            "condition_events": cat.history.condition_events
         }
         return history_dict
 
     # ---------------------------------------------------------------------------- #
     #                            adding and removing                               #
     # ---------------------------------------------------------------------------- #
+
+    @staticmethod
+    def add_condition(cat, condition, kind, cause=None):
+        # Clan creation previews must not load or change an existing cat's history.
+        if not game.clan or cat.ID not in game.clan.clan_cats:
+            return
+        History.check_load(cat)
+        cat.history.condition_events.append({
+            "condition": condition,
+            "kind": kind,
+            "cause": cause,
+            "moon": game.clan.age,
+        })
 
     @staticmethod
     def add_beginning(cat, df=False, clan_born=False):
@@ -770,11 +786,11 @@ class History:
             if random.randint(1,4) == 1:
                 cat.get_injured("guilt")
 
-            for app in cat.apprentice:
+            for app in cat.apprentice.copy():
                 fetched_cat = cat_class.fetch_cat(app)
                 if fetched_cat:
                     fetched_cat.update_mentor()
-                cat.update_mentor()
+            cat.update_mentor()
 
         if murder_history:
             if "is_murderer" in murder_history:

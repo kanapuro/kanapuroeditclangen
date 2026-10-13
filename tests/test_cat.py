@@ -1015,6 +1015,168 @@ class TestLeaderLifeSettings(unittest.TestCase):
             Cat.all_cats_list[:] = original_cat_list
 
 
+class TestShunnedMentors(unittest.TestCase):
+    def setUp(self):
+        from scripts.clan import Clan
+
+        clan = Clan(name="TestClan")
+        clan.age = 1
+        clan.clan_cats = []
+        for target, attribute, value in (
+            (Cat, "all_cats", {}),
+            (Cat, "all_cats_list", []),
+            (game, "clan", clan),
+        ):
+            replacement = patch.object(target, attribute, value)
+            replacement.start()
+            self.addCleanup(replacement.stop)
+        switches = patch.dict(game.switches, {"request apprentice": False})
+        switches.start()
+        self.addCleanup(switches.stop)
+
+    def test_shunned_mentor_is_replaced_and_dating_follows_mentor_rules(self):
+        mentor = Cat(status="warrior", moons=30)
+        replacement = Cat(status="warrior", moons=24)
+        apprentice = Cat(status="apprentice", moons=18)
+        game.clan.your_cat = apprentice
+        game.clan.clan_settings["romantic with former mentor"] = True
+        apprentice.update_mentor(mentor.ID)
+        self.assertFalse(apprentice.is_dateable(mentor))
+        self.assertTrue(apprentice.is_dateable(replacement))
+        mentor.shunned = 1
+        apprentice.update_mentor()
+        self.assertEqual(apprentice.mentor, replacement.ID)
+        self.assertNotIn(apprentice.ID, mentor.apprentice)
+        self.assertIn(apprentice.ID, mentor.former_apprentices)
+        self.assertFalse(apprentice.is_dateable(replacement))
+        self.assertTrue(apprentice.is_dateable(mentor))
+        game.clan.clan_settings["romantic with former mentor"] = False
+        self.assertFalse(apprentice.is_dateable(mentor))
+        mentor.shunned = 0
+        apprentice.update_mentor()
+        self.assertEqual(apprentice.mentor, replacement.ID)
+
+    def test_event_shunning_reassigns_every_apprentice(self):
+        from scripts.cat.history import History
+
+        mentor = Cat(status="warrior", moons=30)
+        replacement = Cat(status="warrior", moons=24)
+        apprentices = [Cat(status="apprentice", moons=18), Cat(status="apprentice", moons=20)]
+        victim = Cat(status="warrior", moons=50)
+        victim.dead = True
+        game.clan.your_cat = replacement
+        mentor.history = History(murder={"is_murderer": [{}]})
+        victim.history = History(murder={"is_victim": [{}]})
+        for apprentice in apprentices:
+            apprentice.update_mentor(mentor.ID)
+        with patch("scripts.cat.history.random.randint", return_value=2):
+            History.reveal_murder(mentor, None, Cat, victim.ID, 0, True)
+        self.assertFalse(mentor.apprentice)
+        for apprentice in apprentices:
+            self.assertEqual(apprentice.mentor, replacement.ID)
+
+    def test_event_shunning_removes_an_apprentices_own_mentor_immediately(self):
+        from scripts.cat.history import History
+
+        mentor = Cat(status="warrior", moons=30)
+        apprentice = Cat(status="apprentice", moons=18)
+        victim = Cat(status="warrior", moons=50)
+        victim.dead = True
+        game.clan.your_cat = mentor
+        apprentice.history = History(murder={"is_murderer": [{}]})
+        victim.history = History(murder={"is_victim": [{}]})
+        apprentice.update_mentor(mentor.ID)
+        with patch("scripts.cat.history.random.randint", return_value=2):
+            History.reveal_murder(apprentice, None, Cat, victim.ID, 0, True)
+        self.assertIsNone(apprentice.mentor)
+        self.assertNotIn(apprentice.ID, mentor.apprentice)
+
+    def test_request_apprentice_does_not_assign_a_shunned_player(self):
+        mentor = Cat(status="warrior", moons=30)
+        replacement = Cat(status="warrior", moons=24)
+        apprentice = Cat(status="apprentice", moons=6)
+        game.clan.your_cat = mentor
+        mentor.shunned = 1
+        with patch.dict(game.switches, {"request apprentice": True}):
+            apprentice.update_mentor()
+        self.assertEqual(apprentice.mentor, replacement.ID)
+
+
+class TestLeaderCeremony(unittest.TestCase):
+    def test_life_givers_belong_to_the_followed_afterlife(self):
+        from scripts.clan import Clan
+
+        for following in (True, False):
+            with self.subTest(following=following), patch.object(Cat, "all_cats", {}), patch.object(
+                Cat, "all_cats_list", []
+            ):
+                clan = Clan(name="TestClan", followingsc=following)
+                clan.age = 1
+                with patch.object(game, "clan", clan):
+                    leader = Cat(status="leader", moons=40)
+                    clan.your_cat = leader
+                    correct = Cat(status="warrior", moons=50)
+                    wrong = Cat(status="warrior", moons=50)
+                    correct.dead = wrong.dead = True
+                    clan.starclan_cats = [correct.ID if following else wrong.ID]
+                    clan.darkforest_cats = [wrong.ID if following else correct.ID]
+                    leader.create_one_relationship(wrong)
+                    with patch("scripts.cat.cats.leader_ceremony_text_adjust", return_value="text") as adjust:
+                        leader.generate_lead_ceremony()
+                    givers = [call.kwargs["life_giver"] for call in adjust.call_args_list
+                              if call.kwargs.get("life_giver")]
+                    self.assertIn(correct.ID, givers)
+                    self.assertNotIn(wrong.ID, givers)
+
+    def test_murdered_life_giver_uses_the_murder_specific_text(self):
+        from scripts.cat.history import History
+        from scripts.clan import Clan
+
+        with patch.object(Cat, "all_cats", {}), patch.object(Cat, "all_cats_list", []):
+            clan = Clan(name="TestClan")
+            clan.age = 1
+            with patch.object(game, "clan", clan):
+                leader = Cat(status="leader", moons=40)
+                victim = Cat(status="warrior", moons=50)
+                victim.dead = True
+                clan.your_cat = leader
+                clan.starclan_cats = [victim.ID]
+                clan.darkforest_cats = []
+                leader.history = History(murder={"is_murderer": [{"victim": victim.ID}]})
+                ceremony = {
+                    "intros": {"intro": {"tags": [], "lead_trait": [], "text": ["intro"]}},
+                    "lives": {
+                        "ordinary": {"tags": [], "rank": [], "lead_trait": [], "star_trait": [],
+                                     "life_giving": [{"text": "ordinary life"}]},
+                        "murdered": {"tags": ["murdered"], "rank": [], "lead_trait": [], "star_trait": [],
+                                     "life_giving": [{"text": "murdered life"}]},
+                        "unknown": {"tags": ["unknown_blessing"], "lead_trait": [],
+                                    "life_giving": [{"text": "unknown life", "virtue": "faith"}]},
+                    },
+                    "outros": {"outro": {"tags": [], "lead_trait": [], "text": ["outro"]}},
+                    "default_life": {"text": "default life"},
+                }
+                with patch("scripts.cat.cats.LEAD_CEREMONY_SC", ceremony):
+                    text = leader.generate_lead_ceremony()
+                self.assertIn("murdered life", text)
+                self.assertNotIn("ordinary life", text)
+
+    def test_stale_afterlife_ids_do_not_crash_leader_selection(self):
+        from scripts.clan import Clan
+
+        for following in (True, False):
+            with self.subTest(following=following), patch.object(Cat, "all_cats", {}), patch.object(
+                Cat, "all_cats_list", []
+            ):
+                clan = Clan(name="TestClan", followingsc=following)
+                clan.age = 1
+                with patch.object(game, "clan", clan):
+                    clan.your_cat = Cat(status="leader", moons=40)
+                    clan.starclan_cats = ["missing-cat"]
+                    clan.darkforest_cats = ["missing-cat"]
+                    self.assertTrue(clan.your_cat.generate_lead_ceremony())
+
+
 class TestRetirementSettings(unittest.TestCase):
     def test_no_retire_is_enabled_by_default_when_setting_is_on(self):
         from scripts.cat.cats import Cat

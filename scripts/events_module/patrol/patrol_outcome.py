@@ -284,7 +284,7 @@ class PatrolOutcome:
         results.append(self._handle_murder(patrol))
         results.append(self._handle_faith_changes(patrol))
         # ---
-        results.append(self._handle_condition_and_scars(patrol))
+        results.append(self._handle_condition_and_scars(patrol, cause=processed_text))
 
         # pronounify the relationship log
         for block in self.relationship_effects:
@@ -812,7 +812,7 @@ class PatrolOutcome:
 
         return " ".join(results)
           
-    def _handle_condition_and_scars(self, patrol:'Patrol') -> str:
+    def _handle_condition_and_scars(self, patrol:'Patrol', cause=None) -> str:
         """ Handle injuring cats, or giving scars """
         
         if not self.injury:
@@ -870,11 +870,11 @@ class PatrolOutcome:
                     give_injury = choice(possible_injuries)
 
                 if give_injury in INJURIES:
-                    _cat.get_injured(give_injury, lethal=lethal)
+                    _cat.get_injured(give_injury, lethal=lethal, cause=cause)
                 elif give_injury in ILLNESSES:
-                    _cat.get_ill(give_injury, lethal=lethal)
+                    _cat.get_ill(give_injury, lethal=lethal, cause=cause)
                 elif give_injury in PERMANENT:
-                    _cat.get_permanent_condition(give_injury)
+                    _cat.get_permanent_condition(give_injury, cause=cause)
                 else:
                     print("WARNING: No Conditions to Give")
                     continue

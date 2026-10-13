@@ -63,6 +63,7 @@ class LeaderDenScreen(Screens):
         self.focus_button = {}
 
         self.other_clan_selection_container = None
+        self.other_clan_scroll_container = None
         self.other_clan_selection_elements = {}
 
         self.outsider_selection_container = None
@@ -85,7 +86,7 @@ class LeaderDenScreen(Screens):
                 self.current_page -= 1
                 self.update_outsider_cats()
             elif event.ui_element in self.other_clan_selection_elements.values():
-                for i in range(0, 5):
+                for i in range(len(game.clan.all_clans)):
                     if f"button{i}" not in self.other_clan_selection_elements:
                         continue
                     if (
@@ -411,18 +412,27 @@ class LeaderDenScreen(Screens):
             starting_height=1,
             manager=MANAGER,
         )
+        self.other_clan_scroll_container = pygame_gui.elements.UIScrollingContainer(
+            ui_scale(pygame.Rect((8, 10), (646, 174))),
+            allow_scroll_x=True,
+            allow_scroll_y=False,
+            container=self.other_clan_selection_container,
+            manager=MANAGER,
+        )
+        card_height = 154 if len(game.clan.all_clans) > 5 else 174
+        column = 0
         for i, other_clan in enumerate(game.clan.all_clans):
             if other_clan.name == game.clan.name:
                 continue
             x_pos = 128
             self.other_clan_selection_elements[f"container{i}"] = UIContainer(
-                ui_scale(pygame.Rect((8 + (x_pos * i), 10), (134, 174))),
+                ui_scale(pygame.Rect((x_pos * column, 0), (134, card_height))),
                 starting_height=1,
-                container=self.other_clan_selection_container,
+                container=self.other_clan_scroll_container,
                 manager=MANAGER,
             )
             self.other_clan_selection_elements[f"button{i}"] = UIImageButton(
-                ui_scale(pygame.Rect((0, 0), (134, 174))),
+                ui_scale(pygame.Rect((0, 0), (134, card_height))),
                 "",
                 object_id="#other_clan_select_button",
                 starting_height=2,
@@ -482,6 +492,11 @@ class LeaderDenScreen(Screens):
                     "top_target": self.other_clan_selection_elements[f"clan_temper{i}"],
                 },
             )
+
+            column += 1
+        self.other_clan_scroll_container.set_scrollable_area_dimensions(
+            ui_scale_dimensions((max(646, 128 * column + 6), card_height))
+        )
 
     def create_outsider_selection_box(self):
         self.outsider_selection_container = pygame_gui.elements.UIAutoResizingContainer(

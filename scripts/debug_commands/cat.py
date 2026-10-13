@@ -1,6 +1,7 @@
 from typing import List
 
 from scripts.cat.cats import Cat
+from scripts.utility import create_new_cat
 from scripts.debug_commands.command import Command
 from scripts.debug_commands.utils import add_output_line_to_log
 from scripts.game_structure.game_essentials import game
@@ -12,8 +13,11 @@ class AddCatCommand(Command):
     aliases = ["a"]
 
     def callback(self, args: List[str]):
-        cat = Cat()
-        game.clan.add_cat(cat)
+        if game.clan is None:
+            add_output_line_to_log("Please load a Clan first")
+            return
+        cat = create_new_cat(Cat)[0]
+        cat.create_inheritance_new_cat()
         add_output_line_to_log(f"Added {cat.name} with ID {cat.ID}")
 
 
@@ -59,14 +63,20 @@ class AgeCatsCommand(Command):
                 if len(args) == 1:
                     add_output_line_to_log(f"{cat.name} is {cat.moons} moons old")
                     return
-                else:
-                    if args[1].startswith("+"):
-                        cat.moons += int(args[1][1:])
-                    elif args[1].startswith("-"):
-                        cat.moons -= int(args[1][1:])
-                    else:
-                        cat.moons = int(args[1])
-                    add_output_line_to_log(f"{cat.name} is now {cat.moons} moons old")
+                try:
+                    age = int(args[1])
+                except ValueError:
+                    add_output_line_to_log("Please specify a whole number of moons")
+                    return
+                if args[1].startswith(("+", "-")):
+                    age += cat.moons
+                if age < 0:
+                    add_output_line_to_log("A cat's age cannot be negative")
+                    return
+                cat.moons = age
+                add_output_line_to_log(f"{cat.name} is now {cat.moons} moons old")
+                return
+        add_output_line_to_log(f"Could not find cat with name or ID {args[0]}")
 
 
 class CatsCommand(Command):

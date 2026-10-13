@@ -15,11 +15,16 @@ import unittest
 import ujson
 
 
-def test():
+def validate():
     """Iterate through all files in 'resources'
     and verify all json files are valid"""
     failed = False
-    for (root, _, files) in os.walk("."):
+    for (root, directories, files) in os.walk("."):
+        if root == ".":
+            directories[:] = [d for d in directories if d not in (".venv", ".temp")]
+        if root == "." and ".vscode" in directories:
+            # VS Code settings use JSON with comments, not the game's JSON format.
+            directories.remove(".vscode")
         for file in files:
             if file.endswith(".json"):
                 path = os.path.join(root, file)
@@ -53,9 +58,9 @@ class TestJsonValidity(unittest.TestCase):
     def test_encoding(self):
         """Test that all files are json decodable."""
         with self.assertRaises(SystemExit) as cm:
-            test()
+            validate()
         self.assertEqual(cm.exception.code, 0)
 
 
 if __name__ == "__main__":
-    test()
+    validate()

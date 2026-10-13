@@ -848,6 +848,13 @@ class HandleShortEvents:
         if "health" not in self.types:
             self.types.append("health")
 
+        cause = event_text_adjust(
+            Cat, self.chosen_event.text, main_cat=self.main_cat,
+            random_cat=self.random_cat, victim_cat=self.victim_cat,
+            new_cats=self.new_cats, multi_cats=self.multi_cat,
+            clan=game.clan, other_clan=self.other_clan, chosen_herb=self.chosen_herb,
+        )
+
         # now go through each injury block
         for block in self.chosen_event.injury:
             cats_affected = block["cats"]
@@ -865,20 +872,20 @@ class HandleShortEvents:
                 # MAIN CAT
                 if abbr == "m_c":
                     injury = random.choice(possible_injuries)
-                    self.main_cat.get_injured(injury)
+                    self.main_cat.get_injured(injury, cause=cause)
                     self.handle_injury_history(self.main_cat, "m_c", injury)
 
                 # RANDOM CAT
                 elif abbr == "r_c":
                     injury = random.choice(possible_injuries)
-                    self.random_cat.get_injured(injury)
+                    self.random_cat.get_injured(injury, cause=cause)
                     self.handle_injury_history(self.random_cat, "r_c", injury)
 
                 # NEW CATS
                 elif "n_c" in abbr:
                     for i, new_cats in enumerate(self.new_cats):
                         injury = random.choice(possible_injuries)
-                        new_cats[i].get_injured(injury)
+                        new_cats[i].get_injured(injury, cause=cause)
                         self.handle_injury_history(new_cats[i], abbr, injury)
 
     def handle_injury_history(self, cat, cat_abbr, injury=None):

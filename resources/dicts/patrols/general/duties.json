@@ -69,7 +69,7 @@
         },
         "weight": 20,
         "intro_text": "p_l offers to share stories of the old days with other cats in the camp.",
-        "decline_text": "The others politely decline, saying {PRONOUN/patrol/subject}{VERB/patrol/'ve/'s} other duties.",
+        "decline_text": "The others politely decline, saying they have other duties.",
         "chance_of_success": 80,
         "success_outcomes": [
             {

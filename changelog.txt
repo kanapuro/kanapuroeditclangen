@@ -1,4 +1,28 @@
 <strong>v0.1.0.4-KanapuroEdit: </strong>
+- Added queen daily activities for pregnant cats and cats recovering from birth without changing their roles. Other major injuries/illnesses, regular patrol restrictions, and the daily activity limit still apply.
+- Added trait locks to the colony-creation customizer for full-cat and selected-trait randomization. Linked poses/fur length, tortie details, and scars/conditions remain compatible; lock changes work with Undo/Redo, and manual edits are still allowed.
+- Fixed selected white-patch randomization storing a list where the creation draft expects a single marking.
+- Added Undo and Redo to the colony-creation kit/cat customizer, on either side of Random cat. They restore appearance, age poses, accessories, conditions, personality, skills, sex, and faith, including full-cat and selected-trait randomization; page changes keep edit history, and new edits clear Redo.
+- Added illness, injury, and permanent-condition acquisition history, with available event/patrol causes, illness transmission, complications, and named grief losses. Congenital conditions appear when revealed; older saves do not receive invented past records.
+- Added Undo and Redo to the character customizer, including Reset and pose/marking/accessory changes. History lasts while editing the current cat; new edits clear Redo.
+- Fixed customizer UI rebuilding replacing the original Reset appearance and clearing edit history.
+- Fixed cancelling colony creation replacing the loaded colony's map/settings and losing its cats. Cancelling restores the original colony and unsaved progress; completed colonies are still saved normally.
+- Fixed shunning after a revealed murder skipping some apprentices during mentor reassignment and leaving shunned apprentices with their own mentor until a later moon.
+- Fixed shunned cats remaining eligible as apprentice mentors, including through the request-apprentice shortcut.
+- Fixed a crash when opening cat lists with wrapped names by using the sprite button's supported geometry interface.
+- Fixed character customizer Reset keeping edited pattern, white-patch, and accessory lists instead of restoring the original appearance.
+- Fixed customizer accessory changes updating an unused field instead of the worn accessories used for rendering and saving.
+- Fixed leader ceremonies using life-givers from the wrong afterlife, crashing on missing cat IDs, and overlooking murdered life-giver dialogue.
+- Fixed leader ceremony text losing the formatting of ancient and custom names.
+- Fixed the cats add command crashing without a loaded colony; added cats now receive relationships, history, and inheritance data.
+- Fixed invalid age-command input crashing or assigning negative ages; absolute ages and signed age adjustments still work.
+- Fixed unsupported group-pronoun tags in a camp-duty patrol's decline text.
+- Added shun/remove-shun controls to the profile roles tab. Shunning follows existing role demotion rules; removing the shun does not restore a former role.
+- Added scrolling for neighboring colonies in the leader den and fixed selecting colonies beyond the first five.
+- Wrapped cat-list names instead of truncating them; lists now show 15 cats per page to fit multiple lines.
+- Aligned caretakers and their cats in allegiances and prevented taller role labels from overlapping the next row.
+- Fixed pytest collecting standalone validator helpers as tests and a personality test leaking invalid state into later tests.
+- Project validators now exclude local virtual environments and temporary data; JSON validation recognizes that VS Code settings use JSON with comments.
 - Fixed command revival demoting the current leader when their old role was missing.
 - Fixed the return command assigning incorrect roles to newborns and cats exactly 6 or 12 moons old.
 - Fixed births crashing when a colony member's ID could no longer be found.

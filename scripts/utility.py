@@ -2487,7 +2487,7 @@ def leader_ceremony_text_adjust(
     """
     replace_dict = {
         "m_c_star": (str(leader.name.prefix + "star"), choice(leader.pronouns)),
-        "m_c": (str(leader.name.prefix + leader.name.suffix), choice(leader.pronouns)),
+        "m_c": (str(leader.name), choice(leader.pronouns)),
     }
 
     if life_giver:

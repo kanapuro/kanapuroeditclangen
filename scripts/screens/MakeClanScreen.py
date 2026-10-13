@@ -3,6 +3,7 @@ from re import sub
 from typing import Optional
 import random
 import os
+from copy import deepcopy
 
 import ujson
 
@@ -135,6 +136,29 @@ class MakeClanScreen(Screens):
     # used in symbol screen only - parent container is in element dict
     text = {}
 
+    customizer_lock_groups = {
+        "kitten_pose": ("kitten_sprite",),
+        "adolescent_pose": ("adolescent_pose",),
+        "adult_pose": ("adult_pose", "length"),
+        "elder_pose": ("elder_pose",),
+        "length": ("length",),
+        "reverse": ("reverse",),
+        "pelt_pattern": ("pname", "tortiebase", "tortiecolour", "pattern", "tortiepattern", "tortie_enabled"),
+        "pelt_colour": ("colour", "tint"),
+        "white_patches": ("white_patches", "white_patches_tint"),
+        "points": ("points",),
+        "vitiligo": ("vitiligo",),
+        "eye_colour": ("eye_colour",),
+        "heterochromia": ("eye_colour2",),
+        "skin": ("skin",),
+        "condition": ("permanent_condition", "paralyzed", "scars"),
+        "accessory": ("accessories", "inventory"),
+        "trait": ("personality",),
+        "skill": ("skill",),
+        "faith": ("faith",),
+        "sex": ("sex",),
+    }
+
     def __init__(self, name="make_clan_screen"):
         super().__init__(name)
         # current page for symbol choosing
@@ -145,6 +169,14 @@ class MakeClanScreen(Screens):
         self.tutorial_shown = False
 
     def screen_switches(self):
+        self.previous_clan = game.clan
+        self.previous_cats = Cat.all_cats.copy()
+        self.previous_cat_list = Cat.all_cats_list.copy()
+        self.previous_choices = game.choose_cats
+        self.clan_saved = False
+        self.customizer_undo = []
+        self.customizer_redo = []
+        self.customizer_locks = set()
         super().screen_switches()
         self.set_mute_button_position("topright")
         self.show_mute_buttons()
@@ -424,6 +456,7 @@ class MakeClanScreen(Screens):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             if event.ui_element == self.main_menu:
                 self.change_screen('start screen')
+                return
             if self.sub_screen == 'name clan':
                 self.handle_name_clan_event(event)
             elif self.sub_screen == 'choose name':
@@ -917,6 +950,17 @@ class MakeClanScreen(Screens):
             self.change_screen("camp screen")
 
     def exit_screen(self):
+        if not self.clan_saved:
+            game.clan = self.previous_clan
+            Cat.all_cats.clear()
+            Cat.all_cats.update(self.previous_cats)
+            Cat.all_cats_list[:] = self.previous_cat_list
+            game.choose_cats = self.previous_choices
+            game.switches["customise_new_life"] = False
+        self.previous_clan = None
+        self.previous_cats = {}
+        self.previous_cat_list = []
+        self.previous_choices = {}
         self.main_menu.kill()
         # self.menu_warning.kill()
         self.clear_all_page()
@@ -2131,6 +2175,7 @@ class MakeClanScreen(Screens):
         self.refresh_cat_images_and_info()
     
     def randomize_custom_cat(self):
+        before = self.get_customizer_state()
         pelts = list(Pelt.sprites_names.keys())
         pelts.remove("Tortie")
         pelts.remove("Calico")
@@ -2252,6 +2297,89 @@ class MakeClanScreen(Screens):
         else:
             self.tortie_enabled = False
 
+        self.apply_customizer_locks(before)
+
+    def selected_customizer_lock(self):
+        if self.page == 0:
+            return f"{self.preview_age}_pose"
+        if self.current_selection.startswith("tortie_"):
+            return "pelt_pattern"
+        if self.current_selection == "scar":
+            return "condition"
+        return self.current_selection
+
+    def apply_customizer_locks(self, before):
+        if not self.customizer_locks:
+            return
+        for key in self.customizer_locks:
+            for attribute in self.customizer_lock_groups[key]:
+                setattr(self, attribute, deepcopy(before[attribute]))
+        if self.length == "long" and self.adult_pose in range(6, 9):
+            self.adult_pose += 3
+        elif self.length != "long" and self.adult_pose in range(9, 12):
+            self.adult_pose -= 3
+        # Locked tail accessories require the anatomy they were chosen for.
+        if "accessory" in self.customizer_locks and self.permanent_condition == "born without a tail":
+            if any(accessory in self.notail_accs for accessory in self.accessories):
+                for attribute in self.customizer_lock_groups["condition"]:
+                    setattr(self, attribute, deepcopy(before[attribute]))
+        if self.permanent_condition == "born without a tail":
+            self.accessories = [accessory for accessory in self.accessories if accessory not in self.notail_accs]
+            self.inventory = [accessory for accessory in self.inventory if accessory not in self.notail_accs]
+
+    def setup_customizer_lock_buttons(self):
+        if self.page == 0:
+            positions = {
+                "kitten_pose": (55, 165), "adolescent_pose": (55, 260),
+                "adult_pose": (55, 395), "elder_pose": (55, 460),
+                "length": (715, 270), "reverse": (715, 455),
+            }
+        else:
+            positions = {self.selected_customizer_lock(): (465, 425)}
+            if self.page == 3:
+                positions.update({"faith": (45, 375), "sex": (45, 470)})
+        labels = {
+            "adult_pose": "adult pose and fur length",
+            "pelt_pattern": "pelt pattern and tortie details",
+            "pelt_colour": "pelt colour and tint",
+            "white_patches": "white patches and their tint",
+            "condition": "scars and permanent condition",
+        }
+        for key, position in positions.items():
+            locked = key in self.customizer_locks
+            label = labels.get(key, key.replace("_", " "))
+            self.elements[f"lock_{key}"] = UISurfaceImageButton(
+                ui_scale(pygame.Rect(position, (65, 30))),
+                "Unlock" if locked else "Lock",
+                get_button_dict(ButtonStyles.SQUOVAL, (65, 30)),
+                object_id="@buttonstyles_squoval",
+                manager=MANAGER,
+                starting_height=2,
+                tool_tip_text=f"{'Unlock' if locked else 'Lock'} {label} during randomization. Manual edits are still allowed.",
+            )
+        if self.selected_customizer_lock() in self.customizer_locks:
+            self.elements["randomise_selection"].disable()
+
+    def get_customizer_state(self):
+        return deepcopy({attribute: getattr(self, attribute) for attribute in (
+            "pname", "length", "colour", "white_patches", "eye_colour", "eye_colour2",
+            "tortiebase", "tortiecolour", "pattern", "tortiepattern", "tortie_enabled",
+            "vitiligo", "points", "paralyzed", "opacity", "scars", "tint", "skin",
+            "white_patches_tint", "kitten_sprite", "reverse", "skill", "accessories",
+            "inventory", "sex", "personality", "permanent_condition", "preview_age",
+            "adolescent_pose", "adult_pose", "elder_pose", "faith", "customizer_locks",
+        )})
+
+    def update_customizer_history_buttons(self):
+        if self.customizer_undo:
+            self.elements["undo_customize"].enable()
+        else:
+            self.elements["undo_customize"].disable()
+        if self.customizer_redo:
+            self.elements["redo_customize"].enable()
+        else:
+            self.elements["redo_customize"].disable()
+
     def open_customize_cat(self):
 
         self.clear_all_page()
@@ -2327,6 +2455,24 @@ class MakeClanScreen(Screens):
             starting_height=2,
             sound_id="dice_roll",
         )
+
+        self.elements["undo_customize"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((257, 80), (65, 30))),
+            "Undo",
+            get_button_dict(ButtonStyles.SQUOVAL, (65, 30)),
+            object_id="@buttonstyles_squoval",
+            manager=MANAGER,
+            starting_height=2,
+        )
+        self.elements["redo_customize"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((482, 80), (65, 30))),
+            "Redo",
+            get_button_dict(ButtonStyles.SQUOVAL, (65, 30)),
+            object_id="@buttonstyles_squoval",
+            manager=MANAGER,
+            starting_height=2,
+        )
+        self.update_customizer_history_buttons()
 
         pelts = list(Pelt.sprites_names.keys())
         pelts.remove("Tortie")
@@ -3278,8 +3424,41 @@ class MakeClanScreen(Screens):
         )
         
         self.update_disabled_buttons()
+        self.setup_customizer_lock_buttons()
  
     def handle_customize_cat_event(self, event):
+        if event.type != pygame_gui.UI_BUTTON_START_PRESS:
+            return
+        if event.ui_element in (self.elements["undo_customize"], self.elements["redo_customize"]):
+            if event.ui_element == self.elements["undo_customize"]:
+                source, destination = self.customizer_undo, self.customizer_redo
+            else:
+                source, destination = self.customizer_redo, self.customizer_undo
+            if source:
+                destination.append(self.get_customizer_state())
+                for attribute, value in source.pop().items():
+                    setattr(self, attribute, deepcopy(value))
+                self.open_customize_cat()
+            return
+        before = self.get_customizer_state()
+        lock_key = next((key for key in self.customizer_lock_groups
+                         if event.ui_element == self.elements.get(f"lock_{key}")), None)
+        if lock_key:
+            if lock_key in self.customizer_locks:
+                self.customizer_locks.remove(lock_key)
+            else:
+                self.customizer_locks.add(lock_key)
+            self.open_customize_cat()
+        elif event.ui_element == self.elements["randomise_selection"] and self.selected_customizer_lock() in self.customizer_locks:
+            return
+        else:
+            self._handle_customize_cat_event(event)
+        if self.sub_screen == "customize cat" and before != self.get_customizer_state():
+            self.customizer_undo.append(before)
+            self.customizer_redo.clear()
+            self.update_customizer_history_buttons()
+
+    def _handle_customize_cat_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             pelts = list(Pelt.sprites_names.keys())
             pelts.remove("Tortie")
@@ -3607,6 +3786,7 @@ class MakeClanScreen(Screens):
                 self.update_sprite()
                 self.update_disabled_buttons()
             elif event.ui_element == self.elements["randomise_selection"]:
+                random_before = self.get_customizer_state()
                 if self.page == 0:
                     if self.preview_age == "kitten":
                         self.kitten_sprite=random.randint(0,2)
@@ -3631,7 +3811,7 @@ class MakeClanScreen(Screens):
                     elif self.current_selection == "pelt_colour":
                         self.colour = random.choice(Pelt.pelt_colours)
                     elif self.current_selection == "white_patches":
-                        self.white_patches = [random.choice(["FULLWHITE"] + Pelt.little_white + Pelt.mid_white + Pelt.high_white + Pelt.mostly_white + [None])]
+                        self.white_patches = random.choice(["FULLWHITE"] + Pelt.little_white + Pelt.mid_white + Pelt.high_white + Pelt.mostly_white + [None])
                     elif self.current_selection == "points":
                         self.points = random.choice(Pelt.point_markings + [None])
                     elif self.current_selection == "vitiligo":
@@ -3758,6 +3938,7 @@ class MakeClanScreen(Screens):
                                 skill_choices.append(i)
                         self.skill = random.choice(skill_choices)
 
+                self.apply_customizer_locks(random_before)
                 self.update_sprite()
                 self.update_disabled_buttons()
 
@@ -5095,6 +5276,7 @@ class MakeClanScreen(Screens):
             game.herb_events_list.clear()
             Cat.grief_strings.clear()
             Cat.sort_cats()
+        self.clan_saved = True
 
     def get_camp_art_path(self, campnum) -> Optional[str]:
         if not campnum:

@@ -1199,7 +1199,7 @@ class PatrolScreen(Screens):
 
         elif game.switches["patrol_category"] == "lifegen":
             the_cat = game.clan.your_cat
-            if (not the_cat.outside or (the_cat.outside and the_cat.dead)) and not the_cat.moons <= 0 and not the_cat.not_working() and "2" not in game.switches['patrolled']:
+            if (not the_cat.outside or (the_cat.outside and the_cat.dead)) and not the_cat.moons <= 0 and not the_cat.not_working(ignored_injuries=("pregnant", "recovering from birth")) and "2" not in game.switches['patrolled']:
                 if the_cat not in self.current_patrol:
                     self.current_patrol.insert(0, the_cat)
 

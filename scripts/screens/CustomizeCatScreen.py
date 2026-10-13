@@ -1,4 +1,4 @@
-from copy import copy
+from copy import copy, deepcopy
 import random
 
 import pygame
@@ -199,6 +199,10 @@ class CustomizeCatScreen(Screens):
 
         self.reset_message = None
         self.reset_button = None
+        self.undo_button = None
+        self.redo_button = None
+        self.undo_states = []
+        self.redo_states = []
 
         self.eye_colours = [colour.capitalize() for colour in copy(Pelt.eye_colours)]
         self.eye_colours.sort()
@@ -322,6 +326,9 @@ class CustomizeCatScreen(Screens):
         self.pose_right_button = create_button((486, 530), (30, 30), get_arrow(1, False), ButtonStyles.ROUNDED_RECT)
         self.reverse_button = create_button((105, 530), (70, 30), "Reverse", ButtonStyles.ROUNDED_RECT)
         self.reset_button = create_button((110, 450), (105, 30), "Reset", ButtonStyles.SQUOVAL)
+        self.undo_button = create_button((35, 450), (70, 30), "Undo", ButtonStyles.SQUOVAL)
+        self.redo_button = create_button((220, 450), (70, 30), "Redo", ButtonStyles.SQUOVAL)
+        self.update_history_buttons()
 
     def setup_dropdowns(self):
         """------------------------------------------------------------------------------------------------------------#
@@ -370,7 +377,7 @@ class CustomizeCatScreen(Screens):
                                                                             "upper") if self.the_cat.pelt.eye_colour2 else get_selected_option(
                                                             self.the_cat.pelt.eye_colour, "upper")))
         self.accessory_dropdown = create_dropdown((568, 525), (180, 40), create_options_list(self.accessories, "upper"),
-                                                  get_selected_option(self.the_cat.pelt.accessory, "upper"), "dropup")
+                                                  get_selected_option(self.the_cat.pelt.accessories, "upper"), "dropup")
 
         scars = self.the_cat.pelt.scars
         self.scar1_dropdown = create_dropdown((52, 605), (135, 40), create_options_list(self.scars, "upper"),
@@ -386,6 +393,8 @@ class CustomizeCatScreen(Screens):
         # ------------------------------------------------------------------------------------------------------------"""
 
         # stores current scar state
+        self.initial_scar_selection.clear()
+        self.previous_scar_selection.clear()
         self.initial_scar_selection[self.scar1_dropdown] = self.scar1_dropdown.selected_option[1]
         self.initial_scar_selection[self.scar2_dropdown] = self.scar2_dropdown.selected_option[1]
         self.initial_scar_selection[self.scar3_dropdown] = self.scar3_dropdown.selected_option[1]
@@ -410,7 +419,7 @@ class CustomizeCatScreen(Screens):
 
     def setup_cat_elements(self):
         (self.setup_pelt_length(), self.setup_tortie(), self.setup_white_patches_tint(), self.setup_eye_colours(),
-         self.setup_accessory(), self.setup_poses(), self.setup_reverse(), self.capture_initial_state())
+         self.setup_accessory(), self.setup_poses(), self.setup_reverse())
 
     def setup_pelt_length(self):
         self.cat_elements["pelt_length_index"] = self.pelt_lengths.index(self.the_cat.pelt.length)
@@ -454,7 +463,13 @@ class CustomizeCatScreen(Screens):
     # store state for reset
     # TODO: append values to a list with identifier to retain values between cat pages
     def capture_initial_state(self):
-        self.initial_state = {
+        self.initial_state = self.get_pelt_state()
+        self.undo_states = []
+        self.redo_states = []
+        self.update_history_buttons()
+
+    def get_pelt_state(self):
+        return deepcopy({
             "name": self.the_cat.pelt.name,
             "colour": self.the_cat.pelt.colour,
             "length": self.the_cat.pelt.length,
@@ -470,31 +485,45 @@ class CustomizeCatScreen(Screens):
             "skin": self.the_cat.pelt.skin,
             "eye_colour": self.the_cat.pelt.eye_colour,
             "eye_colour2": self.the_cat.pelt.eye_colour2,
-            "accessory": self.the_cat.pelt.accessory,
-            "scars": self.the_cat.pelt.scars.copy(),
+            "accessories": self.the_cat.pelt.accessories,
+            "scars": self.the_cat.pelt.scars,
             "reverse": self.the_cat.pelt.reverse,
             "pose": self.cat_elements["current_pose"],
-            "cat_sprites": {
-                "young_adult": self.the_cat.pelt.cat_sprites.get("young adult"),
-                "adult": self.the_cat.pelt.cat_sprites.get("adult"),
-                "senior_adult": self.the_cat.pelt.cat_sprites.get("senior adult")
-            }
-        }
+            "cat_sprites": self.the_cat.pelt.cat_sprites
+        })
 
     def reset_attributes(self):
-        for attribute, value in self.initial_state.items():
-            if attribute == "scars":
-                self.the_cat.pelt.scars = value.copy()
-            elif attribute == "pose":
+        self.restore_pelt_state(self.initial_state)
+
+    def restore_pelt_state(self, state):
+        for attribute, value in state.items():
+            if attribute == "pose":
                 self.cat_elements["current_pose"] = value
-                self.the_cat.pelt.cat_sprites[self.life_stage] = value
-            elif attribute == "cat_sprites":
-                self.the_cat.pelt.cat_sprites["young adult"] = value["young_adult"]
-                self.the_cat.pelt.cat_sprites["adult"] = value["adult"]
-                self.the_cat.pelt.cat_sprites["senior adult"] = value["senior_adult"]
             else:
-                setattr(self.the_cat.pelt, attribute, value)
+                setattr(self.the_cat.pelt, attribute, deepcopy(value))
         self.update_ui_elements()
+
+    def update_history_buttons(self):
+        if self.undo_button:
+            if self.undo_states:
+                self.undo_button.enable()
+            else:
+                self.undo_button.disable()
+        if self.redo_button:
+            if self.redo_states:
+                self.redo_button.enable()
+            else:
+                self.redo_button.disable()
+
+    def undo(self):
+        if self.undo_states:
+            self.redo_states.append(self.get_pelt_state())
+            self.restore_pelt_state(self.undo_states.pop())
+
+    def redo(self):
+        if self.redo_states:
+            self.undo_states.append(self.get_pelt_state())
+            self.restore_pelt_state(self.redo_states.pop())
 
     def update_ui_elements(self):
         self.kill_cat_elements()
@@ -502,9 +531,9 @@ class CustomizeCatScreen(Screens):
         self.kill_dropdowns()
         self.cat_elements["cat_name"] = create_text_box("customize " + str(self.the_cat.name), (0, 40), (400, 40), "#text_box_34_horizcenter", {"centerx": "centerx"})
         self.setup_buttons()
+        self.setup_next_and_previous_cat()
         self.setup_dropdowns()
-        self.setup_cat_elements()
-        self.make_cat_sprite()
+        self.setup_cat()
 
     def get_cat_age(self):
         self.life_stage = "adult" if self.the_cat.age in ["young adult", "adult", "senior adult"] else self.the_cat.age
@@ -521,6 +550,16 @@ class CustomizeCatScreen(Screens):
 
     # TODO: create a subclass for dropdowns, create a function to regenerate dropdowns with specific data
     def handle_event(self, event):
+        if event.type not in (pygame_gui.UI_BUTTON_START_PRESS, pygame_gui.UI_DROP_DOWN_MENU_CHANGED):
+            return
+        if event.ui_element == self.undo_button:
+            self.undo()
+            return
+        if event.ui_element == self.redo_button:
+            self.redo()
+            return
+        editing = event.ui_element not in (self.previous_cat_button, self.next_cat_button, self.back_button)
+        before = self.get_pelt_state() if editing else None
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             if event.ui_element == self.previous_cat_button:
                 if isinstance(Cat.fetch_cat(self.previous_cat), Cat):
@@ -586,6 +625,11 @@ class CustomizeCatScreen(Screens):
                                       self.scar4_dropdown]:
                 self.handle_scar_dropdown(event.ui_element)
             #self.print_pelt_attributes()  # for testing purposes
+
+        if editing and before != self.get_pelt_state():
+            self.undo_states.append(before)
+            self.redo_states.clear()
+            self.update_history_buttons()
 
     def handle_dropdown_change(self, dropdown, attribute):
         selected_option = dropdown.selected_option[1]
@@ -665,13 +709,11 @@ class CustomizeCatScreen(Screens):
 
     def handle_accessory_dropdown(self):
         selected_option = self.accessory_dropdown.selected_option
-        if not isinstance(self.the_cat.pelt.accessory, list):
-            self.the_cat.pelt.accessory = []
         if selected_option[0] == "None":
-            self.the_cat.pelt.accessory = []
+            self.the_cat.pelt.accessories = []
         else:
-            if selected_option[1] not in self.the_cat.pelt.accessory:
-                self.the_cat.pelt.accessory.append(selected_option[1])
+            if selected_option[1] not in self.the_cat.pelt.accessories:
+                self.the_cat.pelt.accessories.append(selected_option[1])
         self.make_cat_sprite()
 
     def handle_scar_dropdown(self, dropdown):
@@ -895,6 +937,7 @@ class CustomizeCatScreen(Screens):
     def kill_buttons(self):
         buttons = [
             self.previous_cat_button, self.back_button, self.next_cat_button, self.reset_button,
+            self.undo_button, self.redo_button,
             self.pelt_length_left_button, self.pelt_length_right_button, self.pose_left_button,
             self.pose_right_button, self.reverse_button
         ]
