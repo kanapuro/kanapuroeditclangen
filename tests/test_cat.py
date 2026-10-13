@@ -1106,7 +1106,7 @@ class TestLeaderCeremony(unittest.TestCase):
     def test_life_givers_belong_to_the_followed_afterlife(self):
         from scripts.clan import Clan
 
-        for following in (True, False):
+        for following in (True, False, None):
             with self.subTest(following=following), patch.object(Cat, "all_cats", {}), patch.object(
                 Cat, "all_cats_list", []
             ):
@@ -1120,6 +1120,9 @@ class TestLeaderCeremony(unittest.TestCase):
                     correct.dead = wrong.dead = True
                     clan.starclan_cats = [correct.ID if following else wrong.ID]
                     clan.darkforest_cats = [wrong.ID if following else correct.ID]
+                    clan.unknown_cats = [correct.ID if following is None else wrong.ID]
+                    if following is None:
+                        clan.starclan_cats = clan.darkforest_cats = [wrong.ID]
                     leader.create_one_relationship(wrong)
                     with patch("scripts.cat.cats.leader_ceremony_text_adjust", return_value="text") as adjust:
                         leader.generate_lead_ceremony()
@@ -1164,7 +1167,7 @@ class TestLeaderCeremony(unittest.TestCase):
     def test_stale_afterlife_ids_do_not_crash_leader_selection(self):
         from scripts.clan import Clan
 
-        for following in (True, False):
+        for following in (True, False, None):
             with self.subTest(following=following), patch.object(Cat, "all_cats", {}), patch.object(
                 Cat, "all_cats_list", []
             ):
@@ -1174,7 +1177,34 @@ class TestLeaderCeremony(unittest.TestCase):
                     clan.your_cat = Cat(status="leader", moons=40)
                     clan.starclan_cats = ["missing-cat"]
                     clan.darkforest_cats = ["missing-cat"]
+                    clan.unknown_cats = ["missing-cat"]
                     self.assertTrue(clan.your_cat.generate_lead_ceremony())
+
+    def test_wanderer_ceremony_is_real_text_and_records_history(self):
+        from scripts.cat.history import History
+        from scripts.clan import Clan
+        for age in (0, 12):
+            with self.subTest(age=age), patch.object(Cat, "all_cats", {}), patch.object(Cat, "all_cats_list", []):
+                clan = Clan(name="TestClan", followingsc=None)
+                clan.age = age
+                with patch.object(game, "clan", clan):
+                    leader = Cat(status="leader", moons=40)
+                    leader.history = History()
+                    clan.your_cat = leader
+                    giver = Cat(status="warrior", moons=50)
+                    giver.dead = True
+                    giver.name.prefix, giver.name.suffix = "Wander", "song"
+                    living = Cat(status="warrior", moons=30)
+                    clan.unknown_cats = [giver.ID, living.ID, "missing-cat"]
+                    History.add_lead_ceremony(leader)
+                    text = leader.history.lead_ceremony
+                    self.assertIn("wanderers", text)
+                    self.assertIn(str(giver.name), text)
+                    self.assertNotIn(str(living.name), text)
+                    for token in ("m_c", "r_c", "[virtue]", "[life_num]", "{PRONOUN"):
+                        self.assertNotIn(token, text)
+                    clan.unknown_cats = []
+                    self.assertIn("wanderers", leader.generate_lead_ceremony())
 
 
 class TestRetirementSettings(unittest.TestCase):
@@ -1229,3 +1259,62 @@ class TestExampleCatNamingRules(unittest.TestCase):
                 )
             finally:
                 game.choose_cats = original_choose_cats
+
+
+class TestPlayerRoleChoice(unittest.TestCase):
+    def test_opt_out_only_blocks_the_current_players_automatic_career_changes(self):
+        from scripts.cat.history import History
+        from scripts.clan import Clan
+        from scripts.events import Events
+        for setting, expected in (("become_mediator", "mediator apprentice"),
+                                  ("become_med", "medicine cat apprentice"), ("become_queen", "queen")):
+            for player, blocked in ((True, True), (True, False), (False, True)):
+                with self.subTest(setting=setting, player=player, blocked=blocked), \
+                     patch.object(Cat, "all_cats", {}), patch.object(Cat, "all_cats_list", []):
+                    clan = Clan(name="TestClan")
+                    with patch.object(game, "clan", clan), patch.object(game, "cur_events_list", []), \
+                         patch("scripts.events.random.random", return_value=0):
+                        cat = Cat(status="warrior", moons=30)
+                        cat.history = History()
+                        clan.clan_cats = [cat.ID]
+                        clan.your_cat = cat if player else Cat(status="warrior", moons=30)
+                        cat.no_role_change = blocked
+                        for option in ("become_mediator", "become_med", "become_queen"):
+                            clan.clan_settings[option] = option == setting
+                        Events.__new__(Events).mediator_events(cat)
+                        self.assertEqual(cat.status, "warrior" if player and blocked else expected)
+                        self.assertEqual(cat.get_save_dict()["no_role_change"], blocked)
+
+    def test_personal_window_only_exposes_the_control_for_the_player(self):
+        import pygame
+        import pygame_gui
+        from scripts.clan import Clan
+        from scripts.game_structure.windows import ChangeCatToggles
+        with patch.object(Cat, "all_cats", {}), patch.object(Cat, "all_cats_list", []):
+            clan = Clan(name="TestClan")
+            with patch.object(game, "clan", clan):
+                clan.your_cat = Cat(status="warrior", moons=30)
+                other = Cat(status="warrior", moons=30)
+                for cat in (clan.your_cat, other):
+                    window = ChangeCatToggles(cat)
+                    try:
+                        self.assertEqual("prevent_role_change" in window.checkboxes, cat == clan.your_cat)
+                        if cat == clan.your_cat:
+                            window.process_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS,
+                                                                   ui_element=window.checkboxes["prevent_role_change"]))
+                            self.assertTrue(cat.no_role_change)
+                    finally:
+                        window.kill()
+
+    def test_conditions_remove_worn_accessories_without_requiring_inventory_copies(self):
+        from scripts.cat.history import History
+        from scripts.clan import Clan
+        with patch.object(game, "clan", Clan(name="TestClan")):
+            cat = Cat(status="warrior", moons=30)
+            cat.history = History()
+            cat.pelt.scars = ["NOTAIL", "NOPAW"]
+            cat.pelt.accessories = ["RED FEATHERS", "ASHY PAWS"]
+            cat.pelt.inventory = []
+            cat.get_permanent_condition("weak leg", born_with=True)
+            self.assertEqual(cat.pelt.accessories, [])
+            self.assertEqual(cat.pelt.inventory, [])

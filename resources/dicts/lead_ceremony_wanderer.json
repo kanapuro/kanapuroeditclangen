@@ -1,0 +1,138 @@
+{
+  "intros": {
+    "default": {
+      "tags": [],
+      "lead_trait": [],
+      "text": [
+        "m_c closes {PRONOUN/m_c/poss} eyes and meets the wanderers. The spirits gather around the new leader of c_n, ready to share the strength and experience they carried through life."
+      ]
+    },
+    "new_clan": {
+      "tags": [
+        "new_clan"
+      ],
+      "lead_trait": [],
+      "text": [
+        "m_c closes {PRONOUN/m_c/poss} eyes and meets the wanderers. The spirits gather around the new leader of c_n, ready to share the strength and experience they carried through life."
+      ]
+    }
+  },
+  "default_life": {
+    "text": "r_c steps forward. \"I give you a life for [virtue]. Carry it with you as you lead c_n.\"",
+    "virtue": [
+      "courage",
+      "patience",
+      "kindness",
+      "wisdom",
+      "hope",
+      "loyalty",
+      "trust",
+      "resilience",
+      "compassion"
+    ]
+  },
+  "lives": {
+    "default": {
+      "tags": [],
+      "lead_trait": [],
+      "star_trait": [],
+      "rank": [],
+      "life_giving": [
+        {
+          "text": "r_c steps forward. \"I give you a life for [virtue]. Carry it with you as you lead c_n.\"",
+          "virtue": [
+            "courage",
+            "patience",
+            "kindness",
+            "wisdom",
+            "hope",
+            "loyalty",
+            "trust",
+            "resilience",
+            "compassion"
+          ]
+        }
+      ]
+    },
+    "new_clan": {
+      "tags": [
+        "new_clan"
+      ],
+      "lead_trait": [],
+      "star_trait": [],
+      "rank": [],
+      "life_giving": [
+        {
+          "text": "r_c steps forward. \"I give you a life for [virtue]. Carry it with you as you lead c_n.\"",
+          "virtue": [
+            "courage",
+            "patience",
+            "kindness",
+            "wisdom",
+            "hope",
+            "loyalty",
+            "trust",
+            "resilience",
+            "compassion"
+          ]
+        }
+      ]
+    },
+    "murdered": {
+      "tags": [
+        "murdered"
+      ],
+      "lead_trait": [],
+      "star_trait": [],
+      "rank": [],
+      "life_giving": [
+        {
+          "text": "r_c approaches m_c. \"My life ended at your paws. I give you a life for [virtue], and ask you to remember what your choices cost.\"",
+          "virtue": [
+            "courage",
+            "patience",
+            "kindness",
+            "wisdom",
+            "hope",
+            "loyalty",
+            "trust",
+            "resilience",
+            "compassion"
+          ]
+        }
+      ]
+    },
+    "unknown": {
+      "tags": [
+        "unknown_blessing"
+      ],
+      "lead_trait": [],
+      "star_trait": [],
+      "rank": [],
+      "life_giving": [
+        {
+          "text": "Other wanderers step forward, sharing the remaining [life_num] lives with m_c. Their gifts will accompany the new leader back to c_n.",
+          "virtue": []
+        }
+      ]
+    }
+  },
+  "outros": {
+    "default": {
+      "tags": [],
+      "lead_trait": [],
+      "text": [
+        "The wanderers welcome m_c as the leader of c_n. When {PRONOUN/m_c/subject} {VERB/m_c/wake/wakes}, {PRONOUN/m_c/subject} {VERB/m_c/carry/carries} their gifts back to the living colony."
+      ]
+    },
+    "new_clan": {
+      "tags": [
+        "new_clan"
+      ],
+      "lead_trait": [],
+      "text": [
+        "The wanderers welcome m_c as the leader of c_n. When {PRONOUN/m_c/subject} {VERB/m_c/wake/wakes}, {PRONOUN/m_c/subject} {VERB/m_c/carry/carries} their gifts back to the living colony."
+      ]
+    }
+  }
+}

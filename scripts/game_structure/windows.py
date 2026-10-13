@@ -2673,7 +2673,7 @@ class ChangeCatToggles(UIWindow):
 
     def __init__(self, cat):
         super().__init__(
-            ui_scale(pygame.Rect((300, 215), (400, 185))),
+            ui_scale(pygame.Rect((300, 215), (400, 250 if cat == game.clan.your_cat else 185))),
             window_display_title="Change Cat Name",
             object_id="#change_cat_name_window",
             resizable=False,
@@ -2718,6 +2718,11 @@ class ChangeCatToggles(UIWindow):
                                 object_id="#text_box_30_horizleft_pad_0_8",
                                 container=self)
         
+        if self.the_cat == game.clan.your_cat:
+            self.text_7 = pygame_gui.elements.UITextBox(
+                "Prevent automatic role changes", ui_scale(pygame.Rect(60, 175, -1, 50)),
+                object_id="#text_box_30_horizleft_pad_0_8", container=self)
+
         # Text
 
     def refresh_checkboxes(self):
@@ -2820,6 +2825,13 @@ class ChangeCatToggles(UIWindow):
             tool_tip_text=tool_tip,
         )
 
+        if self.the_cat == game.clan.your_cat:
+            self.checkboxes["prevent_role_change"] = UIImageButton(
+                ui_scale(pygame.Rect(22, 175, 34, 34)), "", container=self,
+                object_id="@checked_checkbox" if self.the_cat.no_role_change else "@unchecked_checkbox",
+                tool_tip_text="Prevent automatic medicine cat, mediator, and queen role changes for your character.",
+            )
+
     def process_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             if event.ui_element == self.back_button:
@@ -2840,6 +2852,9 @@ class ChangeCatToggles(UIWindow):
                 self.refresh_checkboxes()
             elif event.ui_element == self.checkboxes["no_faith"]:
                 self.the_cat.no_faith = not self.the_cat.no_faith
+                self.refresh_checkboxes()
+            elif event.ui_element == self.checkboxes.get("prevent_role_change"):
+                self.the_cat.no_role_change = not self.the_cat.no_role_change
                 self.refresh_checkboxes()
             elif event.ui_element == self.checkboxes["leader_life_override"]:
                 current = getattr(self.the_cat, "leader_life_override", None)

@@ -246,6 +246,7 @@ def json_load():
             new_cat.no_kits = cat["no_kits"] if "no_kits" in cat else False
             new_cat.no_mates = cat["no_mates"] if "no_mates" in cat else False
             new_cat.no_retire = cat["no_retire"] if "no_retire" in cat else False
+            new_cat.no_role_change = cat.get("no_role_change", False)
             new_cat.no_faith = cat["no_faith"] if "no_faith" in cat else False
             new_cat.lock_faith = cat["lock_faith"] if "lock_faith" in cat else "flexible"
             new_cat.exiled = cat["exiled"]

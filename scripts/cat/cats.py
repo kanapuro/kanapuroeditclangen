@@ -663,6 +663,7 @@ class Cat:
         pelt: Pelt = None,
         loading_cat=False,  # Set to true if you are loading a cat at start-up.
         name_type=None,
+        register=True,
         **kwargs,
     ):
         """Initialise the cat.
@@ -681,6 +682,7 @@ class Cat:
         :param faded: If cat is faded, default False
         :param skill_dict: TODO find a good definition for this
         :param pelt: Body details, default None
+        :param register: Add the cat to the live registry, default True. Disable for editor previews.
         :param loading_cat: If loading a cat rather than generating a new one, default False
         :param kwargs: TODO what are the possible args here? ["biome", ]
         """
@@ -757,6 +759,7 @@ class Cat:
         self.no_kits = False
         self.no_mates = False
         self.no_retire = False
+        self.no_role_change = False
         if game.clan and getattr(game.clan, "clan_settings", None):
             self.no_retire = bool(game.clan.clan_settings.get("retirement", False))
         self.no_faith = False
@@ -907,10 +910,10 @@ class Cat:
         self._sprite = None
 
         # SAVE CAT INTO ALL_CATS DICTIONARY IN CATS-CLASS
-        self.all_cats[self.ID] = self
-
-        if self.ID not in ["0", None]:
-            Cat.insert_cat(self)
+        if register:
+            self.all_cats[self.ID] = self
+            if self.ID not in ["0", None]:
+                Cat.insert_cat(self)
 
     def init_faded(self, ID, status, prefix, suffix, moons, **kwargs):
         """Perform faded-specific initialization
@@ -2122,12 +2125,16 @@ class Cat:
         """Create a leader ceremony and add it to the history"""
 
         # determine which dict we're pulling from
-        if not game.clan.followingsc:
-            starclan = False
+        if game.clan.followingsc is None:
+            ceremony_dict = LEAD_CEREMONY_WANDERER
+            afterlife_cats = game.clan.unknown_cats
+        elif game.clan.followingsc is False:
             ceremony_dict = LEAD_CEREMONY_DF
+            afterlife_cats = game.clan.darkforest_cats
         else:
-            starclan = True
             ceremony_dict = LEAD_CEREMONY_SC
+            afterlife_cats = game.clan.starclan_cats
+        afterlife_cats = [ID for ID in afterlife_cats if self.fetch_cat(ID) and self.fetch_cat(ID).dead]
 
         # ---------------------------------------------------------------------------- #
         #                                    INTRO                                     #
@@ -2176,14 +2183,10 @@ class Cat:
             if kitty and kitty.dead and kitty.status != "newborn":
                 # check where they reside
                 # guides aren't allowed here
-                if kitty == game.clan.instructor or kitty == game.clan.demon:
+                if kitty in (game.clan.instructor, game.clan.demon, game.clan.wanderer):
                     continue
-                if starclan:
-                    if kitty.ID not in game.clan.starclan_cats:
-                        continue
-                else:
-                    if kitty.ID not in game.clan.darkforest_cats:
-                        continue
+                if kitty.ID not in afterlife_cats:
+                    continue
                 dead_relations.append(rel)
 
         # sort relations by the strength of their relationship
@@ -2212,34 +2215,11 @@ class Cat:
         if len(life_givers) < 8:
             amount = 8 - len(life_givers)
 
-            if starclan:
-                # this part just checks how many SC cats are available, if there aren't enough to fill all the slots,
-                # then we just take however many are available
-
-                possible_sc_cats = [
-                    i
-                    for i in game.clan.starclan_cats
-                    if self.fetch_cat(i)
-                    and i not in life_givers
-                    and self.fetch_cat(i).status not in ["leader", "newborn"]
-                ]
-
-                if len(possible_sc_cats) - 1 < amount:
-                    extra_givers = possible_sc_cats
-                else:
-                    extra_givers = sample(possible_sc_cats, k=amount)
-            else:
-                possible_df_cats = [
-                    i
-                    for i in game.clan.darkforest_cats
-                    if self.fetch_cat(i)
-                    and i not in life_givers
-                    and self.fetch_cat(i).status not in ["leader", "newborn"]
-                ]
-                if len(possible_df_cats) - 1 < amount:
-                    extra_givers = possible_df_cats
-                else:
-                    extra_givers = sample(possible_df_cats, k=amount)
+            possible_givers = [
+                ID for ID in afterlife_cats
+                if ID not in life_givers and self.fetch_cat(ID).status not in ["leader", "newborn"]
+            ]
+            extra_givers = possible_givers if len(possible_givers) <= amount else sample(possible_givers, k=amount)
 
             life_givers.extend(extra_givers)
 
@@ -2249,50 +2229,16 @@ class Cat:
             # choosing if the life giving leader will be the oldest leader or previous leader
             coin_flip = randint(1, 2)
             if coin_flip == 1:
-                # pick the oldest leader in SC
+                # pick the oldest leader in the followed afterlife
                 ancient_leader = True
-                if starclan:
-                    sc_cats = [i for i in game.clan.starclan_cats if Cat.fetch_cat(i)]
-                    sc_cats.sort(key=lambda x: -1 * int(Cat.fetch_cat(x).dead_for))
-                    for kitty in sc_cats:
-                        if (
-                            self.fetch_cat(kitty)
-                            and self.fetch_cat(kitty).status == "leader"
-                        ):
-                            life_giving_leader = kitty
-                            break
-                else:
-                    df_kitties = [i for i in game.clan.darkforest_cats if Cat.fetch_cat(i)]
-                    df_kitties.sort(key=lambda x: -1 * int(Cat.fetch_cat(x).dead_for))
-                    for kitty in df_kitties:
-                        if (
-                            self.fetch_cat(kitty)
-                            and self.fetch_cat(kitty).status == "leader"
-                        ):
-                            life_giving_leader = kitty
-                            break
+                candidates = sorted(afterlife_cats, key=lambda ID: -int(self.fetch_cat(ID).dead_for))
             else:
                 # pick previous leader
-                if starclan:
-                    sc_cats = [i for i in game.clan.starclan_cats if Cat.fetch_cat(i)]
-                    sc_cats.sort(key=lambda x: int(Cat.fetch_cat(x).dead_for))
-                    for kitty in sc_cats:
-                        if (
-                            self.fetch_cat(kitty)
-                            and self.fetch_cat(kitty).status == "leader"
-                        ):
-                            life_giving_leader = kitty
-                            break
-                else:
-                    df_kitties = [i for i in game.clan.darkforest_cats if Cat.fetch_cat(i)]
-                    df_kitties.sort(key=lambda x: int(Cat.fetch_cat(x).dead_for))
-                    for kitty in df_kitties:
-                        if (
-                            self.fetch_cat(kitty)
-                            and self.fetch_cat(kitty).status == "leader"
-                        ):
-                            life_giving_leader = kitty
-                            break
+                candidates = sorted(afterlife_cats, key=lambda ID: int(self.fetch_cat(ID).dead_for))
+            for ID in candidates:
+                if self.fetch_cat(ID).status == "leader":
+                    life_giving_leader = ID
+                    break
 
         if life_giving_leader:
             life_givers.append(life_giving_leader)
@@ -2339,7 +2285,7 @@ class Cat:
                     continue
                 if "unknown_blessing" in tags:
                     continue
-                if "guide" in tags and giver_cat != game.clan.instructor and giver_cat != game.clan.demon:
+                if "guide" in tags and giver_cat not in (game.clan.instructor, game.clan.demon, game.clan.wanderer):
                     continue
                 if game.clan.age != 0 and "new_clan" in tags:
                     continue
@@ -3071,13 +3017,13 @@ class Cat:
                 "BLEEDINGHEART", "MOREFERN", "GRAYMOSSPELT", "FERN", "YELLOWWISTERIA", "WATTLE", "SPRINGFLOWERCORSAGE"
                 ]:
                 if acc in self.pelt.accessories:
-                    self.pelt.inventory.remove(acc)
+                    self.pelt.accessories.remove(acc)
                 if acc in self.pelt.inventory:
                     self.pelt.inventory.remove(acc)
         if "NOPAW" in self.pelt.scars:
             for acc in ["VINE", "ASHY PAWS", "MUD PAWS", "MUD", "STARFLOWERS", "LAVENDERANKLET", "HOLLY2", "HOLLYVINES"]:
                 if acc in self.pelt.accessories:
-                    self.pelt.inventory.remove(acc)
+                    self.pelt.accessories.remove(acc)
                 if acc in self.pelt.inventory:
                     self.pelt.inventory.remove(acc)
 
@@ -4800,6 +4746,7 @@ class Cat:
                 "paralyzed": self.pelt.paralyzed,
                 "no_kits": self.no_kits,
                 "no_retire": self.no_retire,
+                "no_role_change": self.no_role_change,
                 "no_mates": self.no_mates,
                 "exiled": self.exiled,
                 "driven_out": self.driven_out,
@@ -5056,6 +5003,9 @@ with open("resources/dicts/lead_ceremony_sc.json", "r", encoding="utf-8") as rea
 
 with open("resources/dicts/lead_ceremony_df.json", "r", encoding="utf-8") as read_file:
     LEAD_CEREMONY_DF = ujson.loads(read_file.read())
+
+with open("resources/dicts/lead_ceremony_wanderer.json", "r", encoding="utf-8") as read_file:
+    LEAD_CEREMONY_WANDERER = ujson.loads(read_file.read())
 
 with open("resources/dicts/backstories.json", "r", encoding="utf-8") as read_file:
     BACKSTORIES = ujson.loads(read_file.read())

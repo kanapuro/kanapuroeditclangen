@@ -1856,6 +1856,9 @@ class Events:
                                                  sub_type=["mediator"],
                                                  freshkill_pile=game.clan.freshkill_pile)
 
+        if cat == game.clan.your_cat and cat.no_role_change:
+            return
+
         if game.clan.clan_settings["become_mediator"]:
             # Note: These chances are large since it triggers every moon.
             # Checking every moon has the effect giving older cats more chances to become a mediator

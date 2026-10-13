@@ -187,124 +187,134 @@ class TestScreenLists(unittest.TestCase):
 
 class TestCustomizer(unittest.TestCase):
     def setUp(self):
+        from scripts.cat.history import History
         from scripts.screens.CustomizeCatScreen import CustomizeCatScreen
-
         clan = Clan(name="TestClan")
-        for target, attribute, value in (
-            (Cat, "all_cats", {}),
-            (Cat, "all_cats_list", []),
-            (game, "clan", clan),
-        ):
+        clan.age = 12
+        for target, attribute, value in ((Cat, "all_cats", {}), (Cat, "all_cats_list", []), (game, "clan", clan)):
             replacement = patch.object(target, attribute, value)
             replacement.start()
             self.addCleanup(replacement.stop)
-        self.screen = CustomizeCatScreen.__new__(CustomizeCatScreen)
-        self.screen.the_cat = Cat(status="warrior", moons=30)
-        self.screen.life_stage = "adult"
-        self.screen.cat_elements = {"current_pose": 6}
-        self.screen.undo_button = Mock()
-        self.screen.redo_button = Mock()
-        self.screen.undo_states = []
-        self.screen.redo_states = []
-        self.screen.update_ui_elements = Mock()
-        self.screen.make_cat_sprite = Mock()
-        self.screen.check_white_patches_tint = Mock()
+        self.cat = Cat(status="warrior", moons=30)
+        self.cat.history = History()
+        clan.clan_cats = [self.cat.ID]
+        clan.your_cat = self.cat
+        self.screen = CustomizeCatScreen()
+        self.screen.change_screen = Mock()
+        replacement = patch("scripts.screens.CatCustomizer.generate_sprite", return_value=pygame.Surface((50, 50), pygame.SRCALPHA))
+        replacement.start()
+        self.addCleanup(replacement.stop)
+        replacement = patch("scripts.utility.generate_sprite", return_value=pygame.Surface((50, 50), pygame.SRCALPHA))
+        replacement.start()
+        self.addCleanup(replacement.stop)
+        with patch.dict(game.switches, {"cat": self.cat.ID}):
+            self.screen.screen_switches()
+        self.addCleanup(self.screen.exit_screen)
 
-    def test_reset_restores_lists_after_repeated_edits(self):
-        pelt = self.screen.the_cat.pelt
-        pelt.pattern = ["ONE"]
-        pelt.white_patches = ["VAN"]
-        self.screen.capture_initial_state()
-        for _ in range(2):
-            self.screen.handle_dropdown_change(
-                SimpleNamespace(selected_option=("Two", "TWO")), "pattern"
-            )
-            self.screen.white_patches_dropdown = SimpleNamespace(
-                selected_option=("Tuxedo", "TUXEDO")
-            )
-            self.screen.handle_white_patches_dropdown()
-            self.screen.reset_attributes()
-            self.assertEqual(pelt.pattern, ["ONE"])
-            self.assertEqual(pelt.white_patches, ["VAN"])
+    def press(self, widget):
+        self.screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=widget))
 
-    def test_accessory_editor_updates_the_rendered_list_and_reset_restores_it(self):
-        pelt = self.screen.the_cat.pelt
-        pelt.accessory = None
-        pelt.accessories = ["RED FEATHERS"]
-        self.screen.capture_initial_state()
-        self.screen.accessory_dropdown = SimpleNamespace(
-            selected_option=("Blue feathers", "BLUE FEATHERS")
-        )
-        self.screen.handle_accessory_dropdown()
-        self.screen.handle_accessory_dropdown()
-        self.assertEqual(pelt.accessories, ["RED FEATHERS", "BLUE FEATHERS"])
-        self.assertIsNone(pelt.accessory)
-        self.screen.reset_attributes()
-        self.assertEqual(pelt.accessories, ["RED FEATHERS"])
-        self.screen.accessory_dropdown.selected_option = ("None", "NONE")
-        self.screen.handle_accessory_dropdown()
-        self.assertEqual(pelt.accessories, [])
+    def option(self, value):
+        editor = self.screen.elements["appearance_editor"]
+        editor.option_list.scroll_to(value)
+        self.press(editor.option_buttons[value])
 
-    def test_undo_redo_restore_independent_snapshots_and_reset(self):
-        self.screen.capture_initial_state()
-        original = self.screen.get_pelt_state()
-        self.screen.undo_states.append(original)
-        self.screen.the_cat.pelt.accessories = ["RED FEATHERS"]
-        self.screen.the_cat.pelt.cat_sprites["kitten"] = 2
-        changed = self.screen.get_pelt_state()
-        self.screen.undo()
-        self.assertEqual(self.screen.get_pelt_state(), original)
-        self.screen.redo()
-        self.assertEqual(self.screen.get_pelt_state(), changed)
-        self.screen.undo_states.append(changed)
-        self.screen.reset_attributes()
-        self.screen.undo()
-        self.assertEqual(self.screen.get_pelt_state(), changed)
-        self.assertEqual(original["accessories"], self.screen.initial_state["accessories"])
-
-
-    def test_native_buttons_keep_history_when_rebuilding_the_page(self):
+    def test_both_entry_points_use_the_exact_same_full_editor(self):
+        from scripts.screens.MakeClanScreen import MakeClanScreen
         from scripts.screens.CustomizeCatScreen import CustomizeCatScreen
-        screen = CustomizeCatScreen()
-        game.clan.clan_cats = [self.screen.the_cat.ID]
-        with patch.dict(game.switches, {"cat": self.screen.the_cat.ID}), \
-             patch("scripts.screens.CustomizeCatScreen.generate_sprite", return_value=pygame.Surface((50, 50))):
-            screen.setup_labels()
-            screen.build_cat_page()
-            try:
-                before = screen.get_pelt_state()
-                def press(widget):
-                    screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=widget))
-                press(screen.reverse_button)
-                press(screen.pelt_length_right_button)
-                changed = screen.get_pelt_state()
-                press(screen.undo_button)
-                press(screen.undo_button)
-                self.assertEqual(screen.get_pelt_state(), before)
-                self.assertEqual(screen.initial_state, before)
-                press(screen.redo_button)
-                press(screen.redo_button)
-                self.assertEqual(screen.get_pelt_state(), changed)
-                press(screen.reset_button)
-                self.assertEqual(screen.get_pelt_state(), before)
-                press(screen.undo_button)
-                self.assertEqual(screen.get_pelt_state(), changed)
-                press(screen.undo_button)
-                press(screen.reverse_button)
-                self.assertEqual(screen.redo_states, [])
-                self.assertFalse(screen.redo_button.is_enabled)
-                self.assertEqual(screen.previous_pelt_name, screen.the_cat.pelt.name)
-                history_length = len(screen.undo_states)
-                screen.handle_event(pygame.event.Event(
-                    pygame_gui.UI_DROP_DOWN_MENU_CHANGED, ui_element=screen.eye_colour1_dropdown))
-                self.assertEqual(len(screen.undo_states), history_length)
-                self.assertFalse(screen.previous_cat_button.is_enabled)
-                self.assertFalse(screen.next_cat_button.is_enabled)
-            finally:
-                screen.kill_cat_elements()
-                screen.kill_buttons()
-                screen.kill_dropdowns()
-                screen.kill_labels()
+        for method in ("open_customize_cat", "randomize_custom_cat", "handle_customize_cat_event",
+                       "get_customizer_state", "apply_customizer_locks", "setup_customizer_lock_buttons"):
+            self.assertIs(getattr(MakeClanScreen, method), getattr(CustomizeCatScreen, method))
+        for key in ("random_customize", "undo_customize", "redo_customize", "lock_adult_pose"):
+            self.assertIn(key, self.screen.elements)
+
+    def test_randomization_locks_undo_redo_and_cancel_leave_live_cat_unchanged(self):
+        original = self.cat.get_save_dict()
+        self.press(self.screen.elements["lock_adult_pose"])
+        locked = self.screen.get_customizer_state()
+        self.press(self.screen.elements["random_customize"])
+        self.assertEqual(self.screen.length, locked["length"])
+        self.assertEqual(self.screen.adult_pose, locked["adult_pose"])
+        self.assertEqual(self.cat.get_save_dict(), original)
+        self.press(self.screen.elements["undo_customize"])
+        self.assertEqual(self.screen.get_customizer_state(), locked)
+        self.press(self.screen.elements["redo_customize"])
+        self.assertEqual(set(Cat.all_cats), {self.cat.ID})
+        self.assertEqual(Cat.all_cats_list, [self.cat])
+        self.press(self.screen.elements["previous_step"])
+        self.assertEqual(self.cat.get_save_dict(), original)
+        self.screen.change_screen.assert_called_with("profile screen")
+
+    def test_virtual_checklists_remove_individual_items_and_retain_history(self):
+        self.press(self.screen.elements["right"])
+        self.press(self.screen.current_selection_buttons["white_patches"])
+        self.screen.white_patches = []
+        self.screen.update_sprite()
+        self.screen.update_disabled_buttons()
+        editor = self.screen.elements["appearance_editor"]
+        self.assertLessEqual(len(editor.option_buttons), 15)
+        self.assertGreater(len(editor.option_list.options), 200)
+        for value in ("VAN", "TUXEDO", "VAN"):
+            self.option(value)
+        self.assertEqual(self.screen.white_patches, ["TUXEDO"])
+        self.press(self.screen.elements["undo_customize"])
+        self.assertEqual(self.screen.white_patches, ["VAN", "TUXEDO"])
+        self.press(self.screen.elements["redo_customize"])
+        self.assertEqual(self.screen.white_patches, ["TUXEDO"])
+        editor = self.screen.elements["appearance_editor"]
+        button = next(iter(editor.option_buttons.values()))
+        with patch.object(button, "change_object_id", wraps=button.change_object_id) as rebuild:
+            self.screen.update_disabled_buttons()
+            self.screen.update_disabled_buttons()
+            rebuild.assert_not_called()
+        self.press(self.screen.elements["next_step"])
+        self.assertEqual(self.cat.pelt.white_patches, ["TUXEDO"])
+
+    def test_apply_updates_skills_conditions_and_details_without_changing_identity(self):
+        identity = (self.cat.ID, self.cat.moons, self.cat.status)
+        points = self.cat.skills.primary.points
+        self.screen.page = 3
+        self.screen.current_selection = "condition"
+        self.screen.open_customize_cat()
+        self.press(self.screen.condition_buttons["paralyzed"])
+        self.assertNotIn("paralyzed", self.cat.permanent_condition)
+        self.press(self.screen.current_selection_buttons["skill"])
+        from scripts.cat.skills import SkillPath
+        self.press(self.screen.skill_buttons[SkillPath.HUNTER.value[0]])
+        self.press(self.screen.elements["right"])
+        self.press(self.screen.current_selection_buttons["height"])
+        self.press(self.screen.detail_buttons["towering"])
+        self.press(self.screen.elements["next_step"])
+        self.assertEqual((self.cat.ID, self.cat.moons, self.cat.status), identity)
+        self.assertTrue(self.cat.pelt.paralyzed)
+        self.assertIn("paralyzed", self.cat.permanent_condition)
+        self.assertEqual(self.cat.skills.primary.path, SkillPath.HUNTER)
+        self.assertEqual(self.cat.skills.primary.points, points)
+        self.assertEqual(self.cat.pelt.height, "towering")
+        self.assertEqual(self.cat.history.condition_events[-1]["condition"], "paralyzed")
+
+    def test_invalid_condition_choice_cannot_partially_apply_changes(self):
+        before = self.cat.get_save_dict()
+        self.screen.sex = "female"
+        self.screen.permanent_condition = "excess testosterone"
+        self.screen.page = 3
+        self.screen.current_selection = "condition"
+        self.screen.open_customize_cat()
+        self.assertFalse(self.screen.elements["next_step"].is_enabled)
+        self.assertFalse(self.screen.condition_buttons["excess testosterone"].is_enabled)
+        self.assertEqual(self.cat.get_save_dict(), before)
+
+    def test_newborn_without_skills_can_open_and_cancel_the_same_editor(self):
+        newborn = Cat(status="newborn", moons=0)
+        game.clan.clan_cats.append(newborn.ID)
+        self.screen.exit_screen()
+        with patch.dict(game.switches, {"cat": newborn.ID}):
+            self.screen.screen_switches()
+        self.assertEqual(self.screen.skill, "None")
+        self.assertIn("random_customize", self.screen.elements)
+        self.press(self.screen.elements["previous_step"])
+        self.assertIsNone(newborn.skills.primary)
+
 
 
 class TestClanCreationCancellation(unittest.TestCase):
@@ -387,7 +397,7 @@ class TestClanCreationCancellation(unittest.TestCase):
         with patch.object(game, "clan", None), \
              patch.object(game, "choose_cats", {}), \
              patch.dict(game.switches, {"customise_new_life": False}), \
-             patch("scripts.screens.MakeClanScreen.generate_sprite", return_value=pygame.Surface((50, 50), pygame.SRCALPHA)), \
+             patch("scripts.screens.CatCustomizer.generate_sprite", return_value=pygame.Surface((50, 50), pygame.SRCALPHA)), \
              patch("scripts.utility.generate_sprite", return_value=pygame.Surface((50, 50), pygame.SRCALPHA)):
             screen.screen_switches()
             try:
@@ -431,7 +441,7 @@ class TestClanCreationCancellation(unittest.TestCase):
                 press(screen.elements["redo_customize"])
                 self.assertEqual(screen.get_customizer_state(), edited)
                 press(screen.elements["left"])
-                with patch("scripts.screens.MakeClanScreen.random.randint", return_value=2):
+                with patch("scripts.screens.CatCustomizer.random.randint", return_value=2):
                     press(screen.elements["randomise_selection"])
                 self.assertEqual(len(screen.customizer_undo), 2)
                 press(screen.elements["undo_customize"])
@@ -446,9 +456,18 @@ class TestClanCreationCancellation(unittest.TestCase):
                 self.assertIn("kitten_pose", screen.customizer_locks)
                 press(screen.elements["right"])
                 press(screen.current_selection_buttons["white_patches"])
-                with patch("scripts.screens.MakeClanScreen.random.choice", return_value="FULLWHITE"):
+                with patch("scripts.screens.CatCustomizer.random.choice", return_value="FULLWHITE"):
                     press(screen.elements["randomise_selection"])
-                self.assertEqual(screen.white_patches, "FULLWHITE")
+                self.assertEqual(screen.white_patches, ["FULLWHITE"])
+                for value in ("VAN", "TUXEDO", "VAN"):
+                    screen.elements["appearance_editor"].option_list.scroll_to(value)
+                    press(screen.white_patches_buttons[value])
+                self.assertEqual(screen.white_patches, ["FULLWHITE", "TUXEDO"])
+                self.assertEqual(screen.custom_cat.pelt.white_patches, screen.white_patches)
+                press(screen.elements["undo_customize"])
+                self.assertEqual(screen.white_patches, ["FULLWHITE", "VAN", "TUXEDO"])
+                press(screen.elements["redo_customize"])
+                self.assertEqual(screen.white_patches, ["FULLWHITE", "TUXEDO"])
                 press(screen.elements["lock_white_patches"])
                 saved = screen.get_customizer_state()
                 press(screen.elements["random_customize"])

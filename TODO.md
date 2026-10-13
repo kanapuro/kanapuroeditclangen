@@ -1,24 +1,21 @@
+- (PRIORITY) UPDATE TO MODERN LIFEGEN/CLANGEN FEATURES (GAMEMODES, CRUEL SEASON, NEW ASSETS, ETC.)
 - Leader lives: manually verify one/nine-life toggles, reloads, deputy promotion, and command/MC revivals. New saves preserve the hidden nine-life balance; old saves already capped at one may lack the original balance and must not receive invented lives. Manually verify the corrected revival/one-life history wording, especially older retired-leader saves and multiple-life death events.
-- merge w genemod
-- merge w reincarnation lifegen mod
-- merge w lifegen infection mod
-- merge w dadm? ik some of it weird ~a
-- merge w dnd mod (dnd stats and patrols)
+- merge w genemod - advanced genetics and (PRIORITY) multi-clan management - https://github.com/narvin42/genemod-expanded 
+- merge w reincarnation lifegen mod (kinda lost this.. its a simple concept tho. just characters being reborn with the same history and other features) 
+- merge w lifegen infection mod (OPTIONAL GAMEMODE?) https://github.com/wwwjohann/jay-dev/releases/tag/INFv1.0.5 
+- merge w dadm? ik some of it weird ~a https://github.com/Sparrow-Moon/clangen-disabilities-and-disorders-mod
+- merge w dnd mod (dnd stats and patrols) think its here? def clunky ui tho https://github.com/Lixxis/clangen 
 - merge: dumb potato's extras (https://ptb.discord.com/channels/1125069186985640063/1202061506997657612), sprout's text expansions (https://ptb.discord.com/channels/1003759225522110524/1188095282915848202), cypress' more grief thoughts (https://ptb.discord.com/channels/1125069186985640063/1226623287283552296), bits from bingle's strange add-ons (https://ptb.discord.com/channels/1345739018792599643/1358826134602645725), caliiriin's extra pelts (https://ptb.discord.com/channels/1345739018792599643/1360109835005460538), multiroles
 - trailblazers themed content (horns, wings, stuff!) / horn/antler accessories!!!!!!!! yay!!!!!!!!!!!
 - leader update pt2: one primary leader, optional ordered subleaders that replace the deputy system. how do pick? player chosen or auto-fill list by rule (think feeding order: oldest first, family first, highest rank, etc.).
 - lock button on character customizer, where when randomizing kitty, it keeps that trait... and undo button for alla ctions, ( undo left of randomizae, redo right of it!) additionally make some stuff on the customisze cat page like checklists rather than nonsensically as it is now | Reset now restores edited marking lists and worn accessories, with Undo/Redo in both the in-game and colony-creation customizers; creation undo also covers randomization and gameplay traits. Creation trait locks now preserve choices during randomization, including linked appearance/condition values; checklist controls remain open.
 - fix the fuck outta clangen/lifegen buglist: https://docs.google.com/document/d/1hlOsVhGfFTuR1ep8QayjFCHLry8xR-QKb57tJC1RFbM/edit?tab=t.0
-- [x] tab either in dangerous section or roles page to add/remove shunned status
-- [x] add scrolling to clans on leader page so  U can ummmmm have more than 5
-- [x] the acquisition of an illness/condition should be listed in the history tab, alongside its cause. ie. a broken back from a badger, or grief stricken from losing (name). | Newly acquired conditions now include available event/patrol causes and named grief losses; congenital conditions appear when revealed.
 - add new subpatrols. date patrol - outing/date buttons. "dark forest" = dreams - parasite dream (dark forest), ascender dream (stc), wandering dream (wanderers) (names for these pending!). rename lifegen to daily life?
 - plotlines? long term events like wars with many interconnected events
 - new f3 command to change a clans (saves) name. needs to rename the folder, the associated json, and the name inside the clan data)
 - new f3 command to change the location - either random or selected. in doing so will wipe the other clans and generate new ones. maybe optional append command to wipe the outsider cats as well? (ie. otrue/ofalse at the end, or just add "wipe"/leave empty?)
 - cross-colony relationships or relationships with outsiders | outsider reationships are a medium-high effort change: core relationship object and save/load path exist but live behavior is explicitly gated off in several places: relationship interactions refuse outside cats, dateability/friendly outing checks refuse em, moon skips only advance thoughts for them rather than interaction loop. the main touch points i can see are relationship.py:76, cats.py:2491, cats.py:2614, cats.py:3506, cats.py:3745, cats.py:3888, thoughts.py:13, thoughts.py:243, clan.py:542, and possibly relationship.py:246. outside-cat romance the first gate is cats.py:3506 (is_dateable blocking), then outside cats need to participate in normal relationship interaction loops (cats.py:2487, cats.py:2614 - skip moon-step behavior, BEGIN WITH GIVING OUTSIDE CATS THEIR OWN MOONSKIP BEHAVIORS!!!<- and relations picker only chooses non-outside cats), mate/rel model itself is already capable of storing the data (cats.py:3745, cats.py:3888), main limitation is live code refuses to run for outside cats in relationship.py:76. tldr: remove or parameterize outside-cat rejection in is_dateable, set up unique outside cat moon-skip behaviors and use that system to integrate relationships, relax living-cat-only check so it works for outsiders (but not undead!), make sure patrol/date selection code that calls is_friendlyable or is_dateable is consistent with new rules.
 - more dramaaaa...... see plotlines idea
-- [x] allegiances: make the cat list in caretakers line up with the caretakers line so it look better ::3
 - ghost fixses,,,,,,,,::::::: uuuuuuuumm   leader ceremony :) needs to work with third afterlifek!!! :> i forgot what else to write here
 - fix naming? add more naming types (ie. the tribal-esque naming... "Trout-in-Rivers", "Magpie-in-Dusk", "Herald-of-Skies"...)
 - "cats add" crash 6/2/2026 7:04 PM | Fixed the unloaded-clan crash and missing relationship/history/inheritance initialization; the original dated crash has no matching traceback in the available logs.
@@ -31,9 +28,11 @@
 - "allow cats to choose role" settings should not apply to the player's selected character, more specifically, we can make an option for this (seems like personal preference)
 - murder/crime/violence rate; maybe not a setting but a variable that occurs as a result of existing variables (wars, negative relationships, religious alignment, etc.) presumably can be changed with commands but is overall a background thing. maybe toggled on and off in settings HOWEVER this depends on how complex the social systems get
 - be able to murder cats from outside (other clans, when that system is in place, and loners/lost) (lower chance; you need to find them) 
-- [x] pregnant or recovering from birth characters should pull from the same lifegen patrol library as queens; allow them to use those patrols despite "condition" status | Daily activities now use the queen library without changing roles. Other major conditions, ordinary patrol restrictions, and daily limits still apply.
 - ~a / additionally look into adding unique patrols for each condition
 - allow stacking permanant conditions (akin to multi-white-patches, which btw, needs a checklist deisgn rather than dropdown)
-- [x] word wrap on cat list instead of cutoff
 - different colonies' views of murder; individual perception per layers. aka. cats have their own perceptions, colonies have their own generalized perceptions (likely born through the cats perceptions, though perhaps some way to override this?). would result in different effects. ie. in the base game you WILL get shunned if caught. however if you succeed and are revealed to have murdered, say, the leader, perhaps that earns you enough appeal to be considered leader in another colony? worth exploring
 - dementia :D 
+- https://discord.com/channels/1125069186985640063/1328074661690605649/1328074661690605649 - afterlifegen - not yet released
+- https://discord.com/channels/1125069186985640063/1552972487975899256/1552972487975899256 - multiclan (assess relation to genemod) - https://github.com/Chase1218/ClanGen-MultiClan
+- https://discord.com/channels/1125069186985640063/1211561840883015780/1211561840883015780 - pridegen (pride addons) - https://github.com/wwwjohann/jay-dev 
+- https://discord.com/channels/1125069186985640063/1545103244106272859/1545103244106272859 - despairgen (qol addons and faith rework! i love the colored role names) - "E:\Applications\!ClanGen\DespairGen v0.6.zip"
