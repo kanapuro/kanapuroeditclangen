@@ -209,21 +209,56 @@ class FreshkillPile:
             self.tactic_status(living_cats, additional_food_round)
             return
 
-        # NOTE: the tactics should have their own function for testing purposes
-        if game.clan.clan_settings["younger first"]:
-            self.tactic_younger_first(living_cats, additional_food_round)
-        elif game.clan.clan_settings["less nutrition first"]:
-            self.tactic_less_nutrition_first(living_cats, additional_food_round)
-        elif game.clan.clan_settings["more experience first"]:
-            self.tactic_more_experience_first(living_cats, additional_food_round)
-        elif game.clan.clan_settings["hunter first"]:
-            self.tactic_hunter_first(living_cats, additional_food_round)
-        elif game.clan.clan_settings["sick/injured first"]:
-            self.tactic_sick_injured_first(living_cats, additional_food_round)
-        elif game.clan.clan_settings["by-status"]:
-            self.tactic_status(living_cats, additional_food_round)
+        priorities = self.get_feeding_priorities()
+        if game.clan.clan_settings["feeding priorities"]:
+            self.tactic_priorities(living_cats, priorities, additional_food_round)
         else:
-            self.tactic_status(living_cats, additional_food_round)
+            tactics = {
+                "by-status": self.tactic_status,
+                "younger first": self.tactic_younger_first,
+                "less nutrition first": self.tactic_less_nutrition_first,
+                "more experience first": self.tactic_more_experience_first,
+                "hunter first": self.tactic_hunter_first,
+                "sick/injured first": self.tactic_sick_injured_first,
+            }
+            tactics[priorities[0]](living_cats, additional_food_round)
+
+    def get_feeding_priorities(self):
+        priorities = game.clan.clan_settings["feeding priorities"]
+        if priorities:
+            return priorities.copy()
+        for mode in ("younger first", "less nutrition first", "more experience first",
+                     "hunter first", "sick/injured first", "by-status"):
+            if game.clan.clan_settings[mode]:
+                return [mode]
+        return ["by-status"]
+
+    def get_status_order(self):
+        return game.clan.clan_settings["feeding status order"] if game.clan else FEEDING_ORDER
+
+    def tactic_priorities(self, living_cats, priorities, additional_food_round=False):
+        queen_dict, _ = get_alive_clan_queens(living_cats)
+        fed_kits = [kit for children in queen_dict.values() for kit in children if kit.moons < 3]
+        nursing = {queen for queen, children in queen_dict.items() if any(kit.moons < 3 for kit in children)}
+
+        def feeding_key(cat):
+            status = "queen/pregnant" if cat.ID in nursing or "pregnant" in cat.injuries else cat.status
+            hunter_tier = max((skill.tier for skill in (cat.skills.primary, cat.skills.secondary)
+                               if skill and skill.path == SkillPath.HUNTER), default=0)
+            values = {
+                "by-status": self.get_status_order().index(status),
+                "younger first": cat.moons,
+                "less nutrition first": self.nutrition_info[cat.ID].percentage,
+                "more experience first": -cat.experience,
+                "hunter first": -hunter_tier,
+                "sick/injured first": not (cat.is_ill() or cat.is_injured()),
+            }
+            return tuple(values[mode] for mode in priorities)
+
+        for cat in sorted(living_cats, key=feeding_key):
+            self.feed_group([cat], additional_food_round,
+                            queens_only=cat.ID in nursing or "pregnant" in cat.injuries,
+                            fed_kits=fed_kits)
 
     def amount_food_needed(self):
         """Get the amount of freshkill the clan needs.
@@ -272,7 +307,7 @@ class FreshkillPile:
             if "pregnant" in cat.injuries and cat.ID not in queen_dict.keys()
         ]
 
-        for feeding_status in FEEDING_ORDER:
+        for feeding_status in self.get_status_order():
             if feeding_status == "newborn":
                 relevant_group = [
                     cat
@@ -358,7 +393,8 @@ class FreshkillPile:
                 satisfied[cat.ID] = self.nutrition_info[cat.ID]
         # if there are no low nutrition cats, go back to status tactic
         if len(low_nutrition) == 0:
-            self.tactic_status(living_cats)
+            self.tactic_status(living_cats, additional_food_round)
+            return
 
         # sort the nutrition after amount
         sorted_nutrition = dict(
@@ -556,12 +592,12 @@ class FreshkillPile:
             remaining_amount = self.take_from_pile(key, remaining_amount)
         self.already_fed.append(cat)
 
-        if remaining_amount > 0 and amount_difference == 0:
+        if actual_needed == 0:
+            self.nutrition_info[cat.ID].current_score += amount - remaining_amount
+        elif remaining_amount > 0 and amount_difference == 0:
             self.nutrition_info[cat.ID].current_score -= remaining_amount
         elif remaining_amount == 0:
-            if actual_needed == 0:
-                self.nutrition_info[cat.ID].current_score += amount
-            elif amount > actual_needed:
+            if amount > actual_needed:
                 self.nutrition_info[cat.ID].current_score += amount - actual_needed
         elif ration and cat.status == "warrior" and actual_needed != 0:
             feeding_amount = PREY_REQUIREMENT[cat.status]

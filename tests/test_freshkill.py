@@ -1,10 +1,12 @@
 import unittest
+from unittest.mock import patch
 
 import ujson
 
 from scripts.cat.cats import Cat
 from scripts.cat.skills import Skill, SkillPath
 from scripts.clan import Clan
+from scripts.game_structure.game_essentials import game
 from scripts.clan_resources.freshkill import FreshkillPile
 from scripts.utility import get_alive_clan_queens
 
@@ -419,3 +421,194 @@ class FreshkillPileTest(unittest.TestCase):
         self.assertEqual(freshkill_pile.nutrition_info[injured_cat.ID].percentage, 100)
         self.assertEqual(freshkill_pile.nutrition_info[sick_cat.ID].percentage, 100)
         self.assertLess(freshkill_pile.nutrition_info[healthy_cat.ID].percentage, 70)
+
+
+class ManualFeedingTest(unittest.TestCase):
+    def setUp(self):
+        for target, attribute, value in (
+            (Cat, "all_cats", {}), (Cat, "all_cats_list", []),
+            (game, "clan", Clan(name="FeedingTest", game_mode="expanded")),
+        ):
+            replacement = patch.object(target, attribute, value)
+            replacement.start()
+            self.addCleanup(replacement.stop)
+        self.cat = Cat(status="warrior", moons=30, gender="female")
+        self.pile = FreshkillPile()
+        self.pile.living_cats = [self.cat]
+        self.pile.add_cat_to_nutrition(self.cat)
+        self.nutrition = self.pile.nutrition_info[self.cat.ID]
+
+    def test_manual_feed_to_full_credits_the_food_actually_available(self):
+        for available in (0, 0.5, 1, 2, 5):
+            with self.subTest(available=available):
+                self.pile.pile = dict.fromkeys(self.pile.pile, 0)
+                self.pile.pile["expires_in_1"] = available
+                self.pile.total_amount = available
+                self.nutrition.current_score = 1
+                missing = self.nutrition.max_score - self.nutrition.current_score
+                self.pile.feed_cat(self.cat, missing, 0)
+                eaten = min(available, missing)
+                self.assertEqual(self.nutrition.current_score, 1 + eaten)
+                self.assertEqual(self.pile.total_amount, available - eaten)
+                self.assertEqual(sum(self.pile.pile.values()), self.pile.total_amount)
+
+    def test_full_cat_manual_fallback_does_not_charge_another_moons_food(self):
+        self.pile.pile = dict.fromkeys(self.pile.pile, 0)
+        self.pile.total_amount = 0
+        before = self.nutrition.current_score
+        self.pile.tactic_less_nutrition_first([self.cat], additional_food_round=True)
+        self.assertEqual(self.nutrition.current_score, before)
+        self.assertEqual(self.pile.already_fed, [self.cat])
+
+
+class OrderedFeedingTest(unittest.TestCase):
+    def setUp(self):
+        self.clan = Clan(name="PriorityTest", game_mode="expanded")
+        for target, attribute, value in (
+            (Cat, "all_cats", {}), (Cat, "all_cats_list", []), (game, "clan", self.clan),
+        ):
+            replacement = patch.object(target, attribute, value)
+            replacement.start()
+            self.addCleanup(replacement.stop)
+        self.pile = self.clan.freshkill_pile
+
+    def test_priorities_change_who_gets_the_last_meal_and_break_ties(self):
+        cats = [Cat(status="warrior", moons=age, gender="female") for age in (60, 40, 20, 30)]
+        for cat in cats:
+            cat.injuries.clear()
+            cat.illnesses.clear()
+            cat.skills.primary = cat.skills.secondary = None
+        for index in (0, 2, 3):
+            cats[index].injuries["sprain"] = {"severity": "major"}
+        for index, points in ((0, 0), (1, 25), (3, 0)):
+            cats[index].skills.primary = Skill(SkillPath.HUNTER, points)
+        self.pile.living_cats = cats
+        cases = (
+            (["sick/injured first", "hunter first", "younger first"], [3, 0, 2, 1]),
+            (["hunter first", "sick/injured first", "younger first"], [1, 3, 0, 2]),
+        )
+        for priorities, order in cases:
+            with self.subTest(priorities=priorities):
+                self.clan.clan_settings["feeding priorities"] = priorities
+                self.pile.pile = dict.fromkeys(self.pile.pile, 0)
+                self.pile.pile["expires_in_1"] = 3
+                self.pile.total_amount = 3
+                self.pile.already_fed = []
+                for cat in cats:
+                    self.pile.add_cat_to_nutrition(cat)
+                with patch.object(self.pile, "feed_cat", wraps=self.pile.feed_cat) as feed:
+                    self.pile.feed_cats(cats)
+                self.assertEqual([call.args[0] for call in feed.call_args_list], [cats[i] for i in order])
+                self.assertEqual(self.pile.nutrition_info[cats[order[0]].ID].percentage, 100)
+                for index in order[1:]:
+                    self.assertLess(self.pile.nutrition_info[cats[index].ID].percentage, 100)
+                self.assertEqual(self.pile.total_amount, 0)
+
+    def test_status_experience_and_nutrition_criteria(self):
+        elder = Cat(status="elder", moons=130, gender="female")
+        experienced = Cat(status="warrior", moons=40, gender="female")
+        hungry = Cat(status="warrior", moons=30, gender="female")
+        experienced.experience = 100
+        hungry.experience = 1
+        cats = [hungry, elder, experienced]
+        self.pile.living_cats = cats
+        for cat in cats:
+            self.pile.add_cat_to_nutrition(cat)
+        self.pile.nutrition_info[hungry.ID].current_score = 1
+        for priorities, expected in (
+            (["by-status", "more experience first"], [elder, experienced, hungry]),
+            (["less nutrition first", "by-status"], [hungry, elder, experienced]),
+        ):
+            with self.subTest(priorities=priorities), patch.object(self.pile, "feed_group") as feed:
+                self.pile.tactic_priorities(cats, priorities)
+                self.assertEqual([call.args[0][0] for call in feed.call_args_list], expected)
+
+    def test_multiple_priorities_keep_nursing_kits_and_pregnant_food_requirements(self):
+        mother = Cat(status="warrior", moons=30, gender="female")
+        kit = Cat(status="kitten", moons=1, parent1=mother.ID, gender="female")
+        pregnant = Cat(status="warrior", moons=25, gender="female")
+        pregnant.injuries["pregnant"] = {"severity": "major"}
+        cats = [kit, mother, pregnant]
+        self.pile.living_cats = cats
+        for cat in cats:
+            self.pile.add_cat_to_nutrition(cat)
+        self.pile.pile = dict.fromkeys(self.pile.pile, 0)
+        self.pile.pile["expires_in_1"] = 8
+        self.pile.total_amount = 8
+        self.clan.clan_settings["feeding priorities"] = ["younger first", "by-status"]
+        self.pile.feed_cats(cats)
+        self.assertEqual(self.pile.total_amount, 0)
+        self.assertEqual(self.pile.already_fed, [pregnant, mother])
+        for cat in cats:
+            self.assertEqual(self.pile.nutrition_info[cat.ID].percentage, 100)
+
+    def test_priority_order_round_trips_and_old_settings_keep_their_single_mode(self):
+        import json
+        from pathlib import Path
+        from tempfile import TemporaryDirectory
+
+        priorities = ["sick/injured first", "hunter first", "by-status"]
+        with TemporaryDirectory() as root, patch("scripts.clan.get_save_dir", return_value=root), patch.dict(
+            game.switches, {"clan_list": [self.clan.name]}
+        ):
+            folder = Path(root, self.clan.name)
+            folder.mkdir()
+            self.clan.clan_settings["feeding priorities"] = priorities
+            status_order = self.clan.clan_settings["feeding status order"][::-1]
+            self.clan.clan_settings["feeding status order"] = status_order
+            self.clan.save_clan_settings()
+            restored = Clan(name=self.clan.name, game_mode="expanded")
+            restored.load_clan_settings()
+            self.assertEqual(restored.clan_settings["feeding priorities"], priorities)
+            self.assertEqual(restored.clan_settings["feeding status order"], status_order)
+            data = json.loads((folder / "clan_settings.json").read_text())
+            data.pop("feeding priorities")
+            data.pop("feeding status order")
+            data["hunter first"] = True
+            (folder / "clan_settings.json").write_text(json.dumps(data))
+            old = Clan(name=self.clan.name, game_mode="expanded")
+            old.load_clan_settings()
+            with patch.object(game, "clan", old):
+                self.assertEqual(old.freshkill_pile.get_feeding_priorities(), ["hunter first"])
+                self.assertEqual(old.freshkill_pile.get_status_order(), game.prey_config["feeding_order"])
+                cat = Cat(status="warrior", moons=30, gender="female")
+                with patch.object(old.freshkill_pile, "tactic_hunter_first") as feed:
+                    old.freshkill_pile.feed_cats([cat], additional_food_round=True)
+                    feed.assert_called_once_with([cat], True)
+
+    def test_custom_status_order_changes_legacy_status_feeding_and_priority_ties(self):
+        leader = Cat(status="leader", moons=50, gender="female")
+        elder = Cat(status="elder", moons=130, gender="female")
+        cats = [elder, leader]
+        self.pile.living_cats = cats
+        order = self.clan.clan_settings["feeding status order"]
+        order.remove("leader")
+        order.insert(0, "leader")
+        for priorities in ([], ["sick/injured first", "by-status"]):
+            with self.subTest(priorities=priorities):
+                self.clan.clan_settings["feeding priorities"] = priorities
+                self.pile.pile = dict.fromkeys(self.pile.pile, 0)
+                self.pile.pile["expires_in_1"] = 3
+                self.pile.total_amount = 3
+                self.pile.already_fed = []
+                for cat in cats:
+                    cat.injuries.clear()
+                    cat.illnesses.clear()
+                    self.pile.add_cat_to_nutrition(cat)
+                self.pile.feed_cats(cats)
+                self.assertEqual(self.pile.nutrition_info[leader.ID].percentage, 100)
+                self.assertLess(self.pile.nutrition_info[elder.ID].percentage, 100)
+
+    def test_explicit_rules_do_not_add_an_unselected_status_tiebreaker(self):
+        warrior = Cat(status="warrior", moons=30, gender="female")
+        elder = Cat(status="elder", moons=130, gender="female")
+        cats = [warrior, elder]
+        self.pile.living_cats = cats
+        self.clan.clan_settings["feeding priorities"] = ["sick/injured first"]
+        for cat in cats:
+            cat.injuries.clear()
+            cat.illnesses.clear()
+            self.pile.add_cat_to_nutrition(cat)
+        with patch.object(self.pile, "feed_group") as feed:
+            self.pile.feed_cats(cats)
+            self.assertEqual([call.args[0][0] for call in feed.call_args_list], cats)

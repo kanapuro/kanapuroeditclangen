@@ -41,6 +41,7 @@ from scripts.events_module.patrol.patrol import Patrol
 
 
 class MakeClanScreen(CatCustomizer, Screens):
+    newborn_origins = True
     # UI images
 
     ui_images = {
@@ -1942,7 +1943,7 @@ class MakeClanScreen(CatCustomizer, Screens):
         self.change_screen("start screen")
 
     def finish_customize_cat(self):
-        new_cat = Cat(moons = 1)
+        new_cat = Cat(moons=1, gender=self.sex)
         new_cat.pelt = self.custom_cat.pelt
         new_cat.gender = self.sex
         new_cat.genderalign = self.sex
@@ -1955,26 +1956,12 @@ class MakeClanScreen(CatCustomizer, Screens):
             new_cat.pronouns = [Cat.default_pronouns[0].copy()]
             
         self.your_cat = new_cat
-        if self.permanent_condition is not None and self.permanent_condition != 'paralyzed':
-            self.your_cat.get_permanent_condition(self.permanent_condition, born_with=True)
-            self.your_cat.permanent_condition[self.permanent_condition]["moons_until"] = 1
-            self.your_cat.permanent_condition[self.permanent_condition]["moons_with"] = -1
-            self.your_cat.permanent_condition[self.permanent_condition]['born_with'] = True
-        if self.paralyzed and 'paralyzed' not in self.your_cat.permanent_condition:
-            self.your_cat.get_permanent_condition('paralyzed')
-            self.your_cat.permanent_condition['paralyzed']["moons_until"] = 1
-            self.your_cat.permanent_condition['paralyzed']["moons_with"] = -1
-            self.your_cat.permanent_condition['paralyzed']['born_with'] = True
-        if self.permanent_condition is not None and self.permanent_condition == "born without a tail" and "NOTAIL" not in self.your_cat.pelt.scars:
-            self.your_cat.pelt.scars.append('NOTAIL')
-            self.your_cat.permanent_condition['born without a tail']["moons_until"] = 1
-            self.your_cat.permanent_condition['born without a tail']["moons_with"] = -1
-            self.your_cat.permanent_condition['born without a tail']['born_with'] = True
-        elif self.permanent_condition is not None and self.permanent_condition == "born without a leg" and "NOPAW" not in self.your_cat.pelt.scars:
-            self.your_cat.pelt.scars.append('NOPAW')
-            self.your_cat.permanent_condition['born without a leg']["moons_until"] = 1
-            self.your_cat.permanent_condition['born without a leg']["moons_with"] = -1
-            self.your_cat.permanent_condition['born without a leg']['born_with'] = True
+        for name in self.permanent_conditions:
+            self.your_cat.get_permanent_condition(name, born_with=True)
+            condition = self.your_cat.permanent_condition[name]
+            condition["moons_until"] = 1
+            condition["moons_with"] = -1
+            condition["born_with"] = True
         self.your_cat.pelt.accessories = self.accessories
         self.your_cat.pelt.inventory = self.inventory
         self.your_cat.personality = Personality(trait=self.personality, kit_trait=True)
@@ -1982,7 +1969,7 @@ class MakeClanScreen(CatCustomizer, Screens):
             self.skill = random.choice(self.skills[1:])
         self.your_cat.skills.primary = Skill.get_skill_from_string(Skill, self.skill, "True")
         self.your_cat.lock_faith = self.faith
-        self.your_cat.backstory = self.backstory
+        self.your_cat.backstory = "unknown" if self.backstory == "Random" else self.backstory
         if self.secondary_skill != "None":
             self.your_cat.skills.secondary = Skill.get_skill_from_string(Skill, self.secondary_skill, True)
         self.selected_cat = None
@@ -2586,6 +2573,7 @@ class MakeClanScreen(CatCustomizer, Screens):
         if game.switches["customise_new_life"] is True:
             self.your_cat.create_inheritance_new_cat()
             game.clan.your_cat = self.your_cat
+            game.clan.clan_settings["starting backstory"] = None if self.backstory == "Random" else self.backstory
             game.clan.your_cat.moons = -1
             game.clan.add_cat(game.clan.your_cat)
             self.delete_example_cats()
@@ -2654,6 +2642,7 @@ class MakeClanScreen(CatCustomizer, Screens):
             for key, value in saved_naming_settings.items():
                 game.clan.clan_settings[key] = value
 
+            game.clan.clan_settings["starting backstory"] = None if self.backstory == "Random" else self.backstory
             game.clan.your_cat.moons = -1
             game.clan.create_clan()
             game.cur_events_list.clear()

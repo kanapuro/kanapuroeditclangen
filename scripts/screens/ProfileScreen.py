@@ -2340,7 +2340,7 @@ class ProfileScreen(Screens):
         output += "\n"
 
         # BACKSTORY
-        bs_text = "this should not appear"
+        bs_text = BACKSTORIES["backstory_display"]["unknown_backstories"]
         if the_cat.status in ["kittypet", "loner", "rogue", "former colonycat"]:
             bs_text = the_cat.status
         else:
@@ -2654,7 +2654,7 @@ class ProfileScreen(Screens):
         cat_dict = {"m_c": (str(self.the_cat.name), choice(self.the_cat.pronouns))}
         bs_blurb = None
         if self.the_cat.backstory:
-            bs_blurb = BACKSTORIES["backstories"][self.the_cat.backstory]
+            bs_blurb = BACKSTORIES["backstories"].get(self.the_cat.backstory, BACKSTORIES["backstories"]["unknown"])
         if (
             self.the_cat.status in ["kittypet", "loner", "rogue", "former colonycat"]
             and self.the_cat.dead
@@ -4063,13 +4063,13 @@ class ProfileScreen(Screens):
                     get_button_dict(ButtonStyles.LADDER_MIDDLE, (172, 36)),
                     object_id="@buttonstyles_ladder_middle",
                     starting_height=2,
-                    tool_tip_text='You will be more likely to receive an apprentice.', 
+                    tool_tip_text='Wait for a kitten in the colony to become your apprentice. This does not create a new cat.',
                     manager=MANAGER,
                     anchors={
                         "bottom_target": self.have_kits_button},
                 )
             
-            if self.the_cat.status in ['leader', 'deputy', 'medicine cat', 'mediator', 'queen', 'warrior'] and not self.the_cat.dead and not self.the_cat.outside:
+            if self.the_cat.status in ['leader', 'deputy', 'medicine cat', 'mediator', 'queen', 'warrior'] and not self.the_cat.dead and not self.the_cat.outside and not self.the_cat.shunned:
                 self.request_apprentice_button.enable()
             else:
                 self.request_apprentice_button.disable()

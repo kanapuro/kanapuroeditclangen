@@ -4,6 +4,7 @@ import pygame
 import pygame_gui
 
 from scripts.cat.cats import Cat
+from scripts.cat.history import History
 from scripts.cat.personality import Personality
 from scripts.cat.skills import Skill
 from scripts.game_structure.game_essentials import game
@@ -18,7 +19,9 @@ from scripts.utility import ui_scale
 class CustomizeCatScreen(CatCustomizer, Screens):
     def screen_switches(self):
         super().screen_switches()
-        self.the_cat = Cat.fetch_cat(game.switches["cat"])
+        creation = game.switches.get("create_cat")
+        self.creating_cat = creation is not None
+        self.the_cat = creation["cat"] if self.creating_cat else Cat.fetch_cat(game.switches["cat"])
         self.init_customizer()
         self.hide_menu_buttons()
         self.set_mute_button_position("topright")
@@ -43,7 +46,7 @@ class CustomizeCatScreen(CatCustomizer, Screens):
         self.secondary_skill = self.the_cat.skills.secondary.skill if self.the_cat.skills.secondary else "None"
         self.faith = self.the_cat.lock_faith
         self.backstory = self.the_cat.backstory
-        self.permanent_condition = next(iter(self.the_cat.permanent_condition), None)
+        self.permanent_conditions = list(self.the_cat.permanent_condition)
         self.preview_age = {"newborn": "kitten", "young adult": "adult", "senior adult": "adult", "senior": "elder"}.get(self.the_cat.age, self.the_cat.age)
         self.tortie_enabled = pelt.name in ("Tortie", "Calico")
         self.trait_options = list(Personality.trait_ranges["kit_traits" if self.the_cat.personality.kit else "normal_traits"])
@@ -69,13 +72,18 @@ class CustomizeCatScreen(CatCustomizer, Screens):
     def build_customizer_footer(self):
         super().build_customizer_footer()
         self.elements["previous_step"].set_text("Cancel")
-        self.elements["next_step"].set_text("Apply")
+        self.elements["next_step"].set_text("Create" if self.creating_cat else "Apply")
 
     def previous_customizer_step(self):
         self.exit_customizer()
 
     def exit_customizer(self):
-        self.change_screen("profile screen")
+        if self.creating_cat:
+            creation = game.switches.pop("create_cat")
+            game.switches["cat"] = creation["previous_cat"]
+            self.change_screen(creation["return_screen"])
+        else:
+            self.change_screen("profile screen")
 
     def finish_customize_cat(self):
         before = self.initial_customizer_state
@@ -124,15 +132,46 @@ class CustomizeCatScreen(CatCustomizer, Screens):
             self.the_cat.lock_faith = self.faith
         if self.backstory != before["backstory"]:
             self.the_cat.backstory = self.backstory
-        if self.permanent_condition != before["permanent_condition"]:
-            if not self.permanent_condition:
-                self.the_cat.permanent_condition.clear()
-            else:
-                if before["permanent_condition"] in self.the_cat.permanent_condition:
-                    del self.the_cat.permanent_condition[before["permanent_condition"]]
-                self.the_cat.get_permanent_condition(self.permanent_condition, cause="Changed in the character customizer.")
+        if self.permanent_conditions != before["permanent_conditions"]:
+            for name in before["permanent_conditions"]:
+                if name not in self.permanent_conditions:
+                    self.the_cat.permanent_condition.pop(name, None)
+            for name in self.permanent_conditions:
+                if name not in self.the_cat.permanent_condition:
+                    self.the_cat.get_permanent_condition(name, cause="Changed in the character customizer.")
             pelt.paralyzed = "paralyzed" in self.the_cat.permanent_condition
+        if self.creating_cat:
+            Cat.all_cats[self.the_cat.ID] = self.the_cat
+            Cat.insert_cat(self.the_cat)
+            game.clan.add_cat(self.the_cat)
+            History.add_beginning(self.the_cat)
+            for name, condition in self.the_cat.permanent_condition.items():
+                if not condition["born_with"] or condition["moons_until"] == -2:
+                    History.add_condition(self.the_cat, name, "permanent", "Present when created in the character customizer.")
+            self.the_cat.create_relationships_new_cat()
+            self.the_cat.create_inheritance_new_cat()
+            self.the_cat.update_mentor()
+            game.switches.pop("create_cat")
+            game.switches["cat"] = self.the_cat.ID
+            self.creating_cat = False
         self.exit_customizer()
+
+    def display_change_save(self):
+        data = super().display_change_save()
+        data["customizer"] = self.get_customizer_state()
+        for field in ("initial_customizer_state", "customizer_undo", "customizer_redo",
+                      "page", "current_selection", "search_text", "customiser_sort"):
+            data[field] = deepcopy(getattr(self, field))
+        return data
+
+    def display_change_load(self, data):
+        data = deepcopy(data)
+        super().display_change_load(data)
+        for field, value in data.pop("customizer").items():
+            setattr(self, field, value)
+        for field, value in data.items():
+            setattr(self, field, value)
+        self.open_customize_cat()
 
     def exit_screen(self):
         self.clear_all_page()

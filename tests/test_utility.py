@@ -76,6 +76,49 @@ class TestNewCatGeneration(unittest.TestCase):
         self.assertFalse(Cat.all_cats)
         output.assert_called_once()
 
+    def test_create_command_keeps_age_appropriate_drafts_out_of_the_clan(self):
+        from scripts.debug_commands.cat import CatsCommand, CreateCatCommand
+
+        self.assertTrue(any(isinstance(command, CreateCatCommand) for command in CatsCommand.sub_commands))
+        source = Mock()
+        with patch.object(game, "current_screen", "camp screen"), patch.object(
+            game, "all_screens", {"camp screen": source}
+        ), patch("scripts.debug_console.debug_mode") as console, patch.dict(game.switches, {"window_open": False}):
+            game.switches.pop("create_cat", None)
+            for age, status in ((0, "newborn"), (1, "kitten"), (5, "kitten"),
+                                (6, "apprentice"), (11, "apprentice"), (12, "warrior"),
+                                (119, "warrior"), (120, "elder"), (350, "elder")):
+                with self.subTest(age=age):
+                    CreateCatCommand().callback([str(age)])
+                    draft = game.switches.pop("create_cat")["cat"]
+                    self.assertEqual((draft.moons, draft.status), (age, status))
+                    self.assertFalse(Cat.all_cats)
+                    self.assertFalse(Cat.all_cats_list)
+                    self.assertFalse(game.clan.clan_cats)
+            source.change_screen.assert_called_with("customize cat screen")
+            console.toggle_debug_mode.assert_called()
+            CreateCatCommand().callback([])
+            self.assertEqual(game.switches.pop("create_cat")["cat"].moons, 1)
+
+    def test_create_command_rejects_bad_arguments_and_busy_screens(self):
+        from scripts.debug_commands.cat import CreateCatCommand
+
+        with patch("scripts.debug_commands.cat.add_output_line_to_log") as output, patch.dict(game.switches):
+            game.switches.pop("create_cat", None)
+            for args in (["abc"], ["-1"], ["1.5"], ["2", "extra"]):
+                CreateCatCommand().callback(args)
+                self.assertNotIn("create_cat", game.switches)
+            with patch.object(game, "clan", None):
+                CreateCatCommand().callback([])
+            for name in ("make clan screen", "customize cat screen"):
+                with patch.object(game, "current_screen", name):
+                    CreateCatCommand().callback([])
+            with patch.dict(game.switches, {"window_open": True}):
+                CreateCatCommand().callback([])
+            self.assertEqual(output.call_count, 8)
+            self.assertFalse(Cat.all_cats)
+            self.assertNotIn("create_cat", game.switches)
+
     def test_age_command_rejects_invalid_input_without_changing_age(self):
         from scripts.debug_commands.cat import AgeCatsCommand
 

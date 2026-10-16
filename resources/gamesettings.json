@@ -23,7 +23,12 @@
         ],
         "dark mode": [
             "Dark mode",
-            "Camp backgrounds will match with the mode: nighttime for dark mode and daytime for light mode.",
+            "Camp backgrounds match the interface mode unless Random camp lighting is enabled: nighttime for dark mode and daytime for light mode.",
+            false
+        ],
+        "random camp lighting": [
+            "Random camp lighting",
+            "Choose daytime or nighttime camp art independently of the interface theme. Cat positions are reshuffled whenever you return to camp.",
             false
         ],
         "new accessories": [

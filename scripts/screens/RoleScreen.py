@@ -53,7 +53,6 @@ class RoleScreen(Screens):
             elif event.ui_element == self.promote_leader:
                 if self.the_cat == game.clan.deputy:
                     game.clan.deputy = None
-                self.the_cat.status_change("leader", resort=True)
                 game.clan.new_leader(self.the_cat)
                 if game.sort_type == "rank":
                     Cat.sort_cats()
@@ -361,7 +360,11 @@ class RoleScreen(Screens):
             self.previous_cat_button.enable()
 
         if game.clan.leader:
-            leader_invalid = game.clan.leader.dead or game.clan.leader.outside
+            leader_invalid = (
+                game.clan.leader.dead
+                or game.clan.leader.outside
+                or game.clan.leader.status != "leader"
+            )
         else:
             leader_invalid = True
 

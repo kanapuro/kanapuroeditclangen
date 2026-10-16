@@ -36,6 +36,7 @@ class ClanScreen(Screens):
 
     def __init__(self, name=None):
         super().__init__(name)
+        self.camp_theme = self.theme
         self.show_den_labels = None
         self.show_den_text = None
         self.label_toggle = None
@@ -56,6 +57,21 @@ class ClanScreen(Screens):
         if not game.clan.clan_settings["backgrounds"]:
             self.set_bg(None)
         super().on_use()
+
+    def show_bg(self, theme=None):
+        if theme is None and game.clan.clan_settings["backgrounds"]:
+            theme = self.camp_theme
+        super().show_bg(theme)
+
+    def display_change_save(self):
+        data = super().display_change_save()
+        data["camp_theme"] = self.camp_theme
+        return data
+
+    def display_change_load(self, data):
+        super().display_change_load(data.copy())
+        self.camp_theme = data["camp_theme"]
+        self.update_camp_bg()
 
     def handle_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
@@ -214,6 +230,7 @@ class ClanScreen(Screens):
     def screen_switches(self):
         super().screen_switches()
         self.show_mute_buttons()
+        self.camp_theme = random.choice(("light", "dark")) if game.settings["random camp lighting"] else self.theme
         self.update_camp_bg()
         game.switches["cat"] = None
         if game.clan.biome + game.clan.camp_bg in game.clan.layouts:
@@ -430,7 +447,7 @@ class ClanScreen(Screens):
         game.switches["saved_clan"] = False
 
     def update_camp_bg(self):
-        light_dark = "dark" if game.settings["dark mode"] else "light"
+        light_dark = self.camp_theme
 
         camp_bg_base_dir = "resources/images/camp_bg/"
         leaves = ["newleaf", "greenleaf", "leafbare", "leaffall"]

@@ -249,68 +249,14 @@ class MedDenScreen(Screens):
                 ):
                     self.injured_and_sick_cats.append(the_cat)
             for cat in self.injured_and_sick_cats:
-                if cat.injuries:
-                    for injury in cat.injuries:
-                        if cat.injuries[injury][
-                            "severity"
-                        ] != "minor" and injury not in [
-                            "pregnant",
-                            "recovering from birth",
-                            "sprain",
-                            "lingering shock",
-                        ]:
-                            if cat not in self.in_den_cats:
-                                self.in_den_cats.append(cat)
-                            if cat in self.out_den_cats:
-                                self.out_den_cats.remove(cat)
-                            elif cat in self.minor_cats:
-                                self.minor_cats.remove(cat)
-                            break
-                        elif (
-                            injury
-                            in [
-                                "recovering from birth",
-                                "sprain",
-                                "lingering shock",
-                                "pregnant",
-                            ]
-                            and cat not in self.in_den_cats
-                        ):
-                            if cat not in self.out_den_cats:
-                                self.out_den_cats.append(cat)
-                            if cat in self.minor_cats:
-                                self.minor_cats.remove(cat)
-                            break
-                        elif cat not in (self.in_den_cats or self.out_den_cats):
-                            if cat not in self.minor_cats:
-                                self.minor_cats.append(cat)
-                if cat.illnesses:
-                    for illness in cat.illnesses:
-                        if (
-                            cat.illnesses[illness]["severity"] != "minor"
-                            and illness != "grief stricken"
-                        ):
-                            if cat not in self.in_den_cats:
-                                self.in_den_cats.append(cat)
-                            if cat in self.out_den_cats:
-                                self.out_den_cats.remove(cat)
-                            elif cat in self.minor_cats:
-                                self.minor_cats.remove(cat)
-                            break
-                        elif illness == "grief stricken":
-                            if cat not in self.in_den_cats:
-                                if cat not in self.out_den_cats:
-                                    self.out_den_cats.append(cat)
-                            if cat in self.minor_cats:
-                                self.minor_cats.remove(cat)
-                            break
-                        else:
-                            if (
-                                cat not in self.in_den_cats
-                                and cat not in self.out_den_cats
-                                and cat not in self.minor_cats
-                            ):
-                                self.minor_cats.append(cat)
+                if cat.in_medicine_den():
+                    self.in_den_cats.append(cat)
+                elif any(injury in cat.injuries for injury in (
+                    "pregnant", "recovering from birth", "sprain", "lingering shock"
+                )) or "grief stricken" in cat.illnesses:
+                    self.out_den_cats.append(cat)
+                else:
+                    self.minor_cats.append(cat)
             self.tab_list = self.in_den_cats
             self.current_page = 1
             self.update_sick_cats()

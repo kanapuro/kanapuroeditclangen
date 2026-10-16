@@ -961,7 +961,7 @@ class TestLeaderLifeSettings(unittest.TestCase):
         from scripts.clan import Clan
 
         clan = Clan(name="TestClan")
-        leader = SimpleNamespace(leader_life_override=None)
+        leader = Cat(status="deputy", moons=40)
         member = SimpleNamespace(faith=1.0)
         clan.clan_cats = ["missing", "member"]
 
@@ -1100,6 +1100,70 @@ class TestShunnedMentors(unittest.TestCase):
         with patch.dict(game.switches, {"request apprentice": True}):
             apprentice.update_mentor()
         self.assertEqual(apprentice.mentor, replacement.ID)
+
+    def test_request_matches_the_kitten_ceremony_role_and_assigns_one_existing_cat(self):
+        from scripts.cat.history import History
+        from scripts.events import Events
+
+        events = Events()
+        for role, expected in (
+            ("warrior", "apprentice"), ("deputy", "apprentice"), ("leader", "apprentice"),
+            ("medicine cat", "medicine cat apprentice"), ("mediator", "mediator apprentice"),
+            ("queen", "queen's apprentice"),
+        ):
+            with self.subTest(role=role):
+                mentor = Cat(status=role, moons=30)
+                kitten = Cat(status="kitten", moons=6)
+                for cat in (mentor, kitten):
+                    cat.history = History()
+                    cat.create_inheritance_new_cat()
+                    game.clan.add_cat(cat)
+                game.clan.your_cat = mentor
+                game.switches["request apprentice"] = True
+                before = set(Cat.all_cats)
+                with patch.object(game, "cur_events_list", []):
+                    events.ceremony(kitten, "medicine cat apprentice" if expected == "apprentice" else "apprentice")
+                    self.assertEqual(set(Cat.all_cats), before)
+                    self.assertEqual(kitten.status, expected)
+                    self.assertEqual(kitten.name.status, expected)
+                    self.assertEqual(kitten.mentor, mentor.ID)
+                    self.assertEqual(mentor.apprentice, [kitten.ID])
+                    self.assertFalse(game.switches["request apprentice"])
+                    events.check_gain_app([0])
+                    self.assertTrue(game.cur_events_list)
+
+    def test_request_does_not_assign_an_unrelated_six_moon_recruit(self):
+        mentor = Cat(status="warrior", moons=30)
+        medic = Cat(status="medicine cat", moons=40)
+        recruit = Cat(status="medicine cat apprentice", moons=6)
+        game.clan.your_cat = mentor
+        game.switches["request apprentice"] = True
+        before = set(Cat.all_cats)
+        recruit.update_mentor()
+        self.assertEqual(set(Cat.all_cats), before)
+        self.assertEqual(recruit.mentor, medic.ID)
+        self.assertFalse(mentor.apprentice)
+        self.assertTrue(game.switches["request apprentice"])
+
+    def test_request_waits_when_no_kitten_is_ready(self):
+        from scripts.cat.history import History
+        from scripts.events import Events
+
+        mentor = Cat(status="warrior", moons=30)
+        kitten = Cat(status="kitten", moons=5)
+        game.clan.your_cat = mentor
+        game.clan.add_cat(mentor)
+        game.clan.add_cat(kitten)
+        kitten.history = History()
+        kitten.create_inheritance_new_cat()
+        game.switches["request apprentice"] = True
+        before = set(Cat.all_cats)
+        with patch.object(game, "cur_events_list", []):
+            Events().perform_ceremonies(kitten)
+        self.assertEqual(set(Cat.all_cats), before)
+        self.assertEqual(kitten.status, "kitten")
+        self.assertFalse(mentor.apprentice)
+        self.assertTrue(game.switches["request apprentice"])
 
 
 class TestLeaderCeremony(unittest.TestCase):

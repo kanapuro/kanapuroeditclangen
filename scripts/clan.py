@@ -200,6 +200,10 @@ class Clan:
                 self.clan_settings[setting_name] = inf[2]
                 self.setting_lists[setting_name] = [inf[2], not inf[2]]
 
+        self.clan_settings["starting backstory"] = None
+        self.clan_settings["feeding priorities"] = []
+        self.clan_settings["feeding status order"] = game.prey_config["feeding_order"].copy()
+
         # Apply default leader lives from settings
         self.leader_lives = self.get_default_leader_lives()
         self.leader_lives_reserve = 9
@@ -804,6 +808,7 @@ class Clan:
         TODO: DOCS
         """
         if leader:
+            leader.status_change("leader")
             self.history.add_lead_ceremony(leader)
             self.leader = leader
             self.leader_predecessors += 1
@@ -1619,6 +1624,10 @@ class Clan:
                 encoding="utf-8",
             ) as write_file:
                 _load_settings = ujson.loads(write_file.read())
+
+        if "random camp lighting" in _load_settings and not game._random_camp_lighting_loaded:
+            game.settings["random camp lighting"] = _load_settings["random camp lighting"]
+            game.save_settings()
 
         for key, value in _load_settings.items():
             if key in self.clan_settings:

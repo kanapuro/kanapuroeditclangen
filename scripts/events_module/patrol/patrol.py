@@ -621,7 +621,16 @@ class Patrol:
                 possible_types.append("med")
             patrol_type = random.choice(possible_types)
 
+        social_patrol = game.switches["patrol_category"] in ("date", "outing")
+        recovering = social_patrol and any(cat.not_working() for cat in self.patrol_cats)
+        in_den = recovering and any(cat.in_medicine_den() for cat in self.patrol_cats)
+
         for patrol in possible_patrols:
+            if social_patrol:
+                if ("recovery_visit" in patrol.tags) != recovering:
+                    continue
+                if recovering and ("medicine_den" in patrol.tags) != in_den:
+                    continue
 
             if not self._check_constraints(patrol):
                 continue
@@ -700,7 +709,7 @@ class Patrol:
                     elif 'duties' not in patrol.types and patrol_type == 'duties':
                         continue
 
-            if game.switches["patrol_category"] in ['lifegen', 'df', 'date']:
+            if game.switches["patrol_category"] in ['lifegen', 'df', 'date', 'outing']:
                 if game.switches["patrol_category"] == "lifegen":
                     if not any(p in patrol.types for p in ["sc_lifegen", "ur_lifegen", "df_lifegen"]) and game.clan.your_cat.dead:
                         continue
@@ -725,7 +734,7 @@ class Patrol:
                     if "shunned" in patrol.tags:
                         if game.clan.your_cat.shunned == 0:
                             continue
-                else:
+                elif game.switches["patrol_category"] != "outing":
                     if "shunned" in patrol.tags:
                         if game.clan.your_cat.shunned == 0:
                             continue
@@ -1426,7 +1435,7 @@ class Patrol:
         # but oh well
 
         # adjusting text for lifegen abbrevs + adding to replace dict
-        if game.switches["patrol_category"] in ['lifegen', 'df', 'date']:
+        if game.switches["patrol_category"] in ['lifegen', 'df', 'date', 'outing']:
             text = lifegen_text_adjust(Cat, text, self.patrol_leader, self.patrol_cat_dict, r_c_allowed=True, o_c_allowed=False)
             if text == "":
                 # This shouldn't ever happen naturally, as the abbrevs in the patrol are all tested during filtering
@@ -1441,27 +1450,28 @@ class Patrol:
         text = process_text(text, replace_dict)
         text = adjust_prey_abbr(text)
 
-        other_clan_name = self.other_clan.name
-        s = 0
-        for x in range(text.count("o_c_n")):
-            if "o_c_n" in text:
-                for y in vowels:
-                    if str(other_clan_name).startswith(y):
-                        modify = text.split()
-                        pos = 0
-                        if "o_c_n" in modify:
-                            pos = modify.index("o_c_n")
-                        if "o_c_n's" in modify:
-                            pos = modify.index("o_c_n's")
-                        if "o_c_n." in modify:
-                            pos = modify.index("o_c_n.")
-                        if modify[pos - 1] == "a":
-                            modify.remove("a")
-                            modify.insert(pos - 1, "an")
-                        text = " ".join(modify)
-                        break
+        if "o_c_n" in text:
+            other_clan_name = self.other_clan.name
+            s = 0
+            for x in range(text.count("o_c_n")):
+                if "o_c_n" in text:
+                    for y in vowels:
+                        if str(other_clan_name).startswith(y):
+                            modify = text.split()
+                            pos = 0
+                            if "o_c_n" in modify:
+                                pos = modify.index("o_c_n")
+                            if "o_c_n's" in modify:
+                                pos = modify.index("o_c_n's")
+                            if "o_c_n." in modify:
+                                pos = modify.index("o_c_n.")
+                            if modify[pos - 1] == "a":
+                                modify.remove("a")
+                                modify.insert(pos - 1, "an")
+                            text = " ".join(modify)
+                            break
 
-        text = text.replace("o_c_n", str(other_clan_name))
+            text = text.replace("o_c_n", str(other_clan_name))
 
         clan_name = game.clan.name
         s = 0

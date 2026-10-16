@@ -56,7 +56,8 @@ from scripts.utility import (
     pronoun_repl,
     create_new_cat,
     lifegen_text_adjust,
-    get_cluster
+    get_cluster,
+    process_text
 )
 class BirthType(Enum):
     NO_PARENTS = "birth_no_parents"
@@ -790,11 +791,20 @@ class Events:
 
     def generate_birth_event(self):
         '''Handles birth event generation and creation of inheritance for your cat'''
-        possible_birth_types = list(BirthType)
+        origins = BACKSTORIES["birth_backstories"]
+        selected_origin = game.clan.clan_settings["starting backstory"]
+        possible_birth_types = [birth for birth in BirthType
+                                if selected_origin is None or selected_origin in origins[birth.value]]
         if not game.clan.clan_settings["single parentage"]:
-            possible_birth_types.remove(BirthType.ONE_PARENT)
-            possible_birth_types.remove(BirthType.ONE_OUTSIDER_PARENT)
+            if BirthType.ONE_OUTSIDER_PARENT in possible_birth_types:
+                possible_birth_types.remove(BirthType.ONE_OUTSIDER_PARENT)
+            if selected_origin == "clanborn":
+                possible_birth_types.remove(BirthType.ONE_PARENT)
         birth_type = random.choice(possible_birth_types)
+        available_origins = origins[birth_type.value]
+        if birth_type == BirthType.ONE_PARENT and not game.clan.clan_settings["single parentage"]:
+            available_origins = [origin for origin in available_origins if origin != "clanborn"]
+        backstory = selected_origin or random.choice(available_origins)
 
         def create_siblings(parent1, parent2, adoptive_parents):
             '''Creates siblings for your cat'''
@@ -802,186 +812,97 @@ class Events:
             kits = Pregnancy_Events.get_kits(kits_amount=num_siblings, cat=parent1, other_cat=parent2, adoptive_parents=adoptive_parents, clan=game.clan)
             return kits
 
-        def pick_valid_parent(other_parent=None):
-            MAX_ATTEMPTS = 50
-            
-            def is_valid_parent(candidate_id, other_parent_gender=None, other_parent_id=None, other_parent_age=None):
-                cat = Cat.all_cats[candidate_id]
-                is_age_compatible = (other_parent_age is None) or (cat.age == other_parent_age)
-                is_gender_compatible = True
-                is_relation_compatible = cat.is_potential_mate(Cat.all_cats.get(other_parent_id)) if other_parent_id else True
-                if not game.clan.clan_settings["same sex birth"]:
-                    is_gender_compatible = (other_parent_gender is None) or (cat.gender != other_parent_gender)
-                return (cat.ID != game.clan.your_cat.ID and cat.ID != other_parent_id and not cat.dead and not cat.outside
-                        and cat.age in ["young adult", "adult", "senior adult"] and cat.moons > 17
-                        and "apprentice" not in cat.status and is_age_compatible and is_gender_compatible and is_relation_compatible)
+        def parent_candidates(other_parent=None):
+            candidates = [cat for cat in Cat.all_cats.values()
+                          if cat.ID != game.clan.your_cat.ID and not cat.dead and not cat.outside
+                          and cat.ID in game.clan.clan_cats
+                          and cat.age in ["young adult", "adult", "senior adult"] and cat.moons > 17
+                          and "apprentice" not in cat.status]
+            if other_parent:
+                candidates = [cat for cat in candidates if cat.ID != other_parent.ID
+                              and cat.age == other_parent.age and cat.is_potential_mate(other_parent)
+                              and (game.clan.clan_settings["same sex birth"] or cat.gender != other_parent.gender)]
+            return candidates
 
-            for _ in range(MAX_ATTEMPTS):
-                if other_parent and other_parent.mates:
-                    candidate_id = random.choice(other_parent.mates)
-                    if is_valid_parent(candidate_id, other_parent.gender if other_parent else None, other_parent.ID if other_parent else None, other_parent.age if other_parent else None):
-                        return Cat.all_cats.get(candidate_id)
-                candidate_id = random.choice(Cat.all_cats_list).ID
-                if is_valid_parent(candidate_id, other_parent.gender if other_parent else None, other_parent.ID if other_parent else None, other_parent.age if other_parent else None):
-                    return Cat.all_cats.get(candidate_id)
-            
-            return None
+        def resident_parent(other_parent=None):
+            candidates = parent_candidates(other_parent)
+            if other_parent:
+                mates = [cat for cat in candidates if cat.ID in other_parent.mates]
+                candidates = mates or candidates
+            if candidates:
+                return random.choice(candidates)
+            # A small or single-sex colony may have no compatible existing parent.
+            gender = None
+            if other_parent and not game.clan.clan_settings["same sex birth"]:
+                gender = "male" if other_parent.gender == "female" else "female"
+            return create_new_cat(Cat, status="warrior", age=other_parent.moons if other_parent else 30,
+                                  gender=gender, backstory="clanborn")[0]
+
+        def resident_pair():
+            candidates = parent_candidates()
+            pairs = [(cat, partner) for cat in candidates for partner in parent_candidates(cat)]
+            if pairs:
+                mates = [pair for pair in pairs if pair[1].ID in pair[0].mates]
+                parent1, parent2 = random.choice(mates or pairs)
+            else:
+                parent1 = resident_parent()
+                parent2 = resident_parent(parent1)
+            parent1.set_mate(parent2)
+            return parent1, parent2
+
+        def outside_parent(other_parent=None, alive=False):
+            other_clan = backstory.startswith("halfclan") or backstory == "abandoned3"
+            status = "warrior" if other_clan else "loner"
+            if backstory == "abandoned4" or backstory in ["outsider_roots5", "outsider_roots6"]:
+                status = "kittypet"
+            elif backstory in ["outsider_roots7", "outsider_roots8"]:
+                status = "rogue"
+            status = {"halfclan4": "mediator", "halfclan5": "leader", "halfclan6": "deputy",
+                      "halfclan7": "medicine cat", "halfclan8": "medicine cat",
+                      "halfclan9": "leader", "halfclan10": "deputy"}.get(backstory, status)
+            gender = None
+            if other_parent and not game.clan.clan_settings["same sex birth"]:
+                gender = "male" if other_parent.gender == "female" else "female"
+            return create_new_cat(Cat, loner=status in ["loner", "rogue"], kittypet=status == "kittypet",
+                                  other_clan=other_clan, status=status, alive=alive, outside=True,
+                                  gender=gender, age=other_parent.moons if other_parent else random.randint(18, 120),
+                                  backstory="clanborn" if other_clan else "refugee2")[0]
 
         def get_parents(birth_type):
-            '''Handles creating inheritance for your cat'''
-            try:
-                parent1 = None
-                parent2 = None
-                adoptive_parents = []
-                if birth_type == BirthType.NO_PARENTS:
-                    thought = "Is glad that their kits are safe"
-                    parent1 = create_new_cat(Cat,
-                                                loner=True,
-                                                status=random.choice(["loner", "kittypet"]),
-                                                alive=False,
-                                                thought=thought,
-                                                age=random.randint(15,120),
-                                                outside=True)[0]
-                    parent1.backstory = random.choice(["refugee2", "refugee3", "refugee4"])
-                    
-                elif birth_type == BirthType.ONE_PARENT:
-                    parent1 = pick_valid_parent()
-                
-                elif birth_type == BirthType.TWO_PARENTS:
-                    parent1 = pick_valid_parent()
-                    parent2 = pick_valid_parent(parent1)
-                    if not parent2:
-                        for i in range(5):
-                            if not parent2:
-                                parent1 = pick_valid_parent()
-                                parent2 = pick_valid_parent(parent1)
-                            else:
-                                break
-                    parent1.set_mate(parent2)
-
-                elif birth_type == BirthType.ONE_ADOPTIVE_PARENT:
-                    adoptive_parent1 = pick_valid_parent()
-                    adoptive_parents = [adoptive_parent1.ID]
-                    thought = "Is glad that their kits are safe"
-                    parent1 = create_new_cat(Cat,
-                                                loner=True,
-                                                status=random.choice(["loner", "kittypet"]),
-                                                alive=False,
-                                                thought=thought,
-                                                age=random.randint(15,120),
-                                                outside=True)[0]
-                    parent1.backstory = random.choice(["refugee2", "refugee3", "refugee4"])
-                    parent2_age = max(parent1.moons + random.randint(-10,10), 15)
-                    parent2 = create_new_cat(Cat,
-                                                loner=True,
-                                                status=random.choice(["loner", "kittypet"]),
-                                                alive=False,
-                                                thought=thought,
-                                                age=parent2_age,
-                                                outside=True)[0]
-                    if not game.clan.clan_settings["same sex birth"]:
-                        if parent1.gender == parent2.gender:
-                            if parent1.gender == "female":
-                                parent1.gender = "male"
-                                parent1.genderalign = "male"
-                            else:
-                                parent1.gender = "female"
-                                parent1.genderalign = "female"
-                    parent2.backstory = random.choice(["refugee2", "refugee3", "refugee4"])
-                
-
+            parent1 = parent2 = None
+            adoptive_parents = []
+            if birth_type in [BirthType.NO_PARENTS, BirthType.ONE_ADOPTIVE_PARENT, BirthType.TWO_ADOPTIVE_PARENTS]:
+                if birth_type == BirthType.ONE_ADOPTIVE_PARENT:
+                    adoptive_parents = [resident_parent().ID]
                 elif birth_type == BirthType.TWO_ADOPTIVE_PARENTS:
-                    adoptive_parent1 = pick_valid_parent()
-                    adoptive_parent2 = pick_valid_parent(adoptive_parent1)
-                    if not adoptive_parent2:
-                        for i in range(5):
-                            if not adoptive_parent2:
-                                adoptive_parent1 = pick_valid_parent()
-                                adoptive_parent2 = pick_valid_parent(adoptive_parent1)
-                            else:
-                                break
-                    adoptive_parent1.set_mate(adoptive_parent2)
-                    adoptive_parents = [adoptive_parent1.ID, adoptive_parent2.ID]
-                    thought = "Is glad that their kits are safe"
-                    parent1 = create_new_cat(Cat,
-                                                loner=True,
-                                                status=random.choice(["loner", "kittypet"]),
-                                                alive=False,
-                                                thought=thought,
-                                                age=random.randint(15,120),
-                                                outside=True)[0]
-                    
-                    parent1.backstory = random.choice(["refugee2", "refugee3", "refugee4"])
-                    parent2_age = max(parent1.moons + random.randint(-10,10), 15)
-
-                    parent2 = create_new_cat(Cat,
-                                                loner=True,
-                                                status=random.choice(["loner", "kittypet"]),
-                                                alive=False,
-                                                thought=thought,
-                                                age=parent2_age,
-                                                outside=True)[0]
-                    if not game.clan.clan_settings["same sex birth"]:
-                        if parent1.gender == parent2.gender:
-                            if parent1.gender == "female":
-                                parent1.gender = "male"
-                                parent1.genderalign = "male"
-                            else:
-                                parent1.gender = "female"
-                                parent1.genderalign = "female"
-                    parent2.backstory = random.choice(["refugee2", "refugee3", "refugee4"])
-
-                elif birth_type == BirthType.ONE_OUTSIDER_PARENT:
-                    parent1 = create_new_cat(Cat,
-                                                status="warrior",
-                                                alive=True,
-                                                age=random.randint(15,120),
-                                                outside=False)[0]
-                    parent1.backstory = random.choice(["loner1", "loner2", "loner4", "kittypet1", "kittypet2", "kittypet3", "kittypet4", "kittypet6", "rogue1", "rogue2", "rogue3", "rogue5", "rogue8", "refugee2", "refugee3", "refugee4"])
-
-                elif birth_type == BirthType.TWO_OUTSIDER_PARENTS:
-                    parent1 = create_new_cat(Cat,
-                                                status="warrior",
-                                                alive=True,
-                                                age=random.randint(15,120),
-                                                outside=False)[0]
-                    parent1.backstory = random.choice(["loner1", "loner2", "loner4", "kittypet1", "kittypet2", "kittypet3", "kittypet4", "kittypet6", "rogue1", "rogue2", "rogue3", "rogue5", "rogue8", "refugee2", "refugee3", "refugee4"])
-                    parent2 = create_new_cat(Cat,
-                                                status="warrior",
-                                                alive=True,
-                                                age=parent1.moons + random.randint(1,5),
-                                                outside=False)[0]
-                    parent2.backstory = random.choice(["loner1", "loner2", "loner4", "kittypet1", "kittypet2", "kittypet3", "kittypet4", "kittypet6", "rogue1", "rogue2", "rogue3", "rogue5", "rogue8", "refugee2", "refugee3", "refugee4"])
-                    parent1.init_all_relationships()
-                    parent2.init_all_relationships()
+                    adoptive_parents = [cat.ID for cat in resident_pair()]
+                parent1 = outside_parent()
+                if adoptive_parents or backstory == "orphaned5" or not game.clan.clan_settings["single parentage"]:
+                    parent2 = outside_parent(parent1)
+            elif birth_type == BirthType.ONE_PARENT:
+                parent1 = resident_parent()
+                if backstory != "clanborn":
+                    parent2 = outside_parent(parent1, alive=True)
+            elif birth_type == BirthType.TWO_PARENTS:
+                parent1, parent2 = resident_pair()
+            else:
+                outsider_stories = ["loner1", "loner2", "loner4", "kittypet1", "kittypet2", "kittypet3",
+                                    "kittypet4", "kittypet6", "rogue1", "rogue2", "rogue3", "rogue5",
+                                    "rogue8", "refugee2", "refugee3", "refugee4"]
+                parent1 = create_new_cat(Cat, status="warrior", age=random.randint(18, 120),
+                                         backstory=random.choice(outsider_stories))[0]
+                if birth_type == BirthType.TWO_OUTSIDER_PARENTS:
+                    gender = None if game.clan.clan_settings["same sex birth"] else (
+                        "male" if parent1.gender == "female" else "female")
+                    parent2 = create_new_cat(Cat, status="warrior", age=parent1.moons, gender=gender,
+                                             backstory=random.choice(outsider_stories))[0]
                     parent1.set_mate(parent2)
-
-                return birth_type, parent1, parent2, adoptive_parents
-            except Exception as e:
-                birth_type = random.choice(list(BirthType))
-                return get_parents(birth_type)
-
-
+            return birth_type, parent1, parent2, adoptive_parents
 
         def handle_backstory(siblings):
-            '''Handles creating backstories for your cat'''
-            backstory = ""
-            if birth_type in [BirthType.NO_PARENTS, BirthType.ONE_ADOPTIVE_PARENT, BirthType.TWO_ADOPTIVE_PARENTS]:
-                backstory = random.choice(["abandoned1", "abandoned2", "abandoned4", "loner3", "orphaned1", "orphaned2", "orphaned3", "orphaned4", "orphaned5", "orphaned6", "orphaned7", "outsider1"])
-            elif birth_type == BirthType.ONE_PARENT:
-                backstory = random.choice(["halfclan1", "halfclan4", "halfclan4", "halfclan5", "halfclan6", "halfclan7", "halfclan8", "halfclan9", "halfclan10", "outsider_roots1", "outsider_roots3", "outsider_roots4", "outsider_roots5", "outsider_roots6", "outsider_roots7", "outsider_roots8", "clanborn"])
-            elif birth_type == BirthType.TWO_PARENTS:
-                backstory = "clanborn"
-            elif birth_type == BirthType.ONE_OUTSIDER_PARENT:
-                backstory = "outsider1"
-            elif birth_type == BirthType.TWO_OUTSIDER_PARENTS:
-                backstory = "outsider1"
-            
-            game.clan.your_cat.backstory = backstory
-            if siblings:
-                for sibling in siblings:
-                    sibling.backstory = backstory
-        
+            for cat in siblings + [game.clan.your_cat]:
+                cat.backstory = backstory
+
         def handle_inheritance(parent1, parent2, adoptive_parents, siblings):            
             for c in siblings + [game.clan.your_cat]:
                 if parent1:
@@ -994,6 +915,21 @@ class Events:
                 c.init_all_relationships()
             
         def handle_birth_event(birth_type, parent1, parent2, adoptive_parents, siblings):
+            if backstory not in ["clanborn", "outsider1"]:
+                player = game.clan.your_cat
+                birth_txt = process_text(BACKSTORIES["backstories"][backstory], {
+                    "m_c": (str(player.name), random.choice(player.pronouns)),
+                    "c_n": (game.clan.name, Cat.default_pronouns[0]),
+                })
+                carers = [Cat.fetch_cat(ID) for ID in adoptive_parents] if adoptive_parents else [
+                    cat for cat in [parent1, parent2] if cat and not cat.dead and not cat.outside]
+                if carers:
+                    birth_txt += " In the nursery, you are cared for by " + adjust_list_text([str(cat.name) for cat in carers]) + "."
+                if siblings:
+                    birth_txt += " Your littermates are " + adjust_list_text([str(cat.name) for cat in siblings]) + "."
+                game.cur_events_list.insert(0, Single_Event(birth_txt, ["alert", "birth_death"], game.clan.your_cat.ID))
+                return
+
             replacements = {}
             replacements["y_c"] = str(game.clan.your_cat.name)
             birth_value = birth_type.value
@@ -1087,6 +1023,7 @@ class Events:
                     start_relation.admiration = 15 + y
                     start_relation.trust = 10 + y
                     s.relationships[c.ID] = start_relation
+        game.clan.clan_settings["starting backstory"] = None
         game.clan.your_cat.w_done = False
         game.clan.your_cat.age = "newborn"
         game.switches['continue_after_death'] = False
@@ -2855,19 +2792,21 @@ class Events:
             leader_dead = game.clan.leader.dead
             leader_outside = game.clan.leader.outside
             leader_shunned = game.clan.leader.shunned > 0
+            leader_retired = game.clan.leader.status != "leader"
         else:
             leader_dead = True
             # If leader is None, treat them as dead (since they are dead - and faded away.)
             leader_outside = True
             leader_shunned = True
+            leader_retired = True
 
         # If a Clan deputy exists, and the leader is dead,
-        #  outside, or doesn't exist, make the deputy leader.
+        # outside, shunned, retired, or absent, make the deputy leader.
         if game.clan.deputy and game.clan.clan_settings.get("leader", True):
             if game.clan.deputy is not None and \
                 not game.clan.deputy.dead and \
                 not game.clan.deputy.outside and \
-                (leader_dead or leader_outside or leader_shunned):
+                (leader_dead or leader_outside or leader_shunned or leader_retired):
                 game.clan.new_leader(game.clan.deputy)
                 text = ''
 
@@ -3198,10 +3137,29 @@ class Events:
         """
         promote cats and add to event list
         """
+        requested_mentor = None
+        player = game.clan.your_cat
+        apprentice_roles = {
+            "warrior": "apprentice", "deputy": "apprentice", "leader": "apprentice",
+            "medicine cat": "medicine cat apprentice", "mediator": "mediator apprentice",
+            "queen": "queen's apprentice",
+        }
+        if (
+            game.switches.get("request apprentice")
+            and cat.status == "kitten" and promoted_to in apprentice_roles.values()
+            and not (cat.dead or cat.outside or cat.exiled or cat.shunned)
+            and player.status in apprentice_roles and player.moons > 0 and game.clan.age > 0
+            and not (player.dead or player.outside or player.shunned)
+        ):
+            requested_mentor = player
+            promoted_to = apprentice_roles[player.status]
         # ceremony = []
         _ment = Cat.fetch_cat(cat.mentor) if cat.mentor else None # Grab current mentor, if they have one, before it's removed. 
         old_name = str(cat.name)
         cat.status_change(promoted_to)
+        if requested_mentor:
+            cat.update_mentor(requested_mentor.ID)
+            game.switches["request apprentice"] = False
         cat.rank_change_traits_skill(_ment)
 
         involved_cats = [cat.ID]  # Clearly, the cat the ceremony is about is involved.
@@ -4300,14 +4258,24 @@ class Events:
         """Checks if a new leader need to be promoted, and promotes them, if needed."""
         # If auto-promotion is disabled, just alert when the Clan is leaderless.
         if not game.clan.clan_settings.get("leader", True):
-            if not game.clan.leader or game.clan.leader.dead or game.clan.leader.outside:
+            if (
+                not game.clan.leader
+                or game.clan.leader.dead
+                or game.clan.leader.outside
+                or game.clan.leader.status != "leader"
+            ):
                 game.cur_events_list.insert(
                     0, Single_Event(f"{game.clan.name} has no leader!", "alert")
                 )
             return
 
         # check for leader
-        leader_invalid = not game.clan.leader or game.clan.leader.dead or game.clan.leader.outside
+        leader_invalid = (
+            not game.clan.leader
+            or game.clan.leader.dead
+            or game.clan.leader.outside
+            or game.clan.leader.status != "leader"
+        )
 
         if leader_invalid:
             self.perform_ceremonies(
@@ -4321,7 +4289,7 @@ class Events:
                 leader_dead = True
                 leader_outside = True
 
-            if leader_dead or leader_outside:
+            if leader_dead or leader_outside or game.clan.leader.status != "leader":
                 game.cur_events_list.insert(
                     0, Single_Event(f"{game.clan.name} has no leader!", "alert")
                 )

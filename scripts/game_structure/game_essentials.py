@@ -155,6 +155,7 @@ class Game:
 
     # SETTINGS
     settings = {}
+    _random_camp_lighting_loaded = False
     settings["moon&season_open"] = False
     setting_lists = {}
 
@@ -400,6 +401,7 @@ class Game:
         self.settings_changed = False
         try:
             game.safe_save(get_save_dir() + "/settings.json", self.settings)
+            self._random_camp_lighting_loaded = True
         except RuntimeError:
             from scripts.game_structure.windows import SaveError
 
@@ -416,6 +418,7 @@ class Game:
         except FileNotFoundError:
             return
 
+        self._random_camp_lighting_loaded = "random camp lighting" in settings_data
         for key, value in settings_data.items():
             if key in self.settings:
                 self.settings[key] = value

@@ -1772,17 +1772,6 @@ class Cat:
             if isinstance(fetched_cat, Cat):
                 fetched_cat.update_mentor()
         
-        if "request apprentice" in game.switches and game.switches['request apprentice'] and self.mentor == game.clan.your_cat.ID:
-            if game.clan.your_cat.status == "queen":
-                self.status =  "queen's apprentice"
-            elif game.clan.your_cat.status == "mediator":
-                self.status = "mediator apprentice"
-            elif game.clan.your_cat.status == "medicine cat":
-                self.status = "medicine cat apprentice"
-            else:
-                self.status = "apprentice"
-            game.switches["request apprentice"] = False
-
         # If they have any apprentices, make sure they are still valid:
         if old_status == "medicine cat":
             game.clan.remove_med_cat(self)
@@ -3089,6 +3078,16 @@ class Cat:
             for injury in self.injuries if injury not in ignored_injuries
         )
 
+    def in_medicine_den(self):
+        return any(
+            info["severity"] != "minor" and injury not in (
+                "pregnant", "recovering from birth", "sprain", "lingering shock"
+            ) for injury, info in self.injuries.items()
+        ) or any(
+            info["severity"] != "minor" and illness != "grief stricken"
+            for illness, info in self.illnesses.items()
+        )
+
     def not_work_because_hunger(self):
         """returns True if the only condition, why the cat cannot work is because of starvation"""
         non_minor_injuries = [
@@ -3344,17 +3343,9 @@ class Cat:
                     if not cat.apprentice and not cat.not_working():
                         priority_mentors.append(cat)
             # First try for a cat who currently has no apprentices and is working
-            if 'request apprentice' in game.switches:
-                if game.switches['request apprentice'] and self.moons == 6 and not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.shunned == 0 and game.clan.your_cat.status in ["warrior", "medicine cat", "mediator", "queen", "deputy", "leader"]:
-                    new_mentor = game.clan.your_cat
-                else:
-                    if priority_mentors:  # length of list > 0
-                        new_mentor = choice(priority_mentors)
-                    elif potential_mentors:  # length of list > 0
-                        new_mentor = choice(potential_mentors)
-            elif priority_mentors:  # length of list > 0
+            if priority_mentors:
                 new_mentor = choice(priority_mentors)
-            elif potential_mentors:  # length of list > 0
+            elif potential_mentors:
                 new_mentor = choice(potential_mentors)
             if new_mentor:
                 self.__add_mentor(new_mentor.ID)
@@ -3529,7 +3520,7 @@ class Cat:
         """
             LifeGen-specific function to see if a cat can be taken on a friendly outing.
             This is used when the main character wants to spend time with cats that aren't
-            available for dating - including elders, kittens, cats outside age range, etc.
+            available for dating - including relatives and cats outside the dating age range.
             Basically: if they're NOT dateable, they're outable!
         """
         
@@ -3542,11 +3533,7 @@ class Cat:
             return False
         
         # check age - NO newborns or kittens allowed on outings
-        if other_cat.age in ["newborn", "kitten"]:
-            return False
-        
-        # NO ill, injured, or sick cats
-        if other_cat.not_working():
+        if self.age in ["newborn", "kitten"] or other_cat.age in ["newborn", "kitten"]:
             return False
         
         # If they ARE dateable, they're not "outable" (they should be on dates instead)

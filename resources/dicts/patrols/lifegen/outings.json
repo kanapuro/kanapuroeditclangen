@@ -447,5 +447,112 @@
                 ]
             }
         ]
+    },
+    {
+        "patrol_id": "outing_recovery_den",
+        "biome": [
+            "Any"
+        ],
+        "season": [
+            "Any"
+        ],
+        "types": [
+            "lifegen"
+        ],
+        "tags": [
+            "recovery_visit",
+            "medicine_den"
+        ],
+        "patrol_art": "gen_bump_heads_warriors",
+        "min_cats": 2,
+        "max_cats": 3,
+        "min_max_status": {},
+        "weight": 20,
+        "intro_text": "With recovery keeping at least one of you close to camp, you and r_c arrange a quiet visit in the medicine den.",
+        "decline_text": "You decide that some uninterrupted rest would be better today.",
+        "chance_of_success": 70,
+        "success_outcomes": [
+            {
+                "text": "You and r_c trade stories until the conversation gives way to comfortable silence. It is good to have some company while resting.",
+                "exp": 0,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "r_c"
+                        ],
+                        "cats_from": [
+                            "y_c"
+                        ],
+                        "mutual": true,
+                        "values": [
+                            "platonic",
+                            "comfortable"
+                        ],
+                        "amount": 5
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "The conversation soon trails off. You and r_c agree to keep the visit short and get some rest.",
+                "exp": 0,
+                "weight": 20
+            }
+        ]
+    },
+    {
+        "patrol_id": "outing_recovery_camp",
+        "biome": [
+            "Any"
+        ],
+        "season": [
+            "Any"
+        ],
+        "types": [
+            "lifegen"
+        ],
+        "tags": [
+            "recovery_visit"
+        ],
+        "patrol_art": "gen_bump_heads_warriors",
+        "min_cats": 2,
+        "max_cats": 3,
+        "min_max_status": {},
+        "weight": 20,
+        "intro_text": "With recovery keeping at least one of you close to camp, you and r_c arrange a quiet visit in the camp.",
+        "decline_text": "You decide that some uninterrupted rest would be better today.",
+        "chance_of_success": 70,
+        "success_outcomes": [
+            {
+                "text": "You and r_c trade stories until the conversation gives way to comfortable silence. It is good to have some company while resting.",
+                "exp": 0,
+                "weight": 20,
+                "relationships": [
+                    {
+                        "cats_to": [
+                            "r_c"
+                        ],
+                        "cats_from": [
+                            "y_c"
+                        ],
+                        "mutual": true,
+                        "values": [
+                            "platonic",
+                            "comfortable"
+                        ],
+                        "amount": 5
+                    }
+                ]
+            }
+        ],
+        "fail_outcomes": [
+            {
+                "text": "The conversation soon trails off. You and r_c agree to keep the visit short and get some rest.",
+                "exp": 0,
+                "weight": 20
+            }
+        ]
     }
 ]

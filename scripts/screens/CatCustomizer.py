@@ -6,18 +6,18 @@ import pygame
 import pygame_gui
 import ujson
 
-from scripts.cat.cats import Cat, PERMANENT
-from scripts.cat.pelts import Pelt
+from scripts.cat.cats import Cat, PERMANENT, BACKSTORIES
 from scripts.cat.personality import Personality
-from scripts.cat.skills import SkillPath, Skill
+from scripts.cat.pelts import Pelt
+from scripts.cat.skills import SkillPath
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UIImageButton, UISpriteButton, UISurfaceImageButton
-from scripts.screens.CatAppearanceEditor import CatAppearanceEditor, update_checkbox
+from scripts.screens.CatAppearanceEditor import CatAppearanceEditor, CustomizerList, update_checkbox
 from scripts.ui.generate_button import ButtonStyles, get_button_dict
 from scripts.ui.get_arrow import get_arrow
 from scripts.ui.icon import Icon
-from scripts.utility import ui_scale, ui_scale_dimensions, generate_sprite, get_text_box_theme
+from scripts.utility import ui_scale, generate_sprite, get_text_box_theme, process_text
 
 
 class CatCustomizer:
@@ -61,7 +61,7 @@ class CatCustomizer:
         "eye_colour": ("eye_colour",),
         "heterochromia": ("eye_colour2",),
         "skin": ("skin",),
-        "condition": ("permanent_condition", "paralyzed", "scars"),
+        "condition": ("permanent_conditions", "paralyzed", "scars"),
         "accessory": ("accessories", "inventory"),
         "trait": ("personality",),
         "skill": ("skill",),
@@ -72,20 +72,13 @@ class CatCustomizer:
         "height": ("height",), "backstory": ("backstory",),
     }
 
-    kit_traits = ['troublesome', 'lonesome', 'impulsive', 'bullying', 'attention-seeker', 'charming', 'daring', 'noisy',
- 'nervous', 'quiet', 'insecure', 'daydreamer', 'sweet', 'polite', 'know-it-all', 'bossy', 'disciplined',
- 'patient', 'manipulative', 'secretive', 'rebellious', 'grumpy', 'passionate', 'honest', 'leader-like',
- 'smug', 'wishful', 'indecisive', 'abrupt', 'solemn', 'dreary', 'entitled', 'goody-no-claws',
- 'CHAOS CHAOS', 'distrusting', 'nosy', 'moody', 'nasty', 'spoiled', 'sillay', 'sly', 'mature', 'salty',
- 'spicy', 'apologetic', 'whiny', 'bubbly', 'picky', 'cheeky', 'impressionable', 'high-spirited',
- 'crybaby', 'morbid', 'earnest', 'tiny', 'obedient', 'colorful', 'clingy', 'zoomy', 'grim', 'prim',
- 'jokester', 'tender', 'slug', 'curious', 'defiant', 'wild', 'bright', 'sloppy', 'rowdy', 'complex',
- 'emotional', 'threat to society', 'protective']
+    kit_traits = list(Personality.trait_ranges["kit_traits"])
     sex_specific_conditions = {"excess testosterone", "aneuploidy", "testosterone deficiency", "chimerism", "mosaicism"}
     random_conditions = ["born without a leg", "weak leg", "twisted leg", "born without a tail", "paralyzed",
                          "raspy lungs", "wasting disease", "blind", "one bad eye", "failing eyesight",
                          "partial hearing loss", "deaf", "constant joint pain", "seizure prone", "allergies",
                          "persistent headaches", "cleft palate", "wobbly cat syndrome"]
+    noleg_accs = {"VINE", "ASHY PAWS", "MUD PAWS", "BLOODY PAWS", "MUD", "STARFLOWERS", "LAVENDERANKLET", "HOLLY2", "HOLLYVINES"}
     condition_options = ["None"] + list(PERMANENT)
     details_options = {'fur_texture': ['soft', 'curly', 'rough', 'silky', 'sleek', 'wavy', 'sparse', 'tangled', 'fuzzy',
                  'spiky'],
@@ -96,7 +89,7 @@ class CatCustomizer:
  'backstory': ['clan_founder', 'clanborn', 'halfclan1', 'halfclan2', 'outsider_roots1',
                'outsider_roots2', 'loner1', 'loner2', 'loner3', 'loner4', 'kittypet1', 'kittypet2',
                'kittypet3', 'kittypet4', 'rogue1', 'rogue2', 'rogue3', 'abandoned1', 'abandoned2',
-               'abandoned3', 'abandoned4', 'abandoned5', 'otherclan1', 'otherclan2', 'otherclan3',
+               'abandoned3', 'abandoned4', 'otherclan1', 'otherclan2', 'otherclan3',
                'otherclan4', 'otherclan5', 'disgraced1', 'disgraced2', 'disgraced3', 'retired_leader',
                'medicine_cat', 'ostracized_warrior', 'refugee1', 'refugee2', 'refugee3', 'refugee4',
                'refugee5', 'refugee6', 'tragedy_survivor1', 'tragedy_survivor2', 'tragedy_survivor3',
@@ -118,7 +111,14 @@ class CatCustomizer:
         self.fur_texture = defaults.fur_texture
         self.build = defaults.build
         self.height = defaults.height
-        self.backstory = "clanborn"
+        self.backstory = "Random" if getattr(self, "newborn_origins", False) else "clanborn"
+        newborn_origins = list(dict.fromkeys(
+            origin for origins in BACKSTORIES["birth_backstories"].values() for origin in origins))
+        self.details_options = dict(self.details_options)
+        if getattr(self, "newborn_origins", False):
+            self.details_options["backstory"] = ["Random"] + newborn_origins
+        else:
+            self.details_options["backstory"] = list(dict.fromkeys(self.details_options["backstory"] + newborn_origins))
         self.secondary_skill = "None"
         self.elements = {}
         self.pname="SingleColour"
@@ -145,8 +145,8 @@ class CatCustomizer:
         self.accessories=[]
         self.inventory = []
         self.sex = "male"
-        self.personality = "troublesome"
-        self.permanent_condition = None
+        self.personality = self.trait_options[0]
+        self.permanent_conditions = []
         self.preview_age = "kitten"
         self.page = 0
         self.adolescent_pose = 3
@@ -349,29 +349,14 @@ class CatCustomizer:
         self.accessories = [choice(Pelt.plant_accessories + Pelt.wild_accessories + Pelt.collars + Pelt.flower_accessories + Pelt.plant2_accessories + Pelt.snake_accessories + Pelt.smallAnimal_accessories + Pelt.deadInsect_accessories + Pelt.aliveInsect_accessories + Pelt.fruit_accessories + Pelt.crafted_accessories + Pelt.tail2_accessories)] if random.randint(1,5) == 1 else []
 
         self.accessories = [choice(Pelt.plant_accessories + Pelt.wild_accessories + Pelt.collars + Pelt.flower_accessories + Pelt.plant2_accessories + Pelt.snake_accessories + Pelt.smallAnimal_accessories + Pelt.deadInsect_accessories + Pelt.aliveInsect_accessories + Pelt.fruit_accessories + Pelt.crafted_accessories + Pelt.tail2_accessories)] if random.randint(1,5) == 1 else []
-        self.permanent_condition = choice(permanent_conditions) if random.randint(1,30) == 1 else None
-
-        if self.permanent_condition == "born without a tail":
-            for i in self.notail_accs:
-                if i in self.accessories:
-                    self.accessories = []
-                    self.inventory = []
-
-        # scars for conditions
-        self.paralyzed = True if self.permanent_condition == "paralyzed" else False
-        if self.permanent_condition == "born without a tail":
-            self.scars = ["NOTAIL"]
-        elif self.permanent_condition == "born without a leg":
-            self.scars = ["NOPAW"]
-        elif self.permanent_condition == "blind":
-            if random.randint(0,10) == 1:
-                self.scars = ["BOTHBLIND"]
-        elif self.permanent_condition == "one bad eye":
-            if random.randint(0,10) == 1:
-                self.scars = [random.choice(["LEFTBLIND", "RIGHTBLIND", "BRIGHTHEART"])]
-        elif self.permanent_condition in ["deaf", "partial hearing loss"]:
-            if random.randint(0,10):
-                self.scars = [random.choice(["LEFTEAR", "RIGHTEAR", "NOEAR"])]
+        condition = choice(permanent_conditions) if random.randint(1,30) == 1 else None
+        self.set_customizer_conditions([condition] if condition else [])
+        if "blind" in self.permanent_conditions and random.randint(0, 10) == 1:
+            self.scars.append("BOTHBLIND")
+        elif "one bad eye" in self.permanent_conditions and random.randint(0, 10) == 1:
+            self.scars.append(random.choice(["LEFTBLIND", "RIGHTBLIND", "BRIGHTHEART"]))
+        elif any(name in self.permanent_conditions for name in ("deaf", "partial hearing loss")) and random.randint(0, 10):
+            self.scars.append(random.choice(["LEFTEAR", "RIGHTEAR", "NOEAR"]))
 
         self.faith = random.choice(["flexible", "starclan", "dark forest", "neutral"])
 
@@ -403,6 +388,7 @@ class CatCustomizer:
 
     def apply_customizer_locks(self, before):
         if not self.customizer_locks:
+            self.set_customizer_conditions(self.permanent_conditions)
             return
         for key in self.customizer_locks:
             for attribute in self.customizer_lock_groups[key]:
@@ -411,16 +397,16 @@ class CatCustomizer:
             self.adult_pose += 3
         elif self.length != "long" and self.adult_pose in range(9, 12):
             self.adult_pose -= 3
-        if "condition" in self.customizer_locks and self.permanent_condition in self.sex_specific_conditions:
+        if "condition" in self.customizer_locks and any(name in self.sex_specific_conditions for name in self.permanent_conditions):
             self.sex = before["sex"]
-        # Locked tail accessories require the anatomy they were chosen for.
-        if "accessory" in self.customizer_locks and self.permanent_condition == "born without a tail":
-            if any(accessory in self.notail_accs for accessory in self.accessories):
+        # Locked accessories require the anatomy they were chosen for.
+        if "accessory" in self.customizer_locks:
+            incompatible = ("NOTAIL" in self.scars and any(item in self.notail_accs for item in self.accessories)) or (
+                "NOPAW" in self.scars and any(item in self.noleg_accs for item in self.accessories))
+            if incompatible:
                 for attribute in self.customizer_lock_groups["condition"]:
                     setattr(self, attribute, deepcopy(before[attribute]))
-        if self.permanent_condition == "born without a tail":
-            self.accessories = [accessory for accessory in self.accessories if accessory not in self.notail_accs]
-            self.inventory = [accessory for accessory in self.inventory if accessory not in self.notail_accs]
+        self.set_customizer_conditions(self.permanent_conditions)
 
     def setup_customizer_lock_buttons(self):
         if self.page == 0:
@@ -457,6 +443,8 @@ class CatCustomizer:
         self.elements["randomise_selection"].enable()
         if self.selected_customizer_lock() in self.customizer_locks:
             self.elements["randomise_selection"].disable()
+        elif self.page == 2 and self.current_selection == "accessory" and not self.accessory_options():
+            self.elements["randomise_selection"].disable()
 
     def get_customizer_state(self):
         return deepcopy({attribute: getattr(self, attribute) for attribute in (
@@ -464,7 +452,7 @@ class CatCustomizer:
             "tortiebase", "tortiecolour", "pattern", "tortiepattern", "tortie_enabled",
             "vitiligo", "points", "paralyzed", "opacity", "scars", "tint", "skin",
             "white_patches_tint", "kitten_sprite", "reverse", "skill", "accessories",
-            "inventory", "sex", "personality", "permanent_condition", "preview_age",
+            "inventory", "sex", "personality", "permanent_conditions", "preview_age",
             "adolescent_pose", "adult_pose", "elder_pose", "faith", "customizer_locks",
             "secondary_skill", "fur_texture", "build", "height", "backstory", "healed", "facet_reset",
         )})
@@ -585,7 +573,6 @@ class CatCustomizer:
         # pelts_tortie.remove("SingleColour")
         # pelts_tortie.remove("TwoColour")
 
-        permanent_conditions = self.condition_options[1:]
 
     # background images
     # values are ((x position, y position), (x width, y height))
@@ -813,11 +800,6 @@ class CatCustomizer:
                 ]:
                 self.current_selection = "condition"
 
-            self.elements["scroll_container"] = pygame_gui.elements.UIScrollingContainer(
-                ui_scale(pygame.Rect((550, 85), (175, 480))),
-                allow_scroll_x=False
-                )
-
             x_pos = 120
             selection_y_pos = 150
             for i in ["condition", "trait", "skill"]:
@@ -876,86 +858,17 @@ class CatCustomizer:
                 )
                 sex_x_pos += 40
 
-            y_pos = 0
-            if self.current_selection == "condition":
-                for condition in ["None"] + permanent_conditions:
-                    if condition != "None":
-                        if 15 <= len(condition):
-                            short_name = str(condition)[0:13]
-                            condition_name = short_name + '...'
-                        else:
-                            condition_name = condition
-                    else:
-                        condition_name = "None"
-
-                    self.condition_buttons[condition] = UIImageButton(
-                    ui_scale(pygame.Rect((0, y_pos), (34, 34))),
-                    "",
-                    object_id="@unchecked_checkbox",
-                    container=self.elements["scroll_container"],
-                    manager=MANAGER
-                    )
-                    self.condition_names[condition] = pygame_gui.elements.UITextBox(
-                        condition_name.capitalize(),
-                        ui_scale(pygame.Rect((0 + 32, y_pos), (200, 34))),
-                        object_id=get_text_box_theme("#text_box_30_horizleft"),
-                        container=self.elements["scroll_container"],
-                        manager=MANAGER
-                    )
-                    y_pos += 40
-
-            y_pos = 0
-            traits = []
-            for trait in Personality.trait_ranges["kit_traits"]:
-                traits.append(trait)
-            traits = self.trait_options
-            if self.current_selection == "trait":
-                for trait in getattr(self, "trait_options", traits):
-                    if 15 <= len(trait):
-                        short_name = str(trait)[0:13]
-                        trait_name = short_name + '...'
-                    else:
-                        trait_name = trait
-
-                    self.trait_buttons[trait] = UIImageButton(
-                        ui_scale(pygame.Rect((0, y_pos), (34, 34))),
-                        "",
-                        object_id="@unchecked_checkbox",
-                        container=self.elements["scroll_container"],
-                        manager=MANAGER
-                    )
-                    self.trait_names[trait] = pygame_gui.elements.UITextBox(
-                        trait_name.capitalize(),
-                        ui_scale(pygame.Rect((0 + 32, y_pos), (200, 34))),
-                        object_id=get_text_box_theme("#text_box_30_horizleft"),
-                        container=self.elements["scroll_container"],
-                        manager=MANAGER
-                    )
-                    y_pos += 40
-
-            if self.current_selection == "skill":
-                for skill in self.skills:
-                    if 15 <= len(skill):
-                        short_name = str(skill)[0:13]
-                        skill_name = short_name + '...'
-                    else:
-                        skill_name = skill
-
-                    self.skill_buttons[skill] = UIImageButton(
-                        ui_scale(pygame.Rect((0, y_pos), (34, 34))),
-                        "",
-                        object_id="@unchecked_checkbox",
-                        container=self.elements["scroll_container"],
-                    )
-
-                    self.skill_names[skill] = pygame_gui.elements.UITextBox(
-                        skill_name.capitalize(),
-                        ui_scale(pygame.Rect((0 + 32, y_pos), (200, 34))),
-                        object_id=get_text_box_theme("#text_box_30_horizleft"),
-                        container=self.elements["scroll_container"],
-                        manager=MANAGER
-                    )
-                    y_pos += 40
+            options = {"condition": self.condition_options, "trait": self.trait_options, "skill": self.skills}
+            if self.current_selection in options:
+                buttons = getattr(self, self.current_selection + "_buttons")
+                container = CustomizerList(pygame.Rect((550, 85), (175, 480)),
+                                          options[self.current_selection], str.capitalize, buttons, self.customizer_description)
+                self.elements["scroll_container"] = container
+                container.on_change = self.update_disabled_buttons
+                selected = {"condition": next(iter(self.permanent_conditions), "None"),
+                            "trait": self.personality, "skill": self.skill}[self.current_selection]
+                if selected in container.options:
+                    container.scroll_to(selected)
 
         if self.page == 4:
             self.build_details_page()
@@ -990,7 +903,7 @@ class CatCustomizer:
             else:
                 self.customizer_locks.add(lock_key)
             self.setup_customizer_lock_buttons()
-        elif event.ui_element == self.elements["randomise_selection"] and self.selected_customizer_lock() in self.customizer_locks:
+        elif event.ui_element == self.elements["randomise_selection"] and not self.elements["randomise_selection"].is_enabled:
             return
         elif event.ui_element == self.elements["reset_customize"]:
             for attribute, value in self.initial_customizer_state.items():
@@ -1192,42 +1105,10 @@ class CatCustomizer:
                         scars = ["None"] + Pelt.scars1 + Pelt.scars2 + Pelt.scars3
                         current_index = scars.index(self.scars[-1]) if self.scars else 0
                         next_index = (current_index + num) % len(scars)
-                        if not self.scar_buttons[scars[next_index]].is_enabled:
-                            next_index += num
-                        try:
-                            # im such a hack
-                            test = scars[next_index]
-                        except IndexError:
-                            next_index = 0
-                        if scars[next_index] == "None":
-                            next_scar = []
-                        else:
-                            next_scar = [scars[next_index]]
-                        self.scars = next_scar
+                        next_scar = scars[next_index]
+                        self.set_customizer_scars(self.scars[:-1] + ([next_scar] if next_scar != "None" else []))
                     elif self.current_selection == "accessory":
-                        acc_list = (Pelt.plant_accessories + Pelt.wild_accessories +
-                            Pelt.collars + Pelt.flower_accessories +
-                            Pelt.plant2_accessories + Pelt.snake_accessories +
-                            Pelt.smallAnimal_accessories + Pelt.deadInsect_accessories +
-                            Pelt.aliveInsect_accessories + Pelt.fruit_accessories +
-                            Pelt.crafted_accessories + Pelt.tail2_accessories)
-                        if self.customiser_sort == "alphabetical":
-                            acc_list.sort()
-
-                        new_acc_list = []
-                        searched = self.search_text
-                        if searched not in ["", "search"]:
-                            for acc in acc_list:
-                                if searched in str(self.ACC_DISPLAY[acc]["default"]).lower() or searched in acc.lower():
-                                    new_acc_list.append(acc)
-                        else:
-                            new_acc_list = acc_list
-
-                        if self.permanent_condition == "born without a tail":
-                            new_acc_list = [acc for acc in new_acc_list if acc not in self.notail_accs]
-                        elif self.permanent_condition == "born without a leg":
-                            new_acc_list = [acc for acc in new_acc_list if acc not in ("ASHY PAWS", "MUD PAWS", "BLOODY PAWS")]
-                        accs = ["None"] + new_acc_list
+                        accs = ["None"] + self.accessory_options()
                         try:
                             current_index = accs.index(self.accessories[0]) if self.accessories else 0
                         except ValueError:
@@ -1241,39 +1122,12 @@ class CatCustomizer:
                         self.inventory = self.accessories.copy()
                 elif self.page == 3:
                     if self.current_selection == "condition":
-                        permanent_conditions = [name for name in self.condition_options if self.condition_allowed(name)]
-                        current_index = permanent_conditions.index(str(self.permanent_condition))
-                        next_index = (current_index + num) % len(permanent_conditions)
-                        if permanent_conditions[next_index] == "None":
-                            self.permanent_condition = None
-                        else:
-                            self.permanent_condition = permanent_conditions[next_index]
-                            if self.permanent_condition == "None":
-                                self.permanent_condition = None
-
-                        if self.permanent_condition != "paralyzed":
-                            self.paralyzed = False
-                        else:
-                            self.paralyzed = True
-
-                        if self.permanent_condition == "born without a leg":
-                            self.scars = ["NOPAW"]
-                        else:
-                            if "NOPAW" in self.scars:
-                                self.scars.remove("NOPAW")
-
-                        if self.permanent_condition == "born without a tail":
-                            self.scars = ["NOTAIL"]
-                        else:
-                            if "NOTAIL" in self.scars:
-                                self.scars.remove("NOTAIL")
-
-                        if self.permanent_condition != "blind":
-                            if "BOTHBLIND" in self.scars:
-                                self.scars.remove("BOTHBLIND")
-                        if self.permanent_condition != "one bad eye":
-                            if any(scar in ["LEFTBLIND", "RIGHTBLIND", "BRIGHTHEART"] for scar in self.scars):
-                                self.scars = []
+                        remaining = self.permanent_conditions[1:]
+                        options = [name for name in self.condition_options if name not in remaining and self.condition_allowed(name, remaining)]
+                        current = next(iter(self.permanent_conditions), "None")
+                        index = options.index(current) if current in options else 0
+                        name = options[(index + num) % len(options)]
+                        self.set_customizer_conditions(([name] if name != "None" else []) + remaining)
                     elif self.current_selection == "trait":
                         traits = self.trait_options
                         current_index = traits.index(self.personality)
@@ -1335,57 +1189,17 @@ class CatCustomizer:
                     elif self.current_selection == "skin":
                         self.skin = random.choice(Pelt.skin_sprites)
                     elif self.current_selection == "scar":
-                        self.scars = [random.choice(Pelt.scars1 + Pelt.scars2 + Pelt.scars3)]
+                        self.set_customizer_scars(self.scars[:-1] + [random.choice(Pelt.scars1 + Pelt.scars2 + Pelt.scars3)])
                     elif self.current_selection == "accessory":
 
-                        acc_list = (
-                            Pelt.plant_accessories + Pelt.wild_accessories +
-                            Pelt.collars + Pelt.flower_accessories +
-                            Pelt.plant2_accessories + Pelt.snake_accessories +
-                            Pelt.smallAnimal_accessories + Pelt.deadInsect_accessories +
-                            Pelt.aliveInsect_accessories + Pelt.fruit_accessories +
-                            Pelt.crafted_accessories + Pelt.tail2_accessories
-                            )
-                        new_acc_list = []
-                        searched = self.search_text
-                        if searched not in ["", "search"]:
-                            for acc in acc_list:
-                                if searched in str(self.ACC_DISPLAY[acc]["default"]).lower() or searched in acc.lower():
-                                    new_acc_list.append(acc)
-                        else:
-                            new_acc_list = acc_list
-
-                        if self.permanent_condition == "born without a tail":
-                            for i in self.notail_accs:
-                                if i in new_acc_list:
-                                    new_acc_list.remove(i)
-
-                        acc = choice(new_acc_list)
-
-                        self.accessories = [acc]
-                        self.inventory = [acc]
-
+                        self.accessories = [choice(self.accessory_options())]
+                        self.inventory = self.accessories.copy()
                 elif self.page == 3:
                     if self.current_selection == "condition":
-                        permanent_conditions = ["None"] + self.random_conditions
-
-                        self.permanent_condition = random.choice(permanent_conditions)
-                        if self.permanent_condition == "None":
-                            self.permanent_condition = None
-                        if self.permanent_condition == "born without a leg":
-                            self.scars = ["NOPAW"]
-                        else:
-                            if "NOPAW" in self.scars:
-                                self.scars.remove("NOPAW")
-                        if self.permanent_condition == "born without a tail":
-                            self.scars = ["NOTAIL"]
-                        else:
-                            if "NOTAIL" in self.scars:
-                                self.scars.remove("NOTAIL")
-                        if self.permanent_condition == "paralyzed":
-                            self.paralyzed = True
-                        else:
-                            self.paralyzed = False
+                        remaining = self.permanent_conditions[1:]
+                        options = [name for name in ["None"] + self.random_conditions if name not in remaining and self.condition_allowed(name, remaining)]
+                        name = random.choice(options)
+                        self.set_customizer_conditions(([name] if name != "None" else []) + remaining)
                     elif self.current_selection == "trait":
                         self.personality = random.choice(self.trait_options)
                     elif self.current_selection == "skill":
@@ -1403,10 +1217,12 @@ class CatCustomizer:
                 self.search_text = self.elements["search_bar"].get_text()
                 self.previous_search_text = self.search_text
                 self.open_customize_cat()
+                return
             if "clear" in self.elements and event.ui_element == self.elements["clear"]:
                 self.search_text = ""
                 self.previous_search_text = self.search_text
                 self.open_customize_cat()
+                return
             if "match_base" in self.elements and event.ui_element == self.elements["match_base"]:
                 self.tortiepattern = self.tortiebase
                 self.update_sprite()
@@ -1421,22 +1237,27 @@ class CatCustomizer:
                     if event.ui_element == self.preview_age_buttons[i[0]]:
                         self.preview_age = i[0]
                         self.open_customize_cat()
+                        return
                 for i in self.kitten_pose_buttons.items():
                     if event.ui_element == self.kitten_pose_buttons[i[0]]:
                         self.kitten_sprite = int(i[0])
                         self.open_customize_cat()
+                        return
                 for i in self.adolescent_pose_buttons.items():
                     if event.ui_element == self.adolescent_pose_buttons[i[0]]:
                         self.adolescent_pose = int(i[0])
                         self.open_customize_cat()
+                        return
                 for i in self.adult_pose_buttons.items():
                     if event.ui_element == self.adult_pose_buttons[i[0]]:
                         self.adult_pose = int(i[0])
                         self.open_customize_cat()
+                        return
                 for i in self.elder_pose_buttons.items():
                     if event.ui_element == self.elder_pose_buttons[i[0]]:
                         self.elder_pose = int(i[0])
                         self.open_customize_cat()
+                        return
                 for i in self.fur_length_buttons.items():
                     if event.ui_element == self.fur_length_buttons[i[0]]:
                         self.length = i[0]
@@ -1446,6 +1267,7 @@ class CatCustomizer:
                         elif self.adult_pose in range(6,9) and self.length == "long":
                             self.adult_pose += 3
                         self.open_customize_cat()
+                        return
                 for i in self.reverse_buttons.items():
                     if event.ui_element == self.reverse_buttons[i[0]]:
                         if i[0] == "False":
@@ -1453,6 +1275,7 @@ class CatCustomizer:
                         else:
                             self.reverse = True
                         self.open_customize_cat()
+                        return
             elif self.page == 1:
                 if event.ui_element == self.elements["tortie_checkbox"]:
                     if self.tortie_enabled is True:
@@ -1474,6 +1297,7 @@ class CatCustomizer:
                         self.tortiepattern = "classic"
                         self.pattern = ["ONE"]
                     self.open_customize_cat()
+                    return
                 for i in self.pelt_pattern_buttons.items():
                     if event.ui_element == self.pelt_pattern_buttons[i[0]]:
                         if self.pname == "Tortie":
@@ -1513,14 +1337,16 @@ class CatCustomizer:
                             self.points = None
                         else:
                             self.points = i[0]
-                        self.open_customize_cat()
+                        self.update_sprite()
+                        self.update_disabled_buttons()
                 for i in self.vitiligo_buttons.items():
                     if event.ui_element == self.vitiligo_buttons[i[0]]:
                         if i[0] == "None":
                             self.vitiligo = None
                         else:
                             self.vitiligo = i[0]
-                        self.open_customize_cat()
+                        self.update_sprite()
+                        self.update_disabled_buttons()
                 # TORTIE
                 for i in self.tortie_pattern_buttons.items():
                     if event.ui_element == self.tortie_pattern_buttons[i[0]]:
@@ -1560,29 +1386,16 @@ class CatCustomizer:
                         self.skin = i[0].upper()
                         self.update_sprite()
                         self.update_disabled_buttons()
-                for i in self.scar_buttons.items():
-                    if event.ui_element == self.scar_buttons[i[0]]:
-                        if i[0] == "None":
-                            self.scars = []
+                for scar, button in self.scar_buttons.items():
+                    if event.ui_element == button:
+                        scars = self.scars.copy()
+                        if scar == "None":
+                            scars = []
+                        elif scar in scars:
+                            scars.remove(scar)
                         else:
-                            self.scars = [i[0].upper()]
-                            if i[0] == "NOPAW":
-                                self.permanent_condition = "born without a leg"
-                                self.paralyzed = False
-                            else:
-                                if self.permanent_condition == "born without a leg":
-                                    self.permanent_condition = None
-                            if i[0] == "NOTAIL":
-                                self.permanent_condition = "born without a tail"
-                            else:
-                                if self.permanent_condition == "born without a tail":
-                                    self.permanent_condition = None
-                            if i[0] == "BOTHBLIND":
-                                self.permanent_condition = "blind"
-                                self.paralyzed = False
-                            if i[0] in ["RIGHTBLIND", "LEFTBLIND", "BRIGHTHEART"]:
-                                self.permanent_condition = "one bad eye"
-                                self.paralyzed = False
+                            scars.append(scar)
+                        self.set_customizer_scars(scars)
                         self.update_sprite()
                         self.update_disabled_buttons()
                 for i in self.accessory_buttons.items():
@@ -1599,49 +1412,16 @@ class CatCustomizer:
                         self.update_sprite()
                         self.update_disabled_buttons()
             elif self.page == 3:
-                for i in self.condition_buttons.items():
-                    if event.ui_element == self.condition_buttons[i[0]]:
-                        if i[0] == "None":
-                            self.permanent_condition = None
-                            if "NOTAIL" in self.scars:
-                                self.scars.remove("NOTAIL")
-                            if "NOPAW" in self.scars:
-                                self.scars.remove("NOPAW")
-                            if "BRIGHTHEART" in self.scars:
-                                self.scars.remove("BRIGHTHEART")
-                            if "BOTHBLIND" in self.scars:
-                                self.scars.remove("BOTHBLIND")
-                            if "LEFTBLIND" in self.scars:
-                                self.scars.remove("LEFTBLIND")
-                            if "RIGHTBLIND" in self.scars:
-                                self.scars.remove("RIGHTBLIND")
-                            self.paralyzed = False
-                        else:
-                            if i[0] != "paralyzed":
-                                self.paralyzed = False
-                            else:
-                                self.paralyzed = True
-
-                            if i[0] == "born without a leg":
-                                self.scars = ["NOPAW"]
-                            else:
-                                if "NOPAW" in self.scars:
-                                    self.scars.remove("NOPAW")
-
-                            if i[0] == "born without a tail":
-                                self.scars = ["NOTAIL"]
-                            else:
-                                if "NOTAIL" in self.scars:
-                                    self.scars.remove("NOTAIL")
-
-                            if i[0] != "blind":
-                                if "BOTHBLIND" in self.scars:
-                                    self.scars.remove("BOTHBLIND")
-                            if i[0] != "one bad eye":
-                                if any(scar in ["LEFTBLIND", "RIGHTBLIND", "BRIGHTHEART"] for scar in self.scars):
-                                    self.scars = []
-
-                            self.permanent_condition = i[0]
+                for condition, button in self.condition_buttons.items():
+                    if event.ui_element == button:
+                        conditions = self.permanent_conditions.copy()
+                        if condition == "None":
+                            conditions = []
+                        elif condition in conditions:
+                            conditions.remove(condition)
+                        elif self.condition_allowed(condition):
+                            conditions.append(condition)
+                        self.set_customizer_conditions(conditions)
                         self.update_sprite()
                         self.update_disabled_buttons()
                 for i in self.trait_buttons.items():
@@ -1665,11 +1445,13 @@ class CatCustomizer:
                 if event.ui_element == self.current_selection_buttons[i[0]]:
                     self.current_selection = i[0]
                     self.open_customize_cat()
+                    return
             for i in ["default", "alphabetical"]:
                 if i in self.elements:
                     if event.ui_element == self.elements[i]:
                         self.customiser_sort = i
                         self.open_customize_cat()
+                        return
 
             if event.ui_element == self.main_menu:
                 self.exit_customizer()
@@ -1677,15 +1459,19 @@ class CatCustomizer:
                 if self.page < 4:
                     self.page += 1
                     self.open_customize_cat()
+                    return
             elif event.ui_element == self.elements['left']:
                 if self.page > 0:
                     self.page -= 1
                     self.open_customize_cat()
+                    return
             elif event.ui_element == self.elements['random_customize']:
                 self.randomize_custom_cat()
                 self.open_customize_cat()
+                return
             elif event.ui_element == self.elements['next_step']:
-                self.finish_customize_cat()
+                if self.elements['next_step'].is_enabled:
+                    self.finish_customize_cat()
             elif event.ui_element == self.elements['previous_step']:
                 self.previous_customizer_step()
 
@@ -1838,30 +1624,24 @@ class CatCustomizer:
                     self.skin_buttons[i[0]].enable()
                 else:
                     self.skin_buttons[i[0]].disable()
-            for i in self.scar_buttons.items():
-                if i[0] == "None" and self.scars == []:
-                    self.scar_buttons[i[0]].disable()
-                else:
-                    if i[0] not in self.scars:
-                        self.scar_buttons[i[0]].enable()
-                    else:
-                        self.scar_buttons[i[0]].disable()
-                if self.paralyzed is True:
-                    for scar in ["BRIGHTHEART", "LEFTBLIND", "RIGHTBLIND", "BOTHBLIND", "NOPAW", "NOTAIL"]:
-                        if scar in self.scar_buttons:
-                            self.scar_buttons[scar].disable()
+            for scar, button in self.scar_buttons.items():
+                checked = scar in self.scars or (scar == "None" and not self.scars)
+                update_checkbox(button, "@checked_checkbox" if checked else "@unchecked_checkbox")
+                button.enable()
+                if scar == "None" and not self.scars:
+                    button.disable()
             for i in self.accessory_buttons.items():
                 if i[0] == "None" and not self.accessories:
                     self.accessory_buttons[i[0]].disable()
                 else:
                     self.accessory_buttons[i[0]].enable()
                 update_checkbox(self.accessory_buttons[i[0]], "@checked_checkbox" if i[0] in self.accessories or (i[0] == "None" and not self.accessories) else "@unchecked_checkbox")
-                if self.permanent_condition == "born without a tail":
+                if any(name in self.permanent_conditions for name in ("born without a tail", "lost their tail")):
                     for acc in self.notail_accs:
                         if acc in self.accessory_buttons:
                             self.accessory_buttons[acc].disable()
-                if self.permanent_condition == "born without a leg":
-                    for acc in ["ASHY PAWS", "MUD PAWS", "BLOODY PAWS"]:
+                if any(name in self.permanent_conditions for name in ("born without a leg", "lost a leg")):
+                    for acc in self.noleg_accs:
                         if acc in self.accessory_buttons:
                             self.accessory_buttons[acc].disable()
 
@@ -1871,27 +1651,19 @@ class CatCustomizer:
                     self.elements["condition_name"].kill()
                     del self.elements["condition_name"]
 
-                if self.permanent_condition:
+                if self.permanent_conditions:
                     self.elements["condition_name"] = pygame_gui.elements.UITextBox(
-                        self.permanent_condition.capitalize(),
+                        self.permanent_conditions[0].capitalize() if len(self.permanent_conditions) == 1 else f"{len(self.permanent_conditions)} conditions selected",
                         ui_scale(pygame.Rect((300, 470), (200, 34))),
                         object_id=get_text_box_theme("#text_box_30_horizcenter"),
                         manager=MANAGER
                     )
 
-            for i in self.condition_buttons.items():
-                if i[0] == "None" and self.permanent_condition is None:
-                    self.condition_buttons[i[0]].disable()
-                else:
-                    if i[0] != self.permanent_condition:
-                        self.condition_buttons[i[0]].enable()
-                    else:
-                        self.condition_buttons[i[0]].disable()
-
             for condition, button in self.condition_buttons.items():
-                update_checkbox(button, "@checked_checkbox" if condition == self.permanent_condition or
-                                (condition == "None" and self.permanent_condition is None) else "@unchecked_checkbox")
-                if not self.condition_allowed(condition):
+                checked = condition in self.permanent_conditions or (condition == "None" and not self.permanent_conditions)
+                update_checkbox(button, "@checked_checkbox" if checked else "@unchecked_checkbox")
+                button.enable()
+                if (condition == "None" and not self.permanent_conditions) or (not checked and not self.condition_allowed(condition)):
                     button.disable()
             for i in self.trait_buttons.items():
                 if i[0] != self.personality:
@@ -1944,6 +1716,21 @@ class CatCustomizer:
                 else:
                     self.sex_buttons[i[0]].disable()
 
+        if self.page == 3 and self.current_selection in ("trait", "skill"):
+            selected = {"condition": next(iter(self.permanent_conditions), "None"),
+                        "trait": self.personality, "skill": self.skill}[self.current_selection]
+            for value, button in getattr(self, self.current_selection + "_buttons").items():
+                update_checkbox(button, "@checked_checkbox" if value == selected else "@unchecked_checkbox")
+        elif self.page == 4:
+            selected = getattr(self, self.current_selection) or "None"
+            for value, button in self.detail_buttons.items():
+                checked = value == selected
+                update_checkbox(button, "@checked_checkbox" if checked else "@unchecked_checkbox")
+                if checked:
+                    button.disable()
+                else:
+                    button.enable()
+
         for i in self.current_selection_buttons.items():
             if self.current_selection != i[0]:
                 if i[0] in ["tortie_pattern", "tortie_colour", "tortie_patches"]:
@@ -1956,8 +1743,8 @@ class CatCustomizer:
         if "next_step" in self.elements:
             self.elements["next_step"].enable()
             before = getattr(self, "initial_customizer_state", {})
-            changed = self.permanent_condition != before.get("permanent_condition") or self.sex != before.get("sex")
-            if changed and not self.condition_allowed(self.permanent_condition):
+            changed = self.permanent_conditions != before.get("permanent_conditions") or self.sex != before.get("sex")
+            if changed and any(not self.condition_allowed(name) for name in self.permanent_conditions):
                 self.elements["next_step"].disable()
         # filter buttons
         for i in ["default", "alphabetical"]:
@@ -2050,6 +1837,26 @@ class CatCustomizer:
         )
 
 
+    def customizer_description(self, value):
+        if self.current_selection == "backstory":
+            if value == "Random":
+                return "Start as a newborn with a random origin and a matching family. All new-colony characters begin life as newborns."
+            cat = getattr(self, "the_cat", None)
+            name = str(cat.name) if cat else "Your cat"
+            pronouns = cat.pronouns[0] if cat else Cat.default_pronouns[{"male": 2, "female": 1, "intersex": 0}[self.sex]]
+            clan_name = getattr(self, "clan_name", "") or (game.clan.name if game.clan else "the colony")
+            return process_text(BACKSTORIES["backstories"][value], {
+                "m_c": (name, pronouns), "r_c": ("another cat", Cat.default_pronouns[0]),
+                "o_c_n": ("another colony", Cat.default_pronouns[0]), "c_n": (clan_name, Cat.default_pronouns[0]),
+            })
+        if self.current_selection == "trait":
+            cat = getattr(self, "the_cat", None)
+            group = "kit_traits" if cat is None or cat.personality.kit else "normal_traits"
+            ranges = Personality.trait_ranges[group][value]
+            return value.capitalize() + "<br>Personality ranges (0-16):<br>" + "<br>".join(
+                f"{facet.capitalize()}: {bounds[0]}-{bounds[1]}" for facet, bounds in ranges.items())
+        return value.replace("_", " ").capitalize()
+
     def build_details_page(self):
         categories = ["secondary_skill"] + list(self.details_options)
         if self.current_selection not in categories:
@@ -2059,23 +1866,14 @@ class CatCustomizer:
             self.current_selection_buttons[category] = UISurfaceImageButton(
                 ui_scale(pygame.Rect((120, 100 + index * 50), (120, 40))), category.replace("_", " "),
                 get_button_dict(ButtonStyles.ROUNDED_RECT, (120, 40)), object_id="@buttonstyles_rounded_rect", manager=MANAGER)
-        container = pygame_gui.elements.UIScrollingContainer(
-            ui_scale(pygame.Rect((550, 85), (175, 480))), allow_scroll_x=False, manager=MANAGER)
-        self.elements["details"] = container
         options = ["None"] + self.skills[1:] if self.current_selection == "secondary_skill" else self.details_options[self.current_selection]
-        for index, value in enumerate(options):
-            checked = value == getattr(self, self.current_selection)
-            button = UIImageButton(ui_scale(pygame.Rect((0, index * 40 + 4), (34, 34))), "",
-                                   object_id="@checked_checkbox" if checked else "@unchecked_checkbox", container=container, manager=MANAGER)
-            self.detail_buttons[value] = button
-            self.elements["detail_" + value] = button
-            label = value.replace("_", " ").capitalize()
-            self.elements["detail_label_" + value] = pygame_gui.elements.UITextBox(
-                label if len(label) < 16 else label[:13] + "...", ui_scale(pygame.Rect((32, index * 40), (125, 34))),
-                object_id=get_text_box_theme("#text_box_30_horizleft"), container=container, manager=MANAGER)
-            if checked:
-                button.disable()
-        container.set_scrollable_area_dimensions(ui_scale_dimensions((155, max(480, len(options) * 40))))
+        container = CustomizerList(pygame.Rect((550, 85), (175, 480)), options,
+                                  lambda value: value.replace("_", " ").capitalize(), self.detail_buttons, self.customizer_description)
+        self.elements["details"] = container
+        container.on_change = self.update_disabled_buttons
+        selected = getattr(self, self.current_selection) or "None"
+        if selected in options:
+            container.scroll_to(selected)
         for key, text, y in (("heal", "Heal", 470), ("reset_facets", "Reset Facets", 515)):
             self.elements[key] = UISurfaceImageButton(ui_scale(pygame.Rect((335, y), (130, 34))), text,
                 get_button_dict(ButtonStyles.SQUOVAL, (130, 34)), object_id="@buttonstyles_squoval", manager=MANAGER)
@@ -2117,11 +1915,57 @@ class CatCustomizer:
             self.custom_cat.gender = self.sex
         return generate_sprite(self.custom_cat)
 
-    def condition_allowed(self, name):
+    def accessory_options(self):
+        options = self.elements["appearance_editor"].option_list.options
+        return [item for item in options if item != "None"
+                and not (("NOTAIL" in self.scars or "HALFTAIL" in self.scars) and item in self.notail_accs)
+                and not ("NOPAW" in self.scars and item in self.noleg_accs)]
+
+    def set_customizer_conditions(self, conditions):
+        previous = set(self.permanent_conditions)
+        self.permanent_conditions = list(dict.fromkeys(conditions))
+        selected = set(self.permanent_conditions)
+        self.paralyzed = "paralyzed" in selected
+        anatomy = {"born without a leg": "NOPAW", "lost a leg": "NOPAW",
+                   "born without a tail": "NOTAIL", "lost their tail": "NOTAIL"}
+        retained_scars = {scar for name, scar in anatomy.items() if name in selected}
+        for name, scar in anatomy.items():
+            if name in previous - selected and scar not in retained_scars and scar in self.scars:
+                self.scars.remove(scar)
+        for name, scar in anatomy.items():
+            if name in selected - previous and scar not in self.scars:
+                self.scars.append(scar)
+        for name, scars in (("blind", ("BOTHBLIND",)), ("one bad eye", ("LEFTBLIND", "RIGHTBLIND", "BRIGHTHEART"))):
+            if name in previous - selected:
+                self.scars = [scar for scar in self.scars if scar not in scars]
+        invalid_accessories = set()
+        if "NOTAIL" in self.scars or "HALFTAIL" in self.scars:
+            invalid_accessories.update(self.notail_accs)
+        if "NOPAW" in self.scars:
+            invalid_accessories.update(self.noleg_accs)
+        self.accessories = [item for item in self.accessories if item not in invalid_accessories]
+        self.inventory = [item for item in self.inventory if item not in invalid_accessories]
+
+    def set_customizer_scars(self, scars):
+        previous = set(self.scars)
+        self.scars = list(dict.fromkeys(scars))
+        conditions = self.permanent_conditions.copy()
+        for scar_group, names in ((("NOPAW",), ("born without a leg", "lost a leg")),
+                                  (("NOTAIL",), ("born without a tail", "lost their tail")),
+                                  (("BOTHBLIND",), ("blind",)),
+                                  (("LEFTBLIND", "RIGHTBLIND", "BRIGHTHEART"), ("one bad eye",))):
+            if any(scar in self.scars for scar in scar_group):
+                if not any(name in conditions for name in names):
+                    conditions.append(names[0])
+            elif any(scar in previous for scar in scar_group):
+                conditions = [name for name in conditions if name not in names]
+        self.set_customizer_conditions(conditions)
+
+    def condition_allowed(self, name, conditions=None):
+        if name == "None":
+            return True
         if name in self.sex_specific_conditions and self.sex != "intersex":
             return False
-        cat = getattr(self, "the_cat", None)
-        before = getattr(self, "initial_customizer_state", {}).get("permanent_condition")
-        remaining = set(cat.permanent_condition) - {before} if cat else set()
-        return not ((name == "failing eyesight" and "blind" in remaining) or
-                    (name == "partial hearing loss" and "deaf" in remaining))
+        selected = set(self.permanent_conditions if conditions is None else conditions)
+        selected.add(name)
+        return not ({"blind", "failing eyesight"} <= selected or {"deaf", "partial hearing loss"} <= selected)

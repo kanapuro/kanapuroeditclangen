@@ -18,6 +18,7 @@ import subprocess
 import traceback
 import random
 from html import escape
+from math import ceil
 
 import pygame
 import pygame_gui
@@ -34,6 +35,7 @@ from scripts.game_structure.ui_elements import UIImageButton, UISurfaceImageButt
 from scripts.game_structure.windows import UpdateAvailablePopup, ChangelogPopup
 from scripts.utility import ui_scale, quit, ui_scale_dimensions
 from .Screens import Screens
+from ..game_structure import screen_settings
 from ..game_structure.screen_settings import MANAGER
 from ..housekeeping.datadir import get_data_dir, get_cache_dir
 from ..housekeeping.update import has_update, UpdateChannel, get_latest_version_number
@@ -370,12 +372,21 @@ class StartScreen(Screens):
                 ) as write_file:
                     write_file.write(get_version_info().version_number)
 
+        content_label = "CONTENT SETTINGS"
+        content_font = MANAGER.get_theme().get_font(["@buttonstyles_rounded_rect", "button"])
+        content_size = (ceil(content_font.size(content_label)[0] / screen_settings.screen_scale) + 20, 30)
+        content_rect = ui_scale(pygame.Rect((0, 0), content_size))
+        content_rect.topright = (-ui_scale_dimensions((5, 0))[0], 0)
         self.warning_label_background = UISurfaceImageButton(
-            ui_scale(pygame.Rect((420, 645), (300, 30))),
-            "CONTENT WARNING & TRIGGER SETTINGS",
-            get_button_dict(ButtonStyles.ROUNDED_RECT, (300, 30)),
+            content_rect,
+            content_label,
+            get_button_dict(ButtonStyles.ROUNDED_RECT, content_size),
             object_id="@buttonstyles_rounded_rect",
-            manager=MANAGER
+            manager=MANAGER,
+            anchors={
+                "right": "right", "right_target": Screens.menu_buttons["mute_button"],
+                "centery": "centery", "centery_target": Screens.menu_buttons["mute_button"],
+            },
         )
 
         if game.clan is not None and game.switches["error_message"] == "":

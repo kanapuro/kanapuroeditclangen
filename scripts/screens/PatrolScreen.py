@@ -116,7 +116,7 @@ class PatrolScreen(Screens):
                 self.elements['df_icon'].enable()
             else:
                 self.elements['df_icon'].disable()
-            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 6 and not game.clan.your_cat.not_working():
+            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 6:
                 self.elements['date_icon'].enable()
             else:
                 self.elements['date_icon'].disable()
@@ -131,7 +131,7 @@ class PatrolScreen(Screens):
             self.current_patrol.clear()
             self.elements['cat_icon'].enable()
             self.elements['df_icon'].disable()
-            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 6 and not game.clan.your_cat.not_working():
+            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 6:
                 self.elements['date_icon'].enable()
             else:
                 self.elements['date_icon'].disable()
@@ -164,7 +164,7 @@ class PatrolScreen(Screens):
                 self.elements['df_icon'].enable()
             else:
                 self.elements['df_icon'].disable()
-            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 6 and not game.clan.your_cat.not_working():
+            if not game.clan.your_cat.dead and not game.clan.your_cat.outside and game.clan.your_cat.moons >= 6:
                 self.elements['date_icon'].enable()
             else:
                 self.elements['date_icon'].disable()
@@ -909,8 +909,7 @@ class PatrolScreen(Screens):
             not game.clan.your_cat.dead and
             not game.clan.your_cat.outside and
             game.clan.your_cat.moons >= 6 and
-            game.switches['patrol_category'] not in ['date', 'outing'] and
-            not game.clan.your_cat.not_working()
+            game.switches['patrol_category'] not in ['date', 'outing']
             ):
             self.elements['date_icon'].enable()
         else:
@@ -1205,8 +1204,8 @@ class PatrolScreen(Screens):
 
         elif game.switches["patrol_category"] == "date":
             you = game.clan.your_cat
-            if not you.dead and "4" not in game.switches['patrolled'] and "5" not in game.switches['patrolled'] and not you.outside and not you.not_working():
-                if you not in self.current_patrol and not you.not_working():
+            if not you.dead and "4" not in game.switches['patrolled'] and "5" not in game.switches['patrolled'] and not you.outside and you.moons >= 6:
+                if you not in self.current_patrol:
                     self.current_patrol.insert(0, you)
                 
                 # Determine what type of cats are already in the patrol
@@ -1220,7 +1219,7 @@ class PatrolScreen(Screens):
                 
                 # Show companions based on what's already in the patrol
                 for the_cat in Cat.all_cats_list:
-                    if the_cat.in_camp and the_cat not in self.current_patrol and not the_cat.not_working() and the_cat.status not in ['kitten', "newborn"]:
+                    if the_cat.in_camp and the_cat not in self.current_patrol and the_cat.status not in ['kitten', "newborn"]:
                         is_dateable = the_cat.ID not in game.dated_cats and the_cat.is_dateable(you)
                         is_outable = the_cat.is_friendlyable(you)
                         

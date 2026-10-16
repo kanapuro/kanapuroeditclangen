@@ -65,8 +65,11 @@ class ClearingScreen(Screens):
         self.back_button = None
         self.tactic_text = {}
         self.tactic_boxes = {}
+        self.tactic_moves = {}
+        self.status_moves = {}
         self.additional_text = {}
         self.checkboxes = {}
+        self.default_tactics_button = None
 
         self.cat_tab_open = self.hungry_tab
         self.tab_list = self.hungry_cats
@@ -175,6 +178,13 @@ class ClearingScreen(Screens):
                 self.cats_tab.enable()
                 self.tactic_tab.enable()
                 self.handle_tab_toggles()
+            elif event.ui_element == self.default_tactics_button:
+                for code, desc in settings_dict["freshkill_tactics"].items():
+                    game.clan.clan_settings[code] = desc[2]
+                game.clan.clan_settings["feeding priorities"] = []
+                game.clan.clan_settings["feeding status order"] = game.prey_config["feeding_order"].copy()
+                self.settings_changed = True
+                self.create_checkboxes()
             elif event.ui_element == self.tactic_tab:
                 self.open_tab = "tactic"
                 self.log_tab.enable()
@@ -293,17 +303,26 @@ class ClearingScreen(Screens):
             manager=MANAGER,
         )
         self.tactic_title = pygame_gui.elements.UITextBox(
-            "Feeding Tactic",
-            ui_scale(pygame.Rect((140, 405), (200, 40))),
+            "Feeding Tactics",
+            ui_scale(pygame.Rect((140, 310), (560, 35))),
             object_id=get_text_box_theme("#text_box_40_horizcenter"),
             manager=MANAGER,
         )
+        self.default_tactics_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((380, 354), (80, 28))),
+            "Default",
+            get_button_dict(ButtonStyles.SQUOVAL, (80, 28)),
+            object_id="@buttonstyles_squoval", manager=MANAGER, starting_height=2,
+            tool_tip_text="Reset feeding rules, status order, and rationing to their defaults.",
+        )
+        self.default_tactics_button.hide()
         self.log_title.hide()
         self.tactic_title.hide()
         self.cat_bg = pygame_gui.elements.UIImage(
             ui_scale(pygame.Rect((140, 440), (560, 200))),
             get_box(BoxStyles.ROUNDED_BOX, (560, 200)),
             manager=MANAGER,
+            starting_height=0,
         )
         self.cat_bg.disable()
         log_text = game.freshkill_event_list.copy()
@@ -404,6 +423,32 @@ class ClearingScreen(Screens):
         self.update_focus_cat()
 
     def handle_tab_toggles(self):
+        tactics = self.open_tab == "tactic"
+        self.default_tactics_button.show() if tactics else self.default_tactics_button.hide()
+        panel = pygame.Rect((140, 345), (560, 325)) if tactics else pygame.Rect((140, 440), (560, 200))
+        self.cat_bg.set_dimensions(ui_scale_dimensions(panel.size))
+        self.cat_bg.set_relative_position(ui_scale(panel.copy()).topleft)
+        self.cat_bg.set_image(get_box(BoxStyles.ROUNDED_BOX, panel.size))
+        pile = pygame.Rect((288, 25), (225, 225)) if tactics else pygame.Rect((250, 25), (300, 300))
+        self.pile_base.set_dimensions(ui_scale_dimensions(pile.size))
+        self.pile_base.rebuild_from_changed_theme_data()
+        self.pile_base.set_relative_position(ui_scale(pile.copy()).topleft)
+        self.info_messages.set_relative_position(ui_scale(pygame.Rect((108, 230 if tactics else 310), (0, 0))).topleft)
+        for element in (self.focus_cat, self.focus_info, self.focus_name):
+            if element:
+                element.hide() if tactics else element.show()
+        if tactics:
+            for button in (self.feed_all_button, self.feed_one_button, self.feed_max_button, self.stop_focus_button):
+                button.hide()
+        elif self.focus_cat_object:
+            self.feed_all_button.hide()
+            for button in (self.feed_one_button, self.feed_max_button, self.stop_focus_button):
+                button.show()
+        else:
+            self.feed_all_button.show()
+            for button in (self.feed_one_button, self.feed_max_button, self.stop_focus_button):
+                button.hide()
+
         if self.open_tab == "cats":
             self.tactic_title.hide()
             self.log_title.hide()
@@ -703,6 +748,7 @@ class ClearingScreen(Screens):
         self.log_box.kill()
         self.tactic_tab.kill()
         self.tactic_title.kill()
+        self.default_tactics_button.kill()
         self.delete_checkboxes()
         if self.focus_cat:
             self.focus_cat.kill()
@@ -722,91 +768,123 @@ class ClearingScreen(Screens):
         self.cat_buttons = {}
 
     def create_checkboxes(self):
+        container = self.tactic_text.get("container_general")
+        scroll = container.vert_scroll_bar.start_percentage if container and container.vert_scroll_bar else 0
+        status_container = self.additional_text.get("container_general")
+        status_scroll = status_container.vert_scroll_bar.start_percentage if status_container and status_container.vert_scroll_bar else 0
         self.delete_checkboxes()
 
         self.tactic_text[
             "container_general"
         ] = pygame_gui.elements.UIScrollingContainer(
-            ui_scale(pygame.Rect((140, 450), (230, 175))),
+            ui_scale(pygame.Rect((150, 409), (250, 216))),
             allow_scroll_x=False,
             manager=MANAGER,
         )
 
-        n = 0
-        x_val = 55
-        for code, desc in settings_dict["freshkill_tactics"].items():
-            if code == "ration prey":
-                continue
-            if len(desc) == 4 and isinstance(desc[3], list):
-                x_val += 40
-
+        priorities = game.clan.freshkill_pile.get_feeding_priorities()
+        modes = priorities + [mode for mode in settings_dict["freshkill_tactics"]
+                              if mode != "ration prey" and mode not in priorities]
+        for n, code in enumerate(modes):
+            label = settings_dict["freshkill_tactics"][code][0]
+            if code in priorities:
+                label = f"{priorities.index(code) + 1}. {label}"
             self.tactic_text[code] = pygame_gui.elements.UITextBox(
-                desc[0],
-                ui_scale(pygame.Rect((x_val, n * 45), (500, 39))),
+                label, ui_scale(pygame.Rect((38, n * 36), (144, 36))),
                 container=self.tactic_text["container_general"],
-                object_id="#text_box_30_horizleft_pad_0_8",
-                manager=MANAGER,
+                object_id="#text_box_26_horizleft_pad_10_14", manager=MANAGER,
             )
-            n += 1
-
+            self.tactic_text[code].set_tooltip(settings_dict["freshkill_tactics"][code][1])
         self.tactic_text["container_general"].set_scrollable_area_dimensions(
-            ui_scale_dimensions((200, (n * 30 + x_val + 20)))
+            ui_scale_dimensions((250, len(modes) * 36))
         )
 
-        self.additional_text[
-            "container_general"
-        ] = pygame_gui.elements.UIScrollingContainer(
-            ui_scale(pygame.Rect((360, 450), (327, 175))),
-            allow_scroll_x=False,
-            manager=MANAGER,
-        )
-
-        n = 0
-        x_val = 55
-        for code, desc in settings_dict["freshkill_tactics"].items():
-            if code == "ration prey":
-                # Handle nested
-                if len(desc) == 4 and isinstance(desc[3], list):
-                    x_val += 20
-
-                self.additional_text[code] = pygame_gui.elements.UITextBox(
-                    desc[0],
-                    ui_scale(pygame.Rect((x_val, n * 30), (500, 39))),
-                    container=self.additional_text["container_general"],
-                    object_id="#text_box_30_horizleft_pad_0_8",
-                    manager=MANAGER,
-                )
-                n += 1
-
-        x_val = 22
-        self.additional_text["condition_increase"] = pygame_gui.elements.UITextBox(
-            "<b>Status-order + needed amount:</b>",
-            ui_scale(pygame.Rect((x_val, n * 25 + 5), (500, 39))),
-            container=self.additional_text["container_general"],
-            object_id="#text_box_30_horizleft_pad_0_8",
-            manager=MANAGER,
-        )
-
-        prey_requirement = game.prey_config["prey_requirement"]
-        feeding_order = game.prey_config["feeding_order"]
-        for status in feeding_order:
-            amount = prey_requirement[status]
-            self.additional_text["condition_increase"] = pygame_gui.elements.UITextBox(
-                f"{n}. {status}: {amount} prey",
-                ui_scale(pygame.Rect((x_val, n * 22 + 27), (500, 39))),
-                container=self.additional_text["container_general"],
-                object_id="#text_box_30_horizleft_pad_0_8",
-                manager=MANAGER,
+        for values, x_val, width, title, hint in (
+            (self.tactic_text, 150, 250, "Feeding rules", "Later rules break ties."),
+            (self.additional_text, 405, 285, "Status order", "Status / prey needed"),
+        ):
+            values["heading"] = pygame_gui.elements.UITextBox(
+                title, ui_scale(pygame.Rect((x_val, 350), (width, 35))),
+                object_id="#text_box_34_horizcenter", manager=MANAGER,
             )
-            n += 1
-
+            values["hint"] = pygame_gui.elements.UITextBox(
+                hint, ui_scale(pygame.Rect((x_val, 385), (width, 24))),
+                object_id="#text_box_26_horizleft_verttop_pad_14_0_10", manager=MANAGER,
+            )
+        self.tactic_text["heading"].set_tooltip("The first selected rule has priority. Later rules break ties.")
+        self.additional_text["heading"].set_tooltip("By-status feeding uses this order. Numbers show the prey each cat needs.")
+        self.additional_text["container_general"] = pygame_gui.elements.UIScrollingContainer(
+            ui_scale(pygame.Rect((405, 409), (285, 251))),
+            allow_scroll_x=False, manager=MANAGER,
+        )
+        self.additional_text["ration prey"] = pygame_gui.elements.UITextBox(
+            "Ration prey", ui_scale(pygame.Rect((188, 630), (210, 34))),
+            object_id="#text_box_26_horizleft_pad_10_14", manager=MANAGER,
+        )
+        self.additional_text["ration prey"].set_tooltip(settings_dict["freshkill_tactics"]["ration prey"][1])
+        status_order = game.clan.freshkill_pile.get_status_order()
+        row_y = 0
+        for n, status in enumerate(status_order):
+            amount = game.prey_config["prey_requirement"][status]
+            label_rect = ui_scale(pygame.Rect((5, 0), (159, -1)))
+            label_rect.y = row_y
+            self.additional_text[status] = pygame_gui.elements.UITextBox(
+                f"{n + 1}. {status}", label_rect,
+                container=self.additional_text["container_general"],
+                object_id="#text_box_26_horizleft_pad_10_14", manager=MANAGER,
+            )
+            self.additional_text[status].set_tooltip("This order is used by by-status feeding, including its place in your priority list.")
+            row_height = max(ui_scale_dimensions((0, 32))[1], self.additional_text[status].rect.height)
+            amount_rect = ui_scale(pygame.Rect((168, 0), (32, -1)))
+            amount_rect.y = row_y
+            self.additional_text["prey_" + status] = pygame_gui.elements.UITextBox(
+                str(amount), amount_rect,
+                container=self.additional_text["container_general"],
+                object_id="#text_box_26_horizleft_pad_10_14", manager=MANAGER,
+            )
+            for direction, x_val in ((-1, 204), (1, 236)):
+                button_rect = ui_scale(pygame.Rect((x_val, 0), (28, 28)))
+                button_rect.y = row_y + (row_height - button_rect.height) // 2
+                button = self.create_move_button(
+                    button_rect, direction, self.additional_text["container_general"],
+                    "Feed this status earlier" if direction == -1 else "Feed this status later",
+                )
+                self.status_moves[status, direction] = button
+                if not 0 <= n + direction < len(status_order):
+                    button.disable()
+            row_y += row_height + ui_scale_dimensions((0, 4))[1]
         self.additional_text["container_general"].set_scrollable_area_dimensions(
-            ui_scale_dimensions((305, (n * 30)))
+            (ui_scale_dimensions((265, 0))[0], row_y)
         )
 
         self.refresh_checkboxes("general")
+        if self.tactic_text["container_general"].vert_scroll_bar:
+            self.tactic_text["container_general"].vert_scroll_bar.set_scroll_from_start_percentage(scroll)
+        if self.additional_text["container_general"].vert_scroll_bar:
+            self.additional_text["container_general"].vert_scroll_bar.set_scroll_from_start_percentage(status_scroll)
+
+    def create_move_button(self, rect, direction, container, tooltip):
+        theme = MANAGER.get_theme()
+        font = theme.get_font(["@buttonstyles_icon"])
+        images = {}
+        # The game font has horizontal arrows; rotate the same glyph for reordering.
+        for state, image in get_button_dict(ButtonStyles.ICON, (28, 28)).items():
+            images[state] = image.copy()
+            arrow = font.render_premul(Icon.ARROW_RIGHT, theme.get_colour(state + "_text", ["@buttonstyles_icon"]))
+            arrow = pygame.transform.rotate(arrow, 90 if direction == -1 else -90)
+            images[state].blit(arrow, arrow.get_rect(center=image.get_rect().center), special_flags=pygame.BLEND_PREMULTIPLIED)
+        return UISurfaceImageButton(
+            rect, "", images, object_id="@buttonstyles_icon", manager=MANAGER,
+            container=container, tool_tip_text=tooltip,
+        )
 
     def delete_checkboxes(self):
+        for button in self.status_moves.values():
+            button.kill()
+        self.status_moves = {}
+        for button in self.tactic_moves.values():
+            button.kill()
+        self.tactic_moves = {}
         for checkbox in self.tactic_boxes.values():
             checkbox.kill()
         self.tactic_boxes = {}
@@ -829,37 +907,30 @@ class ClearingScreen(Screens):
             checkbox.kill()
         self.tactic_boxes = {}
 
-        n = 0
-        for code, desc in settings_dict["freshkill_tactics"].items():
-            if code == "ration prey":
-                continue
-            if game.clan.clan_settings[code]:
-                box_type = "@checked_checkbox"
-            else:
-                box_type = "@unchecked_checkbox"
-
-            # Handle nested
-            disabled = False
-            x_val = 10
-            if len(desc) == 4 and isinstance(desc[3], list):
-                x_val += 25
-                disabled = (
-                    game.clan.clan_settings.get(desc[3][0], not desc[3][1])
-                    != desc[3][1]
-                )
-
+        priorities = game.clan.freshkill_pile.get_feeding_priorities()
+        modes = priorities + [mode for mode in settings_dict["freshkill_tactics"]
+                              if mode != "ration prey" and mode not in priorities]
+        for n, code in enumerate(modes):
+            checked = code in priorities
             self.tactic_boxes[code] = UIImageButton(
-                ui_scale(pygame.Rect((x_val, n * 45), (34, 34))),
-                "",
-                object_id=box_type,
+                ui_scale(pygame.Rect((0, n * 36 + 1), (34, 34))), "",
+                object_id="@checked_checkbox" if checked else "@unchecked_checkbox",
                 container=self.tactic_text["container_" + sub_menu],
-                tool_tip_text=desc[1],
+                tool_tip_text=settings_dict["freshkill_tactics"][code][1],
             )
-
-            if disabled:
+            if checked and len(priorities) == 1:
                 self.tactic_boxes[code].disable()
-
-            n += 1
+            for direction, x_val in ((-1, 186), (1, 218)):
+                button = self.create_move_button(
+                    ui_scale(pygame.Rect((x_val, n * 36 + 4), (28, 28))),
+                    direction, self.tactic_text["container_" + sub_menu],
+                    "Move earlier" if direction == -1 else "Move later",
+                )
+                self.tactic_moves[code, direction] = button
+                if not checked:
+                    button.hide()
+                if not checked or not 0 <= priorities.index(code) + direction < len(priorities):
+                    button.disable()
 
         for checkbox in self.checkboxes.values():
             checkbox.kill()
@@ -884,10 +955,10 @@ class ClearingScreen(Screens):
                     )
 
                 self.checkboxes[code] = UIImageButton(
-                    ui_scale(pygame.Rect((x_val, n * 25), (34, 34))),
+                    ui_scale(pygame.Rect((150, 630), (34, 34))),
                     "",
                     object_id=box_type,
-                    container=self.additional_text["container_" + sub_menu],
+                    manager=MANAGER,
                     tool_tip_text=desc[1],
                 )
 
@@ -896,39 +967,44 @@ class ClearingScreen(Screens):
                 n += 1
 
     def handle_checkbox_events(self, event):
-        """
-        Switch on or off, only allow one checkbox to be selected.
-        """
-        active_key = None
-        if event.ui_element in self.tactic_boxes.values():
-            for key, value in self.tactic_boxes.items():
-                if (
-                    value == event.ui_element
-                    and value.object_ids[1] == "@unchecked_checkbox"
-                ):
-                    game.clan.switch_setting(key)
-                    active_key = key
-                    self.settings_changed = True
-                    self.create_checkboxes()
+        for (status, direction), button in self.status_moves.items():
+            if button == event.ui_element and button.is_enabled:
+                order = game.clan.freshkill_pile.get_status_order().copy()
+                index = order.index(status)
+                order[index], order[index + direction] = order[index + direction], order[index]
+                game.clan.clan_settings["feeding status order"] = order
+                self.settings_changed = True
+                self.create_checkboxes()
+                return
+        priorities = game.clan.freshkill_pile.get_feeding_priorities()
+        changed = False
+        for (code, direction), button in self.tactic_moves.items():
+            if button == event.ui_element and button.is_enabled:
+                index = priorities.index(code)
+                priorities[index], priorities[index + direction] = priorities[index + direction], priorities[index]
+                changed = True
+                break
+        if not changed:
+            for code, button in self.tactic_boxes.items():
+                if button == event.ui_element and button.is_enabled:
+                    if code in priorities:
+                        priorities.remove(code)
+                    else:
+                        priorities.append(code)
+                    changed = True
                     break
+        if changed:
+            game.clan.clan_settings["feeding priorities"] = priorities
+            for mode in settings_dict["freshkill_tactics"]:
+                if mode != "ration prey":
+                    game.clan.clan_settings[mode] = mode == priorities[0]
+            self.settings_changed = True
+            self.create_checkboxes()
+            return
 
-            # un-switch all other keys
-            for key, value in self.tactic_boxes.items():
-                if (
-                    active_key
-                    and key != active_key
-                    and value.object_ids[1] == "@checked_checkbox"
-                ):
-                    game.clan.switch_setting(key)
-                    self.settings_changed = True
-                    self.create_checkboxes()
-                    break
-
-        if event.ui_element in self.checkboxes.values():
-            for key, value in self.checkboxes.items():
-                if value == event.ui_element:
-                    game.clan.switch_setting(key)
-                    active_key = key
-                    self.settings_changed = True
-                    self.create_checkboxes()
-                    break
+        for key, button in self.checkboxes.items():
+            if button == event.ui_element:
+                game.clan.switch_setting(key)
+                self.settings_changed = True
+                self.create_checkboxes()
+                return

@@ -79,7 +79,7 @@ class ContentSettingsScreen(Screens):
         )
 
         self.checkboxes_text["instr"] = pygame_gui.elements.UITextBox(
-            "This game contains dark content not suitable for children. You can use these settings to manage your experience and toggle sensitive features. These settings are saved globally.",
+            "Content Settings apply to all colonies. Toggle sensitive features below. This game contains dark content not suitable for children.",
             ui_scale(pygame.Rect((100, 100), (600, 80))),
             object_id=get_text_box_theme("#text_box_30_horizcenter"),
             manager=MANAGER,

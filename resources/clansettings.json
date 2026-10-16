@@ -217,32 +217,32 @@
     "freshkill_tactics":{
         "by-status":[
             "by-status",
-            "The colony will be fed according their status and within the status by age.",
+            "Feed cats using the status order shown on the right.",
             true
         ],
         "younger first":[
             "younger first",
-            "The colony will be fed according to their age only.",
+            "Feed younger cats first.",
             false
         ],
         "less nutrition first":[
             "less nutrition first",
-            "First the cats with the lowest nutrition will be fed, afterwards the colony will be fed according to their status.",
+            "Feed cats with lower nutrition first.",
             false
         ],
         "hunter first":[
             "hunter first",
-            "Firstly the cats with a hunter skill will be fed, afterwards the colony will be fed according to their status.",
+            "Feed cats with hunting skills first, with more skilled hunters ahead.",
             false
         ],
         "sick/injured first":[
             "sick/injured first",
-            "Firstly the sick and injured cats will be fed, afterwards the colony will be fed according to their status.",
+            "Feed ill or injured cats first.",
             false
         ],
         "more experience first":[
             "high EXP first",
-            "The colony will be fed according their experience, highest one first.",
+            "Feed cats with more experience first.",
             false
         ],
         "ration prey":[

@@ -1,13 +1,20 @@
-from typing import List
+import os
+from pathlib import Path, PureWindowsPath
 from random import choice, randint
+from re import fullmatch
+from typing import List
+
+import ujson
 
 from scripts.cat.cats import Cat
+from scripts.cat_relations.inheritance import Inheritance
 from scripts.cat.names import names
 from scripts.clan import OtherClan, generate_clan_name
 from scripts.utility import create_new_cat
 from scripts.debug_commands.command import Command
 from scripts.debug_commands.utils import add_output_line_to_log
 from scripts.game_structure.game_essentials import game
+from scripts.housekeeping.datadir import get_save_dir
 
 
 CAMP_AVAILABILITY = {
@@ -78,6 +85,9 @@ def _regenerate_other_clans(target_count: int = None):
     create exactly that many outsider clans; otherwise pick a random 1-5."""
     old_count = len(game.clan.all_clans)
     game.clan.all_clans.clear()
+    game.clan.clans_in_focus.clear()
+    game.clan.war.update(at_war=False, enemy=None, duration=0)
+    game.switches.pop("other_med", None)
 
     if isinstance(target_count, int) and target_count >= 0:
         number_other_clans = target_count
@@ -96,19 +106,60 @@ def _regenerate_other_clans(target_count: int = None):
 
 
 def _wipe_outsider_cats(target_count: int = None):
-    """Wipe outsider cats. If target_count is provided, recreate that many
-    outsiders and return (wiped_count, created_count). Otherwise return
-    (wiped_count, 0)."""
-    wiped_count = 0
-    for cat_id in list(Cat.outside_cats.keys()):
-        Cat.outside_cats.pop(cat_id, None)
-        wiped_count += 1
-        if cat_id in Cat.all_cats:
-            game.clan.remove_cat(cat_id)
+    protected = {cat.ID for cat in (
+        game.clan.your_cat, game.clan.instructor, game.clan.demon, game.clan.wanderer,
+        game.clan.leader, game.clan.deputy, game.clan.medicine_cat,
+    ) if cat is not None} | set(game.clan.med_cat_list)
+    removed = {cat.ID for cat in Cat.all_cats.values() if cat.outside and cat.ID not in protected}
+    directory = Path(get_save_dir()) / game.clan.name
+    for cat_id in removed:
+        game.clan.remove_cat(cat_id)
+        Inheritance.all_inheritances.pop(cat_id, None)
+        (directory / "history" / f"{cat_id}_history.json").unlink(missing_ok=True)
+        (directory / "conditions" / f"{cat_id}_conditions.json").unlink(missing_ok=True)
 
-    created_count = 0
-    if isinstance(target_count, int) and target_count > 0:
-        # Create exactly target_count outsiders
+    for cat in Cat.all_cats.values():
+        lost_mentor = cat.mentor in removed
+        lost_df_mentor = cat.df_mentor in removed
+        for field in ("parent1", "parent2", "mentor", "df_mentor"):
+            if getattr(cat, field) in removed:
+                setattr(cat, field, None)
+        for field in ("adoptive_parents", "mates", "previous_mates", "former_mentor",
+                      "apprentice", "former_apprentices", "df_apprentices"):
+            values = getattr(cat, field)
+            values[:] = [cat_id for cat_id in values if cat_id not in removed]
+        for cat_id in removed:
+            cat.relationships.pop(cat_id, None)
+        if lost_mentor:
+            cat.update_mentor()
+        if lost_df_mentor and cat.joined_df:
+            cat.update_df_mentor()
+
+    for cat in Cat.all_cats.values():
+        if cat.inheritance is not None:
+            cat.inheritance.update_inheritance()
+    for cat_id in removed:
+        game.clan.pregnancy_data.pop(cat_id, None)
+    for pregnancy in game.clan.pregnancy_data.values():
+        if pregnancy.get("second_parent") in removed:
+            pregnancy["second_parent"] = None
+    if game.clan.focus_cat and game.clan.focus_cat.ID in removed:
+        game.clan.focus_cat = None
+    murder = game.clan.murdered
+    if (murder.get("murderer") in removed or murder.get("victim") in removed
+            or (murder.get("accomplice") and murder["accomplice"][0] in removed)):
+        murder.clear()
+    if game.switches["cat"] in removed:
+        game.switches["cat"] = game.clan.your_cat.ID
+    game.cat_to_fade[:] = [cat_id for cat_id in game.cat_to_fade if cat_id not in removed]
+    game.patrolled[:] = [cat_id for cat_id in game.patrolled if cat_id not in removed]
+    game.told_story[:] = [cat_id for cat_id in game.told_story if cat_id not in removed]
+    game.mediated[:] = [pair for pair in game.mediated if not removed.intersection(pair)]
+
+    before = set(Cat.all_cats)
+    if target_count is None:
+        game.clan.generate_outsiders()
+    else:
         for _ in range(target_count):
             outsider = create_new_cat(
                 Cat,
@@ -118,9 +169,13 @@ def _wipe_outsider_cats(target_count: int = None):
                 thought="Wanders around beyond the Clan's borders",
             )[0]
             outsider.history.beginning = None
-            created_count += 1
-
-    return wiped_count, created_count
+    newcomers = [cat for cat_id, cat in Cat.all_cats.items() if cat_id not in before]
+    for cat in newcomers:
+        cat.create_inheritance_new_cat()
+    Cat.outside_cats.clear()
+    for cat in Cat.all_cats.values():
+        game.clan.add_to_outside(cat)
+    return len(removed), len(newcomers)
 
 
 class SetBiomeCommand(Command):
@@ -340,6 +395,95 @@ class LocationCommand(Command):
         add_output_line_to_log("To change camp only: location camp <camp>")
 
 
+class RenameClanCommand(Command):
+    name = "renameclan"
+    description = "Rename the loaded colony and its save"
+    usage = "<name>"
+
+    def callback(self, args: List[str]):
+        if not game.clan:
+            add_output_line_to_log("Please load a Clan first")
+            return
+        if game.current_screen == "make clan screen":
+            add_output_line_to_log("Please finish colony creation first")
+            return
+        new_name = " ".join(args).strip()
+        if not new_name or not fullmatch(r"[A-Za-z0-9 ]+", new_name) or len(new_name) > 250:
+            add_output_line_to_log("Use a colony name of 1-250 letters, numbers, or spaces")
+            return
+        if PureWindowsPath(new_name).is_reserved() or "backup" in new_name.casefold():
+            add_output_line_to_log("That name is reserved for system files or save backups")
+            return
+        old_name = game.clan.name
+        if new_name.casefold() == old_name.casefold():
+            add_output_line_to_log(f"The colony is already named {old_name} (names ignore capitalization)")
+            return
+        root = Path(get_save_dir()).resolve()
+        old_folder = root / old_name
+        old_file = root / f"{old_name}.json"
+        new_folder = root / new_name
+        new_file = root / f"{new_name}.json"
+        try:
+            if old_folder.resolve().parent != root or old_file.resolve().parent != root:
+                add_output_line_to_log("The loaded save is outside the save directory")
+                return
+            if not old_folder.is_dir() or not old_file.is_file():
+                add_output_line_to_log("Please save the colony before renaming it")
+                return
+            targets = {new_name.casefold(), f"{new_name}.json".casefold(), f"{new_name}clan.json".casefold()}
+            if any(path.name.casefold() in targets for path in root.iterdir()):
+                add_output_line_to_log("A save or file with that name already exists")
+                return
+            metadata = ujson.loads(old_file.read_text(encoding="utf-8"))
+            if not isinstance(metadata, dict) or metadata.get("clanname") != old_name:
+                add_output_line_to_log("The save metadata does not match the loaded colony")
+                return
+            pointers = [root / filename for filename in ("currentclan.txt", "clanlist.txt")]
+            pointer_data = [(path, path.read_bytes() if path.exists() else None) for path in pointers]
+        except (OSError, ValueError) as error:
+            add_output_line_to_log(f"Could not read the colony save: {error}")
+            return
+
+        metadata["clanname"] = new_name
+        created_file = moved_folder = changed_pointer = False
+        try:
+            # Keep the old metadata until every part of the rename has succeeded.
+            with new_file.open("x", encoding="utf-8") as output:
+                created_file = True
+                ujson.dump(metadata, output, indent=4)
+                output.flush()
+                os.fsync(output.fileno())
+            old_folder.rename(new_folder)
+            moved_folder = True
+            changed_pointer = True
+            game.save_clanlist(new_name)
+            old_file.unlink()
+        except OSError as error:
+            if moved_folder:
+                new_folder.rename(old_folder)
+            if changed_pointer:
+                for path, data in pointer_data:
+                    if data is None:
+                        path.unlink(missing_ok=True)
+                    else:
+                        path.write_bytes(data)
+            if created_file:
+                new_file.unlink()
+            add_output_line_to_log(f"Could not rename the colony; the original save was restored: {error}")
+            return
+
+        game.clan.name = new_name
+        game.switches["clan_name"] = new_name
+        game.switches["clan_list"] = [new_name] + [name for name in game.switches["clan_list"] if name != old_name]
+        screen = game.all_screens[game.current_screen]
+        if screen.name == "list screen":
+            screen.clan_name = new_name
+        if screen.menu_buttons["heading"].html_text == old_name:
+            screen.update_heading_text(new_name)
+        game.rpc.update_rpc.set()
+        add_output_line_to_log(f"Renamed {old_name} to {new_name}")
+
+
 class ChangeClanCommand(Command):
     name = "changeclan"
     description = "Change clan location and regenerate clan data"
@@ -349,6 +493,11 @@ class ChangeClanCommand(Command):
     def callback(self, args: List[str]):
         if not game.clan:
             add_output_line_to_log("No Clan loaded. Cannot change clan location.")
+            return
+
+        if (game.current_screen in ("make clan screen", "customize cat screen")
+                or game.switches.get("window_open")):
+            add_output_line_to_log("Please finish the current editor or window first")
             return
 
         if len(args) == 0:
@@ -400,6 +549,9 @@ class ChangeClanCommand(Command):
             # try integer
             try:
                 val = int(tok)
+                if val < 0:
+                    add_output_line_to_log("Colony and outsider counts cannot be negative")
+                    return
                 if other_count is None:
                     other_count = val
                 elif outsider_count is None:
@@ -410,7 +562,7 @@ class ChangeClanCommand(Command):
                     return
                 i += 1
                 continue
-            except Exception:
+            except ValueError:
                 pass
 
             # try boolean
@@ -448,22 +600,13 @@ class ChangeClanCommand(Command):
 
         if wipe_outsiders:
             wiped_count, created_count = _wipe_outsider_cats(outsider_count)
-            # If outsider_count wasn't specified, use standard generation routines
-            if outsider_count is None:
-                game.clan.generate_outsiders()
-                game.clan.generate_outsider_mates()
-                if game.clan.your_cat:
-                    game.clan.generate_outsider_families()
-                add_output_line_to_log(f"Wiped {wiped_count} outsider cats and generated a fresh outsider pool.")
-            else:
-                # we created created_count outsiders in the helper, but still generate mates/families
-                game.clan.generate_outsider_mates()
-                if game.clan.your_cat:
-                    game.clan.generate_outsider_families()
-                add_output_line_to_log(f"Wiped {wiped_count} outsider cats and created {created_count} outsiders.")
+            add_output_line_to_log(f"Wiped {wiped_count} outsider cats and created {created_count} outsiders. Player, guides, and colony roles are retained.")
 
         game.save_cats()
         game.clan.save_clan()
+        from scripts.screens.screens_core.screens_core import rebuild_bgs
+        rebuild_bgs()
+        game.all_screens[game.current_screen].change_screen("camp screen")
 
         camp_name = CAMP_NAMES.get(biome, {}).get(camp_bg, "")
         if camp_name:

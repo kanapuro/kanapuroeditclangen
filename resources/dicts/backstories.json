@@ -1,5 +1,77 @@
 {
+  "birth_backstories": {
+    "birth_no_parents": [
+      "abandoned1",
+      "abandoned2",
+      "abandoned3",
+      "abandoned4",
+      "loner3",
+      "orphaned1",
+      "orphaned2",
+      "orphaned3",
+      "orphaned4",
+      "orphaned5",
+      "orphaned6",
+      "orphaned7"
+    ],
+    "birth_one_parent": [
+      "clanborn",
+      "halfclan1",
+      "halfclan4",
+      "halfclan5",
+      "halfclan6",
+      "halfclan7",
+      "halfclan8",
+      "halfclan9",
+      "halfclan10",
+      "outsider_roots1",
+      "outsider_roots3",
+      "outsider_roots4",
+      "outsider_roots5",
+      "outsider_roots6",
+      "outsider_roots7",
+      "outsider_roots8"
+    ],
+    "birth_two_parents": [
+      "clanborn"
+    ],
+    "birth_one_adoptive_parent": [
+      "abandoned1",
+      "abandoned2",
+      "abandoned3",
+      "abandoned4",
+      "loner3",
+      "orphaned1",
+      "orphaned2",
+      "orphaned3",
+      "orphaned4",
+      "orphaned5",
+      "orphaned6",
+      "orphaned7"
+    ],
+    "birth_two_adoptive_parents": [
+      "abandoned1",
+      "abandoned2",
+      "abandoned3",
+      "abandoned4",
+      "loner3",
+      "orphaned1",
+      "orphaned2",
+      "orphaned3",
+      "orphaned4",
+      "orphaned5",
+      "orphaned6",
+      "orphaned7"
+    ],
+    "birth_one_parent_outsider": [
+      "outsider1"
+    ],
+    "birth_two_parent_outsiders": [
+      "outsider1"
+    ]
+  },
   "backstories": {
+    "unknown": "m_c's past history is unknown.",
     "clan_founder": "m_c is one of the founding members of the colony.",
     "clanborn": "m_c was born into the colony where {PRONOUN/m_c/subject} currently {VERB/m_c/reside/resides}.",
     "halfclan1": "m_c was born into the colony, but one of {PRONOUN/m_c/poss} parents resides in another colony.",
@@ -154,6 +226,8 @@
     "newwandererguide4": "m_c roamed the lands in life and now {PRONOUN/m_c/subject} {VERB/m_c/guide/guides} wandering spirits to find peace beyond the stars and darkness."
   },
   "backstory_display": {
+    "unknown_backstories": "unknown history",
+    "healer_backstories": "formerly a healer",
     "clan_founder_backstories": "Colony founder",
     "clanborn_backstories": "Colony-born",
     "outsider_roots_backstories": "outsider roots",
@@ -175,6 +249,7 @@
     "new_wanderer_guide_backstories": "ancient spirit"
   },
   "backstory_categories": {
+    "unknown_backstories": ["unknown"],
     "dark_forest_kits": [
       "dfkit1",
       "dfkit2"
