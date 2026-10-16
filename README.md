@@ -65,37 +65,6 @@ The first installation may take a few minutes. To play again, open a terminal in
 bash run.sh
 ```
 
-## Character customization
-
-Open a cat's profile and choose **Customize Cat** to use the same editor as colony creation. It includes trait locks, randomization, Undo/Redo, Reset, skills, permanent conditions, and multiple scars. Age previews show the cat at different life stages; their actual age stays the same.
-
-Edits stay in a draft until **Apply**. **Cancel** or **Back** discards them, and changing display size keeps the draft and Undo/Redo history. Cats created through the console use **Create** to confirm their draft.
-
-## F3 commands
-
-Load a colony and press **F3** to open the console. Enter `help` to list commands, or use commands such as `help cats create` and `help changeclan` for their syntax. Press F3 again to close it.
-
-| Command | What it does |
-| --- | --- |
-| `cats list` | Shows cat names and IDs. |
-| `cats create 24` | Opens the shared customizer for a new cat aged 24 moons. Omitting the age defaults to 1 moon. Cancel discards the cat. |
-| `cats age CAT_ID` | Shows the cat's current age; replace `CAT_ID` with an ID from `cats list`. |
-| `cats age CAT_ID 30` | Sets the cat's age to 30 moons. Signed values such as `+2` adjust it relative to the current age. Existing roles are retained. |
-| `renameclan "New Colony"` | Renames the loaded colony and its save files. Names can contain letters, numbers, and spaces. |
-| `location get` | Shows the current biome, camp, and available camps. |
-| `changeclan Beach 4` | Moves to Beach, camp 4, regenerates neighboring colonies, and keeps existing outside cats. |
-| `changeclan random` | Picks a random biome and camp and regenerates neighboring colonies. |
-
-Relocation also accepts optional counts and switches:
-
-```text
-changeclan BIOME CAMP OTHER_COUNT OUTSIDER_COUNT REGENERATE_OTHER_CLANS WIPE_OUTSIDERS
-```
-
-Use `Forest`, `Mountainous`, `Plains`, or `Beach` for the biome, and a camp number or `random` for the camp. Use `true` or `false` for switches. For example, `changeclan Beach 4 3 5 true true` creates three neighboring colonies and replaces the outsider population with five cats. Counts apply when the corresponding switch is enabled. `changeclan Beach 4 false false` keeps both neighboring colonies and outside cats.
-
-Relocation saves immediately and returns to camp. Keep a backup before using the outsider-wipe option: it permanently removes outside cats and their family, mate, and mentor links. The player, afterlife guides, and cats holding colony roles are retained. New outsiders receive relationships and inheritance data; unrelated resident families and mates stay intact.
-
 ## If the game won't start
 
 - **`poetry` isn't recognized:** Close and reopen your terminal after installing it. If it still isn't found, check the [Poetry installation instructions](https://python-poetry.org/docs/#installation).

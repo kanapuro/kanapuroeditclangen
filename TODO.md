@@ -1,3 +1,4 @@
+OH FUCK MAKE SURE WE CREDIT WHOEVER WE PULL FROM IN CREDITS_TEXT.JSON
 - (PRIORITY) UPDATE TO MODERN LIFEGEN/CLANGEN FEATURES (GAMEMODES, CRUEL SEASON, NEW ASSETS, ETC.)
 - Leader lives: manually verify one/nine-life toggles, reloads, deputy promotion, and command/MC revivals. New saves preserve the hidden nine-life balance; old saves already capped at one may lack the original balance and must not receive invented lives. Manually verify the corrected revival/one-life history wording, especially older retired-leader saves and multiple-life death events.
 - merge w genemod - advanced genetics and (PRIORITY) multi-clan management - https://github.com/narvin42/genemod-expanded 
