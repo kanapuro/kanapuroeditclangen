@@ -239,7 +239,7 @@ class Pregnancy_Events:
         # kits chance. We will only apply it to "cat" in this case
         # which is enough to stop the couple from adopting about within
         # the window.
-        cat.birth_cooldown = game.config["pregnancy"]["birth_cooldown"]
+        cat.birth_cooldown = game.get_config_value("pregnancy", "birth_cooldown")
 
         game.cur_events_list.append(
             Single_Event(print_event, "birth_death", cats_involved)
@@ -452,7 +452,7 @@ class Pregnancy_Events:
             insert = f"litter of {attempted_kits} kits"
 
         # Since cat has given birth, apply the birth cooldown.
-        cat.birth_cooldown = game.config["pregnancy"]["birth_cooldown"]
+        cat.birth_cooldown = game.get_config_value("pregnancy", "birth_cooldown")
 
         # choose event string
         # TODO: currently they don't choose which 'mate' is the 'blood' parent or not
@@ -1326,14 +1326,14 @@ class Pregnancy_Events:
         
         if use_modded:
             # Use modded (lower) pregnancy chances for bigger litters balance
-            inverse_chance = game.config["pregnancy"]["modded_primary_chance_unmated"]
+            inverse_chance = game.get_config_value("pregnancy", "modded_primary_chance_unmated")
             if len(first_parent.mates) > 0 and not affair:
-                inverse_chance = game.config["pregnancy"]["modded_primary_chance_mated"]
+                inverse_chance = game.get_config_value("pregnancy", "modded_primary_chance_mated")
         else:
             # Use standard pregnancy chances
-            inverse_chance = game.config["pregnancy"]["primary_chance_unmated"]
+            inverse_chance = game.get_config_value("pregnancy", "primary_chance_unmated")
             if len(first_parent.mates) > 0 and not affair:
-                inverse_chance = game.config["pregnancy"]["primary_chance_mated"]
+                inverse_chance = game.get_config_value("pregnancy", "primary_chance_mated")
 
         # SETTINGS
         # - decrease inverse chance if only mated pairs can have kits

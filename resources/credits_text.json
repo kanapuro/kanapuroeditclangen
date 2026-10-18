@@ -17,13 +17,19 @@
         "",
         "<b>Thank you for playing!!</b>",
         "{music}",
-        "<i>Composed by Sharon Hurvitz</i>",
-        "Main Menu music: <i>Generations</i>",
+        "<i>Composed by Sharon Hurvitz and Carl-Isaak Krulewitch</i>",
+        "Colony creation music: <i>Generations</i>",
+        "In-game music: <i>Ancient Tunnels, Crossing the River, Dawn Patrol, Leafbare, Moonhigh Vigil, Moonstone, Newleaf, The Medicine Cat's Den</i>",
         "{licensing}",
         "Code is licensed under <a href=https://www.mozilla.org/en-US/MPL/2.0/>Mozilla Public License Version 2.0</a>",
         "Art is licensed under <a href=https://creativecommons.org/licenses/by-nc/4.0/legalcode>CC-BY-NC 4.0</a> "
     ],
     "mod_contrib": {
+        "Upstream projects": {
+            "LifeGen contributors": "LifeGen gameplay, Quick Start flow, shared navigation/header and Events pagination/save layouts, Supplies windows and multi-cat selection, Cruel Season mechanics and modernization reference: https://github.com/sedgestripe/clangen",
+            "ClanGen contributors": "ClanGen Cruel Season card definitions and mechanics adapted for LGMMKE (source revisions in resources/dicts/cruel_season.json); modernization reference: https://github.com/ClanGenOfficial/clangen",
+            "ClanGen artists and contributors": "Mode-button artwork, card category icons, colony-header buttons, moon phases, seasonal vines and selection-box artwork from LifeGen development bab3814eee64852125c004dac588fab809a730e9 (https://github.com/sedgestripe/clangen/tree/bab3814eee64852125c004dac588fab809a730e9/resources/images); Cruel Season card artwork and deck backdrops, unchanged source assets from ClanGen development 904012b9e9c62ab24a8988ae23d8a516232ff7e2. CC BY-NC 4.0. Source and contributor credits: https://github.com/ClanGenOfficial/clangen/tree/904012b9e9c62ab24a8988ae23d8a516232ff7e2/resources"
+        },
         "KanapuroEdit": {
             "Kanapuro": "KanapuroEdit merger and maintainer + FelGen author",
             "chinchbug": "GeneMod author",
@@ -136,6 +142,7 @@
         "Salix": "Art",
         "sami(RAYTRAC3R)": "First implementation of biomes, gender system, and profile tabs, helped Ryos with tortie recode bugs",
         "Selkirks": "Bugfixes, pronoun tagging, thoughts, names",
+        "Carl-Isaak Krulewitch": "Composer: in-game music (credited jointly with Sharon Hurvitz by ClanGen/LifeGen)",
         "Sharon Hurvitz": "Composer: Menu music, Audio Engineer: Sound Effects",
         "Shecker": "Code, cat toggles",
         "Shou": "Build workflow rewrite, initial lint/test workflows, bug/performance/refactoring fixes",

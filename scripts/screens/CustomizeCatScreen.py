@@ -27,20 +27,7 @@ class CustomizeCatScreen(CatCustomizer, Screens):
         self.set_mute_button_position("topright")
         self.show_mute_buttons()
         self.set_bg("default", "mainmenu_bg")
-        pelt = self.the_cat.pelt
-        self.pname = pelt.name
-        for draft, stage in (("kitten_sprite", "kitten"), ("adolescent_pose", "adolescent"),
-                             ("adult_pose", "adult"), ("elder_pose", "senior")):
-            setattr(self, draft, pelt.cat_sprites[stage])
-        for field in ("length", "colour", "white_patches", "eye_colour", "eye_colour2", "tortiebase",
-                      "tortiecolour", "pattern", "tortiepattern", "vitiligo", "points", "paralyzed", "opacity",
-                      "scars", "tint", "skin", "white_patches_tint", "reverse", "accessories", "inventory",
-                      "fur_texture", "build", "height"):
-            value = deepcopy(getattr(pelt, field))
-            if field in ("white_patches", "pattern") and not isinstance(value, list):
-                value = [value] if value else []
-            setattr(self, field, value)
-        self.sex = self.the_cat.gender
+        self.load_customizer_appearance(self.the_cat)
         self.personality = self.the_cat.personality.trait
         self.skill = self.the_cat.skills.primary.skill if self.the_cat.skills.primary else "None"
         self.secondary_skill = self.the_cat.skills.secondary.skill if self.the_cat.skills.secondary else "None"
@@ -48,7 +35,6 @@ class CustomizeCatScreen(CatCustomizer, Screens):
         self.backstory = self.the_cat.backstory
         self.permanent_conditions = list(self.the_cat.permanent_condition)
         self.preview_age = {"newborn": "kitten", "young adult": "adult", "senior adult": "adult", "senior": "elder"}.get(self.the_cat.age, self.the_cat.age)
-        self.tortie_enabled = pelt.name in ("Tortie", "Calico")
         self.trait_options = list(Personality.trait_ranges["kit_traits" if self.the_cat.personality.kit else "normal_traits"])
         self.initial_customizer_state = self.get_customizer_state()
         self.main_menu = UISurfaceImageButton(ui_scale(pygame.Rect((25, 50), (153, 30))), "Back",

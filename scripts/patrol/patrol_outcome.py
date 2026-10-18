@@ -22,7 +22,7 @@ from scripts.cat.skills import SkillPath
 from scripts.cat.cats import Cat, ILLNESSES, INJURIES, PERMANENT, BACKSTORIES
 from scripts.cat.pelts import Pelt
 from scripts.cat_relations.relationship import Relationship
-from scripts.clan_resources.freshkill import ADDITIONAL_PREY, PREY_REQUIREMENT, HUNTER_EXP_BONUS, HUNTER_BONUS, \
+from scripts.clan_resources.freshkill import ADDITIONAL_PREY, HUNTER_EXP_BONUS, HUNTER_BONUS, \
     FRESHKILL_ACTIVE
 
 
@@ -723,7 +723,7 @@ class PatrolOutcome():
         if not self.prey or game.clan.game_mode == "classic":
             return ""
 
-        basic_amount = PREY_REQUIREMENT["warrior"]
+        basic_amount = game.get_config_value("prey", "prey_requirement", "warrior")
         if game.clan.game_mode == 'expanded':
             basic_amount += ADDITIONAL_PREY
         prey_types = {

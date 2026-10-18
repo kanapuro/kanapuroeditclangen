@@ -7,6 +7,7 @@ import pygame
 import ujson
 
 from scripts.event_class import Single_Event
+from scripts.clan_resources.cruel_season import apply_modifiers
 from scripts.game_structure.screen_settings import toggle_fullscreen
 from scripts.housekeeping.datadir import get_save_dir, get_temp_dir
 
@@ -408,6 +409,8 @@ class Game:
             SaveError(traceback.format_exc())
             if currentscreen is not None:
                 currentscreen.change_screen("start screen")
+            return False
+        return True
 
     def load_settings(self):
         """Load settings that user has saved from previous use"""
@@ -655,19 +658,21 @@ class Game:
             ),
         }
 
-        # Get Value
-        config_value = self.config
-        for key in args:
+        cards = self.clan.cruel_cards if self.clan else None
+        keys = args
+        if cards is not None and len(args) == 2 and args[1].startswith("cruel season_"):
+            keys = (args[0], args[1].replace("cruel season_", "expanded_", 1))
+
+        config_value = self.prey_config if keys[0] == "prey" else self.config
+        for key in keys[1:] if keys[0] == "prey" else keys:
             config_value = config_value[key]
+        if cards is not None:
+            config_value = apply_modifiers(cards, keys, config_value)
 
         # Apply war if needed
         if self.clan and self.clan.war.get("at_war", False) and args in war_effected:
             # Grabs the modifer
-            mod = self.config
-            for key in war_effected[args]:
-                mod = mod[key]
-
-            config_value -= mod
+            config_value -= self.get_config_value(*war_effected[args])
 
         return config_value
 

@@ -22,6 +22,51 @@ from scripts.utility import (
 )
 
 
+class GameWindow(pygame_gui.elements.UIWindow):
+    def __init__(self, rect):
+        from scripts.ui.generate_box import get_box, BoxStyles
+        from scripts.game_structure.screen_settings import MANAGER
+        super().__init__(ui_scale(pygame.Rect(rect)), object_id="#game_window", manager=MANAGER, always_on_top=True)
+        self.set_blocking(True)
+        fade = pygame.Surface(MANAGER.window_resolution, pygame.SRCALPHA)
+        fade.fill((23, 20, 15, 192))  # LifeGen window overlay.
+        self.fade = pygame_gui.elements.UIImage(pygame.Rect((0, 0), MANAGER.window_resolution),
+            fade, starting_height=self.layer, object_id="#fade", manager=MANAGER)
+        frame = ui_scale(pygame.Rect(rect)).inflate(*ui_scale_dimensions((12, 12)))
+        self.box = pygame_gui.elements.UIImage(frame, get_box(BoxStyles.ROUNDED_BOX, (rect[2] + 12, rect[3] + 12)),
+            starting_height=self.layer, manager=MANAGER)
+        self.back_button = UIImageButton(ui_scale(pygame.Rect((-27, 7), (22, 22))), "",
+            object_id="#exit_window_button", container=self, starting_height=10,
+            anchors={"right": "right", "top": "top"}, manager=MANAGER)
+
+    def process_event(self, event):
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            self.kill()
+            return True
+        if event.type == pygame_gui.UI_BUTTON_START_PRESS and event.ui_element == self.back_button:
+            self.kill()
+            return True
+        return super().process_event(event)
+
+    def kill(self):
+        if getattr(self, "fade", None):
+            self.fade.kill()
+        if getattr(self, "box", None):
+            self.box.kill()
+        super().kill()
+
+
+class UIModifiedImage(pygame_gui.elements.UIImage):
+    def check_hover(self, time_delta, hovered_higher_element):
+        # Disabled decoration must not hide hover feedback on buttons beneath it.
+        if not self.is_enabled:
+            if self.hovered:
+                self.hovered = False
+                self.on_unhovered()
+            return False
+        return super().check_hover(time_delta, hovered_higher_element)
+
+
 class UISurfaceImageButton(pygame_gui.elements.UIButton):
     """Subclass of the button class that allows you to pass in surfaces for the images directly."""
 
@@ -984,6 +1029,7 @@ class UIDropDownContainer(UIAutoResizingContainer):
         child_button_container: UIContainer,
         manager: IUIManagerInterface,
         visible: bool = False,
+        open_on_hover: bool = False,
     ):
         super().__init__(
             relative_rect=relative_rect,
@@ -994,11 +1040,26 @@ class UIDropDownContainer(UIAutoResizingContainer):
             manager=manager,
         )
 
+        self.open_on_hover = open_on_hover
         self.parent_button = parent_button
         self.child_button_container = child_button_container
 
         self.is_open: bool = False
         self.selected_element = None
+
+    def update(self, time_delta):
+        super().update(time_delta)
+        if not self.open_on_hover:
+            return
+        if (not self.parent_button.visible or not self.parent_button.is_enabled
+                or any(window.is_blocking for window in self.ui_manager.get_window_stack().get_full_stack())):
+            self.close()
+            return
+        point = self.ui_manager.get_mouse_position()
+        if self.parent_button.rect.collidepoint(point):
+            self.open()
+        elif self.is_open and not self.child_button_container.rect.collidepoint(point):
+            self.close()
 
     def close(self):
         """
@@ -1112,6 +1173,9 @@ class UICatListDisplay(UIContainer):
         visible: bool = True,
         text_theme="#cat_list_text",
         y_px_between: int = None,
+        allow_selection: bool = False,
+        tool_tip_nutrition: bool = False,
+        truncate_names: bool = False,
     ):
         """
         Creates and displays a list of click-able cat sprites.
@@ -1146,6 +1210,11 @@ class UICatListDisplay(UIContainer):
             manager=manager,
         )
 
+        self.allow_selection = allow_selection
+        self.tool_tip_nutrition = tool_tip_nutrition
+        self.truncate_names = truncate_names
+        self.selected = []
+        self.selection_boxes = {}
         self.cat_list = cat_list
         self.cats_displayed = cats_displayed
         self.x_px_between = x_px_between
@@ -1291,6 +1360,12 @@ class UICatListDisplay(UIContainer):
         [name.kill() for name in self.cat_names.values()]
         [favor.kill() for favor in self.favor_indicator.values()]
 
+        for box in self.selection_boxes.values():
+            box.kill()
+        self.selection_boxes = {}
+        self.cat_sprites = {}
+        self.cat_names = {}
+        self.favor_indicator = {}
         show_fav = game.clan.clan_settings["show fav"]
 
         # FAVOURITE ICON
@@ -1315,6 +1390,18 @@ class UICatListDisplay(UIContainer):
             ]
 
     def create_cat_button(self, i, kitty, container):
+        if self.allow_selection:
+            from scripts.ui.generate_box import get_box, BoxStyles
+            self.selection_boxes[f"sprite{i}"] = pygame_gui.elements.UIImage(
+                ui_scale(pygame.Rect((0, 12), (56, 56))), get_box(BoxStyles.SELECTION_BOX, (56, 56)),
+                container=container, manager=self.ui_manager,
+                visible=kitty.ID in self.selected, anchors={"centerx": "centerx"},
+            )
+            self.selection_boxes[f"sprite{i}"].disable()
+        tooltip = str(kitty.name) if self.tool_tip_name else None
+        if self.tool_tip_nutrition:
+            nutrition = game.clan.freshkill_pile.nutrition_info[kitty.ID]
+            tooltip = f"{kitty.name}<br>Nutrition: {round(nutrition.percentage)}%"
         self.cat_sprites[f"sprite{i}"] = UISpriteButton(
             ui_scale(pygame.Rect((0, 15), (50, 50))),
             kitty.sprite,
@@ -1322,12 +1409,22 @@ class UICatListDisplay(UIContainer):
             cat_id=kitty.ID,
             container=container,
             object_id=f"#sprite{str(i)}",
-            tool_tip_text=str(kitty.name) if self.tool_tip_name else None,
+            tool_tip_text=tooltip,
             starting_height=1,
             anchors={"centerx": "centerx"},
         )
 
     def create_name(self, i, kitty, container):
+        if self.truncate_names:
+            from scripts.game_structure.screen_settings import screen_scale
+            from scripts.utility import shorten_text_to_fit
+            self.cat_names[f"name{i}"] = pygame_gui.elements.UILabel(
+                pygame.Rect((0, 0), (container.rect.width, container.rect.bottom - self.cat_sprites[f"sprite{i}"].get_abs_rect().bottom)),
+                shorten_text_to_fit(str(kitty.name), container.rect.width / screen_scale - 8, 15),
+                container=container, manager=self.ui_manager, object_id=self.text_theme,
+                anchors={"centerx": "centerx", "top_target": self.cat_sprites[f"sprite{i}"]},
+            )
+            return
         self.cat_names[f"name{i}"] = pygame_gui.elements.UITextBox(
             html.escape(str(kitty.name)),
             pygame.Rect((0, 0), (
@@ -1381,6 +1478,23 @@ class UICatListDisplay(UIContainer):
                 self.first_button.enable()
                 self.last_button.enable()
 
+
+    def process_event(self, event):
+        if self.allow_selection and event.type in (pygame_gui.UI_BUTTON_START_PRESS,
+                pygame_gui.UI_BUTTON_ON_HOVERED, pygame_gui.UI_BUTTON_ON_UNHOVERED):
+            for key, button in self.cat_sprites.items():
+                if event.ui_element != button:
+                    continue
+                cat_id = button.return_cat_id()
+                if event.type == pygame_gui.UI_BUTTON_START_PRESS:
+                    if cat_id in self.selected:
+                        self.selected.remove(cat_id)
+                    else:
+                        self.selected.append(cat_id)
+                visible = cat_id in self.selected or event.type == pygame_gui.UI_BUTTON_ON_HOVERED
+                self.selection_boxes[key].show() if visible else self.selection_boxes[key].hide()
+                break
+        return super().process_event(event)
 
 class UIImageHorizontalSlider(pygame_gui.elements.UIHorizontalSlider):
     """

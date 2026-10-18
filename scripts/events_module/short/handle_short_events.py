@@ -97,10 +97,8 @@ class HandleShortEvents:
             self.other_clan = enemy_clan
             self.other_clan_name = f"{self.other_clan.name}"
             self.sub_types.append("war")
-        else:
-            self.other_clan = random.choice(
-                game.clan.all_clans if game.clan.all_clans else None
-            )
+        elif game.clan.all_clans:
+            self.other_clan = random.choice(game.clan.all_clans)
             self.other_clan_name = f"{self.other_clan.name}"
 
         # checking if a murder reveal should happen

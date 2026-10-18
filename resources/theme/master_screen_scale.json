@@ -3871,5 +3871,100 @@
                 "path": "resources/images/buttons/gift_accessory_unavaliable.png"
             }
         }
+    },
+    "#cruel_season_mode_button": {
+        "images": {
+            "normal_image": {
+                "path": "resources/images/buttons/cruel_season.png"
+            },
+            "hovered_image": {
+                "path": "resources/images/buttons/cruel_season_hover.png"
+            },
+            "disabled_image": {
+                "path": "resources/images/buttons/cruel_season_unavailable.png"
+            }
+        }
+    },
+    "#card_icon_behavior": {
+        "prototype": "@image_button",
+        "images": {
+            "normal_image": {
+                "path": "resources/images/cruel_cards/small_icons/behavior.png"
+            },
+            "hovered_image": {
+                "path": "resources/images/cruel_cards/small_icons/behavior_hover.png"
+            },
+            "selected_image": {
+                "path": "resources/images/cruel_cards/small_icons/behavior_hover.png"
+            },
+            "disabled_image": {
+                "path": "resources/images/cruel_cards/small_icons/behavior.png"
+            }
+        }
+    },
+    "#card_icon_origin": {
+        "prototype": "@image_button",
+        "images": {
+            "normal_image": {
+                "path": "resources/images/cruel_cards/small_icons/origin.png"
+            },
+            "hovered_image": {
+                "path": "resources/images/cruel_cards/small_icons/origin_hover.png"
+            },
+            "selected_image": {
+                "path": "resources/images/cruel_cards/small_icons/origin_hover.png"
+            },
+            "disabled_image": {
+                "path": "resources/images/cruel_cards/small_icons/origin.png"
+            }
+        }
+    },
+    "#card_icon_danger": {
+        "prototype": "@image_button",
+        "images": {
+            "normal_image": {
+                "path": "resources/images/cruel_cards/small_icons/danger.png"
+            },
+            "hovered_image": {
+                "path": "resources/images/cruel_cards/small_icons/danger_hover.png"
+            },
+            "selected_image": {
+                "path": "resources/images/cruel_cards/small_icons/danger_hover.png"
+            },
+            "disabled_image": {
+                "path": "resources/images/cruel_cards/small_icons/danger.png"
+            }
+        }
+    },
+    "#card_icon_environment": {
+        "prototype": "@image_button",
+        "images": {
+            "normal_image": {
+                "path": "resources/images/cruel_cards/small_icons/environment.png"
+            },
+            "hovered_image": {
+                "path": "resources/images/cruel_cards/small_icons/environment_hover.png"
+            },
+            "selected_image": {
+                "path": "resources/images/cruel_cards/small_icons/environment_hover.png"
+            },
+            "disabled_image": {
+                "path": "resources/images/cruel_cards/small_icons/environment.png"
+            }
+        }
+    },
+    "#game_window": {
+        "prototype": "#window_base_theme",
+        "colours": {
+            "normal_border": "#00000000",
+            "dark_bg": "#00000000"
+        }
+    },
+    "@buttonstyles_clan_header": {
+        "prototype": "@buttonstyles_mainmenu",
+        "misc": {
+            "text_vert_alignment": "bottom",
+            "text_vert_alignment_padding": "2"
+        }
     }
 }

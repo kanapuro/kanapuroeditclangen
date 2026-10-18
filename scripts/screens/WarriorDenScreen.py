@@ -73,7 +73,7 @@ class WarriorDenScreen(Screens):
                         if (
                             game.clan.last_focus_change is None
                             or game.clan.last_focus_change
-                            + game.config["focus"]["duration"]
+                            + game.get_config_value("focus", "duration")
                             <= game.clan.age
                         ):
                             self.save_button.enable()
@@ -326,7 +326,7 @@ class WarriorDenScreen(Screens):
             last_change_text = "moon " + str(game.clan.last_focus_change)
             moons = (
                 game.clan.last_focus_change
-                + game.config["focus"]["duration"]
+                + game.get_config_value("focus", "duration")
                 - game.clan.age
             )
             if moons == 1:

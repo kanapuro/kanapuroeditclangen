@@ -94,6 +94,10 @@ class ClanSettingsScreen(Screens):
             elif event.ui_element == self.role_settings_button:
                 self.open_roles_settings()
                 return
+            elif event.ui_element == self.view_cards_button:
+                from .CruelCards import ViewCruelCards
+                ViewCruelCards()
+                return
             elif event.ui_element == self.clan_stats_button:
                 self.open_clan_stats()
                 return
@@ -189,6 +193,11 @@ class ClanSettingsScreen(Screens):
             anchors={"left_target": self.role_settings_button},
         )
 
+        self.view_cards_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((310, 600), (180, 30))), "View Cruel cards",
+            get_button_dict(ButtonStyles.SQUOVAL, (180, 30)), object_id="@buttonstyles_squoval",
+            manager=MANAGER, visible=game.clan.game_mode == "cruel season")
+
         self.open_data_directory_button = UISurfaceImageButton(
             ui_scale(pygame.Rect((25, 645), (178, 30))),
             "Open Data Directory",
@@ -250,6 +259,7 @@ class ClanSettingsScreen(Screens):
         TODO: DOCS
         """
         self.clear_sub_settings_buttons_and_text()
+        self.view_cards_button.kill()
         self.general_settings_button.kill()
         del self.general_settings_button
         self.relation_settings_button.kill()

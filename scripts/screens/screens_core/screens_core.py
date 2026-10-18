@@ -1,4 +1,6 @@
+from math import ceil
 from typing import Optional, Tuple
+from random import randint
 
 import pygame
 import pygame_gui
@@ -8,7 +10,7 @@ import scripts.game_structure.screen_settings
 from scripts.game_structure import image_cache
 from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
-from scripts.game_structure.ui_elements import UISurfaceImageButton, UIImageButton
+from scripts.game_structure.ui_elements import UISurfaceImageButton, UIImageButton, UIDropDownContainer, UIModifiedImage
 from scripts.housekeeping.version import get_version_info
 from scripts.ui.generate_box import get_box, BoxStyles
 from scripts.ui.generate_button import get_button_dict, ButtonStyles
@@ -30,6 +32,10 @@ dropshadow: Optional[pygame.Surface] = None
 fade: Optional[pygame.Surface] = None
 
 menu_buttons = dict()
+menu_dropdowns = {}
+menu_mode = None
+moon_phase = None
+moon_age = None
 
 default_game_bgs = None
 default_fullscreen_bgs = None
@@ -45,200 +51,87 @@ def rebuild_core(*, should_rebuild_bgs=True):
     global version_number
     global dev_watermark
 
-    # menu buttons are used very often, so they are generated here.
-    menu_buttons = dict()
-
-    # they have to be added individually as some of them rely on others in anchors
-    menu_buttons["events_screen"] = UISurfaceImageButton(
-        ui_scale(pygame.Rect((246, 60), (82, 30))),
-        "Events",
-        get_button_dict(ButtonStyles.MENU_LEFT, (82, 30)),
-        visible=False,
-        manager=MANAGER,
-        object_id=ObjectID("#events_button", "@buttonstyles_menu_left"),
-        starting_height=5,
-    )
-    menu_buttons["camp_screen"] = UISurfaceImageButton(
-        ui_scale(pygame.Rect((0, 60), (58, 30))),
-        "Camp",
-        get_button_dict(ButtonStyles.MENU_MIDDLE, (58, 30)),
-        visible=False,
-        manager=MANAGER,
-        object_id="@buttonstyles_menu_middle",
-        starting_height=5,
-        anchors={"left": "left", "left_target": menu_buttons["events_screen"]},
-    )
-    menu_buttons["catlist_screen"] = UISurfaceImageButton(
-        ui_scale(pygame.Rect((0, 60), (88, 30))),
-        "Cat List",
-        get_button_dict(ButtonStyles.MENU_MIDDLE, (88, 30)),
-        visible=False,
-        object_id="@buttonstyles_menu_middle",
-        starting_height=5,
-        anchors={"left": "left", "left_target": menu_buttons["camp_screen"]},
-    )
-    menu_buttons["patrol_screen"] = UISurfaceImageButton(
-        ui_scale(pygame.Rect((0, 60), (80, 30))),
-        "Patrol",
-        get_button_dict(ButtonStyles.MENU_RIGHT, (80, 30)),
-        visible=False,
-        manager=MANAGER,
-        object_id="#patrol_button",
-        starting_height=5,
-        anchors={"left": "left", "left_target": menu_buttons["catlist_screen"]},
-    )
-    menu_buttons["main_menu"] = UISurfaceImageButton(
-        ui_scale(pygame.Rect((25, 25), (153, 30))),
-        get_arrow(3) + " Main Menu",
-        get_button_dict(ButtonStyles.SQUOVAL, (153, 30)),
-        visible=False,
-        manager=MANAGER,
-        object_id="@buttonstyles_squoval",
-        starting_height=5,
-    )
-
-    # used so we can anchor to the right with numbers that make sense
-    scale_rect = ui_scale(pygame.Rect((0, 0), (118, 30)))
-    scale_rect.topright = ui_scale_offset((-25, 25))
-    menu_buttons["allegiances"] = UISurfaceImageButton(
-        scale_rect,
-        "Allegiances",
-        get_button_dict(ButtonStyles.SQUOVAL, (118, 30)),
-        visible=False,
-        manager=MANAGER,
-        object_id=ObjectID(class_id="@image_button", object_id=None),
-        starting_height=5,
-        anchors={"top": "top", "right": "right"},
-    )
-
-    # used so we can anchor to the right with numbers that make sense
-    scale_rect = ui_scale(pygame.Rect((0, 0), (85, 30)))
-    scale_rect.topright = ui_scale_offset((-25, 5))
-    menu_buttons["clan_settings"] = UISurfaceImageButton(
-        scale_rect,
-        "Settings",
-        get_button_dict(ButtonStyles.SQUOVAL, (85, 30)),
-        visible=False,
-        manager=MANAGER,
-        object_id=ObjectID(class_id="@image_button", object_id=None),
-        starting_height=5,
-        anchors={"top_target": menu_buttons["allegiances"], "right": "right"},
-    )
-    del scale_rect
-
-    heading_rect = ui_scale(pygame.Rect((0, 0), (190, 35)))
-    heading_rect.bottomleft = ui_scale_dimensions((0, 0))
-    menu_buttons["name_background"] = pygame_gui.elements.UIImage(
-        heading_rect,
-        pygame.transform.scale(
-            image_cache.load_image("resources/images/clan_name_bg.png").convert_alpha(),
-            ui_scale_dimensions((190, 35)),
-        ),
-        visible=False,
-        manager=MANAGER,
-        starting_height=5,
-        anchors={
-            "bottom": "bottom",
-            "bottom_target": menu_buttons["camp_screen"],
-            "centerx": "centerx",
-        },
-    )
-    # it has to be at least 193 to make "cats outside the clan" fit
-    heading_rect = ui_scale(pygame.Rect((0, 0), (193, 35)))
-    heading_rect.bottomleft = ui_scale_offset((0, 1))  # yes, this is intentional.
-    menu_buttons["heading"] = pygame_gui.elements.UITextBox(
-        "",
-        heading_rect,
-        visible=False,
-        manager=MANAGER,
-        object_id=ObjectID("#text_box_34_horizcenter_vertcenter", "#dark"),
-        starting_height=5,
-        anchors={
-            "bottom": "bottom",
-            "bottom_target": menu_buttons["camp_screen"],
-            "centerx": "centerx",
-        },
-    )
-    del heading_rect
-
-    menu_buttons["moons_n_seasons"] = pygame_gui.elements.UIScrollingContainer(
-        ui_scale(pygame.Rect((25, 60), (153, 75))),
-        visible=False,
-        allow_scroll_x=False,
-        manager=MANAGER,
-        starting_height=5,
-    )
-    menu_buttons["moons_n_seasons_arrow"] = UIImageButton(
-        ui_scale(pygame.Rect((174, 80), (22, 34))),
-        "",
-        visible=False,
-        manager=MANAGER,
-        object_id="#arrow_mns_button",
-        starting_height=5,
-    )
-    menu_buttons["dens_bar"] = pygame_gui.elements.UIImage(
-        ui_scale(pygame.Rect((40, 5), (10, 160))),
-        pygame.transform.scale(
-            image_cache.load_image("resources/images/vertical_bar.png").convert_alpha(),
-            ui_scale_dimensions((380, 70)),
-        ),
-        visible=False,
-        starting_height=5,
-        manager=MANAGER,
-        anchors={"top_target": menu_buttons["main_menu"]},
-    )
-    menu_buttons["dens"] = UISurfaceImageButton(
-        ui_scale(pygame.Rect((25, 5), (71, 30))),
-        "Dens",
-        get_button_dict(ButtonStyles.SQUOVAL, (71, 30)),
-        visible=False,
-        manager=MANAGER,
-        object_id="@buttonstyles_squoval",
-        starting_height=6,
-        anchors={"top_target": menu_buttons["main_menu"]},
-    )
-    menu_buttons["lead_den"] = UISurfaceImageButton(
-        ui_scale(pygame.Rect((25, 100), (112, 28))),
-        "leader's den",
-        get_button_dict(ButtonStyles.ROUNDED_RECT, (112, 28)),
-        visible=False,
-        manager=MANAGER,
-        object_id="@buttonstyles_rounded_rect",
-        starting_height=6,
-    )
-    menu_buttons["med_cat_den"] = UISurfaceImageButton(
-        ui_scale(pygame.Rect((25, 140), (151, 28))),
-        "medicine cat den",
-        get_button_dict(ButtonStyles.ROUNDED_RECT, (151, 28)),
-        object_id="@buttonstyles_rounded_rect",
-        visible=False,
-        manager=MANAGER,
-        starting_height=6,
-    )
-    menu_buttons["warrior_den"] = UISurfaceImageButton(
-        ui_scale(pygame.Rect((25, 180), (121, 28))),
-        "warriors' den",
-        get_button_dict(ButtonStyles.ROUNDED_RECT, (121, 28)),
-        object_id="@buttonstyles_rounded_rect",
-        visible=False,
-        manager=MANAGER,
-        starting_height=6,
-    )
-    menu_buttons["clearing"] = UISurfaceImageButton(
-        ui_scale(pygame.Rect((25, 220), (81, 28))),
-        "clearing",
-        get_button_dict(ButtonStyles.ROUNDED_RECT, (81, 28)),
-        visible=False,
-        manager=MANAGER,
-        object_id="@buttonstyles_rounded_rect",
-        starting_height=6,
-    )
+    global menu_dropdowns, menu_mode
+    for button in menu_buttons.values():
+        button.kill()
+    for dropdown in menu_dropdowns.values():
+        dropdown.child_button_container.kill()
+        dropdown.kill()
+    for label in (version_number, dev_watermark):
+        if label is not None:
+            label.kill()
+    menu_buttons = {}
+    menu_dropdowns = {}
+    menu_mode = game.clan.game_mode if game.clan else None
+    x = 258 if menu_mode == "classic" else 214
+    for key, text, width, style in (
+        ("events_screen", "Events", 82, ButtonStyles.MENU_LEFT),
+        ("supplies", "Supplies", 88, ButtonStyles.MENU_MIDDLE),
+        ("catlist_screen", "Cats", 58, ButtonStyles.MENU_MIDDLE),
+        ("dens", "Dens", 58, ButtonStyles.MENU_MIDDLE),
+        ("patrol_screen", "Patrol", 86, ButtonStyles.MENU_RIGHT),
+    ):
+        menu_buttons[key] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((x, 60), (width, 30))), text,
+            get_button_dict(style, (width, 30)), visible=False, manager=MANAGER,
+            object_id=ObjectID("#events_button", "@buttonstyles_menu_left") if key == "events_screen"
+            else ("#patrol_button" if key == "patrol_screen" else "@buttonstyles_" + style.value),
+            starting_height=6)
+        if key != "supplies" or menu_mode != "classic":
+            x += width
+    for key, text, rect in (
+        ("main_menu", get_arrow(3) + " Main Menu", (25, 25, 153, 30)),
+        ("camp_screen", "Back to Camp", (25, 60, 123, 30)),
+    ):
+        menu_buttons[key] = UISurfaceImageButton(ui_scale(pygame.Rect(rect)), text,
+            get_button_dict(ButtonStyles.SQUOVAL, rect[2:]), visible=False, manager=MANAGER,
+            object_id="@buttonstyles_squoval", starting_height=5)
+    font = MANAGER.get_theme().get_font(["@buttonstyles_squoval"])
+    for key, text, y in (("allegiances", "Allegiances", 25), ("clan_settings", "Colony Settings", 60)):
+        width = ceil(font.get_rect(text).width / scripts.game_structure.screen_settings.screen_scale) + 20
+        rect = ui_scale(pygame.Rect((0, 0), (width, 30)))
+        rect.topright = ui_scale_offset((-25, y))
+        menu_buttons[key] = UISurfaceImageButton(rect, text,
+            get_button_dict(ButtonStyles.SQUOVAL, (width, 30)), visible=False, manager=MANAGER,
+            object_id="@buttonstyles_squoval", starting_height=5,
+            anchors={"top": "top", "right": "right"})
+    heading_rect = ui_scale(pygame.Rect((0, 0), (220, 35)))
+    heading_rect.bottomleft = ui_scale_offset((0, 0))
+    menu_buttons["heading"] = UISurfaceImageButton(heading_rect, "",
+        get_button_dict(ButtonStyles.CLAN_HEADER, (220, 35)), visible=False, manager=MANAGER,
+        object_id="@buttonstyles_clan_header", starting_height=5,
+        anchors={"bottom": "bottom", "bottom_target": menu_buttons["patrol_screen"], "centerx": "centerx"},
+        tool_tip_text="Return to camp")
+    menu_buttons["heading"].full_text = ""
+    for key, width, children in (
+        ("supplies", 88, (("freshkill", "Fresh-kill"), ("herbs", "Herbs"))),
+        ("dens", 58, (("lead_den", "Leader's den"), ("med_cat_den", "Medicine cat den"),
+                       ("warrior_den", "Warriors' den"), ("clearing", "Clearing"))),
+    ):
+        parent = menu_buttons[key]
+        child_width = 150 if key == "dens" else width
+        container = pygame_gui.core.UIContainer(
+            ui_scale(pygame.Rect((-(width + child_width) // 2, 0), (child_width, len(children) * 28 + 2))),
+            anchors={"left_target": parent, "top_target": parent},
+            manager=MANAGER, starting_height=20, visible=False)
+        for i, (child, text) in enumerate(children):
+            menu_buttons[child] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((0, i * 28), (child_width, 30))), text,
+                get_button_dict(ButtonStyles.DROPDOWN, (child_width, 30)),
+                object_id="@buttonstyles_dropdown", container=container, manager=MANAGER)
+        menu_dropdowns[key] = UIDropDownContainer(pygame.Rect(0, 0, 0, 0), container=None,
+            object_id="#navigation_dropdown", starting_height=6, parent_button=parent,
+            child_button_container=container, manager=MANAGER, visible=True, open_on_hover=True)
+        menu_dropdowns[key].close()
+    rebuild_moon_n_season_indicator()
 
     rebuild_mute("default")
 
+    version_text = get_version_info().version_number
+    version_text = version_text if version_text.startswith("v") else version_text[:8]
     version_number = pygame_gui.elements.UILabel(
         ui_scale(pygame.Rect((50, 50), (-1, -1))),
-        get_version_info().version_number[0:8],
+        version_text,
         object_id=get_text_box_theme(),
         anchors={"bottom": "bottom", "right": "right"},
     )
@@ -263,6 +156,33 @@ def rebuild_core(*, should_rebuild_bgs=True):
 
     if should_rebuild_bgs:
         rebuild_bgs()
+
+
+def rebuild_moon_n_season_indicator():
+    global moon_phase, moon_age
+    clan = game.clan
+    age = clan.age if clan else 0
+    season = clan.current_season.casefold().replace("-", "") if clan else "newleaf"
+    if moon_phase is None or moon_age != age:
+        moon_phase = randint(0, 7)
+        moon_age = age
+    for key in ("moon_indicator", "season_indicator"):
+        if key in menu_buttons:
+            menu_buttons[key].kill()
+    rect = ui_scale(pygame.Rect((0, 0), (22, 26)))
+    rect.bottomright = ui_scale_offset((0, 2))
+    menu_buttons["moon_indicator"] = pygame_gui.elements.UIImage(rect,
+        pygame.transform.scale(image_cache.load_image(f"resources/images/moon_phase{moon_phase}.png"), ui_scale_dimensions((22, 26))),
+        visible=False, manager=MANAGER, starting_height=4,
+        anchors={"right_target": menu_buttons["heading"], "right": "right",
+                 "bottom_target": menu_buttons["events_screen"], "bottom": "bottom"})
+    menu_buttons["moon_indicator"].set_tooltip(f"{age} {'moon' if age == 1 else 'moons'}")
+    menu_buttons["moon_indicator"].tool_tip_delay = 0
+    menu_buttons["season_indicator"] = UIModifiedImage(
+        ui_scale(pygame.Rect((404, 3), (144, 67))),
+        pygame.transform.scale(image_cache.load_image(f"resources/images/season_{season}.png"), ui_scale_dimensions((144, 67))),
+        visible=False, manager=MANAGER, starting_height=5)
+    menu_buttons["season_indicator"].disable()
 
 
 def rebuild_mute(location: str):

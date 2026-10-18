@@ -183,3 +183,4 @@ version.ini
 .vs/
 lgvenv/
 .agents
+/docs/secrets/

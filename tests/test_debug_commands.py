@@ -22,7 +22,7 @@ class TestClanCommands(unittest.TestCase):
         self.clan = Clan(name="Old", game_mode="classic", camp_bg="camp1")
         self.screen = SimpleNamespace(
             name="list screen", clan_name="Old",
-            menu_buttons={"heading": SimpleNamespace(html_text="Old")},
+            menu_buttons={"heading": SimpleNamespace(full_text="Old")},
             update_heading_text=Mock(), change_screen=Mock(),
         )
         for target, attribute, value in (
@@ -230,6 +230,7 @@ class TestClanCommands(unittest.TestCase):
         legacy = self.root / "Old" / "clan_settings.json"
         legacy.write_text(ujson.dumps({"random camp lighting": True}), encoding="utf-8")
         with patch.object(game, "settings", game.settings.copy()), patch.object(game, "_random_camp_lighting_loaded", False):
+            game.settings["random camp lighting"] = False
             self.assertNotIn("random camp lighting", self.clan.clan_settings)
             self.assertFalse(game.settings["random camp lighting"])
             self.clan.load_clan_settings()
@@ -455,7 +456,7 @@ class TestClanCommands(unittest.TestCase):
 
     def test_rename_keeps_non_colony_screen_headings(self):
         self.screen.name = "profile screen"
-        self.screen.menu_buttons["heading"].html_text = "Cat profile"
+        self.screen.menu_buttons["heading"].full_text = "Cat profile"
         RenameClanCommand().callback(["New"])
         self.assertEqual(self.clan.name, "New")
         self.screen.update_heading_text.assert_not_called()
@@ -465,11 +466,11 @@ class TestClanCommands(unittest.TestCase):
 
         screen = Screens("camp screen")
         heading = screen.menu_buttons["heading"]
-        self.addCleanup(heading.set_text, heading.html_text)
+        self.addCleanup(screen.update_heading_text, heading.full_text)
         screen.update_heading_text("Old")
         with patch.object(game, "current_screen", "camp screen"):
             RenameClanCommand().callback(["New", "Colony"])
-        self.assertEqual(heading.html_text, "New Colony")
+        self.assertEqual(heading.text, "New Colony")
 
     def test_registered_console_command_accepts_quoted_names(self):
         from scripts.debug_console import debug_mode

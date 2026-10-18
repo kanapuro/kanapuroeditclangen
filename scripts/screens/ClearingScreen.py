@@ -183,6 +183,7 @@ class ClearingScreen(Screens):
                     game.clan.clan_settings[code] = desc[2]
                 game.clan.clan_settings["feeding priorities"] = []
                 game.clan.clan_settings["feeding status order"] = game.prey_config["feeding_order"].copy()
+                game.switches["saved_clan"] = False
                 self.settings_changed = True
                 self.create_checkboxes()
             elif event.ui_element == self.tactic_tab:
@@ -381,6 +382,11 @@ class ClearingScreen(Screens):
             self.feed_all_button.disable()
 
         self.draw_pile()
+        if self.open_tab in ("tactic", "log"):
+            self.cats_tab.enable()
+            self.tactic_tab.disable() if self.open_tab == "tactic" else self.tactic_tab.enable()
+            self.log_tab.disable() if self.open_tab == "log" else self.log_tab.enable()
+            self.handle_tab_toggles()
 
     def display_change_save(self) -> Dict:
         variable_dict = super().display_change_save()
@@ -670,7 +676,7 @@ class ClearingScreen(Screens):
 
         current_prey_amount = game.clan.freshkill_pile.total_amount
         needed_amount = game.clan.freshkill_pile.amount_food_needed()
-        warrior_need = game.prey_config["prey_requirement"]["warrior"]
+        warrior_need = game.get_config_value("prey", "prey_requirement")["warrior"]
         warrior_amount = int(current_prey_amount / warrior_need)
         general_text = (
             f"Up to {warrior_amount} warriors can be fed with this amount of prey."
@@ -825,7 +831,7 @@ class ClearingScreen(Screens):
         status_order = game.clan.freshkill_pile.get_status_order()
         row_y = 0
         for n, status in enumerate(status_order):
-            amount = game.prey_config["prey_requirement"][status]
+            amount = game.get_config_value("prey", "prey_requirement")[status]
             label_rect = ui_scale(pygame.Rect((5, 0), (159, -1)))
             label_rect.y = row_y
             self.additional_text[status] = pygame_gui.elements.UITextBox(
@@ -973,6 +979,7 @@ class ClearingScreen(Screens):
                 index = order.index(status)
                 order[index], order[index + direction] = order[index + direction], order[index]
                 game.clan.clan_settings["feeding status order"] = order
+                game.switches["saved_clan"] = False
                 self.settings_changed = True
                 self.create_checkboxes()
                 return
@@ -998,6 +1005,7 @@ class ClearingScreen(Screens):
             for mode in settings_dict["freshkill_tactics"]:
                 if mode != "ration prey":
                     game.clan.clan_settings[mode] = mode == priorities[0]
+            game.switches["saved_clan"] = False
             self.settings_changed = True
             self.create_checkboxes()
             return
@@ -1005,6 +1013,7 @@ class ClearingScreen(Screens):
         for key, button in self.checkboxes.items():
             if button == event.ui_element:
                 game.clan.switch_setting(key)
+                game.switches["saved_clan"] = False
                 self.settings_changed = True
                 self.create_checkboxes()
                 return

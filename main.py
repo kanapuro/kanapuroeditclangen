@@ -332,7 +332,11 @@ while 1:
     game.all_screens[game.current_screen].on_use()
     # EVENTS
     for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN and game.settings["keybinds"] and debug_mode.debug_menu.visible:
+        if event.type in (pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION, pygame.MOUSEWHEEL) and any(
+            window.is_blocking for window in MANAGER.get_window_stack().get_full_stack()
+        ):
+            pass
+        elif event.type == pygame.KEYDOWN and game.settings["keybinds"] and debug_mode.debug_menu.visible:
             pass
         else:
             game.all_screens[game.current_screen].handle_event(event)

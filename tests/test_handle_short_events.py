@@ -8,7 +8,29 @@ from scripts.events_module.short.handle_short_events import HandleShortEvents
 
 
 class TestHandleEvent(unittest.TestCase):
-    pass
+    def test_faith_events_requiring_a_companion_are_filtered_when_alone(self):
+        from scripts.events_module.generate_events import GenerateEvents
+
+        clan = Clan(name="Alone")
+        cat = Cat(status="warrior", moons=30)
+        with patch.object(game, "clan", clan):
+            events = GenerateEvents.possible_short_events("faith")
+            self.assertTrue(any(event.r_c for event in events))
+            filtered = GenerateEvents.filter_possible_short_events(
+                Cat, events, cat, None, None, False, 1, [])
+        self.assertTrue(all(not event.r_c for event in filtered))
+
+    def test_no_neighbors_passes_absent_neighbor_to_event_filter(self):
+        from scripts.events_module.generate_events import GenerateEvents
+
+        clan = Clan(name="Alone")
+        clan.all_clans = []
+        with patch.object(game, "clan", clan), patch.object(
+            GenerateEvents, "possible_short_events", return_value=[]
+        ), patch.object(GenerateEvents, "filter_possible_short_events", return_value=[]) as filter_events:
+            HandleShortEvents().handle_event("faith", Cat(), None, None)
+        self.assertIsNone(filter_events.call_args.kwargs["other_clan"])
+
 
 
 class TestHandleNewCats(unittest.TestCase):

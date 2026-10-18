@@ -91,11 +91,10 @@ class MusicManager:
         """
         self.current_playlist = playlist
         self.queued_track = None  # clear queue
+        self.number_of_tracks = len(self.current_playlist)
 
         if not self.current_playlist:  # don't play an empty playlist
             return
-
-        self.number_of_tracks = len(self.current_playlist)
 
         self.queue_music()
 
@@ -116,12 +115,11 @@ class MusicManager:
         queues up the next music track, this track is chosen randomly from self.current_playlist but WILL NOT be the
         current track
         """
-        #  if playlist is empty or has a single track, don't attempt queueing
         if self.number_of_tracks == 0:
             return
 
         # otherwise we pick a new track and queue it
-        if self.current_track and self.number_of_tracks > 1:
+        if self.current_track in self.current_playlist and self.number_of_tracks > 1:
             playlist_copy = self.current_playlist.copy()
             # print(f"playlist: {playlist_copy}, removing track: {self.current_track}")
             playlist_copy.remove(
@@ -204,24 +202,20 @@ class MusicManager:
 
     def get_biome_music(self):
         """
-        Finds the clan's biome and returns the appropriate playlist
+        Combines general, seasonal and biome tracks for the current colony.
         """
         try:
             biome = game.clan.biome
         except AttributeError:
             biome = "Forest"
-        new_playlist = []
-
-        if biome == "Forest":
-            new_playlist = self.playlists["forest_playlist"]
-        elif biome == "Plains":
-            new_playlist = self.playlists["plains_playlist"]
-        elif biome == "Mountainous":
-            new_playlist = self.playlists["mountainous_playlist"]
-        elif biome == "Beach":
-            new_playlist = self.playlists["beach_playlist"]
-
+        new_playlist = self.playlists.get("general_playlist", []).copy()
+        season = getattr(game.clan, "current_season", "Newleaf")
+        season_key = season.casefold().replace("-", "") + "_playlist"
+        new_playlist.extend(self.playlists.get(season_key, []))
+        biome_key = biome.casefold() + "_playlist"
+        new_playlist.extend(self.playlists.get(biome_key, []))
         return new_playlist
+
 
 
 music_manager = MusicManager()

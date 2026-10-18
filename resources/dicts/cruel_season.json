@@ -1,0 +1,239 @@
+{
+    "sources": [
+        {
+            "project": "ClanGen",
+            "repository": "https://github.com/ClanGenOfficial/clangen",
+            "commit": "904012b9e9c62ab24a8988ae23d8a516232ff7e2",
+            "path": "resources/dicts/cruel_season",
+            "license": "MPL-2.0 code; CC BY-NC 4.0 sprites/art/icons"
+        },
+        {
+            "project": "LifeGen",
+            "repository": "https://github.com/sedgestripe/clangen",
+            "commit": "bab3814eee64852125c004dac588fab809a730e9",
+            "path": "resources/dicts/cruel_season"
+        }
+    ],
+    "limit": 12,
+    "conflicts": {
+        "seasons": [
+            "always_newleaf",
+            "always_greenleaf",
+            "always_leaf-fall",
+            "always_leaf-bare"
+        ]
+    },
+    "cards": {
+        "always_newleaf": {
+            "name": "Endless Newleaf",
+            "category": "Environment",
+            "description": "The colony starts in Newleaf and remains in that season.",
+            "modifiers": {
+                "lock_season": true,
+                "forced_starting_season": "Newleaf"
+            },
+            "card_art": "environment/always_newleaf.png"
+        },
+        "always_greenleaf": {
+            "name": "Endless Greenleaf",
+            "category": "Environment",
+            "description": "The colony starts in Greenleaf and remains in that season.",
+            "modifiers": {
+                "lock_season": true,
+                "forced_starting_season": "Greenleaf"
+            },
+            "card_art": "environment/always_greenleaf.png"
+        },
+        "always_leaf-fall": {
+            "name": "Endless Leaf-fall",
+            "category": "Environment",
+            "description": "The colony starts in Leaf-fall and remains in that season.",
+            "modifiers": {
+                "lock_season": true,
+                "forced_starting_season": "Leaf-fall"
+            },
+            "card_art": "environment/always_leaf-fall.png"
+        },
+        "always_leaf-bare": {
+            "name": "Endless Leaf-bare",
+            "category": "Environment",
+            "description": "The colony starts in Leaf-bare and remains in that season.",
+            "modifiers": {
+                "lock_season": true,
+                "forced_starting_season": "Leaf-bare"
+            },
+            "card_art": "environment/always_leaf-bare.png"
+        },
+        "kit_season": {
+            "name": "Kit Season",
+            "category": "Behavior",
+            "description": "Pregnancies are more frequent and the birth cooldown is two moons. This also applies with larger litters enabled.",
+            "modifiers": {
+                "pregnancy.birth_cooldown": 2,
+                "pregnancy.primary_chance_mated": 20,
+                "pregnancy.primary_chance_unmated": 40,
+                "pregnancy.modded_primary_chance_mated": 20,
+                "pregnancy.modded_primary_chance_unmated": 40
+            },
+            "card_art": "behavior/mouths_to_feed.png"
+        },
+        "resolute": {
+            "name": "Resolute",
+            "category": "Society",
+            "description": "Colony focuses can be changed every six moons.",
+            "modifiers": {
+                "focus.duration": 6
+            },
+            "card_art": "society/resolute.png"
+        },
+        "public_enemy": {
+            "name": "Public Enemy",
+            "category": "Origin",
+            "description": "Other colonies begin with hostile relations between 1 and 7.",
+            "modifiers": {
+                "clan_creation.starting_clan_relation": [
+                    1,
+                    7
+                ]
+            },
+            "card_art": "origin/public_enemy.png"
+        },
+        "enmity": {
+            "name": "Enmity",
+            "category": "Society",
+            "description": "Other colonies begin hostile and relations with them cannot rise above 7.",
+            "modifiers": {
+                "reputation.other_clans.relation_cap": 7,
+                "clan_creation.starting_clan_relation": [
+                    1,
+                    7
+                ]
+            },
+            "card_art": "society/resolute.png"
+        },
+        "malicious_aura": {
+            "name": "Malicious Aura",
+            "category": "Society",
+            "description": "Outsider reputation begins at 15 and cannot rise above 29.",
+            "modifiers": {
+                "outsiders.max_reputation": 29,
+                "outsiders.starting_reputation": 15
+            },
+            "card_art": "society/resolute.png"
+        },
+        "barren_stocks": {
+            "name": "Barren Stocks",
+            "category": "Origin",
+            "description": "Start with no prey or herbs.",
+            "modifiers": {
+                "prey.start_amount": 0,
+                "clan_resources.herbs.empty_starting_storage": true
+            },
+            "card_art": "origin/public_enemy.png"
+        },
+        "lean_meat": {
+            "name": "Lean Meat",
+            "category": "Environment",
+            "description": "Cats need more prey, including queens, apprentices, pregnant cats and nursing parents.",
+            "modifiers": {
+                "prey.prey_requirement": {
+                    "leader": 4,
+                    "deputy": 4,
+                    "medicine cat": 3,
+                    "medicine cat apprentice": 2,
+                    "mediator apprentice": 2,
+                    "mediator": 3,
+                    "warrior": 4,
+                    "apprentice": 2,
+                    "elder": 2,
+                    "queen/pregnant": 6,
+                    "kitten": 1,
+                    "newborn": 0.5,
+                    "queen": 3,
+                    "queen's apprentice": 2
+                }
+            },
+            "card_art": "environment/lean_meat.png"
+        },
+        "tooth_and_claw": {
+            "name": "Tooth and Claw",
+            "category": "Danger",
+            "description": "War greatly increases the risk of injuries and deaths.",
+            "modifiers": {
+                "condition_related.war_injury_modifier": 235,
+                "death_related.war_death_modifier": 340,
+                "death_related.war_death_modifier_leader": 46
+            },
+            "card_art": "danger/tooth_and_claw.png"
+        },
+        "miasma": {
+            "name": "Miasma",
+            "category": "Danger",
+            "description": "Random illnesses are more frequent.",
+            "modifiers": {
+                "condition_related.expanded_illness_chance": 175
+            },
+            "card_art": "danger/miasma.png"
+        }
+    },
+    "artwork": {
+        "project": "ClanGen artists and contributors",
+        "repository": "https://github.com/ClanGenOfficial/clangen",
+        "commit": "904012b9e9c62ab24a8988ae23d8a516232ff7e2",
+        "source_directory": "resources/images/cruel_cards",
+        "license": "CC-BY-NC-4.0",
+        "changes": "Source PNG files unchanged; images scaled at runtime.",
+        "files": [
+            "behavior/mouths_to_feed.png",
+            "card_backdrop_dark.png",
+            "card_backdrop_light.png",
+            "danger/miasma.png",
+            "danger/tooth_and_claw.png",
+            "environment/always_greenleaf.png",
+            "environment/always_leaf-bare.png",
+            "environment/always_leaf-fall.png",
+            "environment/always_newleaf.png",
+            "environment/lean_meat.png",
+            "origin/public_enemy.png",
+            "society/resolute.png"
+        ]
+    },
+    "ui_sources": [
+        {
+            "repository": "https://github.com/sedgestripe/clangen",
+            "commit": "bab3814eee64852125c004dac588fab809a730e9",
+            "license": "MPL-2.0",
+            "paths": [
+                "scripts/screens/make_clan_screens/ChooseCardsScreen.py",
+                "scripts/screens/make_clan_screens/ChooseModeScreen.py",
+                "scripts/ui/elements/cruel_card_large.py",
+                "scripts/ui/windows/view_cards.py",
+                "scripts/ui/elements/cruel_card_icon.py",
+                "scripts/ui/windows/window_base_class.py",
+                "scripts/ui/windows/deck_list_input.py"
+            ]
+        }
+    ],
+    "ui_artwork": {
+        "repository": "https://github.com/sedgestripe/clangen",
+        "commit": "bab3814eee64852125c004dac588fab809a730e9",
+        "license": "CC-BY-NC-4.0",
+        "changes": "Source PNG files unchanged.",
+        "files": [
+            "resources/images/buttons/cruel_season.png",
+            "resources/images/buttons/cruel_season_hover.png",
+            "resources/images/buttons/cruel_season_unavailable.png",
+            "resources/images/buttons/expanded_mode.png",
+            "resources/images/buttons/expanded_mode_hover.png",
+            "resources/images/buttons/expanded_mode_unavailable.png",
+            "resources/images/cruel_cards/small_icons/behavior.png",
+            "resources/images/cruel_cards/small_icons/behavior_hover.png",
+            "resources/images/cruel_cards/small_icons/danger.png",
+            "resources/images/cruel_cards/small_icons/danger_hover.png",
+            "resources/images/cruel_cards/small_icons/environment.png",
+            "resources/images/cruel_cards/small_icons/environment_hover.png",
+            "resources/images/cruel_cards/small_icons/origin.png",
+            "resources/images/cruel_cards/small_icons/origin_hover.png"
+        ]
+    }
+}

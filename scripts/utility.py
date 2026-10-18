@@ -265,7 +265,11 @@ def get_current_season():
     :return: the Clan's current season
     """
 
-    if game.config["lock_season"]:
+    forced_season = game.get_config_value("forced_starting_season")
+    if forced_season:
+        game.clan.current_season = forced_season
+        return forced_season
+    if game.get_config_value("lock_season"):
         game.clan.current_season = game.clan.starting_season
         return game.clan.starting_season
 

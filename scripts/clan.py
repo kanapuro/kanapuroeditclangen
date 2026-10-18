@@ -16,6 +16,7 @@ from random import choice, randint
 import pygame
 import ujson
 from scripts.cat_relations.inheritance import Inheritance
+from scripts.clan_resources.cruel_season import apply_modifiers, validate_cards
 from scripts.game_structure.game_essentials import game
 from scripts.housekeeping.version import get_version_info, SAVE_VERSION_NUMBER
 from scripts.utility import get_current_season, quit, get_free_possible_mates, get_alive_status_cats, create_new_cat  # pylint: disable=redefined-builtin
@@ -130,9 +131,18 @@ class Clan:
                 focus_cat=None,
                 clan_age=None,
                 clan_prefix=None,
-                self_run_init_functions = False):
+                self_run_init_functions = False,
+                cruel_cards=None):
         self.history = History()
         self.your_cat = your_cat
+        # None preserves old Cruel Season saves; a list opts into card-based rules.
+        self.cruel_cards = None if cruel_cards is None else validate_cards(cruel_cards)
+        if self.cruel_cards is not None and game_mode != "cruel season":
+            raise ValueError("Cruel Season cards require Cruel Season mode.")
+        self.clan_cats = []
+        self.starclan_cats = []
+        self.darkforest_cats = []
+        self.unknown_cats = []
         if name == "":
             return
 
@@ -200,6 +210,8 @@ class Clan:
                 self.clan_settings[setting_name] = inf[2]
                 self.setting_lists[setting_name] = [inf[2], not inf[2]]
 
+        if self.cruel_cards is not None:
+            self.clan_settings["freshkill"] = False
         self.clan_settings["starting backstory"] = None
         self.clan_settings["feeding priorities"] = []
         self.clan_settings["feeding status order"] = game.prey_config["feeding_order"].copy()
@@ -212,11 +224,12 @@ class Clan:
         # Reputation is for loners/kittypets/outsiders in general that wish to join the clan.
         # it's a range from 1-100, with 30-70 being neutral, 71-100 being "welcoming",
         # and 1-29 being "hostile". if you're hostile to outsiders, they will VERY RARELY show up.
-        self._reputation = 80
+        self._reputation = apply_modifiers(self.cruel_cards, ("outsiders", "starting_reputation"), game.config["outsiders"]["starting_reputation"])
 
         self.starting_members = starting_members
         if game_mode in ["expanded", "cruel season"]:
-            self.freshkill_pile = FreshkillPile()
+            self.freshkill_pile = FreshkillPile(start_amount=apply_modifiers(
+                self.cruel_cards, ("prey", "start_amount"), game.prey_config["start_amount"]))
         else:
             self.freshkill_pile = None
         self.primary_disaster = None
@@ -255,12 +268,28 @@ class Clan:
             if self.medicine_cat.status != "medicine cat":
                 Cat.all_cats[self.medicine_cat.ID].status_change("medicine cat")
 
+    @property
+    def simulation_mode(self):
+        if self.game_mode == "cruel season" and self.cruel_cards is not None:
+            return "expanded"
+        return self.game_mode
+
     def create_clan(self):
         """
         This function is only called once a new clan is
         created in the 'clan created' screen, not every time
         the program starts
         """
+        game.switches["game_mode"] = self.game_mode
+        if self.cruel_cards is not None:
+            self.freshkill_pile = FreshkillPile(start_amount=game.get_config_value("prey", "start_amount"))
+        if game.get_config_value("clan_resources", "herbs", "empty_starting_storage"):
+            self.herbs = {}
+        forced_season = game.get_config_value("forced_starting_season")
+        if forced_season:
+            self.starting_season = forced_season
+            self.current_season = forced_season
+
         # create_clan() writes the first save itself, so leader lives must be
         # finalized before any of that save work begins.
         self.leader_lives = self.get_starting_leader_lives(self.leader)
@@ -394,11 +423,6 @@ class Clan:
             random_camp_options = ["camp1", "camp2"]
             random_camp = choice(random_camp_options)
             game.switches["camp_bg"] = random_camp
-
-        # if no game mode chosen, set to Classic
-        if game.switches["game_mode"] is None:
-            game.switches["game_mode"] = "classic"
-            self.game_mode = "classic"
 
         # set the starting season
         season_index = self.seasons.index(self.starting_season)
@@ -907,6 +931,8 @@ class Clan:
         TODO: DOCS
         """
 
+        if self.cruel_cards is not None:
+            validate_cards(self.cruel_cards)
         self.apply_leader_life_limit()
         clan_data = {
             "leader_lives_reserve": self.leader_lives_reserve,
@@ -917,6 +943,7 @@ class Clan:
             "camp_bg": self.camp_bg,
             "clan_symbol": self.chosen_symbol,
             "gamemode": self.game_mode,
+            "cruel_cards": self.cruel_cards,
             "last_focus_change": self.last_focus_change,
             "clans_in_focus": self.clans_in_focus,
             "instructor": self.instructor.ID,
@@ -1311,6 +1338,7 @@ class Clan:
             biome=clan_data["biome"],
             camp_bg=clan_data["camp_bg"],
             game_mode=clan_data["gamemode"],
+            cruel_cards=clan_data.get("cruel_cards"),
             self_run_init_functions=False,
         )
         game.clan.post_initialization_functions()
@@ -1873,8 +1901,9 @@ class Clan:
     @reputation.setter
     def reputation(self, a: int):
         self._reputation = int(a)
-        if self._reputation > 100:
-            self._reputation = 100
+        cap = apply_modifiers(self.cruel_cards, ("outsiders", "max_reputation"), 100)
+        if self._reputation > cap:
+            self._reputation = cap
         elif self._reputation < 0:
             self._reputation = 0
 
@@ -1987,7 +2016,7 @@ class OtherClan:
         "gracious",
     ]
 
-    def __init__(self, name="", relations=0, temperament="", chosen_symbol="", clan_prefix=None, clan_age="established"):
+    def __init__(self, name="", relations=None, temperament="", chosen_symbol="", clan_prefix=None, clan_age="established"):
         if not name:
             self.name, self.clan_prefix = generate_clan_name(names.names_dict["clan_prefixes"])
         else:
@@ -1995,12 +2024,16 @@ class OtherClan:
             self.clan_prefix = clan_prefix
         # Established clans have wider starting relations (6-19) for more variety
         # New clans have narrow neutral relations (8-12)
-        if relations:
+        if relations is not None:
             self.relations = relations
-        elif clan_age == "established":
-            self.relations = randint(6, 19)
         else:
-            self.relations = randint(8, 12)
+            starting_range = game.get_config_value("clan_creation", "starting_clan_relation")
+            if starting_range:
+                self.relations = randint(*starting_range)
+            elif clan_age == "established":
+                self.relations = randint(6, 19)
+            else:
+                self.relations = randint(8, 12)
         self.temperament = temperament or choice(self.temperament_list)
         if self.temperament not in self.temperament_list:
             self.temperament = choice(self.temperament_list)
@@ -2013,6 +2046,17 @@ class OtherClan:
             if chosen_symbol
             else clan_symbol_sprite(self, return_string=True)
         )
+
+    @property
+    def relations(self):
+        return self.__dict__["relations"]
+
+    @relations.setter
+    def relations(self, value):
+        if game.clan and game.clan.cruel_cards is not None:
+            cap = game.get_config_value("reputation", "other_clans", "relation_cap")
+            value = max(0, min(cap, value))
+        self.__dict__["relations"] = value
 
     def __repr__(self):
         return f"{self.name}"

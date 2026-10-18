@@ -166,11 +166,11 @@ class Freshkill_Events():
 
         # change the trigger factor according to the size of the clan
         trigger_factor = FRESHKILL_EVENT_TRIGGER_FACTOR
-        divider = 35 if game.clan.game_mode == "expanded" else 20
+        divider = 35 if game.clan.simulation_mode == "expanded" else 20
         trigger_factor = trigger_factor - round(pow((len(living_cats)/divider), 2))
-        if trigger_factor < 2 and game.clan.game_mode == "expanded":
+        if trigger_factor < 2 and game.clan.simulation_mode == "expanded":
             trigger_factor = 2
-        if trigger_factor < 1.2 and game.clan.game_mode == "cruel season":
+        if trigger_factor < 1.2 and game.clan.simulation_mode == "cruel season":
             trigger_factor = 1.2
 
         # check if amount of the freshkill pile is too big and a event will be triggered

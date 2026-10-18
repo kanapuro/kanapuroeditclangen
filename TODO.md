@@ -1,5 +1,21 @@
-OH FUCK MAKE SURE WE CREDIT WHOEVER WE PULL FROM IN CREDITS_TEXT.JSON
+OH FUCK MAKE SURE WE CREDIT WHOEVER WE PULL FROM IN CREDITS_TEXT.JSON AND THAT ANY BIG CHANGES CHANG THE VERSION # AS WELL 
 - (PRIORITY) UPDATE TO MODERN LIFEGEN/CLANGEN FEATURES (GAMEMODES, CRUEL SEASON, NEW ASSETS, ETC.)
+
+## LifeGen / ClanGen modernization
+
+- [x] Compare upstream changelogs, code, gameplay systems and assets; identify compatibility requirements and implementation order.
+- [x] Update mode/card selection, Quick Start and creation flow, music playback, shared navigation/header, Events pagination/saving and Supplies windows through v0.1.0.13.
+- [ ] Continue UI parity: General Settings access, profile den shortcuts, patrol relationship feedback, alpha-aware cat clicks, animated moon transitions and remaining profile/popup layouts.
+- [ ] Compare missing icons and wording; add Quay/Bridge camps with placements and credits. New long-fur poses need matching custom outlines.
+- [ ] Implement remaining Cruel Season card mechanics individually with save compatibility and focused verification.
+- [ ] Adapt released event contracts before importing affected content: frequency/constraint weighting, future events and involved-cat exclusions.
+- [ ] Adapt seven missing condition lifecycles, herb aging/collection/capacity, extended-family newborn reactions, breakup/makeup behavior and separate affair settings.
+- [ ] Review save identity/switching, voluntary departure/outside behavior, group history and temperament changes separately from development-only upstream systems.
+- [ ] Complete audio parity: ambiance, separate volume, intermittent music and season/biome/camp coverage.
+- [ ] Revisit ClanGen-style Clan-member selection before choosing the player kit as a future design option.
+
+## Existing backlog
+
 - Leader lives: manually verify one/nine-life toggles, reloads, deputy promotion, and command/MC revivals. New saves preserve the hidden nine-life balance; old saves already capped at one may lack the original balance and must not receive invented lives. Manually verify the corrected revival/one-life history wording, especially older retired-leader saves and multiple-life death events.
 - merge w genemod - advanced genetics and (PRIORITY) multi-clan management - https://github.com/narvin42/genemod-expanded 
 - merge w reincarnation lifegen mod (kinda lost this.. its a simple concept tho. just characters being reborn with the same history and other features) 

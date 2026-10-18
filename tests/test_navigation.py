@@ -1,0 +1,214 @@
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
+
+import pygame
+import pygame_gui
+import pytest
+
+from scripts.clan import Clan
+from scripts.game_structure.game_essentials import game
+from scripts.game_structure.screen_settings import MANAGER
+from scripts.screens.Screens import Screens
+from scripts.screens.screens_core import screens_core as core
+
+
+@pytest.fixture
+def navigation(monkeypatch):
+    with monkeypatch.context() as isolated:
+        clan = Clan(name="NavigationTest", game_mode="expanded", camp_bg="camp1")
+        clan.clan_settings["moons and seasons"] = True
+        isolated.setattr(game, "clan", clan)
+        isolated.setattr(game, "all_screens", {})
+        core.rebuild_core(should_rebuild_bgs=False)
+        screen = Screens("navigation test")
+        screen.screen_switches()
+        screen.set_disabled_menu_buttons()
+        screen.show_menu_buttons()
+        yield screen
+        screen.hide_menu_buttons()
+    core.rebuild_core(should_rebuild_bgs=False)
+    Screens.menu_buttons = core.menu_buttons
+
+
+@pytest.mark.parametrize("key,target", [
+    ("events_screen", "events screen"), ("catlist_screen", "list screen"),
+    ("patrol_screen", "patrol screen"), ("camp_screen", "camp screen"),
+    ("heading", "camp screen"),
+    ("lead_den", "leader den screen"),
+    ("med_cat_den", "med den screen"), ("warrior_den", "warrior den screen"),
+    ("clearing", "clearing screen"), ("allegiances", "allegiances screen"),
+    ("clan_settings", "clan settings screen"),
+])
+def test_shared_navigation_preserves_destinations(navigation, key, target):
+    with patch.object(navigation, "change_screen") as change:
+        navigation.menu_button_pressed(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS,
+            ui_element=core.menu_buttons[key]))
+        change.assert_called_once_with(target)
+
+
+def test_dropdowns_open_on_hover_stay_open_over_children_and_close_outside(navigation):
+    dropdown = core.menu_dropdowns["dens"]
+    assert not dropdown.is_open
+    with patch.object(MANAGER, "get_mouse_position", return_value=core.menu_buttons["dens"].rect.center):
+        dropdown.update(0.01)
+    assert dropdown.is_open and core.menu_buttons["lead_den"].visible
+    with patch.object(MANAGER, "get_mouse_position", return_value=core.menu_buttons["lead_den"].rect.center):
+        dropdown.update(0.01)
+    assert dropdown.is_open
+    with patch.object(MANAGER, "get_mouse_position", return_value=(0, 0)):
+        dropdown.update(0.01)
+    assert not dropdown.is_open and not core.menu_buttons["lead_den"].visible
+
+
+def test_hidden_navigation_and_modal_windows_close_dropdowns(navigation):
+    dropdown = core.menu_dropdowns["supplies"]
+    dropdown.open()
+    navigation.hide_menu_buttons()
+    with patch.object(MANAGER, "get_mouse_position", return_value=core.menu_buttons["supplies"].rect.center):
+        dropdown.update(0.01)
+    assert not dropdown.is_open
+    navigation.show_menu_buttons()
+    window = pygame_gui.elements.UIWindow(pygame.Rect(100, 100, 200, 150), manager=MANAGER)
+    window.set_blocking(True)
+    try:
+        with patch.object(MANAGER, "get_mouse_position", return_value=core.menu_buttons["supplies"].rect.center):
+            dropdown.update(0.01)
+        assert not dropdown.is_open
+    finally:
+        window.kill()
+
+
+def test_classic_layout_hides_supplies_and_retains_health_dens(navigation):
+    game.clan.game_mode = "classic"
+    navigation.screen_switches()
+    navigation.set_disabled_menu_buttons(["catlist_screen"])
+    navigation.show_menu_buttons()
+    assert not core.menu_buttons["supplies"].visible
+    assert core.menu_buttons["catlist_screen"].rect.left == core.menu_buttons["events_screen"].rect.right
+    assert not core.menu_buttons["catlist_screen"].is_enabled
+    assert not core.menu_buttons["clearing"].is_enabled
+    assert core.menu_buttons["med_cat_den"].is_enabled
+    assert core.menu_buttons["lead_den"].is_enabled
+    with patch.object(navigation, "change_screen") as change:
+        navigation.menu_button_pressed(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS,
+            ui_element=core.menu_buttons["freshkill"]))
+        change.assert_not_called()
+
+
+def test_header_honors_visibility_preference_and_updates_after_moons(navigation):
+    game.clan.clan_settings["moons and seasons"] = False
+    navigation.update_moon_and_season()
+    assert not core.menu_buttons["moon_indicator"].visible
+    assert not core.menu_buttons["season_indicator"].visible
+    game.clan.clan_settings["moons and seasons"] = True
+    game.clan.age = 1
+    game.clan.current_season = "Leaf-bare"
+    navigation.update_moon_and_season()
+    assert core.menu_buttons["moon_indicator"].tool_tip_text == "1 moon"
+    assert core.menu_buttons["moon_indicator"].visible
+    assert core.menu_buttons["season_indicator"].visible
+    assert not core.menu_buttons["season_indicator"].check_hover(0.01, False)
+    phase = core.moon_phase
+    navigation.update_moon_and_season()
+    assert core.moon_phase == phase
+    game.clan.age = 2
+    navigation.update_moon_and_season()
+    assert core.menu_buttons["moon_indicator"].tool_tip_text == "2 moons"
+    assert game.clan.current_season == "Leaf-bare"
+
+
+def test_core_rebuild_cleans_up_widgets_and_heading_display_state(navigation):
+    navigation.update_heading_text("Long Colony")
+    state = navigation.display_change_save()
+    assert state["heading"] == "Long Colony"
+    count = len(MANAGER.get_sprite_group().sprites())
+    for _ in range(3):
+        old = core.menu_buttons["heading"]
+        children = core.menu_dropdowns["dens"].child_button_container
+        core.rebuild_core(should_rebuild_bgs=False)
+        assert not old.alive() and not children.alive()
+        assert len(MANAGER.get_sprite_group().sprites()) == count
+    Screens.menu_buttons = core.menu_buttons
+    navigation.display_change_load(state)
+    assert core.menu_buttons["heading"].text == "Long Colony"
+
+
+def test_camp_dispatches_dropdown_press_once(navigation):
+    from scripts.screens.ClanScreen import ClanScreen
+
+    screen = ClanScreen.__new__(ClanScreen)
+    screen.cat_buttons = []
+    for key in ("save_button", "label_toggle", "med_den_label", "clearing_label", "warrior_den_label", "leader_den_label"):
+        setattr(screen, key, object())
+    with patch.object(screen, "menu_button_pressed") as dispatch:
+        event = pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=core.menu_buttons["dens"])
+        screen.handle_event(event)
+        dispatch.assert_called_once_with(event)
+
+
+def test_long_heading_fits_without_losing_saved_name(navigation):
+    name = "A Very Long Colony Name With Forty Eight Letters"
+    navigation.update_heading_text(name)
+    heading = core.menu_buttons["heading"]
+    assert heading.text.endswith("...")
+    assert heading.full_text == name
+    assert name in heading.tool_tip_text
+    state = navigation.display_change_save()
+    navigation.update_heading_text("Other")
+    navigation.display_change_load(state)
+    assert heading.full_text == name
+    assert game.clan.name == "NavigationTest"
+
+
+def test_navigation_buttons_fit_text_with_matching_padding(navigation):
+    for key in ("allegiances", "clan_settings"):
+        button = core.menu_buttons[key]
+        assert 18 <= button.rect.width - button.font.get_rect(button.text).width <= 21
+    assert core.menu_buttons["allegiances"].rect.right == core.menu_buttons["clan_settings"].rect.right
+
+
+def test_allegiances_heading_uses_plain_text(navigation):
+    from scripts.screens.AllegiancesScreen import AllegiancesScreen
+
+    screen = AllegiancesScreen("allegiances screen")
+    with patch.object(screen, "get_allegiances_text", return_value=[]):
+        screen.screen_switches()
+    try:
+        assert core.menu_buttons["heading"].text == "Allegiances"
+    finally:
+        screen.exit_screen()
+
+
+def test_camp_dropdown_click_wins_over_large_colony_hitboxes(navigation, monkeypatch):
+    from scripts.cat.cats import Cat
+    from scripts.screens.ClanScreen import ClanScreen
+
+    monkeypatch.setattr(Cat, "all_cats", {})
+    monkeypatch.setattr(Cat, "all_cats_list", [])
+    monkeypatch.setattr(Cat, "sprite", property(lambda cat: pygame.Surface((50, 50), pygame.SRCALPHA)))
+    cats = [Cat(status="warrior", moons=30) for _ in range(35)]
+    game.clan.clan_cats = [cat.ID for cat in cats]
+    for cat in cats:
+        cat.placement = (445, 170)
+    screen = ClanScreen("camp screen")
+    with patch.object(screen, "choose_cat_positions"):
+        screen.screen_switches()
+    try:
+        dropdown = core.menu_dropdowns["dens"]
+        dropdown.open()
+        target = core.menu_buttons["clearing"]
+        point = target.rect.center
+        assert any(button.get_abs_rect().collidepoint(point) for button in screen.cat_buttons)
+        assert all(button.button.get_top_layer() < target.get_top_layer() for button in screen.cat_buttons)
+        pygame.event.clear()
+        with patch.object(MANAGER, "get_mouse_position", return_value=point):
+            MANAGER.update(0.016)
+            MANAGER.process_events(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=point))
+            MANAGER.process_events(pygame.event.Event(pygame.MOUSEBUTTONUP, button=1, pos=point))
+        pressed = [event.ui_element for event in pygame.event.get() if event.type == pygame_gui.UI_BUTTON_START_PRESS]
+        assert target in pressed
+        assert not any(button.button in pressed for button in screen.cat_buttons)
+        screen.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=3, pos=point))
+        assert screen._dragging_cat_id is None
+    finally:
+        screen.exit_screen()

@@ -1,3 +1,68 @@
+<strong>v0.1.0.13-KanapuroEdit: </strong>
+- Supplies now opens LifeGen-style Fresh-kill and Herbs windows over the current screen instead of immediately leaving for a den. Closing a window returns to the same screen; Classic keeps Supplies hidden.
+- Added the upstream feeding grid with twelve cats per page, nutrition/name tooltips, multiple selection, Feed all, Feed selected, rationing and the prey log. Selection survives paging and switching to the log. Compact names fit on one line, with complete names available on hover.
+- Change tactics opens our existing full-size feeding panel directly, retaining custom rule priorities, status order, Default and their explanations. The existing clearing and all individual feeding actions remain available.
+- The Herbs window shows current stock and the herb activity log, with a shortcut to the medicine cat den. Existing herb storage and treatment mechanics are preserved.
+- Fixed manual group feeding dropping unselected cats' nutrition records. Selected feeding also keeps nursing/pregnancy requirements and cannot pull an unselected parent into the meal. Feeding, rationing and tactics changes also clear the saved indicator so Events can save the new state.
+- Blocking dialogs now prevent background keyboard navigation and cat dragging. Supplies cannot open during an active moon update, and dialog overlays/highlights are removed when closed.
+
+<strong>v0.1.0.12-KanapuroEdit: </strong>
+- Fixed Dens/Supplies and other navigation clicks selecting cats underneath in large colonies. Camp hitboxes now stay on the sprite layer below navigation, and right-dragging cannot reach through visible menu controls.
+- Moved the Events page controls fully below the event frame so scrolling text and cat-link buttons cannot appear behind them.
+- Fixed Allegiances displaying literal bold tags in the shared heading. Allegiances and Colony Settings buttons now fit their labels with consistent padding and right alignment.
+- Added Save Clan beside Timeskip on Events, with Saving/Saved feedback and the existing save-error dialog. Saving is blocked during a moon update, and failed settings writes cannot show a successful save. Revive uses the separate LifeGen position so it remains accessible beside these controls.
+
+<strong>v0.1.0.11-KanapuroEdit: </strong>
+- Events now displays ten events per page with LifeGen's first/previous/next/last controls. Each tab remembers its page and scroll position when visiting profiles or other screens; display changes preserve filters and page state. New moons and colony changes reset old page positions.
+- Fixed favorite/player filters displaying stale results, duplicating events involving several selected cats, and failing to refresh when deselecting favorite group 1. Results retain their original event order, and changing filters or the faith view starts at page one.
+- Fixed involved-cat links failing when an event refers to unavailable cats. Existing cats remain accessible, and switching pages closes old links cleanly.
+- Fixed favorite controls remaining hidden after advancing a moon from another Events tab. Empty/new-colony displays clear obsolete page controls, and the existing quiet-moon message is preserved.
+
+<strong>v0.1.0.10-KanapuroEdit: </strong>
+- Updated the shared in-game menu to the LifeGen layout: Events, Supplies, Cats, Dens and Patrol in one joined row. Back to Camp and the colony-name heading return to camp; all existing den, editor and player routes are preserved.
+- Added hover menus for Dens and Supplies. Fresh-kill opens the existing clearing with its feeding controls, and Herbs opens the medicine den. Menus close when leaving a screen or opening a blocking dialog; Classic keeps its den access without prey controls.
+- Replaced the side moon/season widget with the upstream moon-phase and seasonal-vine artwork beside the colony heading. The existing Moons and seasons preference controls visibility, and forced-season cards retain their chosen season. Hover over the moon for colony age.
+- Long colony headings now fit the header and show the full name on hover. Renaming and display changes preserve the complete name, and the build label shows the full version number.
+- Fixed Camp dispatching a menu click twice, which could immediately close a newly opened dropdown. Rebuilding the menu after mode/display changes now removes its previous controls.
+
+<strong>v0.1.0.9-KanapuroEdit: </strong>
+- Added Quick Start on the game-mode page, using the upstream checkbox layout. Next creates a random newborn, colony name, camp and symbol through the normal LifeGen family/save path. Pregame preferences and any previously chosen colony size/age are kept; Cruel Season uses your chosen cards or generates a compatible supported deck.
+- Fixed small colonies missing guaranteed leadership candidates or retaining extra kitten candidates from the player-selection pool. The chosen player is added once, and all colony sizes reserve three adult leadership candidates.
+- Camp keyboard navigation now stops at each biome's actual final camp, including the seventh/eighth/ninth camps where available, and cannot advance Beach into a missing sixth camp. Enter now continues to symbol selection instead of saving early.
+
+<strong>v0.1.0.8-KanapuroEdit: </strong>
+- New-colony setup now begins with game mode, followed by Cruel Season cards when applicable, then colony name/size/age and starting-kitten selection. Back preserves the draft name, size, age, naming preferences and selected cards; cancelling preserves the loaded colony.
+- Added eight credited in-game music tracks from ClanGen/LifeGen, with general and Newleaf/Leaf-bare playlists. Previously the in-game biome playlists were empty, leaving play silent. Existing menu and creation tracks are preserved.
+- Fixed music queues failing when switching from an unrelated track into a playlist containing several tracks, and cleared stale track counts when a playlist is empty.
+
+<strong>v0.1.0.7-KanapuroEdit: </strong>
+- Renamed Naming options to Pregame settings and centered it beneath the right-hand mode explanation box. The options page uses the same title and keeps the existing name-style, inheritance and leader-life choices.
+- Corrected game-mode selection and Cruel Season setup to use LifeGen's source layout: original mode-button artwork, panel/title placement, full-size card fan, category icons, attached Random/deck tabs and joined navigation buttons. Removed the extra selection-count and instruction rows.
+- Restored the source-style framed deck viewer and deck-entry dialogs. Raised cards stay behind dialogs, Random immediately shows its chosen card's effects, and card pages wrap in both directions.
+- Added Enter/Right and Escape/Left navigation to mode/card setup, with Enter returning from naming options. Empty decks cannot skip selection, and dialog input cannot accidentally advance setup. Mode explanations now list the actual supported features before continuing.
+- Replaced the Cruel Season checklist with illustrated cards adapted from ClanGen/LifeGen: hover to inspect, click to choose, page through available cards, and click chosen-deck icons to remove them. The supported hardships and conflict protections are preserved.
+- Added compatible random-card selection and deck entry using comma-separated card IDs. Invalid or conflicting decks leave the current selection unchanged.
+- Added View Cruel cards in colony settings so active hardships can be inspected during play. The viewer does not change the deck and explains older Cruel saves without cards.
+- Restored the upstream-style game-mode panel with its dedicated explanation area. Naming options and the leader-life default have their own page, preserving choices when returning to mode selection.
+- Clarified that Classic still has ongoing health conditions, without prey or hunger management. Added source artwork attribution and license details for the imported cards and backdrops.
+
+<strong>v0.1.0.6-KanapuroEdit: </strong>
+- Fixed prey totals for nursing/pregnant cats with custom roles and kittens old enough to eat independently. Parents' nutrition requirements now return to their normal appetite when nursing ends.
+- Added selectable Cruel Season hardships to new-colony setup: four endless seasons, Kit Season, Resolute, Public Enemy, Enmity, Malicious Aura, Barren Stocks, Lean Meat, Tooth and Claw, and Miasma. The selector explains each effect, rejects conflicting seasons, requires a selection, and preserves choices when going Back. Cards needing unfinished systems remain unavailable.
+- New card games use Expanded rules with the chosen hardships, and start with automatic hunting disabled. Existing Cruel Season saves retain their original difficulty rules. Selected cards survive save/reload without resetting collected prey, herbs, or relations.
+- Connected card effects to pregnancy (including larger litters), focus cooldowns, neighboring-colony relations, outsider reputation, war injuries/deaths, illness frequency, and food requirements. Feeding summaries, manual feeding, nutrition, and hunting rewards use the same requirements.
+- Endless-season cards now set both the camp preview and saved starting season, lock the season controls during setup, and keep that season through later moons.
+- New-colony setup now uses an independent draft, preventing the loaded colony's naming settings or hardships from leaking into creation or being altered when creation is cancelled.
+- Fixed faith and other short events selecting a required companion when no other living cat was available, which could crash moon updates in a dwindling colony. Short events also handle colonies with no neighbors, and saved zero relations no longer reroll when loaded.
+
+<strong>v0.1.0.5-KanapuroEdit: </strong>
+- Added Classic and Expanded choices to pre-game settings, with Expanded selected by default and an explanation of each mode. Choices survive returning through the setup screens; Enter follows the same settings path as the Next button, and returning to colony naming preserves the entered name.
+- Fixed colony creation overriding the chosen game mode or leaving its first save and active mode out of sync. Cruel Season-only patrols now recognize the existing saved mode spelling; the new Cruel Season card mode is still being integrated.
+- Classic no longer creates a hidden prey pile through automatic hunting or crashes when dialogue checks for hunger without a pile. Stale starvation dialogue can clear normally.
+- Fixed new colonies sharing member and afterlife lists, which could carry cats from an earlier colony into a later creation in the same session.
+- Customizing a selected starting kitten now uses that kitten's appearance, sex, poses, markings, and accessories rather than resetting to the white default. The source kitten remains unchanged while editing.
+- Fixed ceremonies replacing leader/deputy names inside pronoun tags, which could display error text instead of the intended pronouns.
+
 <strong>v0.1.0.4-KanapuroEdit: </strong>
 - New-colony characters now start with Random newborn origin by default, or one of 29 newborn backstories. The selected origin survives saving before the first moon and determines the family tree and opening event; littermates share the origin. Create-command and in-game editors keep adult backstories and also offer every supported newborn origin.
 - Fixed birth-family selection silently rerolling on errors, losing the single-parentage setting, or failing when no compatible parents existed. Existing compatible colony cats are preferred; missing parents are generated when needed. Mixed-colony and outsider origins now have an outside biological parent with the matching role, and birth-parent sex rules apply to newly generated pairs.

@@ -23,11 +23,14 @@ from scripts.game_structure.ui_elements import (
     UIImageButton,
     UISpriteButton,
     UISurfaceImageButton,
+    UITextBoxTweaked,
 )
 from scripts.utility import get_text_box_theme, ui_scale, ui_scale_blit, ui_scale_offset
 from scripts.utility import ui_scale_dimensions, generate_sprite
 from .Screens import Screens
 from .CatCustomizer import CatCustomizer
+from .CruelCards import CruelCard, CruelCardIcon, DeckListWindow
+from scripts.clan_resources.cruel_season import CARDS, CARD_DATA, validate_cards
 from ..cat.sprites import sprites
 from ..game_structure.screen_settings import MANAGER, screen
 from ..game_structure.windows import SymbolFilterWindow, TutorialPopup
@@ -42,6 +45,13 @@ from scripts.events_module.patrol.patrol import Patrol
 
 class MakeClanScreen(CatCustomizer, Screens):
     newborn_origins = True
+    mode_descriptions = {
+        "classic": "A simpler colony-life experience, suited to focusing on your cat's story.<br><br>This mode features:<br>  - Ongoing illnesses, injuries and permanent conditions.<br>  - One medicine cat can care for the whole colony.<br>  - No prey pile or hunger management.",
+        "expanded": "A more hands-on experience, with the colony's health and supplies to manage.<br><br>Additional features include:<br>  - Ongoing injuries and illnesses.<br>  - Prey supplies and hunger.<br>  - Automatic hunting, which can be changed in colony settings.",
+        "cruel season": "All the features of Expanded Mode, with chosen challenges to increase the difficulty.<br><br>Choose the cards that will shape your game, or let Quick Start choose a compatible deck for you.<br><br>Automatic hunting starts disabled. Send patrols to keep your colony fed.",
+    }
+    cruel_cards = None
+    camp_counts = {"Forest": 8, "Mountainous": 7, "Plains": 9, "Beach": 5}
     # UI images
 
     ui_images = {
@@ -127,6 +137,8 @@ class MakeClanScreen(CatCustomizer, Screens):
         self.previous_cat_list = Cat.all_cats_list.copy()
         self.previous_choices = game.choose_cats
         self.clan_saved = False
+        if not game.switches["customise_new_life"]:
+            game.clan = None
         self.customizer_undo = []
         self.customizer_redo = []
         self.customizer_locks = set()
@@ -162,6 +174,8 @@ class MakeClanScreen(CatCustomizer, Screens):
 
         # Reset variables
         self.game_mode = 'expanded'
+        self.cruel_cards = []
+        self.quick_start = False
         self.clan_name = ""
         self.selected_camp_tab = 1
         self.biome_selected = None
@@ -207,8 +221,7 @@ class MakeClanScreen(CatCustomizer, Screens):
             self.hide_menu_buttons()
             self.open_choose_leader()
         else:
-            create_example_cats()
-            self.open_name_clan()
+            self.open_game_settings()
             # Show tutorial popup on first visit to the screen
             if not self.tutorial_shown:
                 TutorialPopup()
@@ -227,7 +240,9 @@ class MakeClanScreen(CatCustomizer, Screens):
                 self.handle_choose_leader_event(event)
             elif self.sub_screen == 'customize cat':
                 self.handle_customize_cat_event(event)
-            elif self.sub_screen == 'game settings':
+            elif self.sub_screen == 'cruel cards':
+                self.handle_cruel_cards_event(event)
+            elif self.sub_screen in ('game settings', 'naming settings'):
                 self.handle_game_settings_event(event)
             elif self.sub_screen == 'choose camp':
                 self.handle_choose_background_event(event)
@@ -237,8 +252,26 @@ class MakeClanScreen(CatCustomizer, Screens):
                 self.handle_saved_clan_event(event)
             self.mute_button_pressed(event)
         
+        elif event.type == pygame_gui.UI_BUTTON_ON_HOVERED and self.sub_screen == "cruel cards":
+            for name, button in {**self.card_buttons, **self.chosen_card_buttons}.items():
+                if event.ui_element == button:
+                    self.elements["card_error"].hide()
+                    self.elements["card_info_container"].show()
+                    self.elements["card_title"].set_text(CARDS[name]["name"])
+                    self.elements["card_detail"].set_text(CARDS[name]["description"])
+                    break
+
         elif event.type == pygame.KEYDOWN and game.settings['keybinds']:
-            if self.sub_screen == 'name clan':
+            if self.sub_screen in ("game settings", "naming settings", "cruel cards"):
+                if any(window.is_blocking for window in MANAGER.get_window_stack().get_full_stack()):
+                    return
+                key = "previous_step" if event.key in (pygame.K_ESCAPE, pygame.K_LEFT) else (
+                    "next_step" if event.key in (pygame.K_RETURN, pygame.K_RIGHT) else None)
+                if self.sub_screen == "naming settings" and event.key == pygame.K_RETURN:
+                    key = "previous_step"
+                if key in self.elements and self.elements[key].is_enabled:
+                    self.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=self.elements[key]))
+            elif self.sub_screen == 'name clan':
                 self.handle_name_clan_key(event)
             elif self.sub_screen == "choose camp":
                 self.handle_choose_background_key(event)
@@ -268,11 +301,17 @@ class MakeClanScreen(CatCustomizer, Screens):
                 self.elements["error"].show()
                 return
             self.clan_name = new_name
-            self.open_game_settings()
+            game.clan.name = new_name
+            game.clan.clan_prefix = self.generated_clan_prefix
+            game.choose_cats = {}
+            create_example_cats()
+            self.open_choose_leader()
         elif event.ui_element == self.elements["previous_step"]:
-            self.clan_name = ""
-            self.generated_clan_prefix = None
-            self.change_screen('start screen')
+            self.clan_name = self.elements["name_entry"].get_text()
+            if self.game_mode == "cruel season":
+                self.open_cruel_cards()
+            else:
+                self.open_game_settings()
         elif event.ui_element == self.elements['small']:
             self.elements['small'].disable()
             self.elements['medium'].enable()
@@ -323,46 +362,16 @@ class MakeClanScreen(CatCustomizer, Screens):
         return chosen_name
     
     def handle_name_clan_key(self, event):
-        if event.key == pygame.K_ESCAPE:
-            self.change_screen("start screen")
-        elif event.key == pygame.K_LEFT:
-            if not self.elements["name_entry"].is_focused:
-                self.clan_name = ""
-        elif event.key == pygame.K_RIGHT:
-            if not self.elements["name_entry"].is_focused:
-                new_name = sub(
-                    r"[^A-Za-z0-9 ]+", "", self.elements["name_entry"].get_text()
-                ).strip()
-                if not new_name:
-                    self.elements["error"].set_text("Your colony's name cannot be empty")
-                    self.elements["error"].show()
-                    return
-                if new_name.casefold() in [
-                    clan.casefold() for clan in game.switches["clan_list"]
-                ]:
-                    self.elements["error"].set_text(
-                        "A colony with that name already exists."
-                    )
-                    self.elements["error"].show()
-                    return
-                self.clan_name = new_name
-                self.open_choose_leader()
-        elif event.key == pygame.K_RETURN:
-            new_name = sub(
-                r"[^A-Za-z0-9 ]+", "", self.elements["name_entry"].get_text()
-            ).strip()
-            if not new_name:
-                self.elements["error"].set_text("Your colony's name cannot be empty")
-                self.elements["error"].show()
-                return
-            if new_name.casefold() in [
-                clan.casefold() for clan in game.switches["clan_list"]
-            ]:
-                self.elements["error"].set_text("A colony with that name already exists.")
-                self.elements["error"].show()
-                return
-            self.clan_name = new_name
-            self.open_choose_leader()
+        if event.key == pygame.K_ESCAPE or (
+            event.key == pygame.K_LEFT and not self.elements["name_entry"].is_focused
+        ):
+            self.handle_name_clan_event(pygame.event.Event(
+                pygame_gui.UI_BUTTON_START_PRESS, ui_element=self.elements["previous_step"]))
+        elif event.key == pygame.K_RETURN or (
+            event.key == pygame.K_RIGHT and not self.elements["name_entry"].is_focused
+        ):
+            self.handle_name_clan_event(pygame.event.Event(
+                pygame_gui.UI_BUTTON_START_PRESS, ui_element=self.elements["next_step"]))
 
     def handle_choose_leader_event(self, event):
         if event.ui_element in [
@@ -393,9 +402,16 @@ class MakeClanScreen(CatCustomizer, Screens):
             self.selected_cat = None
             self.open_name_cat()
         elif event.ui_element == self.elements['previous_step']:
-            # Go back to game settings
-            self.open_game_settings()
+            if game.switches["customise_new_life"]:
+                self.change_screen("start screen")
+            else:
+                self.open_name_clan()
         elif event.ui_element == self.elements['customize']:
+            if self.selected_cat:
+                self.load_customizer_appearance(self.selected_cat)
+                self.customizer_undo.clear()
+                self.customizer_redo.clear()
+                self.initial_customizer_state = self.get_customizer_state()
             self.open_customize_cat()
             
     def handle_choose_name_event(self, event):
@@ -442,8 +458,27 @@ class MakeClanScreen(CatCustomizer, Screens):
     
     def handle_game_settings_event(self, event):
         """Handle events for pre-game settings screen"""
-        # Check if a checkbox was clicked
-        if event.ui_element in self.game_settings_checkboxes.values():
+        if event.ui_element in [self.elements.get("mode_" + mode) for mode in self.mode_descriptions]:
+            for mode in self.mode_descriptions:
+                if event.ui_element == self.elements["mode_" + mode]:
+                    self.game_mode = mode
+            for mode in self.mode_descriptions:
+                if mode == self.game_mode:
+                    self.elements["mode_" + mode].disable()
+                else:
+                    self.elements["mode_" + mode].enable()
+            if self.game_mode != "cruel season":
+                self.cruel_cards = []
+            game.clan.game_mode = self.game_mode
+            game.clan.cruel_cards = self.cruel_cards.copy() if self.game_mode == "cruel season" else None
+            self.elements["mode_description"].set_text(self.mode_descriptions[self.game_mode])
+            self.elements["mode_name"].set_text(self.game_mode.title() + (" Mode" if self.game_mode != "cruel season" else ""))
+        elif event.ui_element == self.elements.get("quick_start"):
+            self.quick_start = not self.quick_start
+            self.elements["quick_start"].change_object_id("@checked_checkbox" if self.quick_start else "@unchecked_checkbox")
+        elif event.ui_element == self.elements.get("naming_options"):
+            self.open_naming_settings()
+        elif event.ui_element in self.game_settings_checkboxes.values():
             # Find which setting was clicked
             for code, checkbox in self.game_settings_checkboxes.items():
                 if event.ui_element == checkbox:
@@ -452,19 +487,46 @@ class MakeClanScreen(CatCustomizer, Screens):
                     # Refresh checkboxes to update disabled state if needed
                     self.refresh_game_settings_checkboxes()
                     break
-        elif event.ui_element == self.elements['next_step']:
-            # Rebuild the example cats so they are generated from the active naming settings.
-            # The initial batch is created before these settings exist.
-            game.choose_cats = {}
-            create_example_cats()
-            
-            # Proceed to leader selection
-            self.open_choose_leader()
-        
+        elif event.ui_element == self.elements.get('next_step'):
+            if self.quick_start:
+                self.random_quick_start()
+            elif self.game_mode == 'cruel season':
+                self.open_cruel_cards()
+            else:
+                self.open_name_clan()
         elif event.ui_element == self.elements['previous_step']:
-            # Go back to clan naming
-            self.open_name_clan()
-    
+            if self.sub_screen == 'naming settings':
+                self.open_game_settings()
+            else:
+                self.change_screen("start screen")
+
+    def random_quick_start(self):
+        # Adapted from LifeGen ChooseModeScreen.random_quick_start (MPL-2.0).
+        if self.game_mode == "cruel season":
+            if not self.cruel_cards:
+                for _ in range(random.randint(3, 8)):
+                    card = self.random_cruel_card()
+                    if card:
+                        self.cruel_cards.append(card)
+            self.cruel_cards = validate_cards(self.cruel_cards)
+            game.clan.cruel_cards = self.cruel_cards.copy()
+        self.clan_name = self.random_clan_name()
+        game.clan.name = self.clan_name
+        game.clan.clan_prefix = self.generated_clan_prefix
+        game.choose_cats = {}
+        create_example_cats()
+        self.your_cat = choice(list(game.choose_cats.values()))
+        self.leader = self.deputy = self.med_cat = None
+        self.members = []
+        self.biome_selected = choice(list(self.camp_counts))
+        self.selected_camp_tab = random.randint(1, self.camp_counts[self.biome_selected])
+        self.selected_season = game.get_config_value("forced_starting_season") or "Newleaf"
+        symbols = [symbol for symbol in sprites.clan_symbols
+                   if symbol.rstrip("0123456789") == "symbol" + self.generated_clan_prefix.upper()]
+        self.symbol_selected = choice(symbols or sprites.clan_symbols)
+        self.save_clan()
+        self.open_clan_saved_screen()
+
     def handle_create_other_cats(self):
         self.create_example_cats2()
         for cat in game.choose_cats.values():
@@ -484,7 +546,7 @@ class MakeClanScreen(CatCustomizer, Screens):
         self.members.append(self.your_cat)
         
     def create_example_cats2(self):
-        e = random.sample(range(12), 3)
+        game.choose_cats = {}
         not_allowed = ['NOPAW', 'NOTAIL', 'HALFTAIL', 'NOEAR', 'BOTHBLIND', 'RIGHTBLIND', 'LEFTBLIND', 'BRIGHTHEART',
                     'NOLEFTEAR', 'NORIGHTEAR', 'MANLEG']
         c_size = 15
@@ -498,6 +560,7 @@ class MakeClanScreen(CatCustomizer, Screens):
             c_size = 10
         elif self.clan_size == 'large':
             c_size = 20
+        e = random.sample(range(c_size), 3)
         
         special_ranks = 0
         special_rank_str = ["medicine cat", "medicine cat apprentice", "mediator", "mediator apprentice", "queen", "queen's apprentice"]
@@ -622,14 +685,7 @@ class MakeClanScreen(CatCustomizer, Screens):
             if old_biome is not None:
                 possible_biomes.remove(old_biome)
             self.biome_selected = choice(possible_biomes)
-            if self.biome_selected == 'Forest':
-                self.selected_camp_tab = randrange(1, 9)
-            elif self.biome_selected == "Mountainous":
-                self.selected_camp_tab = randrange(1, 8)
-            elif self.biome_selected == "Plains":
-                self.selected_camp_tab = randrange(1, 10)
-            else:
-                self.selected_camp_tab = randrange(1, 6)
+            self.selected_camp_tab = random.randint(1, self.camp_counts[self.biome_selected])
             self.refresh_selected_camp()
             self.refresh_text_and_buttons()
         elif event.ui_element == self.elements["next_step"]:
@@ -663,12 +719,11 @@ class MakeClanScreen(CatCustomizer, Screens):
                 self.selected_camp_tab -= 1
                 self.refresh_selected_camp()
         elif event.key == pygame.K_DOWN and self.biome_selected is not None:
-            if self.selected_camp_tab < 6:
+            if self.selected_camp_tab < self.camp_counts[self.biome_selected]:
                 self.selected_camp_tab += 1
                 self.refresh_selected_camp()
         elif event.key == pygame.K_RETURN:
-            self.save_clan()
-            self.open_clan_saved_screen()
+            self.open_choose_symbol()
 
     def handle_choose_symbol_event(self, event):
         if event.ui_element == self.elements["previous_step"]:
@@ -958,6 +1013,11 @@ class MakeClanScreen(CatCustomizer, Screens):
                 self.tabs["greenleaf_tab"].enable()
                 self.tabs["leaffall_tab"].enable()
                 self.tabs["leafbare_tab"].disable()
+
+            if game.get_config_value("forced_starting_season"):
+                for key in ("newleaf_tab", "greenleaf_tab", "leaffall_tab", "leafbare_tab"):
+                    self.tabs[key].disable()
+                    self.tabs[key].set_tooltip("The selected Cruel Season card locks the season.")
 
             if self.biome_selected and self.selected_camp_tab:
                 self.elements["next_step"].enable()
@@ -1689,10 +1749,6 @@ class MakeClanScreen(CatCustomizer, Screens):
         self.clear_all_page()
         self.sub_screen = "name clan"
         
-        # Reset clan but preserve symbol selection
-        # self.symbol_selected = None  # Don't reset - preserve user's choice
-        game.clan = None
-
         # Create all the elements.
         self.elements["random"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((224, 595), (34, 34))),
@@ -1733,6 +1789,7 @@ class MakeClanScreen(CatCustomizer, Screens):
             list("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- ")
         )
         self.elements["name_entry"].set_text_length_limit(48)
+        self.elements["name_entry"].set_text(self.clan_name)
         self.elements["reset_name"] = UIImageButton(ui_scale(pygame.Rect((910, 1190), (268, 60))), "",
                                                     object_id="#reset_name_button", manager=MANAGER)
         
@@ -1771,7 +1828,7 @@ class MakeClanScreen(CatCustomizer, Screens):
             manager=MANAGER
         )
 
-        self.elements["medium"].disable()
+        self.elements[self.clan_size].disable()
 
         self.elements["established"] = UISurfaceImageButton(
             ui_scale(pygame.Rect((295, 200), (80, 30))),
@@ -1789,7 +1846,7 @@ class MakeClanScreen(CatCustomizer, Screens):
             tool_tip_text="The colony is newly established and cats' backstories will reflect this.",
             manager=MANAGER
         )
-        self.elements["established"].disable()
+        self.elements["established" if self.clan_age == "established" else "new"].disable()
 
     def clan_name_header(self):
         self.elements["name_backdrop"] = pygame_gui.elements.UIImage(
@@ -1976,10 +2033,71 @@ class MakeClanScreen(CatCustomizer, Screens):
         self.open_name_cat()
 
     def open_game_settings(self):
+        if not game.clan:
+            game.clan = Clan(name=self.clan_name or None, clan_prefix=self.generated_clan_prefix,
+                             game_mode=self.game_mode,
+                             cruel_cards=self.cruel_cards.copy() if self.game_mode == "cruel season" else None)
+        game.clan.game_mode = self.game_mode
+        game.clan.cruel_cards = self.cruel_cards.copy() if self.game_mode == "cruel season" else None
+        self.clear_all_page()
+        self.sub_screen = "game settings"
+        self.elements["mode_background"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((325, 130), (399, 461))),
+            pygame.transform.scale(pygame.image.load("resources/images/game_mode_text_box.png").convert_alpha(),
+                                   ui_scale_dimensions((399, 461))), manager=MANAGER)
+        self.elements["mode_name"] = pygame_gui.elements.UITextBox(
+            self.game_mode.title() + (" Mode" if self.game_mode != "cruel season" else ""),
+            ui_scale(pygame.Rect((425, 135), (200, 27))),
+            object_id="#text_box_30_horizcenter_light", manager=MANAGER)
+        self.elements["mode_classic"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((109, 240), (132, 30))), "Classic Mode",
+            get_button_dict(ButtonStyles.SQUOVAL, (132, 30)), object_id="@buttonstyles_squoval", manager=MANAGER)
+        self.elements["mode_expanded"] = UIImageButton(
+            ui_scale(pygame.Rect((94, 320), (162, 34))), "Expanded Mode",
+            object_id="#expanded_mode_button", manager=MANAGER)
+        self.elements["mode_cruel season"] = UIImageButton(
+            ui_scale(pygame.Rect((100, 400), (150, 30))), "Cruel Season",
+            object_id="#cruel_season_mode_button", manager=MANAGER)
+        self.elements["mode_" + self.game_mode].disable()
+        self.elements["mode_description"] = UITextBoxTweaked(
+            self.mode_descriptions[self.game_mode], ui_scale(pygame.Rect((345, 180), (365, 360))),
+            object_id="#text_box_30_horizleft", manager=MANAGER)
+        self.elements["naming_options"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((445, 548), (160, 30))), "Pregame settings",
+            get_button_dict(ButtonStyles.SQUOVAL, (160, 30)), object_id="@buttonstyles_squoval",
+            tool_tip_text="Choose name styles, inheritance and leader lives.", manager=MANAGER)
+        self.elements["mode_warning"] = pygame_gui.elements.UITextBox(
+            "Your colony's game mode cannot be changed after creation.",
+            ui_scale(pygame.Rect((100, 581), (600, 40))),
+            object_id=get_text_box_theme("#text_box_30_horizcenter"), manager=MANAGER)
+        for key, text, x, style in (
+            ("previous_step", get_arrow(1, arrow_left=True) + " Previous Step", 253, ButtonStyles.MENU_LEFT),
+            ("next_step", "Next Step " + get_arrow(3, arrow_left=False), 400, ButtonStyles.MENU_RIGHT),
+        ):
+            self.elements[key] = UISurfaceImageButton(ui_scale(pygame.Rect((x, 620), (147, 30))), text,
+                get_button_dict(style, (147, 30)), object_id="@buttonstyles_" + style.value,
+                manager=MANAGER, starting_height=2)
+
+        self.elements["quick_start"] = UIImageButton(
+            ui_scale(pygame.Rect((560, -32), (34, 34))), "",
+            object_id="@checked_checkbox" if self.quick_start else "@unchecked_checkbox",
+            tool_tip_text="Generate a random newborn, colony, camp and symbol. Pregame settings are kept. Starts in Newleaf unless a card fixes the season. Uses chosen cards, or picks a compatible deck if none are selected.",
+            anchors={"top_target": self.elements["previous_step"]}, manager=MANAGER)
+        self.elements["quick_start_label"] = pygame_gui.elements.UILabel(
+            ui_scale(pygame.Rect((5, -28), (-1, -1))), "Quick Start",
+            object_id=get_text_box_theme("#text_box_30_horizleft"), manager=MANAGER,
+            anchors={"left_target": self.elements["quick_start"], "top_target": self.elements["quick_start"]})
+
+    def open_naming_settings(self):
         """Opens pre-game naming settings screen after clan is named"""
         # Create a temporary clan with the name so settings can be configured
         if not game.clan:
-            game.clan = Clan(name=self.clan_name, clan_prefix=self.generated_clan_prefix)
+            game.clan = Clan(name=self.clan_name or None, clan_prefix=self.generated_clan_prefix,
+                             game_mode=self.game_mode,
+                             cruel_cards=self.cruel_cards.copy() if self.game_mode == "cruel season" else None)
+
+        game.clan.game_mode = self.game_mode
+        game.clan.cruel_cards = self.cruel_cards.copy() if self.game_mode == "cruel season" else None
 
         # Only seed defaults the first time this temporary clan is created.
         # Re-opening the screen should preserve the player's current selections.
@@ -1995,19 +2113,19 @@ class MakeClanScreen(CatCustomizer, Screens):
             game.clan.clan_settings.setdefault(setting_name, default_value)
         
         self.clear_all_page()
-        self.sub_screen = "game settings"
+        self.sub_screen = "naming settings"
         
         # Create container for settings
         self.elements["container_game_settings"] = pygame_gui.elements.UIScrollingContainer(
-            ui_scale(pygame.Rect((0, 245), (700, 300))),
+            ui_scale(pygame.Rect((100, 180), (600, 390))),
             allow_scroll_x=False,
             manager=MANAGER,
         )
         
         # Create instruction text
         self.elements["instr"] = pygame_gui.elements.UITextBox(
-            "Pre-game settings",
-            ui_scale(pygame.Rect((100, 185), (600, 50))),
+            "Pregame settings",
+            ui_scale(pygame.Rect((100, 105), (600, 50))),
             object_id=get_text_box_theme("#text_box_30_horizcenter"),
             manager=MANAGER,
         )
@@ -2026,7 +2144,7 @@ class MakeClanScreen(CatCustomizer, Screens):
         for i, (code, desc) in enumerate(naming_settings):
             self.game_settings_text[code] = pygame_gui.elements.UITextBox(
                 desc,
-                ui_scale(pygame.Rect((225, i * 39), (500, 39))),
+                ui_scale(pygame.Rect((70, i * 45), (500, 45))),
                 container=self.elements["container_game_settings"],
                 object_id=get_text_box_theme("#text_box_30_horizleft_pad_0_8"),
                 manager=MANAGER,
@@ -2034,7 +2152,7 @@ class MakeClanScreen(CatCustomizer, Screens):
             self.game_settings_text[code].disable()
         
         self.elements["container_game_settings"].set_scrollable_area_dimensions(
-            ui_scale_dimensions((780, len(naming_settings) * 39 + 40))
+            ui_scale_dimensions((580, len(naming_settings) * 45 + 40))
         )
         
         # Store setting codes for reference
@@ -2043,25 +2161,11 @@ class MakeClanScreen(CatCustomizer, Screens):
         # Create checkboxes
         self.refresh_game_settings_checkboxes()
 
-        # Navigation buttons
         self.elements["previous_step"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((253, 645), (147, 30))),
-            get_arrow(1, arrow_left=True) + " Previous Step",
-            get_button_dict(ButtonStyles.MENU_LEFT, (147, 30)),
-            object_id="@buttonstyles_menu_left",
-            manager=MANAGER,
-            starting_height=2
-        )
-        self.elements["next_step"] = UISurfaceImageButton(
-            ui_scale(pygame.Rect((0, 645), (147, 30))),
-            "Next Step " + get_arrow(3, arrow_left=False),
-            get_button_dict(ButtonStyles.MENU_RIGHT, (147, 30)),
-            object_id="@buttonstyles_menu_right",
-            manager=MANAGER,
-            starting_height=2,
-            anchors={"left_target": self.elements["previous_step"]},
-        )
-    
+            ui_scale(pygame.Rect((326, 645), (147, 30))), "Done",
+            get_button_dict(ButtonStyles.SQUOVAL, (147, 30)),
+            object_id="@buttonstyles_squoval", manager=MANAGER)
+
     def refresh_game_settings_checkboxes(self):
         """Refresh checkboxes for game settings (naming styles)"""
         # Kill existing checkboxes
@@ -2109,7 +2213,7 @@ class MakeClanScreen(CatCustomizer, Screens):
                 tooltip = f"{desc} This is the only enabled name type; at least one must be enabled."
             
             self.game_settings_checkboxes[code] = UIImageButton(
-                ui_scale(pygame.Rect((170, i * 39), (34, 34))),
+                ui_scale(pygame.Rect((25, i * 45), (34, 34))),
                 "",
                 object_id=box_type,
                 container=self.elements["container_game_settings"],
@@ -2119,10 +2223,250 @@ class MakeClanScreen(CatCustomizer, Screens):
             if disabled:
                 self.game_settings_checkboxes[code].disable()
     
+    def open_cruel_cards(self):
+        self.clear_all_page()
+        self.sub_screen = "cruel cards"
+        self.card_page = 0
+        self.card_buttons = {}
+        self.chosen_card_buttons = {}
+
+        self.elements["title"] = pygame_gui.elements.UITextBox(
+            "Choose your Challenges",
+            ui_scale(pygame.Rect((0, 60), (300, -1))),
+            object_id=get_text_box_theme("#text_box_40_horizcenter"),
+            manager=MANAGER,
+            anchors={"centerx": "centerx"},
+        )
+
+        self.elements["card_previous"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((65, 175), (34, 34))),
+            Icon.ARROW_LEFT,
+            get_button_dict(ButtonStyles.ICON, (34, 34)),
+            object_id="@buttonstyles_icon",
+            anchors={"top_target": self.elements["title"]},
+            starting_height=1,
+            manager=MANAGER,
+        )
+
+        self.elements["card_container"] = pygame_gui.core.UIContainer(
+            ui_scale(pygame.Rect((12, 50), (583, 450))),
+            anchors={
+                "left_target": self.elements["card_previous"],
+            },
+            manager=MANAGER,
+        )
+        self.elements["card_backdrop"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((0, 120), (580, 256))),
+            pygame.transform.scale(
+                pygame.image.load(
+                    f"resources/images/cruel_cards/card_backdrop_{'dark' if game.settings['dark mode'] else 'light'}.png"
+                ),
+                ui_scale_dimensions((580, 256)),
+            ),
+            container=self.elements["card_container"],
+            manager=MANAGER,
+            starting_height=0,
+        )
+
+        self.elements["card_next"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((10, 175), (34, 34))),
+            Icon.ARROW_RIGHT,
+            get_button_dict(ButtonStyles.ICON, (34, 34)),
+            object_id="@buttonstyles_icon",
+            starting_height=1,
+            anchors={
+                "top_target": self.elements["title"],
+                "left_target": self.elements["card_container"],
+            },
+            manager=MANAGER,
+        )
+
+        self.elements["random_card"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((92, -10), (34, 34))),
+            Icon.DICE,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (34, 34)),
+            object_id="@buttonstyles_icon_tab_right",
+            manager=MANAGER,
+            sound_id="dice_roll",
+            anchors={
+                "top_target": self.elements["card_container"],
+            },
+            starting_height=-1,
+            tool_tip_text="Choose a random compatible card.",
+        )
+        self.elements["deck_list"] = UISurfaceImageButton(
+            ui_scale(pygame.Rect((92, 10), (34, 34))),
+            Icon.NOTEPAD,
+            get_button_dict(ButtonStyles.ICON_TAB_RIGHT, (34, 34)),
+            object_id="@buttonstyles_icon_tab_right",
+            manager=MANAGER,
+            anchors={
+                "top_target": self.elements["random_card"],
+            },
+            starting_height=-1,
+            tool_tip_text="Enter a list of card IDs.",
+        )
+        self.elements["card_info_frame"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((20, -50), (300, 150))),
+            get_box(BoxStyles.FRAME, (300, 150)),
+            manager=MANAGER,
+            anchors={
+                "top_target": self.elements["card_container"],
+                "left_target": self.elements["card_previous"],
+            },
+            starting_height=-1,
+        )
+        self.elements["card_error"] = pygame_gui.elements.UITextBox(
+            "Hover over a card to view its effects.",
+            ui_scale(pygame.Rect((30, -20), (280, 110))),
+            object_id=get_text_box_theme("#text_box_30_horizcenter"),
+            manager=MANAGER,
+            anchors={
+                "top_target": self.elements["card_container"],
+                "left_target": self.elements["card_previous"],
+            },
+        )
+        self.elements["card_info_container"] = pygame_gui.core.UIContainer(
+            ui_scale(pygame.Rect((30, -20), (280, 110))),
+            manager=MANAGER,
+            anchors={
+                "top_target": self.elements["card_container"],
+                "left_target": self.elements["card_previous"],
+            },
+            visible=False,
+        )
+        self.elements["card_title"] = pygame_gui.elements.UITextBox(
+            "",
+            ui_scale(pygame.Rect((0, 0), (280, -1))),
+            object_id=get_text_box_theme("#text_box_30_horizleft"),
+            manager=MANAGER,
+            container=self.elements["card_info_container"],
+        )
+        self.elements["card_detail"] = UITextBoxTweaked(
+            "",
+            ui_scale(pygame.Rect((0, -10), (280, 80))),
+            object_id=get_text_box_theme("#text_box_22_horizleft_spacing_95"),
+            manager=MANAGER,
+            container=self.elements["card_info_container"],
+            anchors={"top_target": self.elements["card_title"]}, line_spacing=0.95,
+        )
+
+        self.elements["chosen_container"] = pygame_gui.core.UIContainer(
+            ui_scale(pygame.Rect((30, -20), (220, 100))),
+            manager=MANAGER,
+            anchors={
+                "top_target": self.elements["card_container"],
+                "left_target": self.elements["card_info_frame"],
+            },
+        )
+        self.elements["card_icon_container"] = pygame_gui.elements.UIAutoResizingContainer(
+            ui_scale(pygame.Rect((0, 0), (0, 0))),
+            manager=MANAGER,
+            container=self.elements["chosen_container"],
+            anchors={
+                "centerx": "centerx",
+                "centery": "centery",
+            },
+            resize_top=False,
+            resize_left=False,
+        )
+
+        for key, label, x, style in (
+            ("previous_step", get_arrow(1, arrow_left=True) + " Previous Step", 253, ButtonStyles.MENU_LEFT),
+            ("next_step", "Next Step " + get_arrow(3, arrow_left=False), 400, ButtonStyles.MENU_RIGHT),
+        ):
+            self.elements[key] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((x, 620), (147, 30))), label,
+                get_button_dict(style, (147, 30)), object_id="@buttonstyles_" + style.value,
+                manager=MANAGER, starting_height=2)
+        self.refresh_cruel_cards()
+
+    def refresh_cruel_cards(self):
+        for button in list(self.card_buttons.values()) + list(self.chosen_card_buttons.values()):
+            button.kill()
+        self.card_buttons = {}
+        self.chosen_card_buttons = {}
+        available = [name for name in CARDS if name not in self.cruel_cards]
+        self.card_page = min(self.card_page, max(0, (len(available) - 1) // 12))
+        page = available[self.card_page * 12:(self.card_page + 1) * 12]
+        for i, name in enumerate(page):
+            self.card_buttons[name] = CruelCard((i * 32, 10 + choice([2, 6, 10])), name,
+                container=self.elements["card_container"], interval=32 if i < len(page) - 1 else None,
+                layer_count=len(page), starting_height=i + 1, anchors={"top_target": self.elements["title"]})
+        icons = self.elements["card_icon_container"]
+        for i, name in enumerate(self.cruel_cards):
+            anchors = {}
+            if i % 6:
+                anchors["left_target"] = list(self.chosen_card_buttons.values())[-1]
+            if i >= 6:
+                anchors["top_target"] = list(self.chosen_card_buttons.values())[0]
+            self.chosen_card_buttons[name] = CruelCardIcon((5 if i % 6 else 0, 5 if i >= 6 else 0), name,
+                container=icons, anchors=anchors)
+            self.chosen_card_buttons[name].set_tooltip(CARDS[name]["name"] + ": click to undo this choice.")
+        self.elements["next_step"].enable() if self.cruel_cards else self.elements["next_step"].disable()
+        for key in ("card_previous", "card_next"):
+            self.elements[key].enable() if len(available) > 12 else self.elements[key].disable()
+
+    def apply_cruel_deck(self, cards):
+        cards = validate_cards(cards)
+        self.cruel_cards = cards
+        game.clan.cruel_cards = cards.copy()
+        self.elements["card_error"].set_text("Hover over a card to view its effects.")
+        self.refresh_cruel_cards()
+
+    def random_cruel_card(self):
+        compatible = []
+        for candidate in CARDS:
+            if candidate in self.cruel_cards:
+                continue
+            try:
+                validate_cards(self.cruel_cards + [candidate])
+            except ValueError:
+                continue
+            compatible.append(candidate)
+        return choice(compatible) if compatible else None
+
+    def handle_cruel_cards_event(self, event):
+        if event.ui_element == self.elements["previous_step"]:
+            self.open_game_settings()
+        elif event.ui_element == self.elements["next_step"]:
+            if not self.cruel_cards:
+                return
+            game.clan.cruel_cards = validate_cards(self.cruel_cards)
+            self.open_name_clan()
+        elif event.ui_element == self.elements["deck_list"]:
+            DeckListWindow(self.cruel_cards, self.apply_cruel_deck)
+        elif event.ui_element in (self.elements["card_previous"], self.elements["card_next"]):
+            pages = max(1, (len(CARDS) - len(self.cruel_cards) + 11) // 12)
+            self.card_page = (self.card_page + (-1 if event.ui_element == self.elements["card_previous"] else 1)) % pages
+            self.refresh_cruel_cards()
+        else:
+            name = next((name for name, button in {**self.card_buttons, **self.chosen_card_buttons}.items()
+                         if event.ui_element == button), None)
+            if event.ui_element == self.elements["random_card"]:
+                name = self.random_cruel_card()
+            if name:
+                cards = self.cruel_cards.copy()
+                cards.remove(name) if name in cards else cards.append(name)
+                try:
+                    self.apply_cruel_deck(cards)
+                except ValueError as error:
+                    self.elements["card_info_container"].hide()
+                    self.elements["card_error"].set_text(str(error))
+                    self.elements["card_error"].show()
+                else:
+                    self.elements["card_error"].hide()
+                    self.elements["card_info_container"].show()
+                    self.elements["card_title"].set_text(CARDS[name]["name"])
+                    self.elements["card_detail"].set_text(CARDS[name]["description"])
+
     def open_choose_background(self):
         # clear screen
         self.clear_all_page()
         self.sub_screen = "choose camp"
+        forced_season = game.get_config_value("forced_starting_season")
+        if forced_season:
+            self.selected_season = forced_season
 
         # Next and previous buttons
         self.elements["previous_step"] = UISurfaceImageButton(
@@ -2631,7 +2975,8 @@ class MakeClanScreen(CatCustomizer, Screens):
                             biome = self.biome_selected,
                             camp_bg = convert_camp[self.selected_camp_tab],
                             symbol=self.symbol_selected,
-                            game_mode="expanded",
+                            game_mode=self.game_mode,
+                            cruel_cards=self.cruel_cards if self.game_mode == "cruel season" else None,
                             starting_members=self.members,
                             starting_season=self.selected_season,
                             your_cat=self.your_cat,

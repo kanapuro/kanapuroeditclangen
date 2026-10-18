@@ -796,7 +796,7 @@ class Patrol:
                     continue            
             # cruel season tag check
             if "cruel_season" in patrol.tags:
-                if game.clan and game.clan.game_mode != "cruel_season":
+                if game.clan and game.clan.game_mode != "cruel season":
                     continue
 
             if "romantic" in patrol.tags:

@@ -478,7 +478,7 @@ class RenameClanCommand(Command):
         screen = game.all_screens[game.current_screen]
         if screen.name == "list screen":
             screen.clan_name = new_name
-        if screen.menu_buttons["heading"].html_text == old_name:
+        if screen.menu_buttons["heading"].full_text == old_name:
             screen.update_heading_text(new_name)
         game.rpc.update_rpc.set()
         add_output_line_to_log(f"Renamed {old_name} to {new_name}")

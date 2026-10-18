@@ -1,4 +1,8 @@
 {
+	"forced_starting_season": null,
+	"outsiders": {"max_reputation": 100, "starting_reputation": 80},
+	"reputation": {"other_clans": {"relation_cap": 30}},
+	"clan_resources": {"herbs": {"empty_starting_storage": false}},
 	"relationship":{
 		"in_decrease_value":{
 			"low": 8,
@@ -351,6 +355,7 @@
 		"war_injury_modifier": 100
 	},
 	"clan_creation": {
+		"starting_clan_relation": null,
 		"rerolls": -1,
 		"comment": "Set this to -1 for it to be infinite"
 	},

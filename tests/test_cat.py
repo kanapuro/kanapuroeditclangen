@@ -1307,6 +1307,8 @@ class TestExampleCatNamingRules(unittest.TestCase):
             current_season="Newleaf",
             herbs={},
             game_mode="expanded",
+            simulation_mode="expanded",
+            cruel_cards=None,
         )
 
         with patch("scripts.cat.names.game.clan", dummy_clan), patch(

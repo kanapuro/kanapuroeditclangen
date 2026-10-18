@@ -467,6 +467,23 @@ class CatCustomizer:
         else:
             self.elements["redo_customize"].disable()
 
+    def load_customizer_appearance(self, cat):
+        pelt = cat.pelt
+        self.pname = pelt.name
+        for draft, stage in (("kitten_sprite", "kitten"), ("adolescent_pose", "adolescent"),
+                             ("adult_pose", "adult"), ("elder_pose", "senior")):
+            setattr(self, draft, pelt.cat_sprites[stage])
+        for field in ("length", "colour", "white_patches", "eye_colour", "eye_colour2", "tortiebase",
+                      "tortiecolour", "pattern", "tortiepattern", "vitiligo", "points", "paralyzed", "opacity",
+                      "scars", "tint", "skin", "white_patches_tint", "reverse", "accessories", "inventory",
+                      "fur_texture", "build", "height"):
+            value = deepcopy(getattr(pelt, field))
+            if field in ("white_patches", "pattern") and not isinstance(value, list):
+                value = [value] if value else []
+            setattr(self, field, value)
+        self.sex = cat.gender
+        self.tortie_enabled = pelt.name in ("Tortie", "Calico")
+
     def open_customize_cat(self):
 
         if not hasattr(self, "initial_customizer_state"):

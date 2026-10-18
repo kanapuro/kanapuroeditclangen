@@ -168,9 +168,8 @@ class Events:
         get_current_season()
         Pregnancy_Events.handle_pregnancy_age(game.clan)
         self.check_war()
-        if 'freshkill' in game.clan.clan_settings:
-            if game.clan.clan_settings['freshkill']:
-                self.add_freshkill()
+        if game.clan.game_mode != "classic" and game.clan.clan_settings.get("freshkill", False):
+            self.add_freshkill()
 
         if (
             game.clan.game_mode in ["expanded", "cruel season"]
@@ -536,7 +535,8 @@ class Events:
         if game.clan.focus == "war" and not game.clan.war.get("at_war"):
             game.clan.focus = ""
             game.clan.focus_moons = 0
-        if game.clan.focus == "starving" and game.clan.freshkill_pile.total_amount > game.clan.freshkill_pile.amount_food_needed()*0.5:
+        if game.clan.focus == "starving" and (not game.clan.freshkill_pile or
+                game.clan.freshkill_pile.total_amount > game.clan.freshkill_pile.amount_food_needed()*0.5):
             game.clan.focus = ""
             game.clan.focus_moons = 0
             for clan_cat in game.clan.clan_cats:
@@ -557,7 +557,7 @@ class Events:
                 game.clan.focus = game.config["debug_ensure_focus"]
             elif game.clan.war.get("at_war"):
                 game.clan.focus = "war"
-            elif game.clan.freshkill_pile.total_amount < game.clan.freshkill_pile.amount_food_needed()*0.5:
+            elif game.clan.freshkill_pile and game.clan.freshkill_pile.total_amount < game.clan.freshkill_pile.amount_food_needed()*0.5:
                 game.clan.focus = "starving"
             elif random.randint(1,30) == 1:
                 possible_focuses = ["valentines", "hailstorm"]
@@ -1206,10 +1206,10 @@ class Events:
             ceremony_txt = ceremony_txt.replace('c_n', str(game.clan.name) + "Clan")
             ceremony_txt = ceremony_txt.replace('y_c', str(game.clan.your_cat.name))
             if game.clan.leader and not game.clan.leader.dead and not game.clan.leader.outside:
-                ceremony_txt = re.sub(r'(?<!\\/)l_n(?!\\/)', str(game.clan.leader.name), ceremony_txt)
+                ceremony_txt = re.sub(r'(?<!/)l_n(?!/)', str(game.clan.leader.name), ceremony_txt)
                 self.cat_dict["l_n"] = game.clan.leader
             elif game.clan.deputy and not game.clan.deputy.dead and not game.clan.deputy.outside:
-                ceremony_txt = re.sub(r'(?<!\\/)d_n(?!\\/)', str(game.clan.deputy.name), ceremony_txt)
+                ceremony_txt = re.sub(r'(?<!/)d_n(?!/)', str(game.clan.deputy.name), ceremony_txt)
                 self.cat_dict["d_n"] = game.clan.deputy
             if len(get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"], sort=True)) > 0:
                 random_med = random.choice(get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"], sort=True))
@@ -1275,10 +1275,10 @@ class Events:
         ceremony_txt = ceremony_txt.replace('y_c', str(game.clan.your_cat.name))
         
         if game.clan.leader and not game.clan.leader.dead and not game.clan.leader.outside:
-            ceremony_txt = re.sub(r'(?<!\\/)l_n(?!\\/)', str(game.clan.leader.name), ceremony_txt)
+            ceremony_txt = re.sub(r'(?<!/)l_n(?!/)', str(game.clan.leader.name), ceremony_txt)
             self.cat_dict["l_n"] = game.clan.leader
         elif game.clan.deputy and not game.clan.deputy.dead and not game.clan.deputy.outside:
-            ceremony_txt = re.sub(r'(?<!\\/)d_n(?!\\/)', str(game.clan.deputy.name), ceremony_txt)
+            ceremony_txt = re.sub(r'(?<!/)d_n(?!/)', str(game.clan.deputy.name), ceremony_txt)
             self.cat_dict["d_n"] = game.clan.deputy
 
 
@@ -1305,10 +1305,10 @@ class Events:
         ceremony_txt = ceremony_txt.replace('c_n', str(game.clan.name) + "Clan")
         ceremony_txt = ceremony_txt.replace('y_c', str(game.clan.your_cat.name))
         if game.clan.leader and not game.clan.leader.dead and not game.clan.leader.outside:
-            ceremony_txt = re.sub(r'(?<!\\/)l_n(?!\\/)', str(game.clan.leader.name), ceremony_txt)
+            ceremony_txt = re.sub(r'(?<!/)l_n(?!/)', str(game.clan.leader.name), ceremony_txt)
             self.cat_dict["l_n"] = game.clan.leader
         elif game.clan.deputy and not game.clan.deputy.dead and not game.clan.deputy.outside:
-            ceremony_txt = re.sub(r'(?<!\\/)d_n(?!\\/)', str(game.clan.deputy.name), ceremony_txt)
+            ceremony_txt = re.sub(r'(?<!/)d_n(?!/)', str(game.clan.deputy.name), ceremony_txt)
             self.cat_dict["d_n"] = game.clan.deputy
         process_text_dict = self.cat_dict.copy()
         for abbrev in process_text_dict.keys():

@@ -268,6 +268,8 @@ class GenerateEvents:
             sub_types.remove("war")
 
         for event in possible_events:
+            if event.r_c and random_cat is None:
+                continue
             if event.history:
                 if (
                     not isinstance(event.history, list)
@@ -857,15 +859,15 @@ class GenerateEvents:
 
                         # now do the math to find how much is too much prey
                         trigger_factor = freshkill_trigger_factor
-                        divider = 35 if game.clan.game_mode == "expanded" else 20
+                        divider = 35 if game.clan.simulation_mode == "expanded" else 20
                         trigger_factor = trigger_factor - round(
                             pow((clan_size / divider), 2)
                         )
-                        if trigger_factor < 2 and game.clan.game_mode == "expanded":
+                        if trigger_factor < 2 and game.clan.simulation_mode == "expanded":
                             trigger_factor = 2
                         if (
                             trigger_factor < 1.2
-                            and game.clan.game_mode == "cruel season"
+                            and game.clan.simulation_mode == "cruel season"
                         ):
                             trigger_factor = 1.2
 

@@ -34,7 +34,6 @@ from scripts.cat.pelts import Pelt
 from scripts.cat_relations.relationship import Relationship
 from scripts.clan_resources.freshkill import (
     ADDITIONAL_PREY,
-    PREY_REQUIREMENT,
     HUNTER_EXP_BONUS,
     HUNTER_BONUS,
     FRESHKILL_ACTIVE,
@@ -538,11 +537,11 @@ class PatrolOutcome:
     def _handle_exp(self, patrol: "Patrol") -> str:
         """Handle giving exp"""
 
-        if game.clan.game_mode == "classic":
+        if game.clan.simulation_mode == "classic":
             gm_modifier = 1
-        elif game.clan.game_mode == "expanded":
+        elif game.clan.simulation_mode == "expanded":
             gm_modifier = 3
-        elif game.clan.game_mode == "cruel season":
+        elif game.clan.simulation_mode == "cruel season":
             gm_modifier = 6
         else:
             gm_modifier = 1
@@ -559,7 +558,7 @@ class PatrolOutcome:
         )
 
         # Apprentice exp, does not depend on success
-        if game.clan.game_mode != "classic":
+        if game.clan.simulation_mode != "classic":
             app_exp = max(random.randint(1, 7) * (1 - 0.1 * len(patrol.patrol_cats)), 1)
         else:
             app_exp = 0
@@ -1002,7 +1001,7 @@ class PatrolOutcome:
     def _handle_herbs(self, patrol: "Patrol") -> str:
         """Handle giving herbs"""
 
-        if not self.herbs or game.clan.game_mode == "classic":
+        if not self.herbs or game.clan.simulation_mode == "classic":
             return ""
 
         large_bonus = False
@@ -1063,11 +1062,11 @@ class PatrolOutcome:
         if not FRESHKILL_ACTIVE:
             return ""
 
-        if not self.prey or game.clan.game_mode == "classic":
+        if not self.prey or game.clan.simulation_mode == "classic":
             return ""
 
-        basic_amount = PREY_REQUIREMENT["warrior"]
-        if game.clan.game_mode == "expanded":
+        basic_amount = game.get_config_value("prey", "prey_requirement", "warrior")
+        if game.clan.simulation_mode == "expanded":
             basic_amount += ADDITIONAL_PREY
         prey_types = {
             "very_small": basic_amount / 2,
@@ -1116,7 +1115,7 @@ class PatrolOutcome:
                 )
 
         # additional hunter buff for expanded mode
-        if game.clan.game_mode == "expanded" and highest_hunter_tier:
+        if game.clan.simulation_mode == "expanded" and highest_hunter_tier:
             total_amount = int(
                 total_amount * (HUNTER_BONUS[str(highest_hunter_tier)] / 20 + 1)
             )

@@ -46,7 +46,7 @@ class AllegiancesScreen(Screens):
         self.show_menu_buttons()
         self.show_mute_buttons()
         self.set_disabled_menu_buttons(["allegiances"])
-        self.update_heading_text("<b>Allegiances</b>")
+        self.update_heading_text("Allegiances")
         allegiance_list = self.get_allegiances_text()
 
 

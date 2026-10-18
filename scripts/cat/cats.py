@@ -2809,7 +2809,7 @@ class Cat:
         if duration == 0:
             duration = 1
 
-        if game.clan and game.clan.game_mode == "cruel season" and mortality != 0:
+        if game.clan and game.clan.simulation_mode == "cruel season" and mortality != 0:
             mortality = int(mortality * 0.5)
             med_mortality = int(med_mortality * 0.5)
 
@@ -2885,7 +2885,7 @@ class Cat:
         if duration == 0:
             duration = 1
 
-        if mortality != 0 and (game.clan and game.clan.game_mode == "cruel season"):
+        if mortality != 0 and (game.clan and game.clan.simulation_mode == "cruel season"):
             mortality = int(mortality * 0.5)
 
             if mortality == 0:
@@ -3020,7 +3020,7 @@ class Cat:
         condition = PERMANENT[name]
         new_condition = False
         mortality = condition["mortality"][self.age]
-        if mortality != 0 and (game.clan and game.clan.game_mode == "cruel season"):
+        if mortality != 0 and (game.clan and game.clan.simulation_mode == "cruel season"):
             mortality = int(mortality * 0.65)
 
         if condition["congenital"] == "always":
@@ -4188,9 +4188,9 @@ class Cat:
                 exp_gain = randint(10, 24)
 
                 gm_modifier = 1
-                if game.clan and game.clan.game_mode == "expanded":
+                if game.clan and game.clan.simulation_mode == "expanded":
                     gm_modifier = 3
-                elif game.clan and game.clan.game_mode == "cruel season":
+                elif game.clan and game.clan.simulation_mode == "cruel season":
                     gm_modifier = 6
 
                 if mediator.experience_level == "average":

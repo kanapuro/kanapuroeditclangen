@@ -167,6 +167,7 @@ class TestScreenLists(unittest.TestCase):
             manager=MANAGER,
         )
         display = UICatListDisplay.__new__(UICatListDisplay)
+        display.truncate_names = False
         display.cat_names = {}
         display.cat_sprites = {"sprite0": sprite}
         display.text_theme = get_text_box_theme("#text_box_30_horizcenter")
@@ -773,6 +774,7 @@ class TestCustomizer(unittest.TestCase):
             self.assertTrue(loaded.pelt.paralyzed)
 
     def test_removing_one_linked_scar_keeps_other_scars_and_conditions(self):
+        self.screen.set_customizer_scars([])
         self.screen.set_customizer_conditions(["paralyzed", "allergies", "born without a tail", "born without a leg"])
         self.screen.scars.append("LEFTEAR")
         self.screen.page = 2
@@ -952,6 +954,90 @@ class TestClanCreationCancellation(unittest.TestCase):
             self.assertIsNone(game.clan)
             self.assertEqual(Cat.all_cats, {})
             self.assertEqual(Cat.all_cats_list, [])
+
+    def test_creation_mode_controls_and_keyboard_path_preserve_selection(self):
+        from scripts.screens.MakeClanScreen import MakeClanScreen
+
+        screen = MakeClanScreen()
+        screen.tutorial_shown = True
+        with patch.object(game, "clan", None), patch.object(game, "choose_cats", {}), patch.dict(
+            game.switches, {"customise_new_life": False, "clan_list": []}
+        ), patch("scripts.utility.generate_sprite", return_value=pygame.Surface((50, 50), pygame.SRCALPHA)):
+            screen.screen_switches()
+            try:
+                self.assertEqual(screen.sub_screen, "game settings")
+                self.assertEqual(screen.game_mode, "expanded")
+                self.assertFalse(screen.elements["mode_expanded"].is_enabled)
+                screen.handle_game_settings_event(pygame.event.Event(
+                    pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.elements["mode_classic"]
+                ))
+                screen.handle_game_settings_event(pygame.event.Event(
+                    pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.elements["next_step"]
+                ))
+                self.assertEqual(screen.sub_screen, "name clan")
+                screen.elements["name_entry"].set_text("ModeDemo")
+                screen.handle_name_clan_key(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_ESCAPE))
+                self.assertEqual(screen.sub_screen, "game settings")
+                self.assertEqual(screen.game_mode, "classic")
+                self.assertFalse(screen.elements["mode_classic"].is_enabled)
+                screen.handle_game_settings_event(pygame.event.Event(
+                    pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.elements["next_step"]
+                ))
+                self.assertEqual(screen.elements["name_entry"].get_text(), "ModeDemo")
+                screen.handle_name_clan_key(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN))
+                self.assertEqual(screen.sub_screen, "choose leader")
+                self.assertEqual(game.clan.name, "ModeDemo")
+                self.assertEqual(game.clan.game_mode, "classic")
+            finally:
+                screen.exit_screen()
+
+    def test_customize_uses_selected_kit_without_changing_its_pelt(self):
+        from copy import deepcopy
+        from scripts.screens.MakeClanScreen import MakeClanScreen
+
+        screen = MakeClanScreen()
+        screen.tutorial_shown = True
+        with patch.object(game, "clan", None), patch.object(game, "choose_cats", {}), patch.dict(
+            game.switches, {"customise_new_life": False}
+        ), patch("scripts.screens.CatCustomizer.generate_sprite", return_value=pygame.Surface((50, 50), pygame.SRCALPHA)), patch(
+            "scripts.utility.generate_sprite", return_value=pygame.Surface((50, 50), pygame.SRCALPHA)
+        ):
+            screen.screen_switches()
+            try:
+                screen.handle_game_settings_event(pygame.event.Event(
+                    pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.elements["next_step"]
+                ))
+                screen.elements["name_entry"].set_text("KitEditorTest")
+                screen.handle_name_clan_key(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN))
+                selected = game.choose_cats[0]
+                selected.pelt.name = "Tabby"
+                selected.pelt.colour = "BLACK"
+                selected.pelt.white_patches = ["BLAZE", "TAILTIP"]
+                selected.pelt.pattern = []
+                selected.pelt.reverse = True
+                selected.gender = "female"
+                before = deepcopy(vars(selected.pelt))
+                screen.open_choose_leader()
+                screen.handle_choose_leader_event(pygame.event.Event(
+                    pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.elements["cat0"]
+                ))
+                screen.handle_choose_leader_event(pygame.event.Event(
+                    pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.elements["customize"]
+                ))
+                self.assertEqual((screen.pname, screen.colour, screen.sex), ("Tabby", "BLACK", "female"))
+                self.assertEqual(screen.white_patches, ["BLAZE", "TAILTIP"])
+                self.assertTrue(screen.reverse)
+                self.assertEqual(screen.backstory, "Random")
+                self.assertFalse(screen.customizer_undo)
+                screen.white_patches.append("VEE")
+                self.assertEqual(vars(selected.pelt), before)
+                with patch.object(screen, "open_name_cat"):
+                    screen.finish_customize_cat()
+                self.assertEqual(screen.your_cat.pelt.name, "Tabby")
+                self.assertEqual(screen.your_cat.pelt.colour, "BLACK")
+                self.assertEqual(vars(selected.pelt), before)
+            finally:
+                screen.exit_screen()
 
     def test_creation_confirms_multiple_scars_and_conditions(self):
         from scripts.screens.MakeClanScreen import MakeClanScreen
