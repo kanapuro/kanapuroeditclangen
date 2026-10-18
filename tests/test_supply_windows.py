@@ -20,7 +20,7 @@ def supplies(monkeypatch):
     with monkeypatch.context() as isolated:
         isolated.setattr(Cat, "all_cats", {})
         isolated.setattr(Cat, "all_cats_list", [])
-        isolated.setattr(Cat, "sprite", property(lambda cat: pygame.Surface((50, 50), pygame.SRCALPHA)))
+        isolated.setattr(Cat, "sprite", property(lambda cat: pygame.Surface((50, 50)).convert_alpha()))
         isolated.setattr(game, "all_screens", {})
         isolated.setattr(game, "safe_save", Mock(side_effect=AssertionError("No save writes")))
         isolated.setattr(game, "herb_events_list", [])

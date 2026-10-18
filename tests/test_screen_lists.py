@@ -514,6 +514,53 @@ class TestCustomizer(unittest.TestCase):
         self.assertEqual(self.screen.secondary_skill, self.screen.skills[-1])
         self.assertIn(self.screen.secondary_skill, self.screen.elements["details"].rows)
 
+    def test_tint_lists_scroll_with_wheel_over_empty_space(self):
+        from scripts.screens.CatAppearanceEditor import CustomizerList
+        from scripts.cat.sprites import sprites
+        from scripts.game_structure import screen_settings
+
+        old_offset = MANAGER.offset
+        MANAGER.set_offset((0, 0))
+        self.addCleanup(MANAGER.set_offset, old_offset)
+        for tint_data in (sprites.cat_tints, sprites.white_patches_tints):
+            for scale in (1, 1.5, 2):
+                with patch.object(screen_settings, "screen_scale", scale):
+                    listing = CustomizerList(pygame.Rect(10, 10, 260, 130),
+                        list(dict.fromkeys(["none"] + list(tint_data["tint_colours"]))), str.capitalize, {})
+                    try:
+                        listing.update(.01)
+                        bar = listing.vert_scroll_bar
+                        self.assertEqual(bar.rect.width, 20)
+                        self.assertGreaterEqual(bar.sliding_button.rect.height, int(28 * scale))
+                        point = (listing.rect.right - bar.rect.width - 8, listing.rect.centery)
+                        before = listing.get_container().relative_rect.y
+                        with patch.object(MANAGER, "get_mouse_position", return_value=point):
+                            MANAGER.process_events(pygame.event.Event(pygame.MOUSEWHEEL, x=0, y=-1))
+                            for _ in range(15):
+                                MANAGER.update(.05)
+                        self.assertLess(listing.get_container().relative_rect.y, before)
+                        listing.scroll_to(listing.options[-1])
+                        self.assertEqual(listing.get_container().relative_rect.y,
+                            listing.rect.height - listing.row_offsets[-1], (scale, bar.is_enabled, bar.scroll_position, bar.scrollable_height, bar.sliding_button.rect.height))
+                        listing.scroll_to(listing.options[0])
+                        self.assertEqual(listing.get_container().relative_rect.y, 0)
+                        MANAGER.update(.01)
+                        thumb = bar.sliding_button
+                        with patch.object(MANAGER, "get_mouse_position", return_value=thumb.rect.center):
+                            MANAGER.update(.01)
+                            MANAGER.process_events(pygame.event.Event(pygame.MOUSEBUTTONDOWN,
+                                button=1, pos=thumb.rect.center))
+                            MANAGER.update(.01)
+                        self.assertTrue(thumb.held)
+                        target = (thumb.rect.centerx, bar.rect.bottom - bar.arrow_button_height - thumb.rect.height // 2)
+                        with patch.object(MANAGER, "get_mouse_position", return_value=target):
+                            for _ in range(5):
+                                MANAGER.update(.05)
+                            MANAGER.process_events(pygame.event.Event(pygame.MOUSEBUTTONUP, button=1, pos=target))
+                        self.assertLess(listing.get_container().relative_rect.y, 0)
+                    finally:
+                        listing.kill()
+
     def test_wrapped_lists_fit_fullscreen_scales_and_both_themes(self):
         import json
         from pathlib import Path

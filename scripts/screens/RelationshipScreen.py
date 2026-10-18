@@ -73,7 +73,7 @@ class RelationshipScreen(Screens):
                 self.inspect_cat = event.ui_element.return_cat_object()
                 self.update_inspected_relation()
             elif event.ui_element == self.back_button:
-                self.change_screen("profile screen")
+                self.change_screen("patrol screen" if game.last_screen_forupdate == "patrol screen" else "profile screen")
             elif event.ui_element == self.switch_focus_button:
                 game.switches["cat"] = self.inspect_cat.ID
                 self.update_focus_cat()

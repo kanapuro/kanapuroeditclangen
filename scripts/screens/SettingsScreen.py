@@ -146,7 +146,7 @@ class SettingsScreen(Screens):
             self.mute_button_pressed(event)
 
             if event.ui_element == self.main_menu_button:
-                self.change_screen("start screen")
+                self.change_screen(self.return_screen)
                 return
             if event.ui_element == self.fullscreen_toggle:
                 game.switch_setting("fullscreen")
@@ -167,10 +167,10 @@ class SettingsScreen(Screens):
                         logger.exception("Failed to call to xdg-open.")
                 return
             elif event.ui_element == self.save_settings_button:
-                self.save_settings()
-                game.save_settings(self)
-                self.settings_changed = False
-                self.update_save_button()
+                if game.save_settings(self):
+                    self.save_settings()
+                    self.settings_changed = False
+                    self.update_save_button()
                 return
             elif event.ui_element == self.general_settings_button:
                 self.open_general_settings()
@@ -187,7 +187,7 @@ class SettingsScreen(Screens):
 
         elif event.type == pygame.KEYDOWN and game.settings["keybinds"]:
             if event.key == pygame.K_ESCAPE:
-                self.change_screen("start screen")
+                self.change_screen(self.return_screen)
             elif event.key == pygame.K_RIGHT:
                 if self.sub_menu == "general":
                     self.open_info_screen()
@@ -252,7 +252,12 @@ class SettingsScreen(Screens):
         TODO: DOCS
         """
         super().screen_switches()
+        self.hide_menu_buttons()
         self.show_mute_buttons()
+        self.return_screen = (
+            "clan settings screen" if game.last_screen_forupdate == "clan settings screen"
+            else "start screen"
+        )
         self.settings_changed = False
 
         self.general_settings_button = UISurfaceImageButton(
@@ -326,7 +331,7 @@ class SettingsScreen(Screens):
         self.update_save_button()
         self.main_menu_button = UISurfaceImageButton(
             ui_scale(pygame.Rect((25, 25), (152, 30))),
-            get_arrow(3) + " Main Menu",
+            get_arrow(3) + (" Back" if self.return_screen == "clan settings screen" else " Main Menu"),
             get_button_dict(ButtonStyles.SQUOVAL, (152, 30)),
             manager=MANAGER,
             object_id="@buttonstyles_squoval",
@@ -340,6 +345,18 @@ class SettingsScreen(Screens):
         self.settings_at_open = game.settings.copy()
 
         self.refresh_checkboxes()
+
+    def display_change_save(self):
+        variable_dict = super().display_change_save()
+        variable_dict["return_screen"] = self.return_screen
+        return variable_dict
+
+    def display_change_load(self, variable_dict):
+        super().display_change_load(variable_dict)
+        self.return_screen = variable_dict["return_screen"]
+        self.main_menu_button.set_text(
+            get_arrow(3) + (" Back" if self.return_screen == "clan settings screen" else " Main Menu")
+        )
 
     def update_save_button(self):
         """

@@ -321,7 +321,8 @@ class PatrolOutcome:
 
         results.append(
             unpack_rel_block(
-                Cat, self.relationship_effects, patrol, stat_cat=self.stat_cat
+                Cat, self.relationship_effects, patrol, stat_cat=self.stat_cat,
+                changes=patrol.relationship_changes
             )
         )
         results.append(self._handle_rep_changes(patrol))

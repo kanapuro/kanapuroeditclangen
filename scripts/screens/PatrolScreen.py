@@ -416,7 +416,11 @@ class PatrolScreen(Screens):
             self.open_choose_cats_screen()
         elif event.ui_element == self.elements["clan_return"]:
             self.in_progress_data = None
+            self.patrol_stage = "choose_cats"
             self.change_screen("camp screen")
+        elif event.ui_element == self.elements.get("rel_detail"):
+            from scripts.game_structure.windows import RelChangeDetailWindow
+            RelChangeDetailWindow(self.patrol_obj.relationship_changes, self)
 
     def screen_switches(self):
         super().screen_switches()
@@ -424,8 +428,42 @@ class PatrolScreen(Screens):
         self.update_heading_text(f"{game.clan.name}")
         self.show_mute_buttons()
         self.show_menu_buttons()
-        self.open_choose_cats_screen()
-        self.update_button()
+        if (self.in_progress_data is not None
+                and self.in_progress_data["clan"] is game.clan
+                and self.in_progress_data["current_moon"] == game.clan.age):
+            self.display_change_load(self.in_progress_data)
+        else:
+            self.in_progress_data = None
+            self.open_choose_cats_screen()
+            self.update_button()
+
+    def display_change_save(self):
+        for thread in (self.start_patrol_thread, self.proceed_patrol_thread):
+            if thread is not None:
+                thread.join()
+        data = super().display_change_save()
+        for field in ("patrol_stage", "patrol_type", "patrol_obj", "current_patrol",
+                      "display_text", "results_text", "outcome_art"):
+            data[field] = getattr(self, field)
+        if self.proceed_patrol_thread is not None:
+            data["patrol_stage"] = "patrol_complete"
+        data["patrol_category"] = game.switches["patrol_category"]
+        data["current_moon"] = game.clan.age
+        data["clan"] = game.clan
+        return data
+
+    def display_change_load(self, variable_dict):
+        super().display_change_load(variable_dict.copy())
+        if variable_dict["patrol_stage"] not in ("patrol_events", "patrol_complete"):
+            return
+        for field in ("patrol_type", "patrol_obj", "current_patrol", "display_text", "results_text", "outcome_art"):
+            setattr(self, field, variable_dict[field])
+        game.switches["patrol_category"] = variable_dict["patrol_category"]
+        self.start_patrol_thread = self.proceed_patrol_thread = None
+        self.work_done = {}
+        self.open_patrol_event_screen()
+        if variable_dict["patrol_stage"] == "patrol_complete":
+            self.open_patrol_complete_screen()
 
     def update_button(self):
         """" Updates button availabilities. """
@@ -670,6 +708,8 @@ class PatrolScreen(Screens):
         self.clear_page()  # Clear the page
         self.clear_cat_buttons()
         self.patrol_obj = Patrol()
+        self.start_patrol_thread = self.proceed_patrol_thread = None
+        self.work_done = {}
 
         self.display_text = ""
         self.results_text = ""
@@ -985,6 +1025,7 @@ class PatrolScreen(Screens):
 
         if self.display_text is None:
             # No patrol events were found.
+            self.patrol_stage = "choose_cats"
             self.change_screen("camp screen")
             return
 
@@ -1159,6 +1200,14 @@ class PatrolScreen(Screens):
             object_id=get_text_box_theme("#text_box_22_horizcenter_spacing_95"),
             manager=MANAGER,
         )
+        if self.patrol_obj.relationship_changes:
+            self.elements["rel_detail"] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((508, -2), (36, 36))), Icon.MAGNIFY,
+                get_button_dict(ButtonStyles.ICON_TAB_BOTTOM, (36, 36)),
+                object_id="@buttonstyles_squoval", manager=MANAGER,
+                anchors={"top_target": self.elements["event_bg"]},
+                tool_tip_text="See relationship changes",
+            )
         self.elements["patrol_results"].set_text(self.results_text)
 
         self.elements["patrol_text"].set_text(self.display_text)
@@ -1685,7 +1734,9 @@ class PatrolScreen(Screens):
         self.fav = {}
 
     def exit_screen(self):
-        self.in_progress_data = self.display_change_save()
+        self.in_progress_data = (
+            self.display_change_save() if self.patrol_stage in ("patrol_events", "patrol_complete") else None
+        )
         self.clear_page()
         self.clear_cat_buttons()
         self.hide_menu_buttons()

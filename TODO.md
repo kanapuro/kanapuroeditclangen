@@ -5,7 +5,10 @@ OH FUCK MAKE SURE WE CREDIT WHOEVER WE PULL FROM IN CREDITS_TEXT.JSON AND THAT A
 
 - [x] Compare upstream changelogs, code, gameplay systems and assets; identify compatibility requirements and implementation order.
 - [x] Update mode/card selection, Quick Start and creation flow, music playback, shared navigation/header, Events pagination/saving and Supplies windows through v0.1.0.13.
-- [ ] Continue UI parity: General Settings access, profile den shortcuts, patrol relationship feedback, alpha-aware cat clicks, animated moon transitions and remaining profile/popup layouts.
+- [x] Add Game Settings access from Colony Settings with the correct return route, and rank-based profile den shortcuts (v0.1.0.14). Retain recovery access and custom role restrictions.
+- [x] Add source-style patrol relationship inspection for all seven local values, with paging, hover details and a return route that preserves the outcome (v0.1.0.15).
+- [x] Add alpha-aware cat selection and matching camp drag hit regions, including refreshed sprites, scrolling and fractional-scale movement (v0.1.0.16).
+- [ ] Continue UI parity: animated moon transitions and remaining profile/popup layouts.
 - [ ] Compare missing icons and wording; add Quay/Bridge camps with placements and credits. New long-fur poses need matching custom outlines.
 - [ ] Implement remaining Cruel Season card mechanics individually with save compatibility and focused verification.
 - [ ] Adapt released event contracts before importing affected content: frequency/constraint weighting, future events and involved-cat exclusions.
@@ -15,6 +18,8 @@ OH FUCK MAKE SURE WE CREDIT WHOEVER WE PULL FROM IN CREDITS_TEXT.JSON AND THAT A
 - [ ] Revisit ClanGen-style Clan-member selection before choosing the player kit as a future design option.
 
 ## Existing backlog
+
+- [x] Fix shared-editor tint scrolling: wheel input across the list viewport and a usable minimum drag-thumb height, keeping the original track width (v0.1.0.16).
 
 - Leader lives: manually verify one/nine-life toggles, reloads, deputy promotion, and command/MC revivals. New saves preserve the hidden nine-life balance; old saves already capped at one may lack the original balance and must not receive invented lives. Manually verify the corrected revival/one-life history wording, especially older retired-leader saves and multiple-life death events.
 - merge w genemod - advanced genetics and (PRIORITY) multi-clan management - https://github.com/narvin42/genemod-expanded 

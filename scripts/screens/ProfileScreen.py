@@ -417,6 +417,8 @@ class ProfileScreen(Screens):
                 self.change_screen('talk screen')
             elif event.ui_element == self.profile_elements["med_den"]:
                 self.change_screen('med den screen')
+            elif "den" in self.profile_elements and event.ui_element == self.profile_elements["den"]:
+                self.change_screen(self.den_screen)
             elif "mediation" in self.profile_elements and event.ui_element == self.profile_elements["mediation"]:
                 self.change_screen('mediation screen')
             elif "queen" in self.profile_elements and event.ui_element == self.profile_elements["queen"]:
@@ -1587,6 +1589,30 @@ class ProfileScreen(Screens):
             self.profile_elements["med_den"].show()
         else:
             self.profile_elements["med_den"].hide()
+            if not (self.the_cat.dead or self.the_cat.outside):
+                den = {
+                    "leader": ("Leader's den", "leader den screen", 112),
+                    "deputy": ("Warriors' den", "warrior den screen", 121),
+                    "warrior": ("Warriors' den", "warrior den screen", 121),
+                    "apprentice": ("Warriors' den", "warrior den screen", 121),
+                    "mediator": ("Clearing", "mediation screen", 81),
+                    "mediator apprentice": ("Clearing", "mediation screen", 81),
+                    "queen": ("Nursery", "queen screen", 81),
+                    "queen's apprentice": ("Nursery", "queen screen", 81),
+                }.get(self.the_cat.status)
+                if den:
+                    text, self.den_screen, width = den
+                    self.profile_elements["den"] = UISurfaceImageButton(
+                        ui_scale(pygame.Rect((175 - width // 2, 380), (width, 28))),
+                        text, get_button_dict(ButtonStyles.ROUNDED_RECT, (width, 28)),
+                        object_id="@buttonstyles_rounded_rect", manager=MANAGER,
+                        starting_height=2,
+                    )
+                    if self.den_screen in ("mediation screen", "queen screen") and (
+                        self.the_cat.moons < 6 or self.the_cat.shunned > 0
+                        or (self.den_screen == "queen screen" and self.the_cat.not_working())
+                    ):
+                        self.profile_elements["den"].disable()
 
         favorite_button_rect = ui_scale(pygame.Rect((0, 0), (28, 28)))
         favorite_button_rect.topright = ui_scale_offset((-5, 146))

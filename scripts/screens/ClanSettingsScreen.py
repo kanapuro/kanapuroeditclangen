@@ -94,6 +94,9 @@ class ClanSettingsScreen(Screens):
             elif event.ui_element == self.role_settings_button:
                 self.open_roles_settings()
                 return
+            elif event.ui_element == self.game_settings_button:
+                self.change_screen("settings screen")
+                return
             elif event.ui_element == self.view_cards_button:
                 from .CruelCards import ViewCruelCards
                 ViewCruelCards()
@@ -193,6 +196,15 @@ class ClanSettingsScreen(Screens):
             anchors={"left_target": self.role_settings_button},
         )
 
+        self.game_settings_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((25, 600), (175, 30))),
+            "Open Game Settings",
+            get_button_dict(ButtonStyles.SQUOVAL, (175, 30)),
+            object_id="@buttonstyles_squoval",
+            tool_tip_text="Change display, audio and other settings for all colonies.",
+            manager=MANAGER,
+        )
+
         self.view_cards_button = UISurfaceImageButton(
             ui_scale(pygame.Rect((310, 600), (180, 30))), "View Cruel cards",
             get_button_dict(ButtonStyles.SQUOVAL, (180, 30)), object_id="@buttonstyles_squoval",
@@ -260,6 +272,7 @@ class ClanSettingsScreen(Screens):
         """
         self.clear_sub_settings_buttons_and_text()
         self.view_cards_button.kill()
+        self.game_settings_button.kill()
         self.general_settings_button.kill()
         del self.general_settings_button
         self.relation_settings_button.kill()

@@ -26,7 +26,7 @@
     ],
     "mod_contrib": {
         "Upstream projects": {
-            "LifeGen contributors": "LifeGen gameplay, Quick Start flow, shared navigation/header and Events pagination/save layouts, Supplies windows and multi-cat selection, Cruel Season mechanics and modernization reference: https://github.com/sedgestripe/clangen",
+            "LifeGen contributors": "LifeGen gameplay, Quick Start flow, shared navigation/header and Events pagination/save layouts, Supplies windows and multi-cat selection, Game Settings access, profile den shortcuts, patrol relationship inspection layouts and sprite outline hit regions, Cruel Season mechanics and modernization reference: https://github.com/sedgestripe/clangen",
             "ClanGen contributors": "ClanGen Cruel Season card definitions and mechanics adapted for LGMMKE (source revisions in resources/dicts/cruel_season.json); modernization reference: https://github.com/ClanGenOfficial/clangen",
             "ClanGen artists and contributors": "Mode-button artwork, card category icons, colony-header buttons, moon phases, seasonal vines and selection-box artwork from LifeGen development bab3814eee64852125c004dac588fab809a730e9 (https://github.com/sedgestripe/clangen/tree/bab3814eee64852125c004dac588fab809a730e9/resources/images); Cruel Season card artwork and deck backdrops, unchanged source assets from ClanGen development 904012b9e9c62ab24a8988ae23d8a516232ff7e2. CC BY-NC 4.0. Source and contributor credits: https://github.com/ClanGenOfficial/clangen/tree/904012b9e9c62ab24a8988ae23d8a516232ff7e2/resources"
         },

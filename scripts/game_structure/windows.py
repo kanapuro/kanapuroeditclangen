@@ -23,6 +23,8 @@ from scripts.game_structure.game_essentials import game
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import (
     UIImageButton,
+    GameWindow,
+    UICatListDisplay,
     UITextBoxTweaked,
     UISurfaceImageButton,
 )
@@ -1781,6 +1783,80 @@ class TutorialPopup(UIWindow):
             if event.ui_element == self.close_button:
                 self.kill()
         return super().process_event(event)
+
+
+class RelChangeDetailWindow(GameWindow):
+    # Layout adapted from LifeGen bab3814eee64852125c004dac588fab809a730e9 (MPL-2.0).
+    def __init__(self, changes, screen):
+        from html import escape
+        from scripts.cat.cats import Cat
+
+        super().__init__((100, 200, 600, 400))
+        self.screen = screen
+        self.current_page = 1
+        self.rel_logs = {}
+        labels = {
+            "romantic_love": "Romantic love", "platonic_like": "Platonic like",
+            "dislike": "Dislike", "admiration": "Respect", "comfortable": "Comfort",
+            "jealousy": "Jealousy", "trust": "Trust",
+        }
+        for (cat_from, cat_to), values in changes.items():
+            source, target = Cat.fetch_cat(cat_from), Cat.fetch_cat(cat_to)
+            if source is None or target is None:
+                continue
+            detail = ", ".join(f"{labels[field]} {final - initial:+d}" for field, (initial, final) in values.items())
+            if detail:
+                self.rel_logs.setdefault(source.ID, []).append(f"Toward {escape(str(target.name))}: {detail}")
+        self.cats = [Cat.fetch_cat(cat_id) for cat_id in self.rel_logs]
+        self.previous_page_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((20, 160), (34, 34))), Icon.ARROW_LEFT,
+            get_button_dict(ButtonStyles.ICON, (34, 34)), object_id="@buttonstyles_icon",
+            container=self, manager=MANAGER,
+        )
+        self.next_page_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((546, 160), (34, 34))), Icon.ARROW_RIGHT,
+            get_button_dict(ButtonStyles.ICON, (34, 34)), object_id="@buttonstyles_icon",
+            container=self, manager=MANAGER,
+        )
+        self.cat_list = UICatListDisplay(
+            ui_scale(pygame.Rect((50, 20), (500, 300))), container=self, manager=MANAGER,
+            starting_height=1, object_id="#patrol_relationship_cats", cat_list=self.cats,
+            cats_displayed=12, x_px_between=ui_scale_dimensions((5, 0))[0], y_px_between=0,
+            columns=4, rows=3, show_names=True, truncate_names=True,
+            current_page=1, next_button=self.next_page_button, prev_button=self.previous_page_button,
+            text_theme="#text_box_30_horizcenter", allow_selection=True,
+        )
+        self.help_text = UITextBoxTweaked(
+            "Hover over a cat to see their relationship changes.<br>Select a cat to inspect their relationships.",
+            ui_scale(pygame.Rect((50, 330), (500, 60))),
+            container=self, manager=MANAGER, object_id="#text_box_26_horizcenter",
+        )
+        self.update_tooltips()
+
+    def update_tooltips(self):
+        from html import escape
+        for sprite in self.cat_list.cat_sprites.values():
+            cat = sprite.return_cat_object()
+            sprite.button.set_tooltip(escape(str(cat.name)) + "<br><br>" + "<br><br>".join(self.rel_logs[cat.ID]))
+
+    def process_event(self, event):
+        if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            if event.ui_element in self.cat_list.cat_sprites.values():
+                game.switches["cat"] = event.ui_element.return_cat_id()
+                self.kill()
+                self.screen.change_screen("relationship screen")
+                return True
+            elif event.ui_element in (self.next_page_button, self.previous_page_button):
+                self.current_page += 1 if event.ui_element == self.next_page_button else -1
+                self.cat_list.update_display(self.current_page, self.cats)
+                self.current_page = self.cat_list.current_page
+                self.update_tooltips()
+                return True
+        return super().process_event(event)
+
+    def kill(self):
+        self.cat_list._generate_grid_cached.cache_clear()
+        super().kill()
 
 
 class RelationshipLog(UIWindow):

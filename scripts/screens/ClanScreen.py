@@ -7,7 +7,7 @@ import pygame_gui
 from pygame_gui.core import ObjectID
 
 from scripts.cat.cats import Cat
-from scripts.game_structure import image_cache
+from scripts.game_structure import image_cache, screen_settings
 from scripts.game_structure.game_essentials import (
     game,
 )
@@ -136,13 +136,10 @@ class ClanScreen(Screens):
                     abs_rect = btn.get_abs_rect()
                 except Exception:
                     continue
-                if abs_rect.collidepoint(mouse_pos):
+                if btn.button.hover_point(*mouse_pos):
                     cat_id = btn.return_cat_id()
                     if cat_id is not None:
-                        try:
-                            self._dragging_cat_id = int(cat_id)
-                        except Exception:
-                            self._dragging_cat_id = cat_id
+                        self._dragging_cat_id = cat_id
                         self._dragging_btn = btn
                         self._drag_offset = (
                             mouse_pos[0] - abs_rect.x,
@@ -150,44 +147,6 @@ class ClanScreen(Screens):
                         )
                         print(f"Right-click drag start on cat {self._dragging_cat_id} via UI rect")
                     break
-            # Fallback: hit-test using scaled placement + manager offset
-            if self._dragging_cat_id is None and MANAGER is not None:
-                offx = MANAGER.offset[0] if MANAGER.offset else 0
-                offy = MANAGER.offset[1] if MANAGER.offset else 0
-                for x in reversed(game.clan.clan_cats):
-                    try:
-                        c = Cat.all_cats[x]
-                    except Exception:
-                        continue
-                    if c.dead or not c.in_camp or c.exiled or c.outside:
-                        continue
-                    # Skip cats without a valid placement to avoid crashes
-                    if not hasattr(c, "placement") or c.placement is None:
-                        continue
-                    if not isinstance(c.placement, (list, tuple)) or len(c.placement) != 2:
-                        continue
-                    base_rect = pygame.Rect(tuple(c.placement), (50, 50))
-                    scaled_rect = ui_scale(base_rect)
-                    scaled_rect.x += offx
-                    scaled_rect.y += offy
-                    if scaled_rect.collidepoint(mouse_pos):
-                        self._dragging_cat_id = x
-                        # find btn by id
-                        self._dragging_btn = self._cat_button_by_id.get(x)
-                        if self._dragging_btn is None:
-                            for b in reversed(self.cat_buttons):
-                                try:
-                                    if b.return_cat_id() == x:
-                                        self._dragging_btn = b
-                                        break
-                                except Exception:
-                                    continue
-                        self._drag_offset = (
-                            mouse_pos[0] - scaled_rect.x,
-                            mouse_pos[1] - scaled_rect.y,
-                        )
-                        print(f"Right-click drag start on cat {x} via placement fallback")
-                        break
         elif event.type == pygame.MOUSEMOTION:
             if self._dragging_cat_id is not None:
                 print(f"Mouse motion; dragging cat {self._dragging_cat_id}")
@@ -211,8 +170,8 @@ class ClanScreen(Screens):
                     except Exception:
                         pass
                     unscaled_pos = (
-                        int(round(rel_pos[0] / ui_scale_value(1))),
-                        int(round(rel_pos[1] / ui_scale_value(1))),
+                        int(round(rel_pos[0] / screen_settings.screen_scale)),
+                        int(round(rel_pos[1] / screen_settings.screen_scale)),
                     )
                     try:
                         Cat.all_cats[self._dragging_cat_id].placement = unscaled_pos

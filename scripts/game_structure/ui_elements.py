@@ -692,7 +692,7 @@ class UISpriteButton:
             else pygame.transform.scale(input_sprite, relative_rect.size)
         )
 
-        self.image = pygame_gui.elements.UIImage(
+        self.image = UIModifiedImage(
             relative_rect,
             input_sprite,
             visible=visible,
@@ -702,7 +702,6 @@ class UISpriteButton:
             anchors=anchors,
         )
         self.image.disable()
-        del input_sprite
 
         # The transparent button. This a subclass that UIButton that also hold the cat_id.
 
@@ -719,6 +718,7 @@ class UISpriteButton:
             container=container,
             anchors=anchors,
         )
+        self.button.set_sprite_mask(input_sprite)
 
     def return_cat_id(self):
         return self.button.return_cat_id()
@@ -747,6 +747,7 @@ class UISpriteButton:
 
     def set_image(self, new_image):
         self.image.set_image(new_image)
+        self.button.set_sprite_mask(self.image.image)
 
     """This is to simplify event handling. Rather that writing 
             'if event.ui_element = cat_sprite_object.button'
@@ -783,6 +784,7 @@ class CatButton(UIImageButton):
         anchors=None,
         auto_disable_if_no_data=False,
     ):
+        self.sprite_mask = None
         self.cat_id = cat_id
         self.cat_object = cat_object
         super().__init__(
@@ -800,6 +802,25 @@ class CatButton(UIImageButton):
         )
         if auto_disable_if_no_data and cat_id is None and cat_object is None:
             self.disable()
+
+    def set_sprite_mask(self, sprite):
+        # Match LifeGen's near-opaque outline and small click margin.
+        self.mask_padding = ui_scale_value(2)
+        mask = pygame.mask.from_surface(sprite, threshold=250)
+        margin = pygame.Mask((self.mask_padding * 2 + 1, self.mask_padding * 2 + 1), fill=True)
+        self.sprite_mask = mask.convolve(margin)
+
+    def hover_point(self, hover_x, hover_y):
+        if not super().hover_point(hover_x, hover_y):
+            return False
+        if self.sprite_mask is None:
+            return True
+        point = (int(hover_x - self.rect.x) + self.mask_padding,
+                 int(hover_y - self.rect.y) + self.mask_padding)
+        if not (0 <= point[0] < self.sprite_mask.get_size()[0]
+                and 0 <= point[1] < self.sprite_mask.get_size()[1]):
+            return False
+        return bool(self.sprite_mask.get_at(point))
 
     def return_cat_id(self):
         return self.cat_id
@@ -1392,7 +1413,7 @@ class UICatListDisplay(UIContainer):
     def create_cat_button(self, i, kitty, container):
         if self.allow_selection:
             from scripts.ui.generate_box import get_box, BoxStyles
-            self.selection_boxes[f"sprite{i}"] = pygame_gui.elements.UIImage(
+            self.selection_boxes[f"sprite{i}"] = UIModifiedImage(
                 ui_scale(pygame.Rect((0, 12), (56, 56))), get_box(BoxStyles.SELECTION_BOX, (56, 56)),
                 container=container, manager=self.ui_manager,
                 visible=kitty.ID in self.selected, anchors={"centerx": "centerx"},
@@ -1440,7 +1461,7 @@ class UICatListDisplay(UIContainer):
         )
 
     def create_favor_indicator(self, i, container, num):
-        self.favor_indicator[f"favor{i}"] = pygame_gui.elements.UIImage(
+        self.favor_indicator[f"favor{i}"] = UIModifiedImage(
             ui_scale(pygame.Rect((0, 15), (50, 50))),
             self._favor_circle[str(num)],
             object_id=f"favor_circle{i}",
@@ -1448,6 +1469,7 @@ class UICatListDisplay(UIContainer):
             starting_height=1,
             anchors={"centerx": "centerx"},
         )
+        self.favor_indicator[f"favor{i}"].disable()
 
     def _update_arrow_buttons(self):
         """

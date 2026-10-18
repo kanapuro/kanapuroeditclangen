@@ -1,3 +1,19 @@
+<strong>v0.1.0.16-KanapuroEdit: </strong>
+- Fixed tint-list wheel scrolling in the shared cat editor: scroll anywhere over the list, with a minimum thumb height so the drag handle remains easy to grab. The scrollbar track keeps its original width. Applies to pelt and white-patch/point tints in creation and in-game editing.
+- Nudged the patrol relationship-inspection tab right so its hovered border clears the nearby cat frame.
+- Cat sprite buttons now follow the visible outline, with a small click margin like LifeGen. Transparent corners no longer select a cat or block clicks on cats underneath. Refreshed sprites update their hit regions, and scrolling clips them correctly.
+- Camp right-dragging uses the same outline checks. Fixed numeric string IDs and fractional display scaling causing dragged cats' current coordinates to update incorrectly.
+
+<strong>v0.1.0.15-KanapuroEdit: </strong>
+- Patrol outcomes now offer LifeGen's relationship-inspection button when relationships actually change. The twelve-cat paged window shows directed changes on hover across all seven existing values, including date bonuses and effects on cats who stayed in camp. Amounts reflect romance restrictions and the 0-100 limits.
+- Selecting a cat opens their relationships; Back returns to the completed patrol without repeating rewards or consequences. Active events and completed outcomes also survive display rebuilds. Old outcomes clear after a new moon, switching colonies, choosing Patrol Again or returning to camp.
+- Fixed cat images, selection highlights and favorite markers blocking sprite hover help, including relationship details and nutrition tooltips in shared cat grids.
+
+<strong>v0.1.0.14-KanapuroEdit: </strong>
+- Added Open Game Settings to Colony Settings in LifeGen's position. Back and Escape return to Colony Settings when opened in-game, including after a display rebuild; settings opened from the main menu still return there.
+- Added profile shortcuts beneath the cat sprite for the leader's den, warriors' den, clearing and nursery, including the corresponding apprentice roles. Sick or injured cats keep their medicine-den shortcut, and existing dead/outside/shunned and nursery work restrictions are preserved.
+- Failed settings saves no longer clear the Save Settings button's unsaved-change feedback.
+
 <strong>v0.1.0.13-KanapuroEdit: </strong>
 - Supplies now opens LifeGen-style Fresh-kill and Herbs windows over the current screen instead of immediately leaving for a den. Closing a window returns to the same screen; Classic keeps Supplies hidden.
 - Added the upstream feeding grid with twelve cats per page, nutrition/name tooltips, multiple selection, Feed all, Feed selected, rationing and the prey log. Selection survives paging and switching to the log. Compact names fit on one line, with complete names available on hover.

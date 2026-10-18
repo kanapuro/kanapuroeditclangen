@@ -1615,7 +1615,7 @@ def gather_cat_objects(
 
 
 def unpack_rel_block(
-    Cat, relationship_effects: List[dict], event=None, stat_cat=None, extra_cat=None
+    Cat, relationship_effects: List[dict], event=None, stat_cat=None, extra_cat=None, changes=None
 ):
     """
     Unpacks the info from the relationship effect block used in patrol and moon events, then adjusts rel values
@@ -1737,7 +1737,7 @@ def unpack_rel_block(
             comfortable,
             jealousy,
             trust,
-            log=log1
+            log=log1, changes=changes
         )
 
         if block.get("mutual"):
@@ -1751,8 +1751,27 @@ def unpack_rel_block(
                 comfortable,
                 jealousy,
                 trust,
-                log=log2
+                log=log2, changes=changes
             )
+
+
+RELATIONSHIP_VALUES = (
+    "romantic_love", "platonic_like", "dislike", "admiration", "comfortable", "jealousy", "trust"
+)
+
+
+def record_relationship_changes(rel, before, changes):
+    pair = (rel.cat_from.ID, rel.cat_to.ID)
+    values = changes.setdefault(pair, {})
+    for field, initial in before.items():
+        initial = values.get(field, (initial,))[0]
+        final = getattr(rel, field)
+        if initial != final:
+            values[field] = (initial, final)
+        else:
+            values.pop(field, None)
+    if not values:
+        changes.pop(pair)
 
 
 def change_relationship_values(
@@ -1767,6 +1786,7 @@ def change_relationship_values(
     trust: int = 0,
     auto_romance: bool = False,
     log: str = None,
+    changes: dict = None,
 ):
     """
     changes relationship values according to the parameters.
@@ -1785,6 +1805,7 @@ def change_relationship_values(
     :param bool auto_romance: if the cat_from already has romantic value with cat_to, then the platonic_like param value
     will also be applied to romantic, default False
     :param str log: the string to append to the relationship log of cats involved
+    :param dict changes: optional directed before/after values for patrol feedback
         """
 
     # This is just for test prints - DON'T DELETE - you can use this to test if relationships are changing
@@ -1809,6 +1830,8 @@ def change_relationship_values(
                 single_cat_from.create_one_relationship(single_cat_to)
 
             rel = single_cat_from.relationships[single_cat_to.ID]
+            if changes is not None:
+                before = {field: getattr(rel, field) for field in RELATIONSHIP_VALUES}
 
             # here we just double-check that the cats are allowed to be romantic with each other
             if (
@@ -1830,6 +1853,8 @@ def change_relationship_values(
             rel.comfortable += comfortable
             rel.jealousy += jealousy
             rel.trust += trust
+            if changes is not None:
+                record_relationship_changes(rel, before, changes)
 
             # for testing purposes - DON'T DELETE - you can use this to test if relationships are changing
             """

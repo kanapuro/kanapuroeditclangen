@@ -212,3 +212,150 @@ def test_camp_dropdown_click_wins_over_large_colony_hitboxes(navigation, monkeyp
         assert screen._dragging_cat_id is None
     finally:
         screen.exit_screen()
+
+
+@pytest.fixture
+def access_colony(monkeypatch):
+    from scripts.cat.cats import Cat
+    from scripts.cat.history import History
+    from scripts.cat_relations.inheritance import Inheritance
+
+    monkeypatch.setattr(Cat, "all_cats", {})
+    monkeypatch.setattr(Cat, "all_cats_list", [])
+    monkeypatch.setattr(Cat, "outside_cats", {})
+    monkeypatch.setattr(Cat, "sprite", property(lambda cat: pygame.Surface((50, 50), pygame.SRCALPHA)))
+    monkeypatch.setattr(Inheritance, "all_inheritances", {})
+    monkeypatch.setattr(game, "all_screens", {})
+    monkeypatch.setattr(game, "settings", game.settings.copy())
+    monkeypatch.setattr(game, "safe_save", Mock(side_effect=AssertionError("No real save writes")))
+    clan = Clan(name="AccessTest", game_mode="expanded", camp_bg="camp1")
+    clan.clan_cats = []
+    monkeypatch.setattr(game, "clan", clan)
+    cats = [Cat(status="warrior", moons=30) for _ in range(2)]
+    for cat in cats:
+        cat.history = History()
+        cat.create_inheritance_new_cat()
+        clan.add_cat(cat)
+    clan.your_cat = cats[0]
+    clan.instructor = clan.demon = clan.wanderer = SimpleNamespace(ID="guide")
+    clan.clan_settings["all accessories"] = False
+    core.rebuild_core(should_rebuild_bgs=False)
+    with patch.dict(game.switches, {"cat": cats[1].ID, "cur_screen": "profile screen"}):
+        yield clan, cats
+    Screens.hide_menu_buttons()
+
+
+def test_colony_settings_routes_to_game_settings_and_cleans_up(access_colony):
+    from scripts.screens.ClanSettingsScreen import ClanSettingsScreen
+
+    screen = ClanSettingsScreen("clan settings screen")
+    screen.screen_switches()
+    button = screen.game_settings_button
+    try:
+        assert button.visible and button.is_enabled
+        assert not button.rect.colliderect(screen.view_cards_button.rect)
+        assert not button.rect.colliderect(screen.open_data_directory_button.rect)
+        with patch.object(screen, "change_screen") as route:
+            screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=button))
+            route.assert_called_once_with("settings screen")
+    finally:
+        screen.exit_screen()
+    assert not button.alive()
+
+
+@pytest.mark.parametrize("origin", ["start screen", "clan settings screen"])
+def test_game_settings_returns_to_entry_after_display_rebuild(access_colony, monkeypatch, origin):
+    from scripts.screens.SettingsScreen import SettingsScreen
+
+    monkeypatch.setattr(game, "last_screen_forupdate", origin)
+    screen = SettingsScreen("settings screen")
+    screen.screen_switches()
+    state = screen.display_change_save()
+    screen.exit_screen()
+    # Fullscreen changes replace the screen instance.
+    screen = SettingsScreen("settings screen")
+    screen.screen_switches()
+    screen.display_change_load(state)
+    try:
+        assert screen.return_screen == origin
+        with patch.object(screen, "change_screen") as route:
+            screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.main_menu_button))
+            route.assert_called_once_with(origin)
+        monkeypatch.setitem(game.settings, "keybinds", True)
+        with patch.object(screen, "change_screen") as route:
+            screen.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_ESCAPE))
+            route.assert_called_once_with(origin)
+    finally:
+        screen.exit_screen()
+
+
+@pytest.mark.parametrize("success", [True, False])
+def test_settings_save_feedback_requires_success(access_colony, monkeypatch, success):
+    from scripts.screens.SettingsScreen import SettingsScreen
+
+    monkeypatch.setattr(game, "last_screen_forupdate", "clan settings screen")
+    screen = SettingsScreen("settings screen")
+    screen.screen_switches()
+    screen.settings_changed = True
+    screen.update_save_button()
+    try:
+        with patch.object(game, "save_settings", return_value=success) as save:
+            screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.save_settings_button))
+            save.assert_called_once_with(screen)
+        assert screen.settings_changed is not success
+        assert screen.save_settings_button.is_enabled is not success
+    finally:
+        screen.exit_screen()
+
+
+@pytest.mark.parametrize("status,target", [
+    ("leader", "leader den screen"), ("deputy", "warrior den screen"),
+    ("warrior", "warrior den screen"), ("apprentice", "warrior den screen"),
+    ("mediator", "mediation screen"), ("mediator apprentice", "mediation screen"),
+    ("queen", "queen screen"), ("queen's apprentice", "queen screen"),
+    ("medicine cat", "med den screen"), ("medicine cat apprentice", "med den screen"),
+])
+@pytest.mark.parametrize("is_player", [False, True])
+def test_profile_den_shortcuts_follow_rank(access_colony, status, target, is_player):
+    from scripts.screens.ProfileScreen import ProfileScreen
+
+    clan, cats = access_colony
+    cats[1].status = status
+    if is_player:
+        clan.your_cat = cats[1]
+    screen = ProfileScreen("profile screen")
+    screen.screen_switches()
+    try:
+        button = screen.profile_elements["med_den" if target == "med den screen" else "den"]
+        assert button.visible and button.is_enabled
+        with patch.object(screen, "change_screen") as route:
+            screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=button))
+            route.assert_called_once_with(target)
+        if target != "med den screen":
+            cats[1].get_injured("sprain")
+            screen.clear_profile()
+            screen.build_profile()
+            assert screen.profile_elements["med_den"].visible
+            assert "den" not in screen.profile_elements
+    finally:
+        screen.exit_screen()
+
+
+@pytest.mark.parametrize("state", ["dead", "outside", "shunned"])
+def test_profile_shortcuts_preserve_activity_restrictions(access_colony, state):
+    from scripts.screens.ProfileScreen import ProfileScreen
+
+    clan, cats = access_colony
+    cat = cats[1]
+    cat.status = "queen"
+    setattr(cat, state, 1 if state == "shunned" else True)
+    screen = ProfileScreen("profile screen")
+    screen.screen_switches()
+    try:
+        if state == "shunned":
+            assert not screen.profile_elements["den"].is_enabled
+        else:
+            assert "den" not in screen.profile_elements
+            assert not screen.profile_elements["med_den"].visible
+    finally:
+        screen.exit_screen()

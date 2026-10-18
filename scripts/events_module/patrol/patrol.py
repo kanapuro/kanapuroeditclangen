@@ -27,7 +27,9 @@ from scripts.utility import (
     get_special_snippet_list,
     lifegen_text_adjust,
     get_alive_status_cats,
-    get_cluster
+    get_cluster,
+    RELATIONSHIP_VALUES,
+    record_relationship_changes,
 )
 from scripts.game_structure.game_essentials import game
 from itertools import combinations
@@ -55,6 +57,7 @@ class Patrol:
         self.patrol_apprentices = []
         self.other_clan = None
         self.intro_text = ""
+        self.relationship_changes = {}
 
         self.patrol_statuses = {}
         self.patrol_status_list = []
@@ -138,6 +141,7 @@ class Patrol:
         """Proceed the patrol to the next step.
         path can be: "proceed", "antag", or "decline" """
 
+        self.relationship_changes = {}
         if path == "decline":
             if self.patrol_event:
                 print(
@@ -899,6 +903,14 @@ class Patrol:
             fail_outcomes, weights=[x.weight for x in fail_outcomes]
         )[0]
 
+        date_relationships = []
+        if game.switches["patrol_category"] == "date":
+            for cat in self.patrol_cats:
+                for other in self.patrol_cats:
+                    rel = cat.relationships.get(other.ID)
+                    if cat != other and rel:
+                        date_relationships.append((rel, {field: getattr(rel, field) for field in RELATIONSHIP_VALUES}))
+
         final_event, success = self.calculate_success(chosen_success, chosen_failure)
 
         if success and game.switches["patrol_category"] == 'date':
@@ -918,6 +930,9 @@ class Patrol:
                 self.random_cat.relationships[game.clan.your_cat.ID].comfortable -= randint(1,5)
             except:
                 print("ERROR: handling relationship changes in date patrol")
+
+        for rel, before in date_relationships:
+            record_relationship_changes(rel, before, self.relationship_changes)
 
         if success and game.switches["patrol_category"] == "df":
             game.clan.your_cat.df_patrols += 1

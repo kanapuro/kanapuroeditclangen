@@ -22,6 +22,7 @@ def update_checkbox(button, object_id):
 class CustomizerList(pygame_gui.elements.UIScrollingContainer):
     def __init__(self, rect, options, labels, buttons, tooltips=None):
         super().__init__(ui_scale(rect.copy()), allow_scroll_x=False, should_grow_automatically=False, manager=MANAGER)
+        self.vert_scroll_bar.set_container_this_will_scroll(self)
         self.options = options
         self.labels = labels
         self.tooltips = tooltips
@@ -85,24 +86,40 @@ class CustomizerList(pygame_gui.elements.UIScrollingContainer):
         if self.on_change:
             self.on_change()
 
+    def are_contents_hovered(self):
+        return (self.visible and self.is_enabled
+                and self.rect.collidepoint(self.ui_manager.get_mouse_position()))
+
     def update(self, time_delta):
         super().update(time_delta)
         bar = self.vert_scroll_bar
-        if bar and bar.scroll_position + bar.sliding_button.rect.height >= bar.bottom_limit:
-            # The scrollbar rounds its thumb height; keep the last row fully visible.
+        if bar and bar.is_enabled:
+            height = min(bar.scrollable_height, max(bar.sliding_button.rect.height,
+                         ui_scale_dimensions((0, 28))[1]))
+            if bar.sliding_button.rect.height != height:
+                bar.sliding_button.set_dimensions((bar.sliding_button.rect.width, height))
+            travel = bar.bottom_limit - height
+            bar.scroll_position = max(0, min(bar.scroll_position, travel))
+            bar.target_scroll_position = max(0, min(bar.target_scroll_position, travel))
+            bar.sliding_button.set_relative_position((bar.sliding_button.relative_rect.x,
+                round(bar.scroll_position + bar.arrow_button_height)))
+            # A minimum thumb size changes its travel, not the list's scroll range.
+            progress = bar.scroll_position / travel if travel else 0
             container = self.get_container()
-            container.set_relative_position((container.relative_rect.x, min(0, self.rect.height - self.row_offsets[-1])))
+            container.set_relative_position((container.relative_rect.x,
+                -round(progress * max(0, self.row_offsets[-1] - self.rect.height))))
         self.refresh_rows()
 
     def scroll_to(self, value):
         index = self.options.index(value)
-        super().update(0)
+        self.update(0)
         if self.vert_scroll_bar:
             position = self.row_offsets[index]
-            percentage = position / self.row_offsets[-1]
-            if position >= self.row_offsets[-1] - self.rect.height:
-                percentage = 1.0
-            self.vert_scroll_bar.set_scroll_from_start_percentage(percentage)
+            bar = self.vert_scroll_bar
+            distance = max(1, self.row_offsets[-1] - self.rect.height)
+            progress = min(1, position / distance)
+            travel = bar.bottom_limit - bar.sliding_button.rect.height
+            bar.set_scroll_from_start_percentage(progress * travel / bar.scrollable_height)
         self.update(0)
 
 
