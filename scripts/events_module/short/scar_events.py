@@ -72,6 +72,8 @@ class Scar_Events():
         "rat bite": rat_scars,
         "snake bite": snake_scars,
         "mangled tail": tail_scars,
+        "amputated leg": ["NOPAW"],
+        "amputated tail": ["NOTAIL", "HALFTAIL"],
         "mangled leg": leg_scars,
         "torn ear": ear_scars,
         "frostbite": frostbite_scars,
@@ -85,7 +87,7 @@ class Scar_Events():
     }
 
     @staticmethod
-    def get_scar_pool(cat, injury_name):
+    def get_scar_pool(cat, injury_name, required=False):
         """
         Get the pool of possible scars for an injury.
         Used both when pre-determining scars and when applying them.
@@ -121,7 +123,7 @@ class Scar_Events():
             scar_pool = [i for i in scar_pool if i not in ['RIGHTEAR']]
 
         # Extra check for disabling scars.
-        if int(random.random() * 3):
+        if not required and int(random.random() * 3):
             condition_scars = {
                 "LEGBITE", "THREE", "NOPAW", "TOETRAP", "NOTAIL", "HALFTAIL", "LEFTEAR", "RIGHTEAR",
                 "MANLEG", "BRIGHTHEART", "NOLEFTEAR", "NORIGHTEAR", "NOEAR", "LEFTBLIND",
@@ -132,19 +134,19 @@ class Scar_Events():
         return scar_pool
 
     @staticmethod
-    def determine_scar_for_injury(cat, injury_name):
+    def determine_scar_for_injury(cat, injury_name, required=False):
         """
         Pre-determine which scar an injury will become.
         Called when the injury is first acquired.
         Returns the scar name or None.
         """
-        scar_pool = Scar_Events.get_scar_pool(cat, injury_name)
+        scar_pool = Scar_Events.get_scar_pool(cat, injury_name, required=required)
         if scar_pool:
             return random.choice(scar_pool)
         return None
 
     @staticmethod
-    def handle_scars(cat, injury_name):
+    def handle_scars(cat, injury_name, guarantee=False, history_condition=None):
         """ 
         This function handles the scars
         """
@@ -160,20 +162,20 @@ class Scar_Events():
         if medical_cats_condition_fulfilled(game.cat_class.all_cats.values(), amount_per_med):
             chance += 2
 
-        if not int(random.random() * chance):
+        if guarantee or not int(random.random() * chance):
 
             # Check if injury already has a predetermined scar
             specialty = None
             if injury_name in cat.injuries and "predetermined_scar" in cat.injuries[injury_name]:
                 specialty = cat.injuries[injury_name]["predetermined_scar"]
                 # Make sure the predetermined scar is still valid
-                scar_pool = Scar_Events.get_scar_pool(cat, injury_name)
+                scar_pool = Scar_Events.get_scar_pool(cat, injury_name, required=guarantee)
                 if specialty not in scar_pool:
                     specialty = None  # Scar is no longer valid, pick new one
             
             # If no valid predetermined scar, pick one now
             if specialty is None:
-                scar_pool = Scar_Events.get_scar_pool(cat, injury_name)
+                scar_pool = Scar_Events.get_scar_pool(cat, injury_name, required=guarantee)
                 if not scar_pool:
                     return None, None
                 specialty = random.choice(scar_pool)
@@ -181,7 +183,10 @@ class Scar_Events():
             # If we've reached this point, we can move forward with giving history.
             History.add_scar(cat,
                              f"m_c was scarred from an injury ({injury_name}).",
-                             condition=injury_name)
+                             condition=history_condition or injury_name)
+
+            if specialty == "NOTAIL" and "HALFTAIL" in cat.pelt.scars:
+                cat.pelt.scars.remove("HALFTAIL")
 
             if specialty in ["NOTAIL", "HALFTAIL"]:
                 # if cat.pelt.accessory in ["RED FEATHERS", "BLUE FEATHERS", "JAY FEATHERS"]:

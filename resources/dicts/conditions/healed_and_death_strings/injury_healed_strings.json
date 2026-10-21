@@ -225,5 +225,13 @@
     "sore throat": [
         "m_c's throat is no longer sore.",
         "m_c's throat has healed."
+    ],
+    "amputated leg": [
+        "m_c's amputated leg has finally healed enough for {PRONOUN/m_c/object} to return to normal life.",
+        "The stump of m_c's amputated leg has finally healed."
+    ],
+    "amputated tail": [
+        "m_c's amputated tail has finally healed enough for {PRONOUN/m_c/object} to return to normal life.",
+        "The stump of m_c's amputated tail has finally healed."
     ]
 }

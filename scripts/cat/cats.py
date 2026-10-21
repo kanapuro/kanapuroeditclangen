@@ -2855,10 +2855,11 @@ class Cat:
                     cause = f"After the death of {grief_cat.name}."
             History.add_condition(self, name, "illness", cause)
 
-    def get_injured(self, name, event_triggered=False, lethal=True, severity="default", cause=None):
+    def get_injured(self, name, event_triggered=False, lethal=True, severity="default", cause=None, scar_condition=None):
         """Add an injury to this cat.
 
         :param name: The injury to add
+        :param scar_condition: Original wound whose scar history is carried into a progression.
         :type name: str
         :param event_triggered: Whether to process healing immediately, defaults to False
         :type event_triggered: bool, optional
@@ -2877,6 +2878,10 @@ class Cat:
             return
 
         injury = INJURIES[name]
+        if injury.get("requires_scar"):
+            from scripts.events_module.short.scar_events import Scar_Events
+            if name in self.injuries or not Scar_Events.get_scar_pool(self, name, required=True):
+                return
         mortality = injury["mortality"][self.age]
         duration = injury["duration"]
         med_duration = injury["medicine_duration"]
@@ -2915,7 +2920,8 @@ class Cat:
         if new_injury.name not in self.injuries:
             # Pre-determine which scar this injury will become (if any)
             from scripts.events_module.short.scar_events import Scar_Events
-            predetermined_scar = Scar_Events.determine_scar_for_injury(self, new_injury.name)
+            predetermined_scar = Scar_Events.determine_scar_for_injury(
+                self, new_injury.name, required=injury.get("requires_scar", False))
             
             self.injuries[new_injury.name] = {
                 "severity": new_injury.severity,
@@ -2930,8 +2936,10 @@ class Cat:
                 "predetermined_scar": predetermined_scar,  # Store the predetermined scar
             }
             History.add_condition(self, name, "injury", cause)
+            if injury.get("requires_scar"):
+                Scar_Events.handle_scars(self, name, guarantee=True, history_condition=scar_condition)
 
-        if len(new_injury.also_got) > 0 and not int(random() * 5):
+        if len(new_injury.also_got) > 0 and not int(random() * injury.get("also_got_chance", 5)):
             avoided = False
             if (
                 "blood loss" in new_injury.also_got

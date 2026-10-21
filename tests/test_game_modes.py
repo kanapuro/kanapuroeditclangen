@@ -76,7 +76,8 @@ def test_initial_creation_keeps_mode_in_memory_and_first_save(mode_colony, monke
 
 
 @pytest.mark.parametrize("mode", ["classic", "expanded", "cruel season"])
-def test_creation_screen_passes_its_mode_to_new_colony(mode_colony, mode):
+@pytest.mark.parametrize("biome,camp", [("Forest", 1), ("Plains", 10), ("Beach", 6)])
+def test_creation_screen_passes_its_mode_to_new_colony(mode_colony, mode, biome, camp):
     from scripts.screens.MakeClanScreen import MakeClanScreen
 
     original, cat = mode_colony
@@ -85,8 +86,8 @@ def test_creation_screen_passes_its_mode_to_new_colony(mode_colony, mode):
     screen.clan_name = "ModeTest"
     screen.generated_clan_prefix = "Mode"
     screen.symbol_selected = "symbolMODE0"
-    screen.biome_selected = "Forest"
-    screen.selected_camp_tab = 1
+    screen.biome_selected = biome
+    screen.selected_camp_tab = camp
     screen.selected_season = "Newleaf"
     screen.clan_age = "established"
     screen.leader = cat
@@ -97,10 +98,10 @@ def test_creation_screen_passes_its_mode_to_new_colony(mode_colony, mode):
     screen.handle_create_other_cats = Mock()
     observed = []
     with patch.dict(game.switches, {"customise_new_life": False}), patch.object(
-        Clan, "create_clan", lambda clan: observed.append(clan.game_mode)
+        Clan, "create_clan", lambda clan: observed.append((clan.game_mode, clan.biome, clan.camp_bg))
     ), patch.object(game, "clan", original):
         screen.save_clan()
-    assert observed == [mode]
+    assert observed == [(mode, biome, f"camp{camp}")]
 
 
 def test_new_colony_does_not_share_members_or_afterlives(mode_colony):

@@ -707,9 +707,15 @@ class Condition_Events:
                 triggered = True
 
                 # Try to give a scar, and get the event text to be displayed
-                event, scar_given = Scar_Events.handle_scars(cat, injury)
-                # If a scar was not given, we need to grab a separate healed event
-                if not scar_given:
+                required_scar = Condition_Events.INJURIES[injury].get("requires_scar", False)
+                if required_scar:
+                    scar_given = next((scar for scar in Scar_Events.scar_allowed[injury] if scar in cat.pelt.scars), None)
+                    if scar_given is None:
+                        _, scar_given = Scar_Events.handle_scars(cat, injury, guarantee=True)
+                else:
+                    event, scar_given = Scar_Events.handle_scars(cat, injury)
+                # Required scars were applied when the wound was acquired.
+                if not scar_given or required_scar:
                     try:
                         event = random.choice(
                             Condition_Events.INJURY_HEALED_STRINGS[injury]
@@ -722,6 +728,7 @@ class Condition_Events:
 
                 event = event_text_adjust(Cat, event, main_cat=cat, random_cat=None)
 
+                event_list.append(event)
                 game.herb_events_list.append(event)
 
                 History.remove_possible_history(cat, injury)
@@ -779,10 +786,13 @@ class Condition_Events:
                         Cat, event, main_cat=cat, random_cat=med_cat
                     )  # adjust the text
 
-                if event is not None:
                     event_list.append(event)
+                    game.herb_events_list.append(event)
                 continue
 
+            if Condition_Events.handle_injury_progression(cat, injury, event_list):
+                triggered = True
+                continue
             Condition_Events.give_risks(
                 cat, event_list, injury, injury_progression, injuries, cat.injuries
             )
@@ -799,6 +809,31 @@ class Condition_Events:
             game.cur_events_list.append(Single_Event(event_string, types, cat.ID))
 
         return triggered
+
+    @staticmethod
+    def handle_injury_progression(cat, injury, event_list):
+        for target, chance in Condition_Events.INJURIES[injury].get("progression", {}).items():
+            if target in cat.injuries or target in cat.permanent_condition:
+                continue
+            if random.random() >= chance:
+                continue
+            medics = [medic for medic in get_alive_status_cats(
+                Cat, ["medicine cat", "medicine cat apprentice"], working=True) if medic is not cat]
+            medic = random.choice(medics) if medics else None
+            strings = Condition_Events.INJURY_RISK_STRINGS[injury][target]
+            event = Condition_Events.condition_text(strings, random.randrange(len(strings)), medic)
+            event = event_text_adjust(Cat, event, main_cat=cat, random_cat=medic)
+            cat.get_injured(target, event_triggered=True, cause=event, scar_condition=injury)
+            if target not in cat.injuries:
+                continue
+            cat.injuries[target]["complication"] = cat.injuries[injury]["complication"]
+            cat.injuries.pop(injury)
+            History.remove_possible_history(cat, injury)
+            game.switches["skip_conditions"].append(target)
+            event_list.append(event)
+            game.herb_events_list.append(event)
+            return True
+        return False
 
     @staticmethod
     def handle_already_disabled(cat):

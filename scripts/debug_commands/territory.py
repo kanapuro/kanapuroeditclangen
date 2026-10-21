@@ -20,8 +20,8 @@ from scripts.housekeeping.datadir import get_save_dir
 CAMP_AVAILABILITY = {
     "Forest": ["camp1", "camp2", "camp3", "camp4", "camp5", "camp6", "camp7", "camp8"],
     "Mountainous": ["camp1", "camp2", "camp3", "camp4", "camp5", "camp6", "camp7"],
-    "Plains": ["camp1", "camp2", "camp3", "camp4", "camp5", "camp6", "camp7", "camp8", "camp9"],
-    "Beach": ["camp1", "camp2", "camp3", "camp4", "camp5"]
+    "Plains": ["camp1", "camp2", "camp3", "camp4", "camp5", "camp6", "camp7", "camp8", "camp9", "camp10"],
+    "Beach": ["camp1", "camp2", "camp3", "camp4", "camp5", "camp6"]
 }
 
 CAMP_NAMES = {
@@ -53,14 +53,16 @@ CAMP_NAMES = {
         "camp6": "City",
         "camp7": "Farm",
         "camp8": "Bushland",
-        "camp9": "Castle"
+        "camp9": "Castle",
+        "camp10": "Bridge"
     },
     "Beach": {
         "camp1": "Tidepools",
         "camp2": "Tidal Cave",
         "camp3": "Shipwreck",
         "camp4": "Fjord",
-        "camp5": "Tropical Island"
+        "camp5": "Tropical Island",
+        "camp6": "Quay"
     }
 }
 

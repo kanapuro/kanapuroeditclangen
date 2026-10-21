@@ -9,7 +9,7 @@ from platformdirs import user_data_dir
 
 logger = logging.getLogger(__name__)
 
-VERSION_NAME = "v0.1.0.36"
+VERSION_NAME = "v2.0.0-alpha.2"
 # This is saved in the Clan save-file, and is used for save-file converstion.
 SAVE_VERSION_NUMBER = 3
 
@@ -39,7 +39,7 @@ def get_version_info():
             upstream = version_ini.get("DEFAULT", "upstream")
         else:
             try:
-                version_number = (
+                version_number = VERSION_NAME + "+" + (
                     subprocess.check_output(["git", "rev-parse", "HEAD"])
                     .decode("ascii")
                     .strip()

@@ -131,7 +131,11 @@ def rebuild_core(*, should_rebuild_bgs=True):
     rebuild_mute("default")
 
     version_text = get_version_info().version_number
-    version_text = version_text if version_text.startswith("v") else version_text[:8]
+    if "+" in version_text:
+        label, commit = version_text.split("+", 1)
+        version_text = label + "+" + commit[:8]
+    else:
+        version_text = version_text if version_text.startswith("v") else version_text[:8]
     version_number = pygame_gui.elements.UILabel(
         ui_scale(pygame.Rect((50, 50), (-1, -1))),
         version_text,
@@ -150,10 +154,14 @@ def rebuild_core(*, should_rebuild_bgs=True):
 
     if get_version_info().is_source_build or get_version_info().is_dev():
         dev_watermark = pygame_gui.elements.UILabel(
-            ui_scale(pygame.Rect((545, 660), (300, 50))),
+            ui_scale(pygame.Rect((545, 660), (-1 if "+" in version_text else 300, 50))),
             "Build: " + version_number.text,
             object_id="#dev_watermark",
         )
+        if "+" in version_text:
+            watermark_rect = dev_watermark.get_relative_rect()
+            right = MANAGER.get_root_container().get_rect().width - ui_scale_dimensions((20, 0))[0]
+            dev_watermark.set_relative_position((right - watermark_rect.width, watermark_rect.y))
         version_number.kill()
         version_number = None
 

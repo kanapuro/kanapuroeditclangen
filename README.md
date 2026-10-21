@@ -72,6 +72,10 @@ bash run.sh
 - **Poetry can't find `pyproject.toml`:** Your terminal is in the wrong folder. Open it in the folder containing `main.py` and `pyproject.toml`.
 - **The game window closes immediately:** Run `poetry run python main.py` from a terminal in the game folder so you can read the error. Include that error when asking for help.
 
+## Versioning
+
+Versions follow [Semantic Versioning](https://semver.org/). The current modernization run is building toward **2.0.0**: alpha builds integrate features, beta builds focus on testing the completed scope, and release candidates precede the stable modernization release. Numbered prereleases use forms such as `2.0.0-alpha.1`; build metadata identifies development commits. Future development continues after 2.0.0. Save formats, documented settings and commands form the compatibility contract: compatible fixes increment patch, compatible additions increment minor, and incompatible changes increment major.
+
 ## Support & Community
 
 - [Discord server](https://discord.gg/pB3XnFqenm): check the `#lgmmke` channel for updates and help.

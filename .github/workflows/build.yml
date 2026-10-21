@@ -105,7 +105,7 @@ jobs:
       - name: Configure dev
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         run: |
-          echo "VERSION_NUMBER=${{ github.sha }}" >> $GITHUB_ENV
+          python -c "import os; from scripts.housekeeping.version import VERSION_NAME; print('VERSION_NUMBER=' + VERSION_NAME + '+${{ github.sha }}', file=open(os.environ['GITHUB_ENV'], 'a'))"
           echo "RELEASE_CHANNEL=${{ vars.DEVELOPMENT_RELEASE_CHANNEL }}" >> $GITHUB_ENV
       - name: Configure release
         if: startsWith(github.ref, 'refs/tags/')

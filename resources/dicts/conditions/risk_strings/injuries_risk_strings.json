@@ -67,12 +67,25 @@
         "an infected wound": [
             "r_c wonders if {PRONOUN/r_c/subject} might need to consult with a medicine cat from another colony. m_c's mangled leg has become infected and swollen - and {PRONOUN/r_c/subject} {VERB/r_c/need/needs} more ideas.",
             "As if the injury wasn't bad enough, the skin around m_c's mangled leg has started to swell and feel feverish."
+        ],
+        "amputated leg": [
+            "The leg is too mangled. r_c sighs and prepares the poppy seeds to knock m_c out while it's removed.",
+            "When m_c wakes up from {PRONOUN/m_c/poss} poppy-induced sleep, r_c breaks the news that m_c's leg had to be removed.",
+            "m_c wakes up one leg less than {PRONOUN/m_c/subject} went to sleep with, and it's both upsetting and a relief. {PRONOUN/m_c/poss/CAP} leg was so mangled, and m_c in so much pain, that this might be for the best. But it's still a loss.",
+            "The damage to m_c's leg has turned out to be too great. {PRONOUN/m_c/poss/CAP} leg had to be removed for any hope of recovery.",
+            "m_c's leg had to be amputated, the damage was too great."
         ]
     },
     "mangled tail": {
         "an infected wound": [
             "m_c's poor mangled tail is swollen and hot to the touch: r_c searches the herb stores for those that fight infection.",
             "As if the injury wasn't bad enough, the skin on m_c's mangled tail has started to swell and feel feverish."
+        ],
+        "amputated tail": [
+            "r_c helps m_c bury {PRONOUN/m_c/poss} tail wordlessly, hoping the ritual brings {PRONOUN/m_c/object} closure from the trauma of losing it.",
+            "When m_c wakes up, r_c has to explain to {PRONOUN/m_c/object} that {PRONOUN/r_c/subject} removed m_c's tail as a last resort. The damage was too great.",
+            "It's okay, m_c tells {PRONOUN/m_c/self}. A tail isn't the worst thing to lose, {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} going to be fine! But {PRONOUN/m_c/subject} still {VERB/m_c/feel/feels} its absence no matter how hard {PRONOUN/m_c/subject} {VERB/m_c/try/tries} to force it from {PRONOUN/m_c/poss} mind.",
+            "m_c's tail had to be amputated, the damage was too great."
         ]
     },
     "cracked pads": {
@@ -139,6 +152,14 @@
         "an infected wound": [
             "It's hard to tell with such a severe burn, but r_c is now certain than in addition to the burn damage, m_c is carrying an infection in the tissue as well.",
             "m_c has been feeling feverish. {PRONOUN/m_c/poss/CAP} burn looks discolored and swollen: it must be developing an infection."
+        ],
+        "amputated leg": [
+            "As m_c sleeps under the influence of poppy seeds, r_c prepares for the grim task of removing {PRONOUN/m_c/poss} burned leg before the festering illness in it can spread to the rest of {PRONOUN/m_c/object}.",
+            "r_c informs m_c that the harsh burn has rendered {PRONOUN/m_c/poss} leg nearly useless. It will be better in the long run to remove the limb entirely.",
+            "The absence of m_c's leg is just so much less painful than the horrible burns. {PRONOUN/m_c/subject/CAP} {VERB/m_c/feel/feels} almost guilty, but it feels so much better now that it's impossible not to be relieved."
+        ],
+        "amputated tail": [
+            "m_c's tail had to be amputated, the damage was too great."
         ]
     },
     "shock": {
@@ -204,6 +225,18 @@
         "shock": [
             "r_c tries to comfort m_c as {PRONOUN/m_c/subject} {VERB/m_c/grow/grows} more and more haunted by {PRONOUN/m_c/poss} crimes, but there are no herbs for guilt.",
             "m_c is growing more and more haunted by what {PRONOUN/m_c/subject}{VERB/m_c/'ve/'s} done."
+        ]
+    },
+    "amputated leg": {
+        "an infected wound": [
+            "r_c has been worried. It seems the stump of m_c's amputated leg has become infected.",
+            "m_c's amputated leg has become infected."
+        ]
+    },
+    "amputated tail": {
+        "an infected wound": [
+            "r_c has been worried. It seems the stump of m_c's amputated tail has become infected.",
+            "m_c's amputated tail has become infected."
         ]
     }
 }

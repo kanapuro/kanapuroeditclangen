@@ -440,3 +440,19 @@ def test_heartless_profile_mate_control_is_explained_and_cannot_be_pressed(acces
         assert button.is_enabled
     finally:
         screen.exit_screen()
+
+
+@pytest.mark.parametrize("version,label", [("v2.0.0-alpha.1", "v2.0.0-alpha.1"),
+    ("v2.0.0-alpha.1+0123456789abcdef", "v2.0.0-alpha.1+01234567"),
+    ("0123456789abcdef", "01234567")])
+def test_build_footer_preserves_prerelease_and_shortens_only_commit_metadata(navigation, monkeypatch, version, label):
+    info = SimpleNamespace(version_number=version, is_source_build=True, is_dev=lambda: True)
+    with monkeypatch.context() as patcher:
+        patcher.setattr(core, "get_version_info", lambda: info)
+        core.rebuild_core(should_rebuild_bgs=False)
+        assert core.dev_watermark.text == "Build: " + label
+        if "+" in version:
+            bounds = MANAGER.get_root_container().get_rect()
+            assert bounds.left <= core.dev_watermark.rect.left < core.dev_watermark.rect.right <= bounds.right
+            assert core.dev_watermark.font.get_rect(core.dev_watermark.text).width <= core.dev_watermark.rect.width
+    core.rebuild_core(should_rebuild_bgs=False)

@@ -274,6 +274,19 @@ class TestClanCommands(unittest.TestCase):
                 metadata = ujson.loads((self.root / "Old.json").read_text())
                 self.assertEqual((metadata["biome"], metadata["camp_bg"]), (self.clan.biome, self.clan.camp_bg))
 
+    def test_new_camps_can_be_set_saved_and_loaded(self):
+        from scripts.debug_commands.territory import SetCampCommand
+
+        for biome, camp in (("Plains", "10"), ("Beach", "6")):
+            with self.subTest(biome=biome), patch.dict(game.switches):
+                self.clan.biome = biome
+                SetCampCommand().callback([camp])
+                self.assertEqual(self.clan.camp_bg, "camp" + camp)
+                self.clan.save_clan()
+                self.clan.load_clan()
+                self.assertEqual((game.clan.biome, game.clan.camp_bg), (biome, "camp" + camp))
+                game.clan = self.clan
+
     def test_wipe_finds_uncached_outsiders_and_rebuilds_the_cache(self):
         from scripts.debug_commands.territory import _wipe_outsider_cats
 

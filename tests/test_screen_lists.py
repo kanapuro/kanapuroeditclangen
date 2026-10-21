@@ -1338,6 +1338,30 @@ class TestCampLighting(unittest.TestCase):
             finally:
                 self.screen.exit_screen()
 
+    def test_bridge_and_quay_render_all_seasons_and_use_their_own_positions(self):
+        from scripts.debug_commands.territory import CAMP_AVAILABILITY
+        from scripts.screens.MakeClanScreen import MakeClanScreen
+
+        for biome, camp in (("Plains", "camp10"), ("Beach", "camp6")):
+            with self.subTest(biome=biome):
+                self.assertEqual(len(CAMP_AVAILABILITY[biome]), MakeClanScreen.camp_counts[biome])
+                self.clan.biome, self.clan.camp_bg = biome, camp
+                for dark in (False, True):
+                    with patch.dict(game.settings, {"dark mode": dark, "random camp lighting": False}):
+                        self.screen.screen_switches()
+                        try:
+                            self.assertIs(self.screen.layout, self.clan.layouts[biome + camp])
+                            self.assertTrue(self.screen.cat_buttons)
+                            x, y = self.clan.your_cat.placement
+                            self.assertTrue(0 <= x <= 750 and 0 <= y <= 650)
+                            for season in ("Newleaf", "Greenleaf", "Leaf-fall", "Leaf-bare"):
+                                self.clan.current_season = season
+                                self.screen.show_bg()
+                            self.assertEqual(self.screen.leader_den_label.relative_rect.topleft,
+                                             ui_scale(pygame.Rect(self.screen.layout["leader den"], (112, 28))).topleft)
+                        finally:
+                            self.screen.exit_screen()
+
 
 class TestRecoveryVisits(unittest.TestCase):
     def setUp(self):

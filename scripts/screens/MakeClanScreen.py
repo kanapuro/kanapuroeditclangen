@@ -51,7 +51,7 @@ class MakeClanScreen(CatCustomizer, Screens):
         "cruel season": "All the features of Expanded Mode, with chosen challenges to increase the difficulty.<br><br>Choose the cards that will shape your game, or let Quick Start choose a compatible deck for you.<br><br>Automatic hunting starts disabled. Send patrols to keep your colony fed.",
     }
     cruel_cards = None
-    camp_counts = {"Forest": 8, "Mountainous": 7, "Plains": 9, "Beach": 5}
+    camp_counts = {"Forest": 8, "Mountainous": 7, "Plains": 10, "Beach": 6}
     # UI images
 
     ui_images = {
@@ -669,6 +669,9 @@ class MakeClanScreen(CatCustomizer, Screens):
         elif event.ui_element == self.tabs["tab9"]:
             self.selected_camp_tab = 9
             self.refresh_selected_camp()
+        elif event.ui_element == self.tabs["tab10"]:
+            self.selected_camp_tab = 10
+            self.refresh_selected_camp()
         elif event.ui_element == self.tabs["newleaf_tab"]:
             self.selected_season = "Newleaf"
             self.refresh_text_and_buttons()
@@ -1056,6 +1059,7 @@ class MakeClanScreen(CatCustomizer, Screens):
         self.tabs["tab7"].kill()
         self.tabs["tab8"].kill()
         self.tabs["tab9"].kill()
+        self.tabs["tab10"].kill()
 
         if self.biome_selected == "Forest":
             tab_rect = ui_scale(pygame.Rect((0, 0), (85, 30)))
@@ -1392,6 +1396,20 @@ class MakeClanScreen(CatCustomizer, Screens):
                     "top_target": self.tabs["tab8"],
                 },
             )
+            tab_rect = ui_scale(pygame.Rect((0, 0), (85, 30)))
+            tab_rect.topright = ui_scale_offset((5, 5))
+            self.tabs["tab10"] = UISurfaceImageButton(
+                tab_rect,
+                "Bridge",
+                get_button_dict(ButtonStyles.VERTICAL_TAB, (85, 30)),
+                object_id="@buttonstyles_vertical_tab",
+                manager=MANAGER,
+                anchors={
+                    "right": "right",
+                    "right_target": self.elements["art_frame"],
+                    "top_target": self.tabs["tab9"],
+                },
+            )
             # ---
         elif self.biome_selected == "Beach":
             tab_rect = ui_scale(pygame.Rect((0, 0), (110, 30)))
@@ -1465,6 +1483,20 @@ class MakeClanScreen(CatCustomizer, Screens):
                     "top_target": self.tabs["tab4"],
                 },
             )
+            tab_rect = ui_scale(pygame.Rect((0, 0), (75, 30)))
+            tab_rect.topright = ui_scale_offset((5, 5))
+            self.tabs["tab6"] = UISurfaceImageButton(
+                tab_rect,
+                "Quay",
+                get_button_dict(ButtonStyles.VERTICAL_TAB, (75, 30)),
+                object_id="@buttonstyles_vertical_tab",
+                manager=MANAGER,
+                anchors={
+                    "right": "right",
+                    "right_target": self.elements["art_frame"],
+                    "top_target": self.tabs["tab5"],
+                },
+            )
             # 100
 
         self.tabs["tab1"].disable() if self.selected_camp_tab == 1 else self.tabs[
@@ -1493,6 +1525,10 @@ class MakeClanScreen(CatCustomizer, Screens):
         ].enable()
         self.tabs["tab9"].disable() if self.selected_camp_tab == 9 else self.tabs[
             "tab9"
+        ].enable()
+
+        self.tabs["tab10"].disable() if self.selected_camp_tab == 10 else self.tabs[
+            "tab10"
         ].enable()
 
         # I have to do this for proper layering.
@@ -2539,6 +2575,8 @@ class MakeClanScreen(CatCustomizer, Screens):
                                           visible=False, manager=MANAGER)
         self.tabs["tab9"] = UIImageButton(ui_scale(pygame.Rect((0, 0), (0, 0))), "",
                                           visible=False, manager=MANAGER)
+        self.tabs["tab10"] = UIImageButton(ui_scale(pygame.Rect((0, 0), (0, 0))), "",
+                                          visible=False, manager=MANAGER)
         y_pos = 275
         self.tabs["newleaf_tab"] = UIImageButton(ui_scale(pygame.Rect((627, y_pos), (39, 34))), "",
                                                  object_id="#newleaf_toggle_button",
@@ -2936,7 +2974,6 @@ class MakeClanScreen(CatCustomizer, Screens):
             game.cat_to_fade.clear()
             Cat.outside_cats.clear()
             Patrol.used_patrols.clear()
-            convert_camp = {1: 'camp1', 2: 'camp2', 3: 'camp3', 4: 'camp4', 5: 'camp5', 6: 'camp6', 7: 'camp7', 8: 'camp8', 9: 'camp9'}
             self.your_cat.create_inheritance_new_cat()
             
             # Get clan_prefix for icon matching
@@ -2979,7 +3016,7 @@ class MakeClanScreen(CatCustomizer, Screens):
                             deputy = self.deputy,
                             medicine_cat = self.med_cat,
                             biome = self.biome_selected,
-                            camp_bg = convert_camp[self.selected_camp_tab],
+                            camp_bg = f"camp{self.selected_camp_tab}",
                             symbol=self.symbol_selected,
                             game_mode=self.game_mode,
                             cruel_cards=self.cruel_cards if self.game_mode == "cruel season" else None,

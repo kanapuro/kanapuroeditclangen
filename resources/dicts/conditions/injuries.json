@@ -415,7 +415,10 @@
             "ragwort",
             "juniper",
             "moss"
-        ]
+        ],
+        "progression": {
+            "amputated leg": 0.4
+        }
     },
     "dislocated joint": {
         "duration": 2,
@@ -532,7 +535,10 @@
             "ragwort",
             "juniper",
             "moss"
-        ]
+        ],
+        "progression": {
+            "amputated tail": 0.5
+        }
     },
     "bruises": {
         "duration": 1,
@@ -934,7 +940,11 @@
             "ragwort",
             "poppy",
             "moss"
-        ]
+        ],
+        "progression": {
+            "amputated tail": 0.2,
+            "amputated leg": 0.2
+        }
     },
     "shock": {
         "duration": 1,
@@ -1378,5 +1388,99 @@
             "2": [],
             "3": []
         }
+    },
+    "amputated leg": {
+        "duration": 2,
+        "severity": "severe",
+        "medicine_duration": 2,
+        "mortality": {
+            "newborn": 0,
+            "kitten": 0,
+            "adolescent": 0,
+            "young adult": 0,
+            "adult": 0,
+            "senior adult": 0,
+            "senior": 0
+        },
+        "illness_infectiousness": [],
+        "risks": [
+            {
+                "name": "an infected wound",
+                "chance": 5
+            }
+        ],
+        "also_got": [
+            "blood loss"
+        ],
+        "also_got_chance": 2,
+        "cause_permanent": [
+            "lost a leg"
+        ],
+        "herbs": {
+            "1": [
+                "cobwebs",
+                "marigold",
+                "tansy",
+                "mullein"
+            ],
+            "2": [
+                "wild_garlic",
+                "horsetail",
+                "oak_leaves",
+                "moss"
+            ],
+            "3": [
+                "poppy",
+                "goldenrod"
+            ]
+        },
+        "requires_scar": true
+    },
+    "amputated tail": {
+        "duration": 2,
+        "severity": "severe",
+        "medicine_duration": 2,
+        "mortality": {
+            "newborn": 0,
+            "kitten": 0,
+            "adolescent": 0,
+            "young adult": 0,
+            "adult": 0,
+            "senior adult": 0,
+            "senior": 0
+        },
+        "illness_infectiousness": [],
+        "risks": [
+            {
+                "name": "an infected wound",
+                "chance": 5
+            }
+        ],
+        "also_got": [
+            "blood loss"
+        ],
+        "also_got_chance": 2,
+        "cause_permanent": [
+            "lost their tail"
+        ],
+        "herbs": {
+            "1": [
+                "cobwebs",
+                "marigold",
+                "tansy",
+                "mullein"
+            ],
+            "2": [
+                "wild_garlic",
+                "horsetail",
+                "oak_leaves",
+                "moss"
+            ],
+            "3": [
+                "poppy",
+                "goldenrod"
+            ]
+        },
+        "requires_scar": true
     }
 }

@@ -18,7 +18,8 @@ from scripts.utility import event_text_adjust
 
 NEW_CONDITIONS = {"breathless fit": "illnesses", "tick fever": "illnesses", "sore throat": "injuries",
                   "absent": "permanent_condition", "damaged throat": "permanent_condition",
-                  "selective mutism": "permanent_condition", "strange lump": "permanent_condition"}
+                  "selective mutism": "permanent_condition", "strange lump": "permanent_condition",
+                  "amputated leg": "injuries", "amputated tail": "injuries"}
 SOURCES = {"illnesses": ILLNESSES, "injuries": INJURIES, "permanent_condition": PERMANENT}
 
 
@@ -37,6 +38,7 @@ def clinic(monkeypatch):
     cat = Cat(prefix="Moss", status="warrior", moons=40)
     other = Cat(prefix="Bee", status="warrior", moons=40)
     for actor in (cat, other):
+        actor.pelt.scars = []
         actor.history = History()
         clan.add_cat(actor)
         actor.create_inheritance_new_cat()
@@ -556,3 +558,262 @@ def test_injury_duration_uses_actual_medical_coverage_and_keeps_the_existing_var
     cat.injuries.clear()
     cat.load_conditions()
     assert cat.injuries["broken bone"] == expected
+
+
+@pytest.mark.parametrize("name,scar", [("amputated leg", "NOPAW"), ("amputated tail", "NOTAIL")])
+def test_amputation_acquisition_requires_anatomy_and_applies_one_immediate_scar(clinic, name, scar):
+    _, cat, _ = clinic
+    with patch("scripts.events_module.short.scar_events.random.choice", side_effect=lambda values: scar if scar in values else values[0]):
+        info = acquire(cat, name)
+    assert info["mortality"] == 0 and info["event_triggered"] is False
+    assert cat.pelt.scars == [scar] and len(cat.history.scar_events) == 1
+    before = deepcopy((cat.injuries, cat.history.condition_events, cat.history.scar_events))
+    cat.get_injured(name)
+    assert (cat.injuries, cat.history.condition_events, cat.history.scar_events) == before
+    cat.injuries.clear()
+    cat.get_injured(name)
+    assert not cat.injuries and len(cat.history.scar_events) == 1
+
+
+@pytest.mark.parametrize("source,target,roll", [("mangled leg", "amputated leg", .39),
+    ("mangled tail", "amputated tail", .49), ("severe burn", "amputated tail", .19),
+    ("severe burn", "amputated leg", .19)])
+@pytest.mark.parametrize("has_medic", [False, True])
+def test_actual_wound_progression_replaces_only_the_source_and_records_resolved_cause(clinic, monkeypatch, source, target, roll, has_medic):
+    clan, cat, medic = clinic
+    if has_medic:
+        medic.status = "medicine cat"
+    acquire(cat, source, lethal=False).update(duration=10, moon_start=0, event_triggered=False)
+    acquire(cat, "small cut", lethal=False).update(duration=10, moon_start=0)
+    monkeypatch.setattr(game, "cat_class", Cat)
+    rolls = iter([.9, roll] if source == "severe burn" and target == "amputated leg" else [roll])
+    with patch("scripts.events_module.short.condition_events.random.random", side_effect=lambda: next(rolls, .9)), patch(
+            "scripts.cat.cats.random", return_value=.9):
+        assert Condition_Events.handle_already_injured(cat)
+    assert source not in cat.injuries and target in cat.injuries and "small cut" in cat.injuries
+    assert cat.injuries[target]["event_triggered"] is True and target in game.switches["skip_conditions"]
+    assert cat.history.condition_events[-1]["condition"] == target
+    assert cat.history.condition_events[-1]["cause"] in game.cur_events_list[-1].text
+    assert len(cat.history.scar_events) == 1
+    assert all("r_c" not in e.text and "{PRONOUN" not in e.text and "placeholder" not in e.text for e in game.cur_events_list)
+
+
+@pytest.mark.parametrize("source,roll", [("mangled leg", .4), ("mangled tail", .5), ("severe burn", .2)])
+def test_progression_probability_boundary_leaves_the_original_wound(clinic, source, roll):
+    _, cat, _ = clinic
+    acquire(cat, source, lethal=False)
+    before = deepcopy(cat.injuries)
+    lines = []
+    with patch("scripts.events_module.short.condition_events.random.random", return_value=roll):
+        assert not Condition_Events.handle_injury_progression(cat, source, lines)
+    assert cat.injuries == before and not lines and not cat.history.scar_events
+
+
+@pytest.mark.parametrize("source,scar", [("mangled leg", "NOPAW"), ("mangled tail", "NOTAIL")])
+def test_unavailable_required_scar_cannot_remove_the_original_wound_or_report_surgery(clinic, source, scar):
+    _, cat, _ = clinic
+    acquire(cat, source, lethal=False)
+    cat.pelt.scars = [scar]
+    before = deepcopy((cat.injuries, cat.history.condition_events))
+    lines = []
+    with patch("scripts.events_module.short.condition_events.random.random", return_value=0):
+        assert not Condition_Events.handle_injury_progression(cat, source, lines)
+    assert (cat.injuries, cat.history.condition_events) == before and not lines
+
+
+@pytest.mark.parametrize("name,target,scar", [("amputated leg", "lost a leg", "NOPAW"),
+                                            ("amputated tail", "lost their tail", "HALFTAIL")])
+@pytest.mark.parametrize("has_medic", [False, True])
+def test_amputation_healing_keeps_recovery_and_permanent_messages_without_a_second_scar(clinic, name, target, scar, has_medic):
+    clan, cat, medic = clinic
+    if has_medic:
+        medic.status = "medicine cat"
+    with patch("scripts.events_module.short.scar_events.random.choice", side_effect=lambda values: scar if scar in values else values[0]):
+        info = acquire(cat, name)
+    info.update(duration=2, moon_start=0, event_triggered=False)
+    clan.age = 2
+    with patch("scripts.events_module.short.condition_events.random.random", return_value=.9):
+        assert Condition_Events.handle_already_injured(cat)
+    assert name not in cat.injuries and target in cat.permanent_condition
+    assert cat.pelt.scars == [scar] and len(cat.history.scar_events) == 1
+    assert len(game.herb_events_list) == 2
+    text = game.cur_events_list[-1].text
+    assert text == " ".join(game.herb_events_list)
+    assert "healed" in game.herb_events_list[0]
+    assert cat.history.condition_events[-1]["condition"] == target
+    assert "r_c" not in text and "{PRONOUN" not in text
+
+
+@pytest.mark.parametrize("name", ["amputated leg", "amputated tail"])
+def test_amputation_wounds_can_infect_and_infection_blocks_recovery(clinic, name):
+    clan, cat, _ = clinic
+    info = acquire(cat, name)
+    info.update(duration=2, moon_start=0, event_triggered=False)
+    lines = []
+    with patch("scripts.events_module.short.condition_events.random.random", return_value=0):
+        Condition_Events.give_risks(cat, lines, name, {}, cat.injuries.copy(), cat.injuries)
+    assert "an infected wound" in cat.illnesses and info["complication"] == "infected"
+    clan.age = 4
+    with patch("scripts.cat.cats.random", return_value=.9):
+        Condition_Events.handle_already_injured(cat)
+    assert name in cat.injuries and len(cat.history.scar_events) == 1
+
+
+def test_full_tail_loss_replaces_the_partial_tail_scar(clinic):
+    _, cat, _ = clinic
+    cat.pelt.scars = ["HALFTAIL"]
+    acquire(cat, "amputated tail")
+    assert cat.pelt.scars == ["NOTAIL"]
+
+
+def test_ordinary_healed_injury_retains_its_healing_message_before_the_new_condition(clinic):
+    clan, cat, _ = clinic
+    acquire(cat, "sore throat", lethal=False).update(duration=1, moon_start=0)
+    clan.age = 1
+    with patch("scripts.events_module.short.condition_events.random.random", return_value=0):
+        assert Condition_Events.handle_already_injured(cat)
+    assert "damaged throat" in cat.permanent_condition
+    assert len(game.herb_events_list) == 2
+    assert game.cur_events_list[-1].text == " ".join(game.herb_events_list)
+
+
+@pytest.mark.parametrize("mode,cards", [("classic", None), ("expanded", None),
+                                       ("cruel season", ["burnout", "longer_illnesses", "weak_stars"])])
+@pytest.mark.parametrize("part,permanent,scar", [("leg", "lost a leg", "NOPAW"), ("tail", "lost their tail", "HALFTAIL")])
+def test_amputation_stages_survive_real_colony_creation_and_repeated_reload(clinic, monkeypatch, tmp_path, mode, cards, part, permanent, scar):
+    from scripts.game_structure.load_cat import load_cats
+
+    clan, cat, leader = clinic
+    clan.game_mode, clan.cruel_cards = mode, cards
+    clan.leader = leader
+    clan.starting_members = [cat, leader]
+    for module in ("scripts.cat.cats", "scripts.clan", "scripts.game_structure.game_essentials", "scripts.game_structure.load_cat"):
+        monkeypatch.setattr(module + ".get_save_dir", lambda: str(tmp_path))
+    monkeypatch.setattr(game, "cat_class", Cat)
+    monkeypatch.setattr(game, "cat_to_fade", [])
+    monkeypatch.setattr(game, "save_clanlist", Mock())
+    monkeypatch.setattr("scripts.clan.clan_symbol_sprite", lambda *args, **kwargs: "symbolBEECH0")
+    monkeypatch.setitem(game.switches, "clan_list", [clan.name])
+    monkeypatch.setitem(game.switches, "clan_name", clan.name)
+    for method in ("generate_mates", "generate_families", "populate_sc", "populate_ur", "populate_df"):
+        monkeypatch.setattr(clan, method, Mock())
+    def save(path, data, **kwargs):
+        assert Path(path).resolve().is_relative_to(tmp_path.resolve())
+        return type(game).safe_save(path, data, **kwargs)
+    monkeypatch.setattr(game, "safe_save", save)
+    clan.create_clan()
+    original, wound = "mangled " + part, "amputated " + part
+    acquire(cat, original, lethal=False).update(duration=10, moon_start=0, event_triggered=False)
+    cat_id = cat.ID
+    with patch("scripts.events_module.short.condition_events.random.random", return_value=0), patch(
+            "scripts.cat.cats.random", return_value=.9), patch(
+            "scripts.events_module.short.scar_events.random.choice", side_effect=lambda values: scar if scar in values else values[0]):
+        assert Condition_Events.handle_already_injured(cat)
+    expected = deepcopy(cat.injuries)
+    game.save_cats()
+    clan.save_clan()
+    Cat.all_cats.clear()
+    Cat.all_cats_list.clear()
+    Inheritance.all_inheritances.clear()
+    load_cats()
+    Clan().load_clan()
+    cat = Cat.fetch_cat(cat_id)
+    cat.load_history()
+    assert cat.injuries == expected and cat.pelt.scars == [scar]
+    assert len(cat.history.scar_events) == 1 and permanent not in cat.permanent_condition
+    monkeypatch.setitem(game.switches, "skip_conditions", [])
+    Condition_Events.handle_already_injured(cat)
+    assert cat.injuries[wound]["event_triggered"] is False
+    game.clan.age += cat.injuries[wound]["duration"] + 1
+    assert Condition_Events.handle_already_injured(cat)
+    assert permanent in cat.permanent_condition and wound not in cat.injuries
+    assert len(cat.history.scar_events) == 1
+    game.save_cats()
+    game.clan.save_clan()
+    Cat.all_cats.clear()
+    Cat.all_cats_list.clear()
+    Inheritance.all_inheritances.clear()
+    load_cats()
+    Clan().load_clan()
+    cat = Cat.fetch_cat(cat_id)
+    cat.load_history()
+    assert cat.pelt.scars == [scar] and permanent in cat.permanent_condition
+    assert wound not in cat.injuries and len(cat.history.scar_events) == 1
+    assert [item["condition"] for item in cat.history.condition_events][-3:] == [original, wound, permanent]
+    assert game.clan.game_mode == mode and game.clan.cruel_cards == cards
+
+
+@pytest.mark.parametrize("name", ["amputated leg", "amputated tail"])
+@pytest.mark.parametrize("leader", [False, True])
+def test_amputation_blood_loss_can_be_fatal_and_uses_its_own_life_and_history_rules(clinic, name, leader):
+    clan, cat, _ = clinic
+    if leader:
+        clan.leader = cat
+        cat.status = "leader"
+        clan.leader_lives = 9
+    with patch("scripts.cat.cats.random", return_value=0):
+        cat.get_injured(name)
+    assert cat.injuries[name]["mortality"] == 0 and "blood loss" in cat.injuries
+    cat.injuries["blood loss"].update(mortality=1, event_triggered=False)
+    with patch("scripts.cat.cats.random", return_value=0), patch(
+            "scripts.events_module.short.condition_events.random.random", return_value=.9):
+        assert Condition_Events.handle_already_injured(cat)
+    assert cat.dead is not leader
+    assert not leader or clan.leader_lives == 8
+    assert cat.history.died_by and "blood" in cat.history.died_by[-1]["text"]
+    assert len(cat.history.scar_events) == 1
+
+
+@pytest.mark.parametrize("name", ["amputated leg", "amputated tail"])
+def test_amputation_treatment_uses_real_herb_strength_and_stock(clinic, name):
+    clan, cat, _ = clinic
+    info = acquire(cat, name)
+    clan.herbs = {"goldenrod": 1}
+    with patch("scripts.events_module.short.condition_events.random.choice", return_value="risks"):
+        Condition_Events.use_herbs(cat, name, cat.injuries.copy(), INJURIES)
+    assert info["mortality"] == 0 and info["risks"][0]["chance"] > 5
+    assert not clan.herbs and game.herb_events_list
+
+
+@pytest.mark.parametrize("available", [False, True])
+def test_amputation_scar_retains_the_original_injury_history_and_involved_cat(clinic, available):
+    _, cat, other = clinic
+    acquire(cat, "mangled leg", lethal=False)
+    History.add_possible_history(cat, "mangled leg", scar_text="m_c was injured protecting r_c.", other_cat=other)
+    expected = deepcopy(cat.history.possible_history)
+    if not available:
+        cat.pelt.scars = ["NOPAW"]
+    lines = []
+    with patch("scripts.events_module.short.condition_events.random.random", return_value=0), patch(
+            "scripts.cat.cats.random", return_value=.9):
+        result = Condition_Events.handle_injury_progression(cat, "mangled leg", lines)
+    if available:
+        assert result and cat.history.scar_events[-1]["text"] == "m_c was injured protecting r_c."
+        assert cat.history.scar_events[-1]["involved"] == other.ID
+        assert "mangled leg" not in cat.history.possible_history
+    else:
+        assert not result and cat.history.possible_history == expected and not cat.history.scar_events
+
+
+@pytest.mark.parametrize("part", ["leg", "tail"])
+@pytest.mark.parametrize("illness,complication", [("an infected wound", "infected"), ("a festering wound", "festering")])
+def test_wound_progression_preserves_existing_infection_until_it_is_cured(clinic, part, illness, complication):
+    clan, cat, _ = clinic
+    original, target = "mangled " + part, "amputated " + part
+    acquire(cat, original, lethal=False)["complication"] = complication
+    acquire(cat, illness, lethal=False).update(duration=2, moon_start=0, event_triggered=False)
+    with patch("scripts.events_module.short.condition_events.random.random", return_value=0), patch(
+            "scripts.cat.cats.random", return_value=.9):
+        assert Condition_Events.handle_injury_progression(cat, original, [])
+    assert cat.injuries[target]["complication"] == complication
+    cat.injuries[target].update(duration=1, event_triggered=False)
+    clan.age = 1
+    with patch("scripts.events_module.short.condition_events.random.random", return_value=.9):
+        Condition_Events.handle_already_injured(cat)
+    assert target in cat.injuries
+    clan.age = 2
+    assert Condition_Events.handle_already_ill(cat)
+    assert cat.injuries[target]["complication"] is None and illness not in cat.illnesses
+    game.switches["skip_conditions"].clear()
+    assert Condition_Events.handle_already_injured(cat)
+    assert target not in cat.injuries

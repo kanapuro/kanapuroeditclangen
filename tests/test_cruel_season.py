@@ -1531,3 +1531,58 @@ def test_rivalry_negative_respect_interaction_has_real_effects_and_a_log(colony,
     assert relation.admiration < 80
     assert relation.trust < 80 and relation.dislike > 0
     assert relation.log and game.cur_events_list
+
+
+@pytest.mark.parametrize("biome,number,label", [("Plains", 10, "Bridge"), ("Beach", 6, "Quay")])
+def test_new_camps_have_selectable_tabs_seasonal_previews_and_keyboard_access(card_screen, biome, number, label):
+    import pygame
+    import pygame_gui
+    from scripts.utility import ui_scale
+
+    screen = card_screen
+    screen.biome_selected = biome
+    screen.open_choose_background()
+    screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.tabs[f"tab{number}"]))
+    assert screen.selected_camp_tab == number
+    assert screen.tabs[f"tab{number}"].text_layer.html_text == label
+    assert not screen.tabs[f"tab{number}"].is_enabled
+    assert ui_scale(pygame.Rect(0, 0, 800, 700)).contains(screen.tabs[f"tab{number}"].rect)
+    assert not screen.tabs[f"tab{number}"].rect.colliderect(screen.elements["random_background"].rect)
+    for season in ("Newleaf", "Greenleaf", "Leaf-fall", "Leaf-bare"):
+        screen.selected_season = season
+        for dark in (False, True):
+            with patch.dict(game.settings, {"dark mode": dark}):
+                screen.refresh_selected_camp()
+                assert pygame.image.load(screen.get_camp_art_path(number)).get_width() > 0
+    screen.handle_choose_background_key(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_UP))
+    assert screen.selected_camp_tab == number - 1
+    screen.handle_choose_background_key(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_DOWN))
+    assert screen.selected_camp_tab == number
+    # Switching biomes must remove the old camp tab and leave the other picker usable.
+    screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.elements["forest_biome"]))
+    assert screen.selected_camp_tab == 1
+    assert screen.tabs[f"tab{number}"].alive() == (number <= 8)
+
+
+@pytest.mark.parametrize("biome,number", [("Plains", 10), ("Beach", 6)])
+def test_random_and_quick_start_can_select_new_camps(card_screen, biome, number):
+    import pygame
+    import pygame_gui
+    from scripts.screens.MakeClanScreen import sprites
+
+    screen = card_screen
+    def choose(values):
+        return biome if biome in values else values[0]
+    screen.biome_selected = "Forest"
+    screen.open_choose_background()
+    with patch("scripts.screens.MakeClanScreen.choice", side_effect=choose), patch(
+        "scripts.screens.MakeClanScreen.random.randint", side_effect=lambda low, high: high
+    ):
+        screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.elements["random_background"]))
+    assert (screen.biome_selected, screen.selected_camp_tab) == (biome, number)
+    screen.game_mode = game.clan.game_mode = "expanded"
+    with patch("scripts.screens.MakeClanScreen.choice", side_effect=choose), patch(
+        "scripts.screens.MakeClanScreen.random.randint", side_effect=lambda low, high: high
+    ), patch.object(sprites, "clan_symbols", ["symbolBEECH0"]), patch.object(screen, "save_clan"), patch.object(screen, "open_clan_saved_screen"):
+        screen.random_quick_start()
+    assert (screen.biome_selected, screen.selected_camp_tab) == (biome, number)

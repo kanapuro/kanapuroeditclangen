@@ -1,3 +1,13 @@
+<strong>v2.0.0-alpha.2 (KanapuroEdit): </strong>
+- Added the Bridge camp in Plains and Quay camp at the Beach, with all four seasons, light/dark variants and their upstream cat placements and den labels.
+- Both camps are available in colony creation, random backgrounds, Quick Start and camp/relocation commands. Bridge's tenth camp slot now saves correctly; existing camps and saved colonies keep their selections.
+
+<strong>v2.0.0-alpha.1 (KanapuroEdit): </strong>
+- Added amputation recovery wounds for legs and tails. Mangled limbs and severe burns can progress to an amputation, immediately apply the matching existing scar and gain the permanent condition after recovery.
+- Amputation wounds can become infected and cause blood loss. Existing infections carry through surgery and continue to block healing until treated; the wounds themselves do not cause random deaths. Medicine, recovery focus, leader lives, injury causes and scar histories retain their normal rules.
+- Healing now reports both recovery and any resulting permanent condition in order. Required amputation scars are not awarded a second time on healing, and surgery cannot discard the original wound if its required scar cannot be applied.
+- Began semantic versioning for the modernization release: alpha builds lead toward beta, release candidates and 2.0.0 when this modernization run is complete. Earlier changelog version labels remain historical. Development builds identify commits using build metadata; save format remains unchanged.
+
 <strong>v0.1.0.36-KanapuroEdit: </strong>
 - Added work-eligibility checks to existing patrol, hunting and Gathering relationship scenes. Mixed entries now distinguish participants who must work from cats receiving visits, prey or news; ordinary camp interactions and recovering cats' social lives remain available.
 - Fixed Rest and Recover failing to shorten illness and injury recovery. Infected injuries still wait for their complication to clear.
