@@ -482,6 +482,7 @@ class ChangeCatName(UIWindow):
         )
 
         self.specsuffix_hidden = self.the_cat.name.specsuffix_hidden
+        self.custom_suffix = self.the_cat.name.suffix
         self.pending_name_type = None  # Track dice-chosen type without modifying cat until Done
 
         self.heading = pygame_gui.elements.UITextBox(
@@ -582,7 +583,7 @@ class ChangeCatName(UIWindow):
                 self.toggle_spec_block_off.enable()
                 self.random_suffix.enable()
                 self.suffix_entry_box.enable()
-                self.suffix_entry_box.set_text(self.the_cat.name.suffix)
+                self.suffix_entry_box.set_text(self.custom_suffix)
 
         else:
             self.toggle_spec_block_on.disable()
@@ -671,6 +672,8 @@ class ChangeCatName(UIWindow):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             if event.ui_element == self.done_button:
                 old_name = str(self.the_cat.name)
+                if self.the_cat.status in self.the_cat.name.names_dict["special_suffixes"] and not self.specsuffix_hidden:
+                    self.the_cat.name.suffix = sub(r"[^A-Za-z0-9 '\-]+", "", self.custom_suffix)
 
                 self.the_cat.specsuffix_hidden = self.specsuffix_hidden
                 self.the_cat.name.specsuffix_hidden = self.specsuffix_hidden
@@ -711,13 +714,14 @@ class ChangeCatName(UIWindow):
                 # If the user provided a non-empty custom suffix while the cat currently
                 # has a `single` or `syllable` name type, treat that as an intent to use
                 # a warrior-style name so the suffix is applied and displayed.
-                if raw_suffix.strip() != "" and self.the_cat.name.name_type in ("single", "syllable"):
+                if self.the_cat.name.suffix.strip() != "" and self.the_cat.name.name_type in ("single", "syllable"):
                     self.the_cat.name.name_type = "warrior"
 
                 # If the user typed a space in the suffix field, prefer the ancient format.
                 if " " in self.suffix_entry_box.get_text():
                     self.the_cat.name.name_type = "ancient"
 
+                self.custom_suffix = self.the_cat.name.suffix
                 if old_name != str(self.the_cat.name):
                     self.name_changed.show()
                     self.heading.set_text(f"-Change {self.the_cat.name}'s Name-")
@@ -782,21 +786,18 @@ class ChangeCatName(UIWindow):
                 self.toggle_spec_block_on.hide()
                 self.toggle_spec_block_off.enable()
                 self.toggle_spec_block_off.show()
-                # IMPORTANT: Load the saved suffix - DO NOT REMOVE this line or the custom suffix will be lost
-                self.suffix_entry_box.set_text(self.the_cat.name.suffix)
+                # Restore the draft suffix when custom names become visible again.
+                self.suffix_entry_box.set_text(self.custom_suffix)
             elif event.ui_element == self.toggle_spec_block_off:
                 # Disable custom suffix - re-enable special suffix (kit, apprentice, etc.)
-                # IMPORTANT: This code is carefully ordered to preserve user's custom suffix
-                # 1. Save the custom suffix to cat data before clearing the UI
-                # 2. Clear the text box to show the placeholder with the special suffix
-                # 3. Disable editing - DO NOT reorder these steps or you will delete the suffix!
+                # Keep the custom suffix in the draft while its rank suffix is displayed.
                 self.specsuffix_hidden = False
                 self.random_suffix.disable()
                 self.toggle_spec_block_off.disable()
                 self.toggle_spec_block_off.hide()
                 self.toggle_spec_block_on.enable()
                 self.toggle_spec_block_on.show()
-                self.the_cat.name.suffix = self.suffix_entry_box.get_text()
+                self.custom_suffix = self.suffix_entry_box.get_text()
                 self.suffix_entry_box.set_text("")
                 self.suffix_entry_box.disable()
             elif event.ui_element == self.back_button:
@@ -2620,8 +2621,11 @@ class MateScreen(UIWindow):
         self.clan_name = str(game.clan.name)
         self.last_screen = last_screen
         self.mates = game.switches['new_mate']
+        proposal = f"{self.mates.name} confesses their feelings to you."
+        if self.mates.ID in game.clan.your_cat.previous_mates and game.clan.your_cat.ID in self.mates.previous_mates:
+            proposal = f"{self.mates.name} asks if you could become mates again."
         self.pick_path_message = UITextBoxTweaked(
-            f"{self.mates.name} confesses their feelings to you.",
+            proposal,
             ui_scale(pygame.Rect((20, 20), (260, -1))),
             line_spacing=1,
             object_id="#text_box_30_horizcenter",
@@ -2642,7 +2646,9 @@ class MateScreen(UIWindow):
             container=self,
         )
 
-        self.begin_anew_button.enable()
+        if not game.get_config_value("mates", "allow_mating"):
+            self.begin_anew_button.disable()
+            self.begin_anew_button.set_tooltip("Cruel Season prevents new mate bonds.")
         self.mediator_button.enable()
 
 
@@ -2652,6 +2658,8 @@ class MateScreen(UIWindow):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             try:
                 if event.ui_element == self.begin_anew_button:
+                    if not game.get_config_value("mates", "allow_mating"):
+                        return
                     game.last_screen_forupdate = None
                     game.switches['window_open'] = False
                     # game.switch_screens = True                    
@@ -2891,7 +2899,7 @@ class ChangeCatToggles(UIWindow):
         leader_override = getattr(self.the_cat, "leader_life_override", None)
         use_one_life = leader_override if leader_override is not None else bool(game.clan.clan_settings.get("leader_life_default", False))
         box_type = "@checked_checkbox" if use_one_life else "@unchecked_checkbox"
-        tool_tip = "Make this cat use one life when they become leader."
+        tool_tip = "Make this cat use one life as leader. Turning this off restores only unspent lives within their Cruel Season grant."
 
         self.checkboxes["leader_life_override"] = UIImageButton(
             ui_scale(pygame.Rect(22, 150, 34, 34)),

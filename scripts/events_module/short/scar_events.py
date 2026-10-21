@@ -160,7 +160,7 @@ class Scar_Events():
         if medical_cats_condition_fulfilled(game.cat_class.all_cats.values(), amount_per_med):
             chance += 2
 
-        if len(cat.pelt.scars) < 4 and not int(random.random() * chance):
+        if not int(random.random() * chance):
 
             # Check if injury already has a predetermined scar
             specialty = None
@@ -203,7 +203,7 @@ class Scar_Events():
             if specialty == "NOPAW":
                 for acc in ["VINE", "ASHY PAWS", "MUD PAWS", "MUD", "STARFLOWERS", "LAVENDERANKLET", "HOLLY2", "HOLLYVINES", "BLOODY PAWS"]:
                     if acc in cat.pelt.accessories:
-                        cat.pelt.inventory.remove(acc)
+                        cat.pelt.accessories.remove(acc)
                     if acc in cat.pelt.inventory:
                         cat.pelt.inventory.remove(acc)
 
@@ -216,10 +216,10 @@ class Scar_Events():
                 specialty = 'NOEAR'
 
             if 'RIGHTBLIND' in cat.pelt.scars and specialty == 'LEFTBLIND':
-                cat.pelt.scars.remove("LEFTBLIND")
+                cat.pelt.scars.remove("RIGHTBLIND")
                 specialty = 'BOTHBLIND'
             elif 'LEFTBLIND' in cat.pelt.scars and specialty == 'RIGHTBLIND':
-                cat.pelt.scars.remove("RIGHTBLIND")
+                cat.pelt.scars.remove("LEFTBLIND")
                 specialty = 'BOTHBLIND'
 
             cat.pelt.scars.append(specialty)

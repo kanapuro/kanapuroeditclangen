@@ -12,6 +12,8 @@ from scripts.clan_resources.freshkill import (
 )
 from scripts.event_class import Single_Event
 from scripts.events_module.generate_events import GenerateEvents
+from scripts.events_module.event_frequency import select_frequency
+from scripts.events_module.future_event import prep_future_event
 from scripts.events_module.relationship.relation_events import Relation_Events
 from scripts.game_structure.game_essentials import game
 from scripts.utility import (
@@ -28,6 +30,9 @@ from scripts.utility import (
     get_living_clan_cat_count,
     adjust_list_text,
 )
+
+
+MURDER_REVEAL_TYPES = {"murder_reveal", "hidden_murder_reveal"}
 
 
 # ---------------------------------------------------------------------------- #
@@ -70,6 +75,7 @@ class HandleShortEvents:
         random_cat: Cat,
         freshkill_pile: FreshkillPile,
         sub_type: list = None,
+        future_event=None,
     ):
         """
         This function handles the generation and execution of the event
@@ -96,27 +102,46 @@ class HandleShortEvents:
             enemy_clan = get_warring_clan()
             self.other_clan = enemy_clan
             self.other_clan_name = f"{self.other_clan.name}"
-            self.sub_types.append("war")
+            if not future_event:
+                self.sub_types.append("war")
         elif game.clan.all_clans:
             self.other_clan = random.choice(game.clan.all_clans)
             self.other_clan_name = f"{self.other_clan.name}"
 
         # checking if a murder reveal should happen
-        if event_type == "misc":
+        if future_event:
+            self.victim_cat = Cat.all_cats.get(future_event.involved_cats.get("mur_c"))
+        if event_type == "misc" and not future_event:
             self.victim_cat = None
             cat_history = History.get_murders(self.main_cat)
             if cat_history:
                 if "is_murderer" in cat_history:
                     murder_history = cat_history["is_murderer"]
-                    for murder in murder_history:
-                        self.murder_index = murder_history.index(murder)
-                        if murder_history[self.murder_index]["revealed"] is True:
+                    for index, murder in enumerate(murder_history):
+                        if murder.get("clan_discovery", murder["revealed"]):
                             continue
-                        self.victim_cat = Cat.fetch_cat(
-                            murder_history[self.murder_index]["victim"]
-                        )
-                        self.sub_types.append("murder_reveal")
+                        victim = Cat.fetch_cat(murder["victim"])
+                        if victim is None:
+                            continue
+                        self.murder_index = index
+                        self.victim_cat = victim
+                        self.sub_types.append("hidden_murder_reveal" if murder.get("hidden") else "murder_reveal")
                         break
+        if future_event and self.victim_cat:
+            murders = (History.get_murders(self.main_cat) or {}).get("is_murderer", [])
+            if future_event.murder_index is not None:
+                index = future_event.murder_index
+                if 0 <= index < len(murders):
+                    murder = murders[index]
+                    if murder["victim"] == self.victim_cat.ID and not murder.get("clan_discovery", murder["revealed"]):
+                        self.murder_index = index
+            else:
+                self.murder_index = next((index for index, murder in enumerate(murders)
+                                          if murder["victim"] == self.victim_cat.ID
+                                          and not murder.get("clan_discovery", murder["revealed"])), None)
+
+        if future_event and MURDER_REVEAL_TYPES.intersection(future_event.pool.get("sub_type", [])) and self.murder_index is None:
+            return True
 
         # NOW find the possible events and filter
         if event_type == "birth_death":
@@ -124,6 +149,12 @@ class HandleShortEvents:
         elif event_type == "health":
             event_type = "injury"
         possible_short_events = GenerateEvents.possible_short_events(event_type)
+
+        if future_event:
+            allowed = future_event.pool.get("event_id")
+            excluded = future_event.pool.get("excluded_event_id", [])
+            possible_short_events = [event for event in possible_short_events
+                                     if (not allowed or event.event_id in allowed) and event.event_id not in excluded]
 
         final_events = GenerateEvents.filter_possible_short_events(
             Cat_class=Cat,
@@ -134,7 +165,19 @@ class HandleShortEvents:
             freshkill_active=FRESHKILL_EVENT_ACTIVE,
             freshkill_trigger_factor=FRESHKILL_EVENT_TRIGGER_FACTOR,
             sub_types=self.sub_types,
+            ignore_subtyping=bool(future_event and "sub_type" not in future_event.pool),
         )
+
+        # A witness cannot discover the same secret twice; a public reveal can still follow.
+        reveal_events = [event for event in final_events if MURDER_REVEAL_TYPES.intersection(event.sub_type)]
+        if reveal_events:
+            murder = (History.get_murders(self.main_cat) or {}).get("is_murderer", [])
+            murder = murder[self.murder_index] if self.murder_index is not None else None
+            final_events = [event for event in final_events if not MURDER_REVEAL_TYPES.intersection(event.sub_type)
+                            or (murder is not None and ("clan_wide" in event.tags
+                                or (self.random_cat and self.random_cat.ID not in murder.get("aware_individuals", []))))]
+            if future_event and not final_events:
+                return True
 
         if isinstance(game.config["event_generation"]["debug_ensure_event_id"], str):
             found = False
@@ -159,7 +202,7 @@ class HandleShortEvents:
         #                               do the event                                   #
         # ---------------------------------------------------------------------------- #
         try:
-            self.chosen_event = random.choice(final_events)
+            self.chosen_event = random.choice(select_frequency(final_events))
             # this print is good for testing, but gets spammy in large clans
             # print(f"CHOSEN: {self.chosen_event.event_id}")
         except IndexError:
@@ -239,7 +282,7 @@ class HandleShortEvents:
         # handle murder reveals
         clanwide = False
         shunned = False
-        if "murder_reveal" in self.chosen_event.sub_type:
+        if MURDER_REVEAL_TYPES.intersection(self.chosen_event.sub_type):
             if "clan_wide" in self.chosen_event.tags:
                 other_cat = None
                 shunned = True
@@ -308,7 +351,7 @@ class HandleShortEvents:
         # LG
         # this has to be done after event text adjust so the leaders name doesn't get changed until after
         secondary_event = ""
-        if "murder_reveal" in self.chosen_event.sub_type:
+        if MURDER_REVEAL_TYPES.intersection(self.chosen_event.sub_type):
             if self.main_cat.status not in ["apprentice", "kitten", "elder", "warrior"] and shunned:
                 secondary_event = self.main_cat.shunned_demotion()
         # ---
@@ -362,11 +405,21 @@ class HandleShortEvents:
         if self.chosen_herb:
             game.herb_events_list.append(f"{self.chosen_event} {self.herb_notice}.")
 
+        excluded = set()
+        if "m_c" in self.chosen_event.exclude_involved:
+            excluded.add(self.main_cat.ID)
+        if self.random_cat and "r_c" in self.chosen_event.exclude_involved:
+            excluded.add(self.random_cat.ID)
+        for index, cats in enumerate(self.new_cats):
+            if f"n_c:{index}" in self.chosen_event.exclude_involved:
+                excluded.update(cat.ID for cat in cats)
+        displayed_cats = [cat_id for cat_id in self.involved_cats if cat_id not in excluded]
+
         game.cur_events_list.append(
             Single_Event(
                 self.text + " " + self.additional_event_text,
                 self.types,
-                self.involved_cats,
+                displayed_cats,
             )
         )
 
@@ -381,6 +434,11 @@ class HandleShortEvents:
                 )
             )
         # ---
+
+        possible_cats = {"m_c": self.main_cat, "r_c": self.random_cat, "mur_c": self.victim_cat}
+        possible_cats.update({f"n_c:{index}": cats[0] for index, cats in enumerate(self.new_cats) if cats})
+        prep_future_event(self.chosen_event, self.chosen_event.event_id, possible_cats)
+        return True
 
     def handle_new_cats(self):
         """
@@ -740,8 +798,14 @@ class HandleShortEvents:
                     # handle murder
                     if "murder" in self.chosen_event.sub_type:
                         revealed = False
+                        hidden = any("hidden_murder_reveal" in info["pool"].get("sub_type", [])
+                                     for info in self.chosen_event.future_event)
+                        unrevealed_text = self.chosen_event.text if hidden else None
+                        if hidden and self.main_cat.status == "leader" and unrevealed_text.startswith("m_c "):
+                            unrevealed_text = unrevealed_text[4:]
                         History.add_murders(
-                            self.main_cat, self.random_cat, revealed, death_history
+                            self.main_cat, self.random_cat, revealed, death_history,
+                            unrevealed_text=unrevealed_text, hidden=hidden
                         )
 
                     if self.main_cat.status == "leader":
@@ -961,9 +1025,9 @@ class HandleShortEvents:
         elif adjustment == "reduce_quarter":
             reduce_amount = int(freshkill_pile.total_amount / 4)
         elif adjustment == "reduce_eighth":
-            reduce_amount = -int(freshkill_pile.total_amount / 8)
+            reduce_amount = int(freshkill_pile.total_amount / 8)
         elif "increase" in adjustment:
-            increase_amount = adjustment.split("_")[1]
+            increase_amount = int(adjustment.split("_")[1])
 
         if reduce_amount != 0:
             freshkill_pile.remove_freshkill(reduce_amount, take_random=True)
@@ -1006,7 +1070,7 @@ class HandleShortEvents:
                 elif adjustment == "reduce_eighth":
                     herbs[herb] = int(game.clan.herbs[herb] / 8)
                 elif "increase" in adjustment:
-                    herbs[herb] += adjustment.split("_")[1]
+                    herbs[herb] += int(adjustment.split("_")[1])
 
         # if we weren't adjusted the whole herb store, then adjust an individual
         else:
@@ -1046,9 +1110,9 @@ class HandleShortEvents:
             elif adjustment == "reduce_eighth":
                 herbs[self.chosen_herb] = int(game.clan.herbs[self.chosen_herb] / 8)
             elif "increase" in adjustment:
-                herbs[self.chosen_herb] += int(adjustment.split("_")[1])
+                herbs[self.chosen_herb] = herbs.get(self.chosen_herb, 0) + int(adjustment.split("_")[1])
 
-        if not self.chosen_herb:
+        if not self.chosen_herb and herbs:
             self.chosen_herb = random.choice(list(herbs.keys()))
         if self.chosen_herb:
             herb_list.append(self.chosen_herb)

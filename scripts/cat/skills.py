@@ -2,6 +2,17 @@ import random
 from enum import Enum, Flag, auto
 from typing import Union
 
+
+def scale_progress(current, ceiling, amount):
+    from scripts.game_structure.game_essentials import game
+
+    modifier = game.get_config_value("progress", "difficulty_modifier")
+    if not modifier or amount <= 0 or ceiling <= 0:
+        return amount
+    headroom = min(max(1 - current / ceiling, 1e-9), 1.0)
+    return amount * headroom ** modifier
+
+
 class SkillPath(Enum):
     TEACHER = ("quick to help", "good teacher", "great teacher", "excellent teacher")
     HUNTER = ("moss ball hunter", "good hunter", "great hunter", "renowned hunter")
@@ -612,6 +623,17 @@ class Skill:
         else:
             self._p = val
 
+    def add_points(self, amount):
+        scaled = scale_progress(self.points, self.point_range[1], amount)
+        gain = amount
+        if scaled != amount:
+            gain = int(scaled)
+            if random.random() < scaled - gain:
+                gain += 1
+        before = self.points
+        self.points += gain
+        return self.points - before
+
     @property
     def skill(self):
         """Skill property"""
@@ -914,16 +936,16 @@ class CatSkills:
 
         if can_primary and can_secondary:
             if random.randint(1, 2) == 1:
-                self.primary.points += amount_effect
+                amount_effect = self.primary.add_points(amount_effect)
                 path = self.primary.path
             else:
-                self.secondary.points += amount_effect
+                amount_effect = self.secondary.add_points(amount_effect)
                 path = self.secondary.path
         elif can_primary:
-            self.primary.points += amount_effect
+            amount_effect = self.primary.add_points(amount_effect)
             path = self.primary.path
         else:
-            self.secondary.points += amount_effect
+            amount_effect = self.secondary.add_points(amount_effect)
             path = self.secondary.path
 
         return mentor.ID, path, amount_effect
@@ -980,11 +1002,11 @@ class CatSkills:
                     amount_effect = random.randint(1, 4)
                     if self.primary and self.secondary:
                         if random.randint(1, 2) == 1:
-                            self.primary.points += amount_effect
+                            self.primary.add_points(amount_effect)
                         else:
-                            self.secondary.points += amount_effect
+                            self.secondary.add_points(amount_effect)
                     elif self.primary:
-                        self.primary.points += amount_effect
+                        self.primary.add_points(amount_effect)
 
             elif "apprentice" in status:
                 # Check to see if the cat gains a secondary
@@ -999,11 +1021,11 @@ class CatSkills:
                     amount_effect = random.randint(2, 5)
                     if self.primary and self.secondary:
                         if random.randint(1, 2) == 1:
-                            self.primary.points += amount_effect
+                            self.primary.add_points(amount_effect)
                         else:
-                            self.secondary.points += amount_effect
+                            self.secondary.add_points(amount_effect)
                     elif self.primary:
-                        self.primary.points += amount_effect
+                        self.primary.add_points(amount_effect)
 
             elif the_cat.moons > 120:
                 # for old cats, we want to check if the skills start to degrade at all, age is the great equalizer
@@ -1047,7 +1069,7 @@ class CatSkills:
                 # That chance decreases as the cat gets older.
                 # This is to simulate them reaching their "peak"
                 if not int(random.random() * int(the_cat.moons / 4)):
-                    self.primary.points += 1
+                    self.primary.add_points(1)
         else:
             # For outside cats, just check interest and flip it if needed.
             # Going on age, rather than status here.

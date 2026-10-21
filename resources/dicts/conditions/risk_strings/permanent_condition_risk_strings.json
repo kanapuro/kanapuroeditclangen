@@ -78,6 +78,10 @@
         "whitecough": [
             "r_c worst fears are realized as whitecough has infected m_c thanks to {PRONOUN/m_c/poss} weakened lungs.",
             "m_c's weak lungs have left {PRONOUN/m_c/object} coughing and wheezing this moon, unable to resist potential sickness."
+        ],
+        "breathless fit": [
+            "m_c is used to being breathless, but today {PRONOUN/m_c/subject} can hardly walk a few fox-lengths before growing faint. Something in the air must have irritated {PRONOUN/m_c/poss} lungs.",
+            "m_c wheezes to r_c that it feels like a cat is sitting on {PRONOUN/m_c/poss} chest. r_c waves fragrant herbs beneath m_c's nose, praying this breathlessness will not progress to suffocation."
         ]
     },
     "wasting disease": {
@@ -134,6 +138,10 @@
         "constant nightmares": [
             "r_c sits with m_c, listening to {PRONOUN/m_c/poss} troubles and providing a comforting, sympathetic ear. m_c has had a rough moon, haunted by constant nightmares.",
             "Haunted by the memories of {PRONOUN/m_c/poss} past, m_c gets so little sleep this moon that {PRONOUN/m_c/subject} {VERB/m_c/find/finds} {PRONOUN/m_c/self} unable to function."
+        ],
+        "selective mutism": [
+            "m_c keeps complaining about {PRONOUN/m_c/poss} words getting 'stuck' in {PRONOUN/m_c/poss} throat. r_c purrs that there are other ways for cats to communicate, even when {PRONOUN/m_c/poss} words fail {PRONOUN/m_c/object}.",
+            "When m_c is anxious, {PRONOUN/m_c/poss} voice freezes up, no matter how strongly {PRONOUN/m_c/subject} {VERB/m_c/want/wants} to speak up."
         ]
     },
     "lasting grief": {
@@ -142,6 +150,10 @@
             "m_c stalks angrily from camp, the grief that's welling up in {PRONOUN/m_c/poss} throat feeling like it will choke {PRONOUN/m_c/object}. m_c can't help but find it unfair that this sadness won't go away.",
             "m_c breathes deeply, trying not to let the sudden wave of grief overtake {PRONOUN/m_c/object}, but it's hard and never really goes away.",
             "m_c wakes abruptly and nearly wails at the wave of grief that hits {PRONOUN/m_c/object}. Today isn't starting well."
+        ],
+        "absent": [
+            "m_c just hasn't been the same since the vigil.",
+            "m_c still seems to be living in a daze."
         ]
     },
     "wobbly cat syndrome": {
@@ -169,6 +181,41 @@
         "severe headache": [
             "r_c sees m_c headed towards the medicine cat den, wincing with every step. {PRONOUN/r_c/subject/CAP} {VERB/r_c/duck/ducks} inside to prepare a nest for {PRONOUN/m_c/object} in the darkest, quietest corner possible.",
             "m_c wakes up with pounding head pain and horrible light sensitivity. {PRONOUN/m_c/subject/CAP} {VERB/m_c/curl/curls} up as tightly as {PRONOUN/m_c/subject} can in {PRONOUN/m_c/poss} nest, screwing {PRONOUN/m_c/poss} eyes shut and flattening {PRONOUN/m_c/poss} ears. There's no way {PRONOUN/m_c/subject} can work today."
+        ]
+    },
+    "damaged throat": {
+        "sore throat": [
+            "m_c overexerted {PRONOUN/m_c/poss} voice and now can hardly speak at all, with how horribly sore {PRONOUN/m_c/poss} throat is.",
+            "m_c mimes the motions for numbing herbs to r_c, who understands and supplies them swiftly. Something must have irritated m_c's damaged throat."
+        ]
+    },
+    "absent": {
+        "joint pain": [
+            "m_c's joints hurt lately. {PRONOUN/m_c/subject/CAP} must have been walking around more than {PRONOUN/m_c/subject} thought.",
+            "m_c isn't moving as much today, mumbling about being sore."
+        ],
+        "torn pelt": [
+            "m_c has no idea where these scratches came from, but they're certainly there.",
+            "m_c accidentally tore {PRONOUN/m_c/poss} pelt when {PRONOUN/m_c/subject} {VERB/m_c/were/was} wandering the territory."
+        ],
+        "selective mutism": [
+            "m_c keeps complaining about {PRONOUN/m_c/poss} words getting 'stuck' in {PRONOUN/m_c/poss} throat. r_c purrs that there are other ways for cats to communicate, even when {PRONOUN/m_c/poss} words fail {PRONOUN/m_c/object}.",
+            "When m_c is anxious, {PRONOUN/m_c/poss} voice freezes up, no matter how strongly {PRONOUN/m_c/subject} {VERB/m_c/want/wants} to speak up."
+        ]
+    },
+    "strange lump": {
+        "seizure": [
+            "m_c had a seizure recently. r_c says the lump looks different.",
+            "Nobody expected m_c to have a seizure out of the blue like that. r_c worries it's due to {PRONOUN/m_c/poss} lump.",
+            "m_c had a seizure recently."
+        ],
+        "redcough": [
+            "m_c has finally started coughing up blood. The Clan has seen this before \u2014 that lump was poison.",
+            "r_c braces for the inevitable when m_c finally contracts redcough. It's just a matter of moons now."
+        ],
+        "paralyzed": [
+            "m_c woke up and realized {PRONOUN/m_c/subject} can't move {PRONOUN/m_c/poss} legs anymore...",
+            "m_c reports a strange buzzing and severe weakness of {PRONOUN/m_c/poss} legs."
         ]
     }
 }

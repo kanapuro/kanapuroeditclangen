@@ -740,7 +740,7 @@ class TestLeaderLifeSettings(unittest.TestCase):
 
         for revived, recorded_mode, current_mode in ((True, None, False), (False, 1, False), (False, None, True)):
             with self.subTest(revived=revived, recorded_mode=recorded_mode):
-                cat = Cat(status="leader", moons=40)
+                cat = Cat(prefix="Moss", status="leader", moons=40)
                 cat.leader_life_override = current_mode
                 deaths = [{"text": "died in battle", "moon": moon, "involved": None} for moon in range(12)]
                 if recorded_mode is not None:
@@ -1065,8 +1065,9 @@ class TestShunnedMentors(unittest.TestCase):
         victim = Cat(status="warrior", moons=50)
         victim.dead = True
         game.clan.your_cat = replacement
-        mentor.history = History(murder={"is_murderer": [{}]})
-        victim.history = History(murder={"is_victim": [{}]})
+        mentor.history = History()
+        victim.history = History()
+        History.add_murders(victim, mentor, False)
         for apprentice in apprentices:
             apprentice.update_mentor(mentor.ID)
         with patch("scripts.cat.history.random.randint", return_value=2):
@@ -1083,8 +1084,9 @@ class TestShunnedMentors(unittest.TestCase):
         victim = Cat(status="warrior", moons=50)
         victim.dead = True
         game.clan.your_cat = mentor
-        apprentice.history = History(murder={"is_murderer": [{}]})
-        victim.history = History(murder={"is_victim": [{}]})
+        apprentice.history = History()
+        victim.history = History()
+        History.add_murders(victim, apprentice, False)
         apprentice.update_mentor(mentor.ID)
         with patch("scripts.cat.history.random.randint", return_value=2):
             History.reveal_murder(apprentice, None, Cat, victim.ID, 0, True)

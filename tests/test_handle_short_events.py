@@ -233,3 +233,94 @@ class TestReset(unittest.TestCase):
         self.assertEqual(test.other_clan_name, default.other_clan_name)
         self.assertEqual(test.chosen_event, default.chosen_event)
         self.assertEqual(test.additional_event_text, default.additional_event_text)
+
+
+class TestExcludedParticipants(unittest.TestCase):
+    def setUp(self):
+        from unittest.mock import Mock
+        from scripts.cat.history import History
+        from scripts.cat_relations.inheritance import Inheritance
+        from scripts.cat_relations.relationship import Relationship
+
+        for target, field, value in ((Cat, "all_cats", {}), (Cat, "all_cats_list", []),
+                                     (Cat, "outside_cats", {}), (Inheritance, "all_inheritances", {}),
+                                     (game, "cur_events_list", [])):
+            replacement = patch.object(target, field, value)
+            replacement.start()
+            self.addCleanup(replacement.stop)
+        clan = Clan(name="ExcludedTest", game_mode="expanded")
+        clan.clan_cats = []
+        clan.all_clans = []
+        replacement = patch.object(game, "clan", clan)
+        replacement.start()
+        self.addCleanup(replacement.stop)
+        replacement = patch.object(game, "safe_save", Mock(side_effect=AssertionError("No real save writes")))
+        replacement.start()
+        self.addCleanup(replacement.stop)
+        self.cats = [Cat(status="warrior", moons=30) for _ in range(5)]
+        for cat in self.cats:
+            cat.history = History()
+            cat.create_inheritance_new_cat()
+            clan.add_cat(cat)
+        clan.your_cat = self.cats[0]
+        self.cats[0].relationships[self.cats[1].ID] = Relationship(self.cats[0], self.cats[1])
+
+    def execute(self, excluded=None, new_cat=None):
+        from scripts.events_module.generate_events import GenerateEvents
+        from scripts.events_module.short.short_event import ShortEvent
+
+        event = ShortEvent(event_id="excluded_test", text="m_c watches r_c.", r_c={"age": ["any"]},
+            relationships=[{"cats_from": ["m_c"], "cats_to": ["r_c"], "values": ["trust"], "amount": 5}],
+            exclude_involved=excluded, new_cat=new_cat)
+        handler = HandleShortEvents()
+        with patch.object(GenerateEvents, "possible_short_events", return_value=[event]), patch.object(
+            GenerateEvents, "filter_possible_short_events", return_value=[event]):
+            handler.handle_event("misc", self.cats[0], self.cats[1], None)
+        return handler, game.cur_events_list[-1]
+
+    def test_excluded_cats_still_receive_effects_but_are_not_displayed(self):
+        from scripts.event_class import Single_Event
+
+        handler, event = self.execute(["r_c"])
+        self.assertEqual(self.cats[0].relationships[self.cats[1].ID].trust, 5)
+        self.assertIn(self.cats[1].ID, handler.involved_cats)
+        self.assertEqual(event.cats_involved, [self.cats[0].ID])
+        self.assertIn(str(self.cats[1].name), event.text)
+        self.assertEqual(Single_Event.from_dict(event.to_dict()).cats_involved, event.cats_involved)
+
+    def test_legacy_events_keep_their_participants(self):
+        _, event = self.execute()
+        self.assertEqual(event.cats_involved, [cat.ID for cat in self.cats[:2]])
+
+    def test_all_participants_can_be_context_only(self):
+        _, event = self.execute(["m_c", "r_c"])
+        self.assertEqual(event.cats_involved, [])
+        self.assertEqual(self.cats[0].relationships[self.cats[1].ID].trust, 5)
+
+    def test_excluding_new_cat_group_removes_the_whole_litter(self):
+        with patch("scripts.events_module.short.handle_short_events.create_new_cat_block",
+                   side_effect=[self.cats[2:4], [self.cats[4]]]), patch(
+            "scripts.events_module.short.handle_short_events.Relation_Events.welcome_new_cats"), patch(
+            "scripts.events_module.short.handle_short_events.random.random", return_value=.9):
+            handler, event = self.execute(["n_c:0"], [["join"], ["join"]])
+        self.assertEqual(handler.new_cats[0], self.cats[2:4])
+        self.assertNotIn(self.cats[2].ID, event.cats_involved)
+        self.assertNotIn(self.cats[3].ID, event.cats_involved)
+        self.assertIn(self.cats[4].ID, event.cats_involved)
+
+
+def test_short_event_loader_reads_optional_participant_exclusions(tmp_path, monkeypatch):
+    import json
+    import scripts.events_module.generate_events as generation
+
+    directory = tmp_path / "misc"
+    directory.mkdir()
+    (directory / "forest.json").write_text(json.dumps([
+        {"event_id": "context_only", "event_text": "m_c notices r_c.", "exclude_involved": ["r_c"]},
+        {"event_id": "legacy", "event_text": "m_c rests."},
+    ]), encoding="utf-8")
+    monkeypatch.setattr(generation, "resource_directory", str(tmp_path) + "/")
+    monkeypatch.setattr(generation.GenerateEvents, "loaded_events", {})
+    events = generation.GenerateEvents.generate_short_events("misc", "forest")
+    assert events[0].exclude_involved == ["r_c"]
+    assert events[1].exclude_involved == []

@@ -25,7 +25,7 @@ from scripts.cat.history import History
 from scripts.cat.names import Name
 from scripts.cat.pelts import Pelt
 from scripts.cat.personality import Personality
-from scripts.cat.skills import CatSkills
+from scripts.cat.skills import CatSkills, scale_progress
 from scripts.cat.thoughts import Thoughts
 from scripts.cat_relations.inheritance import Inheritance
 from scripts.conditions import (
@@ -2160,6 +2160,7 @@ class Cat:
         # ---------------------------------------------------------------------------- #
         #                                 LIFE GIVING                                  #
         # ---------------------------------------------------------------------------- #
+        life_count = game.clan.get_starting_leader_lives(self)
         life_givers = []
         dead_relations = []
         life_giving_leader = None
@@ -2188,11 +2189,11 @@ class Cat:
             reverse=True,
         )
 
-        # if we have relations, then make sure we only take the top 8
+        # Leave the final life for a former leader.
         if dead_relations:
             i = 0
             for rel in dead_relations:
-                if i == 8:
+                if i == life_count - 1:
                     break
                 if rel.cat_to.status == "leader":
                     life_giving_leader = rel.cat_to.ID
@@ -2201,8 +2202,8 @@ class Cat:
                 i += 1
 
         # check amount of life givers, if we need more, then grab from the other dead cats
-        if len(life_givers) < 8:
-            amount = 8 - len(life_givers)
+        if len(life_givers) < life_count - 1:
+            amount = life_count - 1 - len(life_givers)
 
             possible_givers = [
                 ID for ID in afterlife_cats
@@ -2233,11 +2234,11 @@ class Cat:
             life_givers.append(life_giving_leader)
 
         # check amount again, if more are needed then we'll add the ghost-y cats at the end
-        if len(life_givers) < 9:
+        if len(life_givers) < life_count:
             unknown_blessing = True
         else:
             unknown_blessing = False
-        extra_lives = str(9 - len(life_givers))
+        extra_lives = str(life_count - len(life_givers))
         possible_lives = ceremony_dict["lives"]
         lives = []
         used_lives = []
@@ -2606,7 +2607,7 @@ class Cat:
         # CLAN FOCUS! - if the focus 'rest and recover' is selected
         elif (
             game.clan.clan_settings.get("rest and recover")
-            and self.illnesses[illness]["duration"] + moons_prior - moons_with <= 0
+            and self.illnesses[illness]["duration"] - moons_prior - moons_with <= 0
         ):
             self.healed_condition = True
             return False
@@ -2653,7 +2654,7 @@ class Cat:
         elif (
             not self.injuries[injury]["complication"]
             and game.clan.clan_settings.get("rest and recover")
-            and self.injuries[injury]["duration"] + moons_prior - moons_with <= 0
+            and self.injuries[injury]["duration"] - moons_prior - moons_with <= 0
         ):
             self.healed_condition = True
             return False
@@ -2820,13 +2821,18 @@ class Cat:
         if lethal is False:
             mortality = 0
 
+        if "illness" in game.get_config_value("condition_related", "duration_modifier_tags"):
+            modifier = game.get_config_value("condition_related", "duration_modifier")
+            duration *= modifier
+            med_duration *= modifier
+
         new_illness = Illness(
             name=name,
             severity=illness_severity,
             mortality=mortality,
             infectiousness=illness["infectiousness"],
             duration=duration,
-            medicine_duration=illness["medicine_duration"],
+            medicine_duration=med_duration,
             medicine_mortality=med_mortality,
             risks=illness["risks"],
             event_triggered=event_triggered,
@@ -2896,8 +2902,8 @@ class Cat:
         new_injury = Injury(
             name=name,
             severity=injury_severity,
-            duration=injury["duration"],
-            medicine_duration=duration,
+            duration=duration,
+            medicine_duration=med_duration,
             mortality=mortality,
             risks=injury["risks"],
             illness_infectiousness=injury["illness_infectiousness"],
@@ -3570,7 +3576,6 @@ class Cat:
                 self_relationship.romantic_love -= randint(20, 60)
                 self_relationship.comfortable -= randint(10, 30)
                 self_relationship.trust -= randint(5, 15)
-                self_relationship.mates = False
                 if fight:
                     self_relationship.romantic_love -= randint(10, 30)
                     self_relationship.platonic_like -= randint(15, 45)
@@ -3586,12 +3591,14 @@ class Cat:
                 other_relationship.romantic_love -= 40
                 other_relationship.comfortable -= 20
                 other_relationship.trust -= 10
-                other_relationship.mates = False
                 if fight:
                     other_relationship.platonic_like -= 30
 
         self.mates.remove(other_cat.ID)
         other_cat.mates.remove(self.ID)
+        for cat, partner in ((self, other_cat), (other_cat, self)):
+            if partner.ID in cat.relationships:
+                cat.relationships[partner.ID].mates = False
 
         # Handle previous mates:
         if other_cat.ID not in self.previous_mates:
@@ -4201,10 +4208,10 @@ class Cat:
                     lvl_modifier = 2
                 else:
                     lvl_modifier = 1
-                mediator.experience += exp_gain / lvl_modifier / gm_modifier
+                mediator.add_experience(exp_gain / lvl_modifier / gm_modifier)
 
         if mediator.status == "mediator apprentice":
-            mediator.experience += max(randint(1, 6), 1)
+            mediator.add_experience(max(randint(1, 6), 1))
 
         # determine the traits to effect
         # Are they mates?
@@ -4645,6 +4652,15 @@ class Cat:
             ):
                 self.experience_level = x
                 break
+
+    def add_experience(self, amount):
+        scaled = scale_progress(self.experience, self.experience_levels_range["master"][1], amount)
+        gain = amount
+        if scaled != amount:
+            gain = int(scaled)
+            if random() < scaled - gain:
+                gain += 1
+        self.experience += gain
 
     @property
     def moons(self):

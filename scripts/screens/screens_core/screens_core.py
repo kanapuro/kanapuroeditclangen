@@ -36,6 +36,9 @@ menu_dropdowns = {}
 menu_mode = None
 moon_phase = None
 moon_age = None
+moon_clan = None
+moon_frames = []
+moon_frame_time = 0.0
 
 default_game_bgs = None
 default_fullscreen_bgs = None
@@ -158,20 +161,42 @@ def rebuild_core(*, should_rebuild_bgs=True):
         rebuild_bgs()
 
 
+class MoonPhaseImage(pygame_gui.elements.UIImage):
+    def update(self, time_delta):
+        global moon_phase, moon_frame_time
+        super().update(time_delta)
+        if not moon_frames:
+            return
+        moon_frame_time += time_delta
+        while moon_frames and moon_frame_time >= 0.125:
+            moon_frame_time -= 0.125
+            moon_phase = moon_frames.pop(0)
+            self.set_image(pygame.transform.scale(
+                image_cache.load_image(f"resources/images/moon_phase{moon_phase}.png"),
+                ui_scale_dimensions((22, 26))))
+
+
 def rebuild_moon_n_season_indicator():
-    global moon_phase, moon_age
+    global moon_phase, moon_age, moon_clan, moon_frames, moon_frame_time
     clan = game.clan
     age = clan.age if clan else 0
     season = clan.current_season.casefold().replace("-", "") if clan else "newleaf"
-    if moon_phase is None or moon_age != age:
+    if moon_phase is None or moon_clan is not clan or age < moon_age:
         moon_phase = randint(0, 7)
-        moon_age = age
+        moon_frames = []
+        moon_frame_time = 0.0
+    elif age > moon_age:
+        # LifeGen's five-to-eight-frame cycle, advanced on the UI thread.
+        moon_frames = [(moon_phase + i) % 8 for i in range(5 + randint(0, 3))]
+        moon_frame_time = 0.0
+    moon_clan = clan
+    moon_age = age
     for key in ("moon_indicator", "season_indicator"):
         if key in menu_buttons:
             menu_buttons[key].kill()
     rect = ui_scale(pygame.Rect((0, 0), (22, 26)))
     rect.bottomright = ui_scale_offset((0, 2))
-    menu_buttons["moon_indicator"] = pygame_gui.elements.UIImage(rect,
+    menu_buttons["moon_indicator"] = MoonPhaseImage(rect,
         pygame.transform.scale(image_cache.load_image(f"resources/images/moon_phase{moon_phase}.png"), ui_scale_dimensions((22, 26))),
         visible=False, manager=MANAGER, starting_height=4,
         anchors={"right_target": menu_buttons["heading"], "right": "right",

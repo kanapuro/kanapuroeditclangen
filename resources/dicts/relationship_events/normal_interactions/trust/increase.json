@@ -106,6 +106,10 @@
 		],
 		"reaction_random_cat": {
 			"trust": "increase"
+		},
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
 		}
 	},
 	{
@@ -260,13 +264,6 @@
 	{
 		"id": "trust_inc_highpat",
 		"interactions": [
-			"m_c and r_c watch one another's back on a patrol.",
-			"m_c protects r_c from something on a patrol.",
-			"m_c and r_c chase off a predator on a patrol together.",
-			"m_c and r_c make an elaborate plan to evict a predator from the Clan's territory.",
-			"m_c and r_c volunteer to go on an extra border patrol together.",
-			"m_c notices that r_c has finished all {PRONOUN/r_c/poss} tasks without issues lately.",
-			"During a patrol, m_c and r_c have a long conversation about their beliefs and agree on many things.",
 			"During the last gathering, m_c and r_c defended their Clan against another Clan's heckling."
 		],
 		"main_status_constraint": [
@@ -289,6 +286,43 @@
 		],
 		"reaction_random_cat": {
 			"trust": "increase"
+		}
+	},
+	{
+		"id": "trust_inc_highpat_working_main_random",
+		"interactions": [
+			"m_c and r_c watch one another's back on a patrol.",
+			"m_c protects r_c from something on a patrol.",
+			"m_c and r_c chase off a predator on a patrol together.",
+			"m_c and r_c make an elaborate plan to evict a predator from the Clan's territory.",
+			"m_c and r_c volunteer to go on an extra border patrol together.",
+			"m_c notices that r_c has finished all {PRONOUN/r_c/poss} tasks without issues lately.",
+			"During a patrol, m_c and r_c have a long conversation about their beliefs and agree on many things."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"warrior",
+			"mediator",
+			"medicine cat",
+			"deputy",
+			"medicine cat apprentice",
+			"leader"
+		],
+		"random_status_constraint": [
+			"apprentice",
+			"warrior",
+			"mediator",
+			"medicine cat",
+			"deputy",
+			"leader",
+			"medicine cat apprentice"
+		],
+		"reaction_random_cat": {
+			"trust": "increase"
+		},
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
 		}
 	},
 	{

@@ -14,7 +14,7 @@ class PatrolEvent:
                  season: List[str] = None,
                  types: List[str] = None,
                  tags: List[str] = None,
-                 weight: int = 20,
+                 weight: int = None,
                  patrol_art: Union[str, None] = None,
                  patrol_art_clean: Union[str, None] = None,
                  intro_text: str = "",
@@ -29,10 +29,14 @@ class PatrolEvent:
                  min_max_status: dict = None,
                  relationship_constraints: List[str] = None,
                  pl_skill_constraints: List[str] = None,
-                 pl_trait_constraints: List[str] = None):
+                 pl_trait_constraints: List[str] = None,
+                 frequency: int = None):
 
+        self.frequency = frequency
+        if frequency is not None and frequency not in (1, 2, 3, 4):
+            raise ValueError(f"Invalid frequency for {patrol_id}: {frequency}")
         self.patrol_id = patrol_id
-        self.weight = weight
+        self.weight = weight if weight is not None else 20
         self.types = types if types is not None else []
 
         self.patrol_art = patrol_art
@@ -59,6 +63,26 @@ class PatrolEvent:
         self.pl_skill_constraints = pl_skill_constraints if pl_skill_constraints is not None else []
         self.pl_trait_constraints = pl_trait_constraints if pl_trait_constraints is not None else []
         self.min_max_status = min_max_status if min_max_status is not None else {}
+
+        if frequency is not None and weight is None:
+            from scripts.cat.personality import Personality
+            from scripts.cat.skills import SkillPath
+            from scripts.clan import Clan
+
+            self.weight = 1
+            if "any" not in self.biome:
+                self.weight += 4 * (len(Clan.BIOME_TYPES) - len(self.biome))
+            if "any" not in self.camp:
+                self.weight += 8
+            if "any" not in self.season:
+                self.weight += 4 * (4 - len(self.season))
+            self.weight += 2 * (6 - (self.max_cats - self.min_cats))
+            self.weight += len(self.min_max_status) * 2
+            self.weight += len(self.relationship_constraints) * 20
+            for values, count in ((self.pl_skill_constraints, len(SkillPath)),
+                                  (self.pl_trait_constraints, sum(len(traits) for traits in Personality.trait_ranges.values()))):
+                if values:
+                    self.weight += len(values) if values[0].startswith("-") else max(0, count - len(values))
 
     @property
     def new_cat(self) -> bool:

@@ -14,10 +14,20 @@
 			"m_c is motivated by r_c's big smile.",
 			"r_c's good morning to m_c meant a lot to {PRONOUN/m_c/object}.",
 			"When tucking in for the night, m_c saw that r_c fixed {PRONOUN/m_c/poss} nest.",
-			"After the Gathering, m_c notices that r_c is making sure everyone got home.",
 			"m_c can tell how brave r_c is being about something important.",
 			"m_c thinks r_c is a good singer."
 		]
+	},
+	{
+		"id": "admire_inc_low1_working_main_random",
+		"intensity": "low",
+		"interactions": [
+			"After the Gathering, m_c notices that r_c is making sure everyone got home."
+		],
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
+		}
 	},
 	{
 		"id": "admire_inc_low2",
@@ -132,12 +142,76 @@
 	{
 		"id": "admire_med_inc_med2",
 		"interactions": [
-			"m_c escorted r_c so {PRONOUN/r_c/subject} could gather herbs.",
 			"m_c thought of r_c on the last patrol and brought a herb back with {PRONOUN/m_c/object}.",
 			"m_c notices that r_c is trying really hard to be a great medicine cat.",
 			"m_c is suddenly struck by the thought of how much r_c does to keep the Clan healthy.",
-			"m_c thanks r_c for keeping the Clan healthy.",
-			"m_c watches r_c sort herbs as {PRONOUN/m_c/subject} {VERB/m_c/chat/chats} about how {PRONOUN/r_c/poss} day has gone.",
+			"m_c thanks r_c for keeping the Clan healthy."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy",
+			"leader"
+		],
+		"random_status_constraint": [
+			"medicine cat apprentice",
+			"medicine cat"
+		],
+		"reaction_random_cat": {
+			"platonic": "increase",
+			"trust": "increase"
+		}
+	},
+	{
+		"id": "admire_med_inc_med2_working_main_random",
+		"interactions": [
+			"m_c escorted r_c so {PRONOUN/r_c/subject} could gather herbs."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy",
+			"leader"
+		],
+		"random_status_constraint": [
+			"medicine cat apprentice",
+			"medicine cat"
+		],
+		"reaction_random_cat": {
+			"platonic": "increase",
+			"trust": "increase"
+		},
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
+		}
+	},
+	{
+		"id": "admire_med_inc_med2_working_random",
+		"interactions": [
+			"m_c watches r_c sort herbs as {PRONOUN/m_c/subject} {VERB/m_c/chat/chats} about how {PRONOUN/r_c/poss} day has gone."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy",
+			"leader"
+		],
+		"random_status_constraint": [
+			"medicine cat apprentice",
+			"medicine cat"
+		],
+		"reaction_random_cat": {
+			"platonic": "increase",
+			"trust": "increase"
+		},
+		"working_constraint": {
+			"r_c": true
+		}
+	},
+	{
+		"id": "admire_med_inc_med2_working_main",
+		"interactions": [
 			"m_c lets r_c know that {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} about to go out and asks if {PRONOUN/m_c/subject} {VERB/m_c/need/needs} to watch for any herbs.",
 			"m_c asks r_c if there's any herbs {PRONOUN/m_c/subject} should look out for while {PRONOUN/m_c/subject}{VERB/m_c/'re/'s} out on patrol later."
 		],
@@ -154,6 +228,9 @@
 		"reaction_random_cat": {
 			"platonic": "increase",
 			"trust": "increase"
+		},
+		"working_constraint": {
+			"m_c": true
 		}
 	},
 	{

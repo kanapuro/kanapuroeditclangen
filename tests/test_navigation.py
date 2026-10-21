@@ -359,3 +359,84 @@ def test_profile_shortcuts_preserve_activity_restrictions(access_colony, state):
             assert not screen.profile_elements["med_den"].visible
     finally:
         screen.exit_screen()
+
+
+@pytest.mark.parametrize("extra", [0, 3])
+def test_moon_animation_matches_source_timing_and_survives_rebuild(navigation, extra):
+    initial = core.moon_phase
+    game.clan.age += 1
+    with patch.object(core, "randint", return_value=extra):
+        navigation.update_moon_and_season()
+    frames = [(initial + i) % 8 for i in range(5 + extra)]
+    assert core.moon_frames == frames
+    moon = core.menu_buttons["moon_indicator"]
+    moon.update(.124)
+    assert core.moon_phase == initial and core.moon_frames == frames
+    moon.update(.001)
+    assert core.moon_phase == frames[0]
+    moon.update(.125)
+    assert core.moon_phase == frames[1]
+    remaining = core.moon_frames.copy()
+    core.rebuild_core(should_rebuild_bgs=False)
+    Screens.menu_buttons = core.menu_buttons
+    assert not moon.alive()
+    assert core.moon_frames == remaining
+    core.menu_buttons["moon_indicator"].update(1)
+    assert not core.moon_frames
+    assert core.moon_phase == frames[-1]
+    assert str(game.clan.age) in core.menu_buttons["moon_indicator"].tool_tip_text
+
+
+def test_moon_animation_updates_while_hidden_and_does_not_restart(navigation):
+    game.clan.age += 1
+    navigation.update_moon_and_season()
+    final = core.moon_frames[-1]
+    navigation.hide_menu_buttons()
+    core.menu_buttons["moon_indicator"].update(2)
+    assert not core.moon_frames and core.moon_phase == final
+    navigation.show_menu_buttons()
+    assert not core.moon_frames and core.moon_phase == final
+
+
+def test_switching_colonies_at_same_age_resets_moon_without_animation(navigation):
+    age = game.clan.age
+    replacement = Clan(name="OtherMoonTest", game_mode="expanded", camp_bg="camp1")
+    replacement.age = age
+    with patch.object(game, "clan", replacement), patch.object(core, "randint", return_value=3):
+        navigation.update_moon_and_season()
+        assert core.moon_clan is replacement
+        assert core.moon_phase == 3 and not core.moon_frames
+
+
+def test_rewinding_colony_age_clears_pending_moon_cycle(navigation):
+    game.clan.age += 2
+    navigation.update_moon_and_season()
+    assert core.moon_frames
+    game.clan.age -= 1
+    with patch.object(core, "randint", return_value=6):
+        navigation.update_moon_and_season()
+    assert core.moon_phase == 6 and not core.moon_frames
+
+
+
+def test_heartless_profile_mate_control_is_explained_and_cannot_be_pressed(access_colony):
+    from scripts.screens.ProfileScreen import ProfileScreen
+
+    clan, cats = access_colony
+    clan.game_mode, clan.cruel_cards = "cruel season", ["heartless"]
+    screen = ProfileScreen("profile screen")
+    screen.screen_switches()
+    try:
+        screen.toggle_relations_tab()
+        screen.update_disabled_buttons_and_text()
+        button = screen.choose_mate_button
+        assert not button.is_enabled
+        assert "manual mate changes" in button.tool_tip_text
+        with patch.object(screen, "change_screen") as route:
+            screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=button))
+        route.assert_not_called()
+        clan.cruel_cards = []
+        screen.update_disabled_buttons_and_text()
+        assert button.is_enabled
+    finally:
+        screen.exit_screen()

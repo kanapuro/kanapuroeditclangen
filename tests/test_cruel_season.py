@@ -37,7 +37,11 @@ def test_card_definitions_have_real_config_paths(colony, card):
 
 @pytest.mark.parametrize("first,second", list(combinations(CARDS, 2)))
 def test_all_card_pairs_have_deterministic_conflicts(first, second):
-    conflict = first.startswith("always_") and second.startswith("always_")
+    conflict = ((first.startswith("always_") and second.startswith("always_"))
+                or {first, second} == {"mouths_to_feed", "underpopulated"}
+                or {first, second} == {"weak_stars", "forsaken"}
+                or {first, second} == {"crowfood", "survival_of_fittest"}
+                or {first, second} == {"heartless", "mate_breakup"})
     if conflict:
         with pytest.raises(ValueError, match="Conflicting cards"):
             validate_cards([first, second])
@@ -166,10 +170,15 @@ def test_starting_supplies_use_own_cards_not_previous_colony(colony):
     assert selected.clan_settings["freshkill"] is False
 
 
-def test_cards_survive_real_clan_and_cat_reload_without_reapplying_start_effects(colony, monkeypatch, tmp_path):
+@pytest.mark.parametrize("feeding_card", ["survival_of_fittest", "crowfood"])
+@pytest.mark.parametrize("life_card", [None, "weak_stars", "forsaken"])
+@pytest.mark.parametrize("litter_card", ["mouths_to_feed", "underpopulated"])
+def test_cards_survive_real_clan_and_cat_reload_without_reapplying_start_effects(colony, monkeypatch, tmp_path, litter_card, life_card, feeding_card):
     from scripts.game_structure.load_cat import load_cats
 
-    colony.cruel_cards = ["barren_stocks", "always_leaf-bare", "enmity"]
+    colony.cruel_cards = ["barren_stocks", "always_leaf-bare", "enmity", "burnout", "plague_ridden", "longer_illnesses", litter_card, "clumsy_paws", feeding_card, "for_the_throne", "heartless"]
+    if life_card:
+        colony.cruel_cards.append(life_card)
     leader = Cat(status="leader", moons=40)
     player = Cat(status="kitten", moons=1)
     colony.leader, colony.your_cat = leader, player
@@ -192,8 +201,20 @@ def test_cards_survive_real_clan_and_cat_reload_without_reapplying_start_effects
     monkeypatch.setattr(game, "safe_save", save)
     colony.create_clan()
     assert colony.starting_season == "Leaf-bare"
+    granted = colony.leader_lives_granted
+    ceremony = History.get_lead_ceremony(leader) if life_card else None
+    assert not life_card or ceremony
+    assert 1 <= granted <= (5 if life_card == "weak_stars" else 1 if life_card == "forsaken" else 9)
+    colony.leader_lives -= 1
+    colony.apply_leader_life_limit()
+    saved_lives = colony.leader_lives
+    saved_reserve = colony.leader_lives_reserve
     colony.herbs = {"moss": 5}
-    colony.freshkill_pile.pile = {"expires_in_4": 12}
+    leader.get_ill("whitecough", lethal=False)
+    saved_duration = leader.illnesses["whitecough"]["duration"]
+    leader_id = leader.ID
+    saved_prey = {"expires_in_4": 3.5, "expires_in_3": 2.25, "expires_in_2": 1.25, "expires_in_1": 5}
+    colony.freshkill_pile.pile = saved_prey.copy()
     colony.freshkill_pile.total_amount = 12
     game.save_cats()
     colony.save_clan()
@@ -204,7 +225,23 @@ def test_cards_survive_real_clan_and_cat_reload_without_reapplying_start_effects
     load_cats()
     Clan().load_clan()
     assert game.clan.cruel_cards == expected
+    assert game.get_config_value("mates", "allow_mating") is False
+    assert game.get_config_value("death_related", "murder", "deputy_prefer_leader") is True
+    assert game.clan.leader_lives_granted == granted
+    assert game.clan.leader_lives == saved_lives
+    assert game.clan.leader_lives_reserve == saved_reserve
+    if life_card:
+        loaded_leader = Cat.fetch_cat(leader_id)
+        game.clan.leader_lives_granted = 1 if granted > 1 else 5
+        assert History.get_lead_ceremony(loaded_leader) == ceremony
+        game.clan.leader_lives_granted = granted
+    assert Cat.fetch_cat(leader_id).illnesses["whitecough"]["duration"] == saved_duration
+    from scripts.conditions import get_amount_cat_for_one_medic
+    assert get_amount_cat_for_one_medic(game.clan) == 5
+    assert game.get_config_value("condition_related", "med_infection_reduction") == 0
     assert game.clan.freshkill_pile.total_amount == 12
+    assert game.clan.freshkill_pile.pile == saved_prey
+    assert game.get_config_value("prey", "time_to_rot") == (1 if feeding_card == "crowfood" else 4)
     assert game.clan.herbs == {"moss": 5}
     assert game.clan.starting_season == "Leaf-bare"
     assert 1 <= game.clan.all_clans[0].relations <= 7
@@ -212,9 +249,13 @@ def test_cards_survive_real_clan_and_cat_reload_without_reapplying_start_effects
     path = tmp_path / "CruelTest.json"
     saved = json.loads(path.read_text(encoding="utf-8"))
     saved.pop("cruel_cards")
+    saved.pop("leader_lives_granted")
     path.write_text(json.dumps(saved), encoding="utf-8")
     Clan().load_clan()
     assert game.clan.cruel_cards is None
+    assert game.clan.leader_lives_granted == 9
+    assert game.clan.leader_lives == saved_lives
+    assert game.clan.leader_lives_reserve == saved_reserve
 
 
 @pytest.mark.parametrize("kind,name", [("illness", "whitecough"), ("injury", "claw-wound"), ("permanent", "weak leg")])
@@ -415,14 +456,14 @@ def test_random_card_and_paging_use_only_supported_compatible_cards(card_screen)
     assert screen.elements["card_next"].is_enabled
     press("card_next")
     assert screen.card_page == 1
-    assert len(screen.card_buttons) == 1
+    assert len(screen.card_buttons) == min(12, len(CARDS) - 12)
     press("card_previous")
     screen.apply_cruel_deck(["always_leaf-bare"])
     for _ in range(20):
         press("random_card")
         assert validate_cards(screen.cruel_cards) == screen.cruel_cards
         assert [name for name in screen.cruel_cards if name.startswith("always_")] == ["always_leaf-bare"]
-    assert len(screen.cruel_cards) == 10
+    assert len(screen.cruel_cards) == min(CARD_DATA["limit"], len(CARDS) - 3)
 
 
 def test_deck_entry_rejects_unknown_duplicate_conflicting_ids_without_mutation(card_screen):
@@ -535,7 +576,8 @@ def test_card_pages_wrap_in_both_directions(card_screen):
     import pygame_gui
 
     screen = card_screen
-    for key, expected in (("card_previous", 1), ("card_next", 0), ("card_next", 1), ("card_next", 0)):
+    pages = (len(CARDS) + 11) // 12
+    for key, expected in (("card_previous", pages - 1), ("card_next", 0), ("card_next", 1), ("card_next", 2 % pages)):
         screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.elements[key]))
         assert screen.card_page == expected
 
@@ -570,7 +612,13 @@ def test_setup_keyboard_navigation_preserves_deck_and_does_not_bypass_dialog(car
         screen.apply_cruel_deck(["kit_season"])
         assert screen.elements["card_info_container"].visible == 0
         screen.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_ESCAPE))
-        assert screen.sub_screen == "game settings"
+        assert screen.sub_screen == "game settings", {
+            "previous_enabled": screen.elements["previous_step"].is_enabled,
+            "screen_manager": id(screen.handle_event.__globals__["MANAGER"]),
+            "button_manager": id(screen.elements["previous_step"].ui_manager),
+            "windows": [(type(w).__name__, w.is_blocking, w.alive()) for w in
+                        screen.handle_event.__globals__["MANAGER"].get_window_stack().get_full_stack()],
+        }
         screen.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_RETURN))
         assert screen.sub_screen == "cruel cards"
         assert screen.cruel_cards == ["kit_season"]
@@ -694,14 +742,15 @@ def test_quick_start_generates_newborn_with_draft_settings_and_supported_choices
         assert game.clan.cruel_cards is None
 
 
-def test_quick_start_keeps_chosen_cards_and_forced_starting_season(card_screen):
+@pytest.mark.parametrize("food_card", ["lean_meat", "crowfood"])
+def test_quick_start_keeps_chosen_cards_and_forced_starting_season(card_screen, food_card):
     from scripts.screens.MakeClanScreen import sprites
 
     screen = card_screen
-    screen.apply_cruel_deck(["always_leaf-bare", "lean_meat"])
+    screen.apply_cruel_deck(["always_leaf-bare", food_card])
     with patch.object(sprites, "clan_symbols", ["symbolBEECH0"]), patch.object(screen, "save_clan"), patch.object(screen, "open_clan_saved_screen"):
         screen.random_quick_start()
-    assert screen.cruel_cards == ["always_leaf-bare", "lean_meat"]
+    assert screen.cruel_cards == ["always_leaf-bare", food_card]
     assert screen.selected_season == "Leaf-bare"
 
 
@@ -759,3 +808,726 @@ def test_enabling_quick_start_then_cancelling_does_not_save_or_generate(card_scr
         save.assert_not_called()
         generate.assert_not_called()
     assert original.clan_settings == original_settings
+
+
+@pytest.mark.parametrize("cards,initial,reward,expected", [(["enmity"], 7, 5, "unchanged"),
+    (["enmity"], 6, 5, "improved"), (["public_enemy"], 7, 5, "improved"), ([], 0, -5, "unchanged")])
+def test_diplomacy_reports_the_actual_capped_relationship_change(colony, monkeypatch, cards, initial, reward, expected):
+    from scripts.events import Events
+    from scripts.events_module.generate_events import generate_events
+
+    colony.cruel_cards = cards
+    leader = Cat(status="leader", moons=40)
+    colony.leader = leader
+    colony.add_cat(leader)
+    neighbor = OtherClan(name="Neighbor", relations=initial, chosen_symbol="symbolBEECH0")
+    colony.all_clans = [neighbor]
+    colony.clan_settings["lead_den_clan_event"] = {"cat_ID": leader.ID, "other_clan": neighbor.name,
+        "player_clan_temper": "mellow", "interaction_type": "befriend", "success": True}
+    colony.clan_settings["lead_den_outsider_event"] = {}
+    monkeypatch.setattr(game, "cur_events_list", [])
+    monkeypatch.setattr(generate_events, "possible_lead_den_events", lambda **kwargs: [
+        {"event_text": "m_c visits o_c_n.", "rel_change": reward}])
+    Events().handle_lead_den_event()
+    assert f"relations {expected}." in game.cur_events_list[-1].text
+    assert neighbor.relations == max(0, min(7 if "enmity" in cards else 30, initial + reward))
+
+
+@pytest.mark.parametrize("tier,multiplier", [(0, 1), (1, 1.5), (2, 1.75), (3, 2)])
+@pytest.mark.parametrize("burnout", [False, True])
+def test_burnout_reaches_real_medical_coverage_with_healing_skills(colony, burnout, tier, multiplier):
+    from scripts.cat.skills import Skill, SkillPath
+    from scripts.conditions import get_amount_cat_for_one_medic, medical_cats_condition_fulfilled
+
+    colony.cruel_cards = ["burnout"] if burnout else []
+    med = Cat(status="medicine cat", moons=40)
+    med.experience = 0
+    med.skills.primary = Skill(SkillPath.HEALER if tier else SkillPath.HUNTER, Skill.tier_ranges[tier - 1][0] if tier else 0)
+    med.skills.secondary = None
+    patients = [Cat(status="warrior", moons=40) for _ in range(10)]
+    capacity = get_amount_cat_for_one_medic(colony)
+    assert capacity == (5 if burnout else 10)
+    covered = medical_cats_condition_fulfilled([med] + patients, capacity, give_clanmembers_covered=True)
+    assert covered == int(multiplier * (capacity + 1))
+    ordinary = Clan(name="Other", game_mode="expanded")
+    assert get_amount_cat_for_one_medic(ordinary) == 10
+
+
+@pytest.mark.parametrize("name", ["whitecough", "tick fever", "breathless fit"])
+@pytest.mark.parametrize("medicated", [False, True])
+def test_longer_illnesses_doubles_actual_acquisition_without_changing_injuries(colony, monkeypatch, name, medicated):
+    from scripts.cat.cats import ILLNESSES
+
+    monkeypatch.setattr(game, "cat_class", Cat)
+    patient = Cat(status="warrior", moons=40)
+    colony.add_cat(patient)
+    if medicated:
+        medic = Cat(status="medicine cat", moons=40)
+        colony.add_cat(medic)
+    with patch("scripts.cat.cats.randrange", return_value=0):
+        patient.get_ill(name)
+        before = patient.illnesses[name]["duration"]
+        patient.illnesses.clear()
+        colony.cruel_cards = ["longer_illnesses"]
+        patient.get_ill(name)
+        assert patient.illnesses[name]["duration"] == before * 2
+        patient.get_injured("claw-wound")
+        injury_duration = patient.injuries["claw-wound"]["duration"]
+        patient.injuries.clear()
+        colony.cruel_cards = []
+        patient.get_injured("claw-wound")
+        assert patient.injuries["claw-wound"]["duration"] == injury_duration
+    assert ILLNESSES[name]["duration"] >= 1
+
+
+@pytest.mark.parametrize("season", ["Newleaf", "Greenleaf", "Leaf-fall", "Leaf-bare"])
+def test_plague_outbreaks_reach_all_seasons_and_bypass_medical_prevention(colony, monkeypatch, season):
+    from scripts.events import Events
+
+    monkeypatch.setattr(game, "cur_events_list", [])
+    colony.current_season = season
+    source = Cat(status="warrior", moons=40)
+    medic = Cat(status="medicine cat", moons=40)
+    healthy = [Cat(status="warrior", moons=40) for _ in range(8)]
+    for cat in [source, medic] + healthy:
+        colony.add_cat(cat)
+    source.get_ill("whitecough")
+    rate = source.illnesses["whitecough"]["infectiousness"]
+    # This roll fails with one medic's normal protection, but succeeds without it.
+    roll = 1 / (rate + 1)
+    event = Events()
+    with patch("scripts.events.random.random", return_value=roll), patch(
+            "scripts.events.random.choices", return_value=[2]):
+        event.handle_outbreaks(source)
+        assert sum(cat.is_ill() for cat in Cat.all_cats.values()) == 1
+        colony.cruel_cards = ["plague_ridden"]
+        event.handle_outbreaks(source)
+    assert sum(cat.is_ill() for cat in Cat.all_cats.values()) == 3
+    assert len(game.cur_events_list) == 1
+
+
+def test_plague_changes_outbreak_saturation_without_altering_default(colony, monkeypatch):
+    from scripts.events import Events
+
+    monkeypatch.setattr(game, "cur_events_list", [])
+    colony.current_season = "Leaf-bare"
+    cats = [Cat(status="warrior", moons=40) for _ in range(12)]
+    for cat in cats:
+        colony.add_cat(cat)
+    for cat in cats[:4]:
+        cat.get_ill("whitecough")
+    event = Events()
+    with patch("scripts.events.random.random", return_value=0), patch(
+            "scripts.events.random.choices", return_value=[2]):
+        event.handle_outbreaks(cats[0])
+        assert sum(cat.is_ill() for cat in cats) == 4
+        colony.cruel_cards = ["plague_ridden"]
+        event.handle_outbreaks(cats[0])
+    assert sum(cat.is_ill() for cat in cats) == 6
+
+
+
+@pytest.mark.parametrize("card", ["burnout", "plague_ridden", "longer_illnesses", "mouths_to_feed", "underpopulated", "clumsy_paws", "survival_of_fittest"])
+def test_new_cards_are_selected_through_actual_card_controls(card_screen, card):
+    import pygame
+    import pygame_gui
+
+    available = list(CARDS)
+    card_screen.card_page = available.index(card) // 12
+    card_screen.refresh_cruel_cards()
+    card_screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS,
+        ui_element=card_screen.card_buttons[card]))
+    assert card_screen.cruel_cards == game.clan.cruel_cards == [card]
+    assert card in card_screen.chosen_card_buttons
+    assert card_screen.elements["next_step"].is_enabled
+    card_screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS,
+        ui_element=card_screen.elements["next_step"]))
+    assert card_screen.sub_screen == "name clan"
+    assert game.clan.cruel_cards == [card]
+
+
+def test_longer_illnesses_still_respond_to_herb_treatment(colony, monkeypatch):
+    from scripts.cat.cats import ILLNESSES
+    from scripts.events_module.short.condition_events import Condition_Events
+
+    monkeypatch.setattr(game, "herb_events_list", [])
+    colony.cruel_cards = ["longer_illnesses"]
+    patient = Cat(status="warrior", moons=40)
+    colony.add_cat(patient)
+    patient.get_ill("tick fever", lethal=False)
+    before = patient.illnesses["tick fever"]["duration"]
+    colony.herbs = {"goldenrod": 1}
+    with patch("scripts.events_module.short.condition_events.random.choice", return_value="duration"):
+        Condition_Events.use_herbs(patient, "tick fever", patient.illnesses.copy(), ILLNESSES)
+    assert patient.illnesses["tick fever"]["duration"] == max(0, before - 3)
+    assert "goldenrod" not in colony.herbs
+
+
+@pytest.mark.parametrize("cards,relations,help_text", [(["enmity"], 7, "Enmity"),
+    (["public_enemy"], 7, None), ([], 30, "maximum")])
+def test_leader_den_explains_relationship_caps_in_the_actual_panel(colony, monkeypatch, cards, relations, help_text):
+    import pygame
+    from scripts.screens.LeaderDenScreen import LeaderDenScreen
+
+    monkeypatch.setattr("scripts.utility.generate_sprite", lambda *args, **kwargs: pygame.Surface((50, 50), pygame.SRCALPHA))
+    monkeypatch.setattr("scripts.screens.LeaderDenScreen.clan_symbol_sprite", lambda *args, **kwargs: pygame.Surface((50, 50), pygame.SRCALPHA))
+    colony.cruel_cards = cards
+    leader = Cat(status="leader", moons=40)
+    colony.leader = colony.your_cat = leader
+    colony.add_cat(leader)
+    neighbor = OtherClan(name="Neighbor", relations=relations, chosen_symbol="symbolBEECH0")
+    colony.all_clans = [neighbor]
+    screen = LeaderDenScreen("cruel_diplomacy_test")
+    screen.screen_switches()
+    try:
+        screen.focus_clan = neighbor
+        screen.update_other_clan_focus()
+        tooltip = screen.focus_frame_elements["positive_interaction"].tool_tip_text
+        assert (help_text in tooltip) if help_text else not tooltip
+        assert screen.focus_clan_elements["clan_rel"].text == ("hostile" if relations == 7 else "ally")
+    finally:
+        screen.exit_screen()
+
+
+LITTER_WEIGHTS = {
+    "mouths_to_feed": [(0, 2, 9, 17, 15, 12), (4, 5, 11, 16, 7, 3), (4, 5, 8, 8, 5, 2), (2, 2, 3, 1, 0, 0)],
+    "underpopulated": [(12, 11, 17, 7, 1, 1), (10, 14, 15, 4, 2, 0), (11, 16, 5, 2, 0, 0), (5, 4, 1, 0, 0, 0)],
+}
+
+
+@pytest.mark.parametrize("card", LITTER_WEIGHTS)
+@pytest.mark.parametrize("age_index,moons", [(0, 20), (1, 50), (2, 100), (3, 130)])
+@pytest.mark.parametrize("larger", [False, True])
+def test_litter_cards_reach_the_actual_sampler_with_source_probabilities(colony, card, age_index, moons, larger):
+    from collections import Counter
+
+    colony.cruel_cards = [card]
+    colony.clan_settings["bigger_litters"] = larger
+    parent = Cat(status="warrior", moons=moons)
+    populations = []
+    def choose(values):
+        populations.append(list(values))
+        return values[-1]
+    with patch("scripts.events_module.relationship.pregnancy_events.choice", side_effect=choose):
+        Pregnancy_Events.get_amount_of_kits(parent)
+    counts = Counter(populations[-1])
+    actual = [counts[n] for n in range(1, 6)] + [sum(count for n, count in counts.items() if n >= 6)]
+    expected = LITTER_WEIGHTS[card][age_index]
+    for index in range(6):
+        assert actual[index] * sum(expected) == expected[index] * sum(actual)
+    assert max(counts) <= (12 if larger else 6)
+    if larger and expected[-1]:
+        assert 12 in counts
+    assert game.config["pregnancy"]["one_kit_modded"]["young adult"] == 64
+
+
+@pytest.mark.parametrize("card", [None, "mouths_to_feed", "underpopulated"])
+@pytest.mark.parametrize("larger", [False, True])
+def test_litter_cards_create_real_biological_and_adopted_litters(colony, monkeypatch, tmp_path, card, larger):
+    colony.cruel_cards = [card] if card else []
+    colony.clan_settings["bigger_litters"] = larger
+    for module in ("scripts.cat.cats", "scripts.clan", "scripts.game_structure.game_essentials"):
+        monkeypatch.setattr(module + ".get_save_dir", lambda: str(tmp_path))
+    def save(path, data, **kwargs):
+        assert Path(path).resolve().is_relative_to(tmp_path.resolve())
+        return type(game).safe_save(path, data, **kwargs)
+    monkeypatch.setattr(game, "safe_save", save)
+    parents = [Cat(status="warrior", moons=40, gender=gender) for gender in ("female", "male")]
+    for cat in parents:
+        cat.history = History()
+        colony.add_cat(cat)
+        cat.create_inheritance_new_cat()
+    colony.your_cat = parents[0]
+    with patch("scripts.events_module.relationship.pregnancy_events.choice", side_effect=lambda values: max(values)):
+        count = Pregnancy_Events.get_amount_of_kits(parents[0])
+    with patch("scripts.events_module.relationship.pregnancy_events.random.random", return_value=.99), patch(
+            "scripts.events_module.relationship.pregnancy_events.random.randrange", return_value=0):
+        kittens = Pregnancy_Events.get_kits(count, *parents, clan=colony)
+        adopted = Pregnancy_Events.get_kits(count, clan=colony, adoptive_parents=[parent.ID for parent in parents])
+    assert len(kittens) == len(adopted) == count
+    assert all(kit.parent1 == parents[0].ID and kit.parent2 == parents[1].ID for kit in kittens)
+    assert all(set(kit.adoptive_parents) == {parent.ID for parent in parents} for kit in adopted)
+    game.save_cats()
+
+
+@pytest.mark.parametrize("roll", [0, .99])
+def test_clumsy_paws_uses_the_source_curve_and_keeps_small_gains_possible(colony, roll):
+    import math
+    from scripts.cat.skills import Skill, SkillPath
+
+    colony.cruel_cards = ["clumsy_paws"]
+    cat = Cat(status="warrior", moons=40)
+    ceiling = cat.experience_levels_range["master"][1]
+    cat.experience = int(ceiling * .75)
+    initial = cat.experience
+    scaled = 10 * math.sqrt(1 - initial / ceiling)
+    expected = int(scaled) + (roll < scaled % 1)
+    with patch("scripts.cat.cats.random", return_value=roll):
+        cat.add_experience(10)
+    assert cat.experience == initial + expected
+    skill = Skill(SkillPath.HUNTER, 28)
+    with patch("scripts.cat.skills.random.random", return_value=roll):
+        gain = skill.add_points(1)
+    assert gain == (1 if roll == 0 else 0)
+    assert skill.points == 28 + gain
+    cat.experience = 200
+    skill.points = 20
+    assert cat.experience == 200 and skill.points == 20
+
+
+@pytest.mark.parametrize("cards", [None, []])
+def test_normal_learning_keeps_existing_rounding_and_does_not_draw_extra_randomness(colony, cards):
+    from scripts.cat.skills import Skill, SkillPath
+
+    colony.cruel_cards = cards
+    cat = Cat(status="warrior", moons=40)
+    cat.experience = 100
+    skill = Skill(SkillPath.HUNTER, 10)
+    with patch("scripts.cat.cats.random", side_effect=AssertionError("Unmodified learning must not roll")), patch(
+            "scripts.cat.skills.random.random", side_effect=AssertionError("Unmodified learning must not roll")):
+        cat.add_experience(1.75)
+        skill.add_points(2)
+    assert cat.experience == 101 and skill.points == 12
+
+
+@pytest.mark.parametrize("roll,expected", [(0, 1), (.99, 0)])
+def test_mentor_influence_records_actual_clumsy_paws_progress(colony, roll, expected):
+    from scripts.cat.skills import Skill, SkillPath
+
+    colony.cruel_cards = ["clumsy_paws"]
+    mentor = Cat(status="warrior", moons=40)
+    apprentice = Cat(status="apprentice", moons=8)
+    mentor.skills.primary = Skill(SkillPath.HUNTER, 29)
+    apprentice.skills.primary = Skill(SkillPath.HUNTER, 28)
+    apprentice.skills.secondary = None
+    with patch("scripts.cat.skills.random.randint", return_value=1), patch(
+            "scripts.cat.skills.random.random", return_value=roll):
+        result = apprentice.skills.mentor_influence(mentor)
+    assert result == (mentor.ID, SkillPath.HUNTER, expected)
+    assert apprentice.skills.primary.points == 28 + expected
+
+
+@pytest.mark.parametrize("cards,mode,expected", [([], "cruel season", True),
+    (None, "cruel season", False), (None, "expanded", True)])
+def test_card_patrol_success_uses_expanded_base_while_legacy_cruel_is_preserved(colony, monkeypatch, cards, mode, expected):
+    from scripts.events_module.patrol.patrol import Patrol
+    from scripts.events_module.patrol.patrol_event import PatrolEvent
+    from scripts.events_module.patrol.patrol_outcome import PatrolOutcome
+
+    colony.game_mode, colony.cruel_cards = mode, cards
+    cat = Cat(status="warrior", moons=40)
+    cat.experience = 100
+    colony.add_cat(cat)
+    patrol = Patrol()
+    patrol.add_patrol_cats([cat], colony)
+    patrol.patrol_type = "training"
+    patrol.patrol_event = PatrolEvent("difficulty_check", chance_of_success=10)
+    monkeypatch.setitem(game.switches, "patrol_category", "general")
+    with patch.dict(game.config["patrol_generation"], {"debug_ensure_patrol_outcome": None}), patch(
+            "scripts.events_module.patrol.patrol.random.random", return_value=.25):
+        _, success = patrol.calculate_success(PatrolOutcome(), PatrolOutcome(success=False))
+    assert success is expected
+
+
+@pytest.mark.parametrize("apprentice", [False, True])
+def test_clumsy_paws_reaches_actual_patrol_experience_rewards(colony, apprentice):
+    from scripts.events_module.patrol.patrol import Patrol
+    from scripts.events_module.patrol.patrol_outcome import PatrolOutcome
+
+    cat = Cat(status="apprentice" if apprentice else "warrior", moons=8 if apprentice else 40)
+    cat.experience = 100
+    colony.add_cat(cat)
+    patrol = Patrol()
+    patrol.add_patrol_cats([cat], colony)
+    outcome = PatrolOutcome(exp=20)
+    with patch("scripts.events_module.patrol.patrol_outcome.random.randint", return_value=7):
+        outcome._handle_exp(patrol)
+    ordinary = cat.experience - 100
+    cat.experience = 100
+    colony.cruel_cards = ["clumsy_paws"]
+    with patch("scripts.events_module.patrol.patrol_outcome.random.randint", return_value=7), patch(
+            "scripts.cat.cats.random", return_value=.99):
+        outcome._handle_exp(patrol)
+    assert 0 < cat.experience - 100 < ordinary
+
+
+@pytest.mark.parametrize("outside", [False, True])
+def test_clumsy_paws_reaches_monthly_apprentice_and_outside_experience(colony, outside):
+    from scripts.events import Events
+
+    cat = Cat(status="loner" if outside else "apprentice", moons=40 if outside else 8)
+    cat.outside = outside
+    cat.experience = 20
+    event = Events()
+    train = event.handle_outside_EX if outside else event.handle_apprentice_EX
+    with patch("scripts.events.random.choice", return_value=10):
+        train(cat)
+    ordinary = cat.experience - 20
+    cat.experience = 20
+    colony.cruel_cards = ["clumsy_paws"]
+    with patch("scripts.events.random.choice", return_value=10), patch("scripts.cat.cats.random", return_value=.99):
+        train(cat)
+    assert cat.experience - 20 < ordinary
+
+
+@pytest.mark.parametrize("cards,expected", [([], 29), (["clumsy_paws"], 28)])
+def test_clumsy_paws_reaches_monthly_adult_skill_progress(colony, cards, expected):
+    from scripts.cat.skills import Skill, SkillPath
+
+    colony.cruel_cards = cards
+    cat = Cat(status="warrior", moons=40)
+    cat.skills.primary = Skill(SkillPath.HUNTER, 28)
+    cat.skills.secondary = Skill(SkillPath.RUNNER, 10)
+    with patch("scripts.cat.skills.random.random", side_effect=[0, .99] if cards else [0]):
+        cat.skills.progress_skill(cat)
+    assert cat.skills.primary.points == expected
+
+
+
+def test_survival_of_fittest_enforces_automatic_priority_and_blocks_manual_backend(colony):
+    from scripts.cat.skills import Skill, SkillPath
+
+    colony.cruel_cards = ["survival_of_fittest"]
+    colony.clan_settings["feeding priorities"] = ["by-status"]
+    cats = [Cat(status="warrior", moons=40) for _ in range(4)]
+    for index, cat in enumerate(cats):
+        colony.add_cat(cat)
+        cat.skills.primary = Skill(SkillPath.HUNTER if index < 2 else SkillPath.RUNNER, 10)
+        cat.skills.secondary = None
+        cat.experience = (10, 30, 300, 0)[index]
+    pile = colony.freshkill_pile
+    pile.living_cats = cats
+    pile.update_nutrition(cats)
+    for info in pile.nutrition_info.values():
+        info.current_score = 0
+    pile.pile = dict.fromkeys(pile.pile, 0)
+    pile.total_amount = 0
+    pile.add_freshkill(4)
+    before = {cat_id: info.current_score for cat_id, info in pile.nutrition_info.items()}
+    pile.feed_cats(cats, additional_food_round=True)
+    pile.feed_cat(cats[3], 1, 0, manual=True)
+    assert pile.total_amount == 4
+    assert before == {cat_id: info.current_score for cat_id, info in pile.nutrition_info.items()}
+    assert not pile.already_fed
+    assert pile.get_feeding_priorities() == ["hunter first", "more experience first"]
+    pile.feed_cats(cats)
+    assert [cat.ID for cat in pile.already_fed[:2]] == [cats[1].ID, cats[0].ID]
+    assert pile.total_amount < 4
+    assert colony.clan_settings["feeding priorities"] == ["by-status"]
+    colony.cruel_cards = []
+    assert pile.get_feeding_priorities() == ["by-status"]
+    assert pile.manual_feeding_allowed and not pile.feeding_locked
+
+
+@pytest.mark.parametrize("card,grant", [("weak_stars", 1), ("weak_stars", 3), ("weak_stars", 5), ("forsaken", 1)])
+@pytest.mark.parametrize("override", [None, False, True])
+def test_leader_card_grants_are_rolled_once_and_settings_never_increase_them(colony, card, grant, override):
+    colony.cruel_cards = [card]
+    leader = Cat(status="leader", moons=40)
+    colony.leader = leader
+    leader.leader_life_override = override
+    with patch("scripts.clan.randint", return_value=grant) as roll:
+        colony.reset_leader_lives()
+        if card == "weak_stars":
+            roll.assert_called_once_with(1, 5)
+        else:
+            roll.assert_not_called()
+        for _ in range(3):
+            colony.apply_leader_life_limit()
+            assert colony.get_starting_leader_lives(leader) == (1 if override else grant)
+    assert colony.leader_lives_granted == colony.leader_lives_reserve == grant
+    assert colony.leader_lives == (1 if override else grant)
+    leader.leader_life_override = False
+    colony.apply_leader_life_limit()
+    assert colony.leader_lives == grant
+    colony.clan_settings["leader_life_default"] = True
+    leader.leader_life_override = None
+    colony.apply_leader_life_limit()
+    assert colony.leader_lives == 1
+    colony.clan_settings["leader_life_default"] = False
+    colony.apply_leader_life_limit()
+    assert colony.leader_lives == grant
+
+
+@pytest.mark.parametrize("card,grant", [("weak_stars", 4), ("forsaken", 1)])
+def test_leader_card_death_revival_command_and_successor_keep_separate_balances(colony, monkeypatch, card, grant):
+    from scripts.debug_commands.return_cat import ReturnCatCommand
+
+    colony.cruel_cards = [card]
+    leader = Cat(status="leader", moons=40)
+    leader.history = History()
+    colony.leader = colony.your_cat = leader
+    colony.add_cat(leader)
+    with patch("scripts.clan.randint", return_value=grant):
+        colony.reset_leader_lives()
+    History.add_death(leader, "died in battle")
+    assert leader.history.died_by[-1]["leader_life_mode"] == grant
+    colony.leader_lives = 0
+    leader.dead = True
+    with patch.object(Cat, "add_to_clan"), patch("scripts.debug_commands.return_cat.add_output_line_to_log"):
+        ReturnCatCommand().callback([leader.ID])
+    assert not leader.dead and colony.leader is leader
+    assert colony.leader_lives == 1
+    assert colony.leader_lives_reserve == 0
+    for override in (True, False, None):
+        leader.leader_life_override = override
+        colony.apply_leader_life_limit()
+        assert colony.leader_lives == 1 and colony.leader_lives_reserve == 0
+    successor = Cat(status="deputy", moons=35)
+    successor.history = History()
+    monkeypatch.setattr(colony.history, "add_lead_ceremony", Mock())
+    with patch("scripts.clan.randint", return_value=grant):
+        colony.new_leader(successor)
+    assert colony.leader is successor
+    assert colony.leader_lives == colony.leader_lives_reserve == colony.leader_lives_granted == grant
+
+
+@pytest.mark.parametrize("lives", [1, 3, 5, 9])
+@pytest.mark.parametrize("following", [True, False, None])
+@pytest.mark.parametrize("known_givers", [False, True])
+def test_leader_ceremony_blessings_match_saved_grant(colony, monkeypatch, lives, following, known_givers):
+    leader = Cat(status="leader", moons=40)
+    leader.history = History()
+    colony.leader = colony.your_cat = leader
+    colony.followingsc = following
+    colony.leader_lives_granted = colony.leader_lives = lives
+    givers = []
+    if known_givers:
+        for index in range(12):
+            cat = Cat(status="leader" if index == 0 else "warrior", moons=40)
+            cat.dead = True
+            givers.append(cat.ID)
+            leader.create_one_relationship(cat)
+    colony.starclan_cats = colony.darkforest_cats = colony.unknown_cats = givers
+    calls = []
+    def adjust(cls, text, leader, life_giver=None, virtue=None, extra_lives=None):
+        calls.append((life_giver, extra_lives))
+        return text
+    monkeypatch.setattr("scripts.cat.cats.leader_ceremony_text_adjust", adjust)
+    ceremony = leader.generate_lead_ceremony()
+    # Intro and outro surround individual gifts and, when needed, the remaining anonymous lives.
+    blessings = calls[1:-1]
+    assert sum(int(extra) if extra else 1 for giver, extra in blessings) == lives
+    assert all(not extra or int(extra) > 0 for giver, extra in blessings)
+    assert ceremony
+
+
+@pytest.mark.parametrize("lives", [1, 3, 9])
+def test_ceremony_text_renders_life_totals_and_singular_gifts(colony, lives):
+    from scripts.utility import leader_ceremony_text_adjust
+
+    leader = Cat(status="leader", moons=40)
+    colony.leader_lives_granted = lives
+    text = leader_ceremony_text_adjust(
+        Cat, "[total_lives] lives; remaining [life_num] lives. Use [life_pronoun] well.",
+        leader, extra_lives=str(lives))
+    assert text == ("1 life; remaining 1 life. Use it well." if lives == 1 else
+                    f"{'nine' if lives == 9 else lives} lives; remaining {lives} lives. Use them well.")
+
+
+@pytest.mark.parametrize("card,grant", [("weak_stars", 3), ("forsaken", 1)])
+def test_personal_life_checkbox_obeys_card_grant(colony, card, grant):
+    import pygame
+    import pygame_gui
+    from scripts.game_structure.windows import ChangeCatToggles
+
+    colony.cruel_cards = [card]
+    leader = Cat(status="leader", moons=40)
+    colony.leader = colony.your_cat = leader
+    leader.leader_life_override = False
+    with patch("scripts.clan.randint", return_value=grant):
+        colony.reset_leader_lives()
+    window = ChangeCatToggles(leader)
+    try:
+        for expected in (1, grant, 1, grant):
+            checkbox = window.checkboxes["leader_life_override"]
+            assert "grant" in checkbox.tool_tip_text
+            window.process_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=checkbox))
+            assert colony.leader_lives == expected
+            assert colony.leader_lives_granted == colony.leader_lives_reserve == grant
+    finally:
+        window.kill()
+
+
+@pytest.mark.parametrize("cards,lifetime", [(None, 4), ([], 4), (["crowfood"], 1), (["crowfood", "lean_meat"], 1)])
+def test_prey_expiry_card_reaches_initial_stock_additions_and_actual_timeskip(colony, cards, lifetime):
+    from scripts.clan_resources.freshkill import FreshkillPile
+
+    colony.cruel_cards = cards
+    pile = FreshkillPile(start_amount=8)
+    assert pile.pile[f"expires_in_{lifetime}"] == 8
+    pile.add_freshkill(2.5)
+    pile.remove_freshkill(1.25)
+    assert pile.total_amount == 9.25
+    logs = []
+    for moon in range(1, lifetime + 1):
+        pile.time_skip([], logs)
+        assert pile.total_amount == (9.25 if moon < lifetime else 0)
+    assert any("9.25 pieces were removed" in line for line in logs)
+    assert sum(pile.pile.values()) == pile.total_amount
+
+
+def test_crowfood_starting_expiry_uses_own_colony_cards(colony):
+    colony.cruel_cards = ["crowfood"]
+    ordinary = Clan(name="Ordinary", game_mode="expanded")
+    assert ordinary.freshkill_pile.pile["expires_in_4"] == game.prey_config["start_amount"]
+    colony.cruel_cards = []
+    selected = Clan(name="Selected", game_mode="cruel season", cruel_cards=["crowfood"])
+    assert selected.freshkill_pile.pile["expires_in_1"] == game.prey_config["start_amount"]
+    assert selected.freshkill_pile.pile["expires_in_4"] == 0
+
+
+@pytest.mark.parametrize("cards", [["crowfood"], ["crowfood", "lean_meat"]])
+def test_crowfood_preserves_manual_meals_but_rot_precedes_automatic_feeding(colony, cards):
+    from scripts.clan_resources.freshkill import FreshkillPile
+
+    colony.cruel_cards = cards
+    cat = Cat(status="warrior", moons=40)
+    colony.add_cat(cat)
+    pile = colony.freshkill_pile = FreshkillPile(start_amount=30)
+    pile.living_cats = [cat]
+    pile.update_nutrition([cat])
+    info = pile.nutrition_info[cat.ID]
+    info.current_score = 0
+    pile._update_needed_food([cat])
+    assert pile.manual_feeding_allowed
+    pile.feed_cats([cat], additional_food_round=True)
+    manually_fed = pile.nutrition_info[cat.ID].current_score
+    assert manually_fed > 0
+    remaining = pile.total_amount
+    logs = []
+    pile.time_skip([cat], logs)
+    assert pile.total_amount == 0
+    assert pile.nutrition_info[cat.ID].current_score == max(0, manually_fed - pile.prey_requirement["warrior"])
+    assert any(f"{remaining:g} pieces were removed" in line for line in logs)
+    assert "0 pieces of prey were consumed." in logs
+
+
+@pytest.mark.parametrize("writer", ["patrol", "focus", "monthly", "event"])
+def test_crowfood_receives_prey_from_real_gameplay_writers(colony, monkeypatch, writer):
+    from scripts.clan_resources.freshkill import FreshkillPile
+    from scripts.events import Events
+    from scripts.events_module.patrol.patrol import Patrol
+    from scripts.events_module.patrol.patrol_outcome import PatrolOutcome
+    from scripts.events_module.short.handle_short_events import HandleShortEvents
+
+    colony.cruel_cards = ["crowfood"]
+    hunter = Cat(status="warrior", moons=40)
+    colony.add_cat(hunter)
+    monkeypatch.setattr(game, "freshkill_event_list", [])
+    monkeypatch.setattr(game, "cur_events_list", [])
+    pile = colony.freshkill_pile = FreshkillPile(start_amount=0)
+    events = Events()
+    if writer == "patrol":
+        patrol = Patrol()
+        patrol.add_patrol_cats([hunter], colony)
+        assert PatrolOutcome(prey=["medium"])._handle_prey(patrol)
+    elif writer == "focus":
+        colony.clan_settings["business as usual"] = False
+        colony.clan_settings["rest and recover"] = False
+        colony.clan_settings["hunting"] = True
+        with patch.object(events, "apply_relation_decay"):
+            events.handle_focus()
+    elif writer == "monthly":
+        events.get_moon_freshkill()
+    else:
+        HandleShortEvents().handle_freshkill_supply({"adjust": "increase_5"}, pile)
+    assert pile.total_amount > 0
+    assert pile.pile["expires_in_1"] == pile.total_amount
+    assert pile.pile["expires_in_4"] == 0
+
+
+@pytest.mark.parametrize("adjust,expected", [("increase_5", 21), ("reduce_eighth", 14)])
+def test_prey_events_add_numeric_amounts_and_losses_do_not_increase_stock(colony, adjust, expected):
+    from scripts.clan_resources.freshkill import FreshkillPile
+    from scripts.events_module.short.handle_short_events import HandleShortEvents
+
+    pile = FreshkillPile(start_amount=16)
+    HandleShortEvents().handle_freshkill_supply({"adjust": adjust}, pile)
+    assert pile.total_amount == expected
+    assert sum(pile.pile.values()) == expected
+
+
+def test_crowfood_loading_keeps_saved_remaining_ages(colony):
+    from scripts.clan_resources.freshkill import FreshkillPile
+
+    colony.cruel_cards = ["crowfood"]
+    saved = {"expires_in_4": 4, "expires_in_3": 3, "expires_in_2": 2, "expires_in_1": 1}
+    pile = FreshkillPile(saved.copy())
+    assert pile.pile == saved and pile.total_amount == 10
+    pile.add_freshkill(.5)
+    assert pile.pile == {**saved, "expires_in_1": 1.5}
+    pile.time_skip([], [])
+    assert pile.pile == {"expires_in_4": 0, "expires_in_3": 4, "expires_in_2": 3, "expires_in_1": 2}
+    assert pile.total_amount == 9
+
+
+def test_crowfood_conflict_is_explained_and_rejected_without_changing_the_deck(card_screen):
+    import pygame
+    import pygame_gui
+    from scripts.screens.CruelCards import DeckListWindow
+
+    screen = card_screen
+    screen.apply_cruel_deck(["survival_of_fittest"])
+    screen.card_page = 1
+    screen.refresh_cruel_cards()
+    screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.card_buttons["crowfood"]))
+    assert screen.cruel_cards == ["survival_of_fittest"]
+    assert "Crowfood Chaos" in screen.elements["card_error"].html_text
+    assert "Survival of the Fittest" in screen.elements["card_error"].html_text
+    assert screen.elements["card_error"].visible
+    with patch("scripts.screens.MakeClanScreen.choice", side_effect=lambda choices: choices[0]) as choose:
+        screen.random_cruel_card()
+        assert "crowfood" not in choose.call_args.args[0]
+    window = DeckListWindow(screen.cruel_cards, screen.apply_cruel_deck)
+    try:
+        window.entry.set_text("survival_of_fittest, crowfood")
+        window.process_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=window.apply))
+        assert "Crowfood Chaos" in window.error.html_text
+        assert screen.cruel_cards == ["survival_of_fittest"]
+    finally:
+        window.kill()
+    assert "manually" in CARDS["crowfood"]["description"]
+    assert "Survival of the Fittest" in CARDS["crowfood"]["description"]
+
+
+@pytest.mark.parametrize("cards", [None, [], ["for_the_throne"]])
+@pytest.mark.parametrize("actor,target", [("deputy", "leader"), ("warrior", "leader"), ("deputy", "warrior"), ("leader", "deputy")])
+def test_rivalry_changes_only_deputy_to_leader_interaction_weights(colony, cards, actor, target):
+    colony.cruel_cards = cards
+    first, second = Cat(status=actor, moons=40), Cat(status=target, moons=40)
+    relation = first.create_one_relationship(second)
+    for field in ("romantic_love", "platonic_like", "dislike", "admiration", "comfortable", "jealousy", "trust"):
+        setattr(relation, field, 0)
+    boosted = cards and actor == "deputy" and target == "leader"
+    with patch("scripts.cat_relations.relationship.get_personality_compatibility", return_value=None), patch(
+            "scripts.cat_relations.relationship.choice", side_effect=lambda values: values[0]) as choose:
+        relation.positive_interaction()
+        ballot = choose.call_args.args[0]
+        assert ballot.count(False) == (2 if boosted else 1)
+        for positive in (True, False):
+            relation.get_interaction_type(positive)
+            weights = choose.call_args.args[0]
+            assert weights.count("admiration") == (4 if boosted and not positive else 1)
+    assert relation.jealousy == 0
+
+
+
+def test_rivalry_negative_respect_interaction_has_real_effects_and_a_log(colony, monkeypatch):
+    from scripts.cat_relations.relationship import Relationship
+
+    colony.cruel_cards = ["for_the_throne"]
+    deputy, leader = Cat(status="deputy", moons=40), Cat(status="leader", moons=40)
+    relation = deputy.create_one_relationship(leader)
+    relation.admiration = relation.trust = 80
+    monkeypatch.setattr(game, "cur_events_list", [])
+    def choose(values):
+        return "admiration" if "admiration" in values else values[0]
+    with patch.object(Relationship, "positive_interaction", return_value=False), patch(
+            "scripts.cat_relations.relationship.choice", side_effect=choose), patch(
+            "scripts.cat_relations.relationship.random.choices", return_value=["low"]), patch.dict(
+            game.config["relationship"], {"chance_for_neutral": 0}):
+        relation.start_interaction()
+    assert relation.admiration < 80
+    assert relation.trust < 80 and relation.dislike > 0
+    assert relation.log and game.cur_events_list

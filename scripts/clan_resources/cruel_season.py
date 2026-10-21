@@ -1,6 +1,6 @@
 """Cruel Season card definitions adapted from ClanGen and LifeGen.
 
-Source revisions and adaptation notes are recorded in resources/dicts/cruel_season.json and TODO.md.
+Source revisions and adaptation notes are recorded in resources/dicts/cruel_season.json.
 """
 from copy import deepcopy
 import json

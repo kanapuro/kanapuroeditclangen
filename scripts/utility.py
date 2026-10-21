@@ -1595,6 +1595,10 @@ def gather_cat_objects(
             index = int(index)
             if index < len(event.new_cats):
                 out_set.update(event.new_cats[index])
+        elif abbr in ("high_lawful", "low_lawful", "high_stable", "low_stable"):
+            facet = "lawfulness" if abbr.endswith("lawful") else "stability"
+            out_set = {cat for cat in out_set if cat is not None
+                       and (getattr(cat.personality, facet) > 8) == abbr.startswith("high_")}
         else:
             print(f"WARNING: Unsupported ClanGen abbreviation {abbr}")
 
@@ -1627,7 +1631,7 @@ def unpack_rel_block(
     :param Cat stat_cat: if passing the Patrol class, must include stat_cat separately
     :param Cat extra_cat: if not passing an event class, include the single affected cat object here. If you are not passing a full event class, then be aware that you can only include "m_c" as a cat abbreviation in your rel block.  The other cat abbreviations will not work.
     """
-    possible_values = ("romantic", "platonic", "dislike", "comfort", "jealous", "trust", "respect")
+    possible_values = ("romantic", "platonic", "dislike", "comfort", "jealous", "trust", "respect", "like")
 
     for block in relationship_effects:
         cats_from = block.get("cats_from", [])
@@ -1646,8 +1650,10 @@ def unpack_rel_block(
             cats_to_ob.remove(None)
 
         # Check to see if value block
-        if not (cats_to_ob and cats_from_ob and values and isinstance(amount, int)):
+        if not (values and isinstance(amount, int)):
             print(f"Relationship block incorrectly formatted: {block}")
+            continue
+        if not (cats_to_ob and cats_from_ob):
             continue
 
         positive = False
@@ -1664,6 +1670,8 @@ def unpack_rel_block(
             romantic_love = amount
             if amount > 0:
                 positive = True
+        if "like" in values and amount > 0:
+            positive = True
         if "platonic" in values:
             platonic_like = amount
             if amount > 0:
@@ -1701,6 +1709,9 @@ def unpack_rel_block(
             log = block.get("log")
             if isinstance(log, str):
                 log1 = log
+            elif isinstance(log, dict):
+                log1 = log.get("cats_from")
+                log2 = log.get("cats_to", log1)
             elif isinstance(log, list):
                 if len(log) >= 2:
                     log1 = log[0]
@@ -1727,32 +1738,31 @@ def unpack_rel_block(
             else:
                 log2 = f"These cats recently interacted." + effect
 
-        change_relationship_values(
-            cats_to_ob,
-            cats_from_ob,
-            romantic_love,
-            platonic_like,
-            dislike,
-            admiration,
-            comfortable,
-            jealousy,
-            trust,
-            log=log1, changes=changes
-        )
-
-        if block.get("mutual"):
-            change_relationship_values(
-                cats_from_ob,
-                cats_to_ob,
-                romantic_love,
-                platonic_like,
-                dislike,
-                admiration,
-                comfortable,
-                jealousy,
-                trust,
-                log=log2, changes=changes
-            )
+        for cat_from in cats_from_ob:
+            for cat_to in cats_to_ob:
+                if cat_from == cat_to:
+                    continue
+                logs = [log1, log2]
+                if isinstance(block.get("log"), dict):
+                    for index, text in enumerate(logs):
+                        text = process_text(text, {
+                            "cat_from": (str(cat_from.name), get_pronouns(cat_from)),
+                            "cat_to": (str(cat_to.name), get_pronouns(cat_to)),
+                        })
+                        logs[index] = event_text_adjust(
+                            Cat, text, main_cat=getattr(event, "main_cat", extra_cat),
+                            random_cat=getattr(event, "random_cat", None),
+                            victim_cat=getattr(event, "victim_cat", None),
+                            clan=game.clan, other_clan=getattr(event, "other_clan", None))
+                change_relationship_values(
+                    [cat_to], [cat_from], romantic_love, platonic_like, dislike, admiration,
+                    comfortable, jealousy, trust, log=logs[0], changes=changes,
+                    signed_like=amount if "like" in values else 0)
+                if block.get("mutual"):
+                    change_relationship_values(
+                        [cat_from], [cat_to], romantic_love, platonic_like, dislike, admiration,
+                        comfortable, jealousy, trust, log=logs[1], changes=changes,
+                        signed_like=amount if "like" in values else 0)
 
 
 RELATIONSHIP_VALUES = (
@@ -1787,6 +1797,7 @@ def change_relationship_values(
     auto_romance: bool = False,
     log: str = None,
     changes: dict = None,
+    signed_like: int = 0,
 ):
     """
     changes relationship values according to the parameters.
@@ -1806,6 +1817,7 @@ def change_relationship_values(
     will also be applied to romantic, default False
     :param str log: the string to append to the relationship log of cats involved
     :param dict changes: optional directed before/after values for patrol feedback
+    :param int signed_like: upstream liking delta spanning local platonic liking and dislike
         """
 
     # This is just for test prints - DON'T DELETE - you can use this to test if relationships are changing
@@ -1845,6 +1857,14 @@ def change_relationship_values(
 
                 # now gain the romance
                 rel.romantic_love += romantic_love
+
+            # Upstream signed liking crosses zero; keep the local like/dislike values separate.
+            if signed_like < 0:
+                rel.dislike += max(0, -signed_like - rel.platonic_like)
+                rel.platonic_like += signed_like
+            elif signed_like > 0:
+                rel.platonic_like += max(0, signed_like - rel.dislike)
+                rel.dislike -= signed_like
 
             # gain other rel values
             rel.platonic_like += platonic_like
@@ -2532,8 +2552,15 @@ def leader_ceremony_text_adjust(
         text = text.replace("[virtue]", virtue)
 
     if extra_lives:
+        if str(extra_lives) == "1":
+            text = text.replace("[life_num] lives", "[life_num] life")
+        text = text.replace("[life_pronoun]", "it" if str(extra_lives) == "1" else "them")
         text = text.replace("[life_num]", str(extra_lives))
 
+    total_lives = game.clan.get_starting_leader_lives(leader)
+    if total_lives == 1:
+        text = text.replace("[total_lives] lives", "[total_lives] life")
+    text = text.replace("[total_lives]", "nine" if total_lives == 9 else str(total_lives))
     text = text.replace("c_n", str(game.clan.name))
 
     return text

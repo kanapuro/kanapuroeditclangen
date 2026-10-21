@@ -15,6 +15,7 @@ from scripts.clan import Clan
 from scripts.cat.history import History
 from scripts.game_structure.game_essentials import game
 from scripts.events_module.patrol.patrol_event import PatrolEvent
+from scripts.events_module.event_frequency import select_frequency
 from scripts.events_module.patrol.patrol_outcome import PatrolOutcome
 from scripts.special_dates import get_special_date, contains_special_date_tag
 from scripts.utility import (
@@ -93,6 +94,11 @@ class Patrol:
             f"Total Number of Possible Patrols | normal: {len(final_patrols)}, romantic: {len(final_romance_patrols)} "
         )
 
+        frequency_pools = any(event.frequency is not None for event in final_patrols + final_romance_patrols)
+        final_patrols = select_frequency(final_patrols)
+        if frequency_pools and final_patrols:
+            frequency = final_patrols[0].frequency or 4
+            final_romance_patrols = [event for event in final_romance_patrols if (event.frequency or 4) == frequency]
         if final_patrols:
             normal_event_choice = choices(
                 final_patrols, weights=[x.weight for x in final_patrols]
@@ -842,7 +848,8 @@ class Patrol:
                 season=patrol.get("season"),
                 camp=patrol.get("camp"),
                 tags=patrol.get("tags"),
-                weight=patrol.get("weight", 20),
+                weight=patrol.get("weight", None if "frequency" in patrol else 20),
+                frequency=patrol.get("frequency"),
                 types=patrol.get("types"),
                 intro_text=patrol.get("intro_text"),
                 patrol_art=patrol.get("patrol_art"),
@@ -948,7 +955,7 @@ class Patrol:
         patrol_size = len(self.patrol_cats)
         total_exp = sum([x.experience for x in self.patrol_cats if hasattr(x, 'experience')])
         gm_modifier = game.config["patrol_generation"][
-            f"{game.clan.game_mode}_difficulty_modifier"
+            f"{game.clan.simulation_mode}_difficulty_modifier"
         ]
 
         exp_adustment = (

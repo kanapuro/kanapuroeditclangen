@@ -266,54 +266,20 @@ class Thoughts:
                 if outside_status and outside_status != 'clancat' and len(r_c_in) > 0:
                     return False
 
-            if 'has_injuries' in thought:
-                if "m_c" in thought['has_injuries']:
-                    if main_cat.injuries or main_cat.illnesses:
-                        injuries_and_illnesses = main_cat.injuries.keys() + main_cat.injuries.keys()
-                        if not [i for i in injuries_and_illnesses if i in thought['has_injuries']["m_c"]] and \
-                                "any" not in thought['has_injuries']["m_c"]:
-                            return False
+        for constraint in ("has_injuries", "perm_conditions"):
+            for role, cat in (("m_c", main_cat), ("r_c", random_cat)):
+                required = thought.get(constraint, {}).get(role)
+                if required is None:
+                    continue
+                if cat is None:
                     return False
-
-                if "r_c" in thought['has_injuries'] and random_cat:
-                    if random_cat.injuries or random_cat.illnesses:
-                        injuries_and_illnesses = random_cat.injuries.keys() + random_cat.injuries.keys()
-                        if not [i for i in injuries_and_illnesses if i in thought['has_injuries']["r_c"]] and \
-                                "any" not in thought['has_injuries']["r_c"]:
-                            return False
+                if constraint == "has_injuries":
+                    present = set(cat.injuries) | set(cat.illnesses)
+                else:
+                    present = {name for name, info in cat.permanent_condition.items()
+                               if not info.get("born_with") or info.get("moons_until") == -2}
+                if not present or ("any" not in required and not present.intersection(required)):
                     return False
-
-            if "perm_conditions" in thought:
-                if "m_c" in thought["perm_conditions"]:
-                    if main_cat.permanent_condition:
-                        if not [i for i in main_cat.permanent_condition if
-                                i in thought["perm_conditions"]["m_c"]] and \
-                                "any" not in thought['perm_conditions']["m_c"]:
-                            return False
-                    else:
-                        return False
-
-                if "r_c" in thought["perm_conditions"] and random_cat:
-                    if random_cat.permanent_condition:
-                        if not [i for i in random_cat.permanent_condition if
-                                i in thought["perm_conditions"]["r_c"]] and \
-                                "any" not in thought['perm_conditions']["r_c"]:
-                            return False
-                    else:
-                        return False
-        
-        if "perm_conditions" in thought:
-            if "m_c" in thought["perm_conditions"]:
-                if main_cat.permanent_condition:
-                    if not [i for i in main_cat.permanent_condition if i in thought["perm_conditions"]["m_c"]] and \
-                            "any" not in thought['perm_conditions']["m_c"]:
-                        return False
-
-            if "r_c" in thought["perm_conditions"] and random_cat:
-                if random_cat.permanent_condition:
-                    if not [i for i in random_cat.permanent_condition if i in thought["perm_conditions"]["r_c"]] and \
-                            "any" not in thought['perm_conditions']["r_c"]:
-                        return False
 
         return True
 

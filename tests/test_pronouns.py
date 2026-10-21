@@ -57,6 +57,8 @@ def validate():
         "(deadmentor)": _r,
         "(previous_mentor)": _r,
         "mur_c": _r,
+        "cat_from": _r,
+        "cat_to": _r,
         "t_c": _r,
         "y_c": _r,
         "d_c": _r,

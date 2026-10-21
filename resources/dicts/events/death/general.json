@@ -11,6 +11,33 @@
             "murder"
         ],
         "tags": [],
+        "frequency": 4,
+        "exclude_involved": [
+            "r_c"
+        ],
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 20,
         "event_text": "m_c was murdered. The culprit is unknown.",
         "m_c": {
@@ -85,6 +112,30 @@
             "murder"
         ],
         "tags": [],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 20,
         "event_text": "m_c was murdered. r_c stands over {PRONOUN/m_c/object}, blood dripping from {PRONOUN/r_c/poss} pelt.",
         "m_c": {
@@ -162,6 +213,30 @@
             "murder"
         ],
         "tags": [],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 20,
         "event_text": "m_c was murdered by r_c in cold blood.",
         "m_c": {
@@ -242,6 +317,30 @@
             "murder"
         ],
         "tags": [],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 20,
         "event_text": "m_c was murdered by r_c in cold blood. r_c has made the death look accidental.",
         "m_c": {
@@ -323,6 +422,30 @@
             "murder"
         ],
         "tags": [],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 30,
         "event_text": "r_c killed m_c by feeding {PRONOUN/m_c/object} deathberries.",
         "m_c": {
@@ -399,6 +522,30 @@
             "murder"
         ],
         "tags": [],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 30,
         "event_text": "r_c killed m_c by feeding {PRONOUN/m_c/object} foxglove seeds.",
         "m_c": {
@@ -478,6 +625,30 @@
             "murder"
         ],
         "tags": [],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 30,
         "event_text": "r_c killed m_c by feeding {PRONOUN/m_c/object} nightshade berries.",
         "m_c": {
@@ -559,6 +730,30 @@
             "murder"
         ],
         "tags": [],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 30,
         "event_text": "r_c killed m_c by feeding {PRONOUN/m_c/object} water hemlock.",
         "m_c": {
@@ -638,6 +833,30 @@
             "murder"
         ],
         "tags": [],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 30,
         "event_text": "r_c killed m_c by consciously giving {PRONOUN/m_c/object} the wrong herbs.",
         "m_c": {
@@ -2240,6 +2459,30 @@
             "murder"
         ],
         "tags": [],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 30,
         "event_text": "m_c was murdered by r_c in cold blood in the hope of taking {PRONOUN/m_c/poss} place.",
         "m_c": {
@@ -2320,6 +2563,30 @@
             "murder"
         ],
         "tags": [],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 30,
         "event_text": "m_c was murdered by r_c in cold blood. r_c staged the death as an accident and hopes to take {PRONOUN/m_c/poss} place.",
         "m_c": {
@@ -2451,7 +2718,6 @@
             }
         ]
     },
-    
     {
         "event_id": "gen_death_murder_any5",
         "location": [
@@ -2465,6 +2731,30 @@
         ],
         "tags": [
             "all_lives"
+        ],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
         ],
         "weight": 20,
         "event_text": "A yowl took m_c by surprise as {PRONOUN/m_c/subject} {VERB/m_c/were/was} patrolling the territory. r_c crashed into view, meowing about how m_c had to come and see. m_c followed the distressed warrior to a small ravine. Suddenly, {PRONOUN/m_c/subject} felt a sharp shove from behind, letting out a yowl of surprise that was cut short as {PRONOUN/m_c/subject} landed on the sharp rocks below.",
@@ -2535,6 +2825,30 @@
         ],
         "tags": [
             "all_lives"
+        ],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
         ],
         "weight": 20,
         "event_text": "m_c agreed to venture with r_c out onto a frozen pond. m_c went first while r_c hung back. m_c slid around playfully, taunting the other cat to chase {PRONOUN/m_c/object}. {PRONOUN/m_c/subject/CAP} {VERB/m_c/were/was} about to launch another teasing remark when the ice cracked below {PRONOUN/m_c/poss} paws. r_c lingered to make sure {PRONOUN/m_c/subject} didn't resurface before running back to camp with a yowl.",
@@ -6657,6 +6971,30 @@
         "tags": [
             "low_lives"
         ],
+        "frequency": 3,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 15,
         "event_text": "m_c was pushed under a monster by r_c.",
         "m_c": {
@@ -6735,6 +7073,30 @@
         ],
         "tags": [
             "all_lives"
+        ],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
         ],
         "weight": 20,
         "event_text": "m_c was murdered by r_c in cold blood in order to take {PRONOUN/m_c/poss} place.",
@@ -6888,6 +7250,30 @@
         ],
         "tags": [
             "all_lives"
+        ],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
         ],
         "weight": 20,
         "event_text": "m_c and r_c were on a walk together when a pack of dogs caught them off guard. m_c prepared to fight, but when {PRONOUN/m_c/subject} looked to r_c for backup, the other cat was nowhere to be found. r_c watched quietly as the dogs took life after life from m_c.",
@@ -8051,6 +8437,30 @@
             "all_lives",
             "low_lives"
         ],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
         "weight": 30,
         "event_text": "r_c watches impassively as m_c struggles in a Twoleg trap, waiting till {PRONOUN/m_c/subject} slowly {VERB/m_c/stop/stops} moving before leaving the area.",
         "m_c": {
@@ -8108,6 +8518,30 @@
         "tags": [
             "all_lives",
             "low_lives"
+        ],
+        "frequency": 4,
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
         ],
         "weight": 30,
         "event_text": "r_c hisses {PRONOUN/r_c/poss} grievances into m_c's ear as {PRONOUN/r_c/subject} {VERB/r_c/kill/kills} {PRONOUN/m_c/object}.",
@@ -8265,6 +8699,169 @@
                 ],
                 "amount": 15
             }
+        ]
+    },
+    {
+        "event_id": "gen_death_drown_multi2_murder",
+        "location": [
+            "plains",
+            "forest",
+            "mountainous",
+            "wetlands"
+        ],
+        "season": [
+            "leaf-fall",
+            "newleaf",
+            "greenleaf"
+        ],
+        "sub_type": [
+            "murder"
+        ],
+        "tags": [
+            "all_lives"
+        ],
+        "frequency": 3,
+        "event_text": "m_c fell into a river and drowned.",
+        "r_c": {
+            "age": [
+                "newborn",
+                "adolescent",
+                "young adult",
+                "adult",
+                "senior adult",
+                "senior"
+            ]
+        },
+        "m_c": {
+            "age": [
+                "newborn",
+                "adolescent",
+                "young adult",
+                "adult",
+                "senior adult",
+                "senior"
+            ],
+            "dies": true,
+            "not_skill": [
+                "SWIMMER,2"
+            ]
+        },
+        "history": [
+            {
+                "cats": [
+                    "m_c"
+                ],
+                "reg_death": "m_c was thrown into a river by r_c and drowned.",
+                "lead_death": "was thrown into a river by r_c and drowned."
+            }
+        ],
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "hidden_murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "any"
+                        ]
+                    }
+                }
+            }
+        ],
+        "exclude_involved": [
+            "r_c"
+        ]
+    },
+    {
+        "event_id": "gen_death_wander_any1_murder",
+        "location": [
+            "any"
+        ],
+        "season": [
+            "any"
+        ],
+        "sub_type": [
+            "murder"
+        ],
+        "tags": [
+            "all_lives"
+        ],
+        "frequency": 2,
+        "event_text": "m_c wandered out into the territory and was later found dead.",
+        "m_c": {
+            "age": [
+                "newborn",
+                "adolescent",
+                "young adult",
+                "adult",
+                "senior adult",
+                "senior"
+            ],
+            "status": ["any"],
+            "dies": true
+        },
+        "r_c": {
+            "age": [
+                "newborn",
+                "adolescent",
+                "young adult",
+                "adult",
+                "senior adult",
+                "senior"
+            ],
+            "status": [
+                "any"
+            ]
+        },
+        "history": [
+            {
+                "cats": [
+                    "m_c"
+                ],
+                "reg_death": "m_c was lead out into the territory and killed by r_c.",
+                "lead_death": "was lead out into the territory and killed by r_c."
+            }
+        ],
+        "future_event": [
+            {
+                "event_type": "misc",
+                "pool": {
+                    "sub_type": [
+                        "hidden_murder_reveal"
+                    ]
+                },
+                "moon_delay": [
+                    1,
+                    12
+                ],
+                "involved_cats": {
+                    "m_c": "r_c",
+                    "mur_c": "m_c",
+                    "r_c": {
+                        "age": [
+                            "newborn",
+                            "adolescent",
+                            "young adult",
+                            "adult",
+                            "senior adult",
+                            "senior"
+                        ]
+                    }
+                }
+            }
+        ],
+        "exclude_involved": [
+            "r_c"
         ]
     }
 ]

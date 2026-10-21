@@ -97,17 +97,59 @@
 	{
 		"id": "comfort_inc_med3",
 		"interactions": [
+			"m_c and r_c get a little giggly off of some mysterious herbs they found on a patrol."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy",
+			"leader"
+		],
+		"random_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy",
+			"leader"
+		],
+		"reaction_random_cat": {
+			"comfortable": "increase"
+		}
+	},
+	{
+		"id": "comfort_inc_med3_working_main",
+		"interactions": [
 			"m_c is sharing the latest gossip {PRONOUN/m_c/subject} heard over the border with r_c.",
 			"m_c tells r_c {PRONOUN/m_c/subject}'ll save {PRONOUN/r_c/object} a piece of fresh-kill.",
+			"m_c gives r_c some feathers from the bird {PRONOUN/m_c/subject} caught to line {PRONOUN/r_c/poss} nest."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy",
+			"leader"
+		],
+		"random_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy",
+			"leader"
+		],
+		"reaction_random_cat": {
+			"comfortable": "increase"
+		},
+		"working_constraint": {
+			"m_c": true
+		}
+	},
+	{
+		"id": "comfort_inc_med3_working_main_random",
+		"interactions": [
 			"m_c playfully teases r_c for missing a catch.",
-			"m_c gives r_c some feathers from the bird {PRONOUN/m_c/subject} caught to line {PRONOUN/r_c/poss} nest.",
-			"m_c runs to greet r_c when {PRONOUN/r_c/subject} {VERB/r_c/return/returns} from a patrol.",
 			"m_c asks to be on a patrol with r_c.",
 			"m_c and r_c saw something hilarious during a patrol and can't stop giggling about it.",
 			"The Clan notices m_c and r_c share patrols more often.",
 			"During a hunting patrol, m_c and r_c share a piece of prey that is too small to bring back to camp.",
 			"m_c and r_c mark the same spot of the border as a sign of friendship. Gross.",
-			"m_c and r_c get a little giggly off of some mysterious herbs they found on a patrol.",
 			"m_c is delighted to be working with r_c today."
 		],
 		"main_status_constraint": [
@@ -124,6 +166,34 @@
 		],
 		"reaction_random_cat": {
 			"comfortable": "increase"
+		},
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
+		}
+	},
+	{
+		"id": "comfort_inc_med3_working_random",
+		"interactions": [
+			"m_c runs to greet r_c when {PRONOUN/r_c/subject} {VERB/r_c/return/returns} from a patrol."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy",
+			"leader"
+		],
+		"random_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy",
+			"leader"
+		],
+		"reaction_random_cat": {
+			"comfortable": "increase"
+		},
+		"working_constraint": {
+			"r_c": true
 		}
 	},
 	{

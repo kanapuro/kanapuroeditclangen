@@ -8,7 +8,10 @@ TODO: Docs
 
   # pylint: enable=line-too-long
 
+from copy import deepcopy
+
 from scripts.cat.skills import SkillPath
+from scripts.clan_resources.cruel_season import apply_modifiers
 from scripts.game_structure.game_essentials import game
 
 
@@ -43,7 +46,7 @@ def medical_cats_condition_fulfilled(all_cats,
             total_med_number += 2
         elif cat.skills.meets_skill_requirement(SkillPath.HEALER, 2):
             total_med_number += 1.75
-        elif cat.skills.meets_skill_requirement(SkillPath.HEALER, 2):
+        elif cat.skills.meets_skill_requirement(SkillPath.HEALER, 1):
             total_med_number += 1.5
         else:
             total_med_number += 1
@@ -65,7 +68,9 @@ def medical_cats_condition_fulfilled(all_cats,
 
 def get_amount_cat_for_one_medic(clan):
     """Returns """
-    amount = 10
+    amount = apply_modifiers(
+        clan.cruel_cards if clan else None, ("condition_related", "medcats", "medcat_base_capacity"),
+        game.config["condition_related"]["medcats"]["medcat_base_capacity"])
     if clan and clan.simulation_mode == 'cruel season':
         amount = 7
     if clan and clan.game_mode == 'classic':
@@ -103,7 +108,7 @@ class Illness:
         self.duration = int(duration)
         self.medicine_duration = int(medicine_duration)
         self.medicine_mortality = int(medicine_mortality)
-        self.risks = risks
+        self.risks = deepcopy(risks)
         self.herbs = herbs if herbs else []
         self.new = event_triggered
 
@@ -185,8 +190,8 @@ class Injury:
         self.duration = duration
         self.medicine_duration = medicine_duration
         self.mortality = mortality
-        self.risks = risks
-        self.illness_infectiousness = illness_infectiousness
+        self.risks = deepcopy(risks)
+        self.illness_infectiousness = deepcopy(illness_infectiousness)
         self.also_got = also_got
         self.cause_permanent = cause_permanent
         self.herbs = herbs if herbs else []
@@ -254,8 +259,8 @@ class PermanentCondition:
         self.congenital = congenital
         self.moons_until = moons_until
         self.mortality = mortality
-        self.risks = risks
-        self.illness_infectiousness = illness_infectiousness
+        self.risks = deepcopy(risks)
+        self.illness_infectiousness = deepcopy(illness_infectiousness)
         self.herbs = herbs if herbs else []
         self.new = event_triggered
 

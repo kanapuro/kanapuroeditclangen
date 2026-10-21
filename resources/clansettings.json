@@ -150,7 +150,7 @@
         ],
         "leader_life_default": [
             "Leaders have one life",
-            "When enabled, leaders start with one life instead of nine. You can still override this per cat later.",
+            "When enabled, leaders use one life. You can override this per cat, but Cruel Season life grants still apply and spent lives are not restored.",
             false
         ],
         "random queen": [
@@ -161,8 +161,13 @@
     },
     "relation": {
         "affair": [
-            "Allow cats to breed with cats that aren't their mates",
-            "This will allow mated and unmated cats to have kits with other cats they are not mated with. This includes, but is not limited to, affairs/cheating.",
+            "Allow kits outside existing mate relationships",
+            "Allow automatic pregnancies or adoption with a non-mate when either cat already has a mate. This does not change explicit player-directed affair actions.",
+            false
+        ],
+        "unmated parentage": [
+            "Allow unmated cats to have kits together",
+            "Allow automatic pregnancies or adoption between two unmated cats, without enabling affairs involving mated cats. Unknown second parents are controlled separately.",
             false
         ],
         "same sex birth": [

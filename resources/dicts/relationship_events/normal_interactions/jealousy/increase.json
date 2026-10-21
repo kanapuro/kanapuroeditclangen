@@ -55,20 +55,37 @@
 			"warrior",
 			"mediator",
 			"deputy"
-		]
+		],
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
+		}
 	},
 	{
 		"id": "jealousy_inc_med3",
 		"interactions": [
 			"m_c is jealous that r_c was praised by the leader.",
 			"m_c is jealous that r_c got to fight in a border skirmish when {PRONOUN/m_c/subject} didn't.",
+			"The leader was more impressed by what r_c brought back from a hunting patrol than what m_c did."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"mediator apprentice",
+			"warrior"
+		],
+		"random_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy"
+		]
+	},
+	{
+		"id": "jealousy_inc_med3_working_random",
+		"interactions": [
 			"m_c is jealous that r_c got to go on border patrol this morning.",
 			"r_c caught a giant piece of prey that m_c wishes {PRONOUN/m_c/subject} did.",
-			"m_c tried to show off on a hunting patrol, but r_c got all the attention instead.",
 			"m_c wishes {PRONOUN/m_c/subject} could be as good a fighter as r_c.",
 			"m_c tries not to get envious hearing one of r_c's crazy patrol stories.",
-			"m_c had a plan during a patrol, but r_c's was a lot better.",
-			"The leader was more impressed by what r_c brought back from a hunting patrol than what m_c did.",
 			"m_c is jealous that r_c went on patrol without {PRONOUN/m_c/object}.",
 			"m_c doesn't understand how r_c got so good at hunting."
 		],
@@ -81,7 +98,32 @@
 			"apprentice",
 			"warrior",
 			"deputy"
-		]},
+		],
+		"working_constraint": {
+			"r_c": true
+		}
+	},
+	{
+		"id": "jealousy_inc_med3_working_main_random",
+		"interactions": [
+			"m_c tried to show off on a hunting patrol, but r_c got all the attention instead.",
+			"m_c had a plan during a patrol, but r_c's was a lot better."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"mediator apprentice",
+			"warrior"
+		],
+		"random_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy"
+		],
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
+		}
+	},
 		{
 			"id": "jel_inc_med4",
 			"interactions": [

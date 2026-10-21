@@ -185,7 +185,6 @@
 		"interactions": [
 			"m_c thinks r_c is the most beautiful cat in the Clan.",
 			"m_c can't stop thinking about r_c.",
-			"m_c feels giddy about getting on the same patrol as r_c.",
 			"m_c wants r_c to understand how crazy {PRONOUN/m_c/subject} {VERB/m_c/are/is} about {PRONOUN/r_c/object}.",
 			"m_c thinks r_c has a lovely sense of humor.",
 			"If you were to ask m_c, no other cat is anywhere near as fun or interesting as r_c.",
@@ -194,6 +193,20 @@
 		"relationship_constraint": [
 			"romantic_30"
 		]
+	},
+	{
+		"id": "rom_inc_medium7_working_main_random",
+		"intensity": "medium",
+		"interactions": [
+			"m_c feels giddy about getting on the same patrol as r_c."
+		],
+		"relationship_constraint": [
+			"romantic_30"
+		],
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
+		}
 	},
 	{
 		"id": "rom_inc_medium8",
@@ -242,6 +255,10 @@
 		"reaction_main_cat": {
 			"romantic": "increase",
 			"platonic": "increase"
+		},
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
 		}
 	},
 	{
@@ -260,7 +277,19 @@
 			"m_c gives r_c a wonderfully colored pebble {PRONOUN/m_c/subject} found, and hides behind {PRONOUN/m_c/poss} whiskers when thanked.",
 			"m_c gives r_c a circular Twoleg object {PRONOUN/m_c/subject} found, and hides behind {PRONOUN/m_c/poss} whiskers when thanked.",
 			"m_c compliments r_c on how well groomed {PRONOUN/r_c/poss} pelt is today.",
-			"m_c compliments r_c on how sharp {PRONOUN/r_c/poss} claws are today.",
+			"m_c compliments r_c on how sharp {PRONOUN/r_c/poss} claws are today."
+		],
+		"reaction_random_cat": {
+			"romantic": "increase",
+			"dislike": "decrease",
+			"platonic": "increase",
+			"comfortable": "increase"
+		}
+	},
+	{
+		"id": "rom_inc_high1_working_main_random",
+		"intensity": "high",
+		"interactions": [
 			"m_c compliments r_c on {PRONOUN/r_c/poss} catch during a hunting patrol, which causes {PRONOUN/r_c/object} to purr."
 		],
 		"reaction_random_cat": {
@@ -268,6 +297,10 @@
 			"dislike": "decrease",
 			"platonic": "increase",
 			"comfortable": "increase"
+		},
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
 		}
 	},
 	{
@@ -338,7 +371,22 @@
 		"interactions": [
 			"m_c purrs for a long time at one of r_c's lame jokes.",
 			"m_c can't stop gushing over r_c.",
-			"m_c came back to camp sulking after failing to catch r_c's favorite prey for {PRONOUN/r_c/object} but {PRONOUN/r_c/subject} {VERB/r_c/doesn't/didn't} seem to care, nuzzling into m_c's neck, {PRONOUN/r_c/subject} {VERB/r_c/were/was} just happy m_c was back.",
+			"m_c came back to camp sulking after failing to catch r_c's favorite prey for {PRONOUN/r_c/object} but {PRONOUN/r_c/subject} {VERB/r_c/doesn't/didn't} seem to care, nuzzling into m_c's neck, {PRONOUN/r_c/subject} {VERB/r_c/were/was} just happy m_c was back."
+		],
+		"relationship_constraint": [
+			"mates"
+		],
+		"reaction_random_cat": {
+			"romantic": "increase",
+			"dislike": "decrease",
+			"platonic": "increase",
+			"comfortable": "increase"
+		}
+	},
+	{
+		"id": "rom_inc_high5_working_main",
+		"intensity": "high",
+		"interactions": [
 			"m_c goes out of {PRONOUN/m_c/poss} way to catch r_c's favorite prey."
 		],
 		"relationship_constraint": [
@@ -349,6 +397,9 @@
 			"dislike": "decrease",
 			"platonic": "increase",
 			"comfortable": "increase"
+		},
+		"working_constraint": {
+			"m_c": true
 		}
 	},
 	{

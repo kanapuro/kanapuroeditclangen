@@ -108,6 +108,8 @@ class History:
                     "victim": ID,
                     "revealed": bool,
                     "moon": moon the murder occurred
+                    "clan_discovery": whether the whole Clan knows (optional in older saves)
+                    "aware_individuals": IDs of individual witnesses (optional in older saves)
                     "revealed_by": ID of the discoverer
                     "revelation_moon": moon the murder was revealed
                     "revelation_text": revealed murder history
@@ -120,6 +122,8 @@ class History:
                     "text": same text as the death history for this murder (revealed history)
                     "unrevealed_text": unrevealed death history
                     "moon": moon the murder occurred
+                    "clan_discovery": whether the whole Clan knows (optional in older saves)
+                    "aware_individuals": IDs of individual witnesses (optional in older saves)
                     "revealed_by": ID of the discoverer
                     "revelation_moon": moon the murder was revealed
                     "revelation_text": revealed death history
@@ -538,7 +542,7 @@ class History:
         })
 
     @staticmethod
-    def add_murders(cat, other_cat, revealed, text=None, unrevealed_text=None):
+    def add_murders(cat, other_cat, revealed, text=None, unrevealed_text=None, hidden=False):
         """
         this adds murder info
         :param cat: cat object (cat being murdered)
@@ -546,6 +550,7 @@ class History:
         :param revealed: True or False depending on if the murderer has been revealed to the player
         :param text: event text for the victim's death (should be same as their death history)
         :param unrevealed_text: unrevealed event text for victim's death (not saved in their death history)
+        :param hidden: whether the death initially appears accidental rather than a known murder
         :return:
         """
         if not game.clan:
@@ -569,6 +574,9 @@ class History:
             "unrevealed_text": unrevealed_text,
             "moon": game.clan.age
         })
+        if hidden:
+            other_cat.history.murder["is_murderer"][-1]["hidden"] = True
+            cat.history.murder["is_victim"][-1]["hidden"] = True
 
     @staticmethod
     def add_lead_ceremony(cat):
@@ -774,10 +782,6 @@ class History:
         :param murder_index: Index of the murder
         :param shunned: LIFEGEN: determines if the cat will be shunned from the reveal"""
 
-        victim = cat_class.fetch_cat(victim)
-        murder_history = History.get_murders(cat)
-        victim_history = History.get_murders(victim)
-
         if cat.shunned == 0 and shunned:
             cat.shunned = 1
             cat.thought = "Is upset that they have been shunned"
@@ -792,47 +796,66 @@ class History:
                     fetched_cat.update_mentor()
             cat.update_mentor()
 
-        if murder_history:
-            if "is_murderer" in murder_history:
-                murder_history = murder_history["is_murderer"][murder_index]
-                murder_history["revealed"] = True
-                murder_history["revealed_by"] = other_cat.ID if other_cat else None
-                murder_history["revelation_moon"] = game.clan.age
+        victim = cat_class.fetch_cat(victim)
+        murders = (History.get_murders(cat) or {}).get("is_murderer", [])
+        # Player punishment can shun a cat without a recorded murder.
+        if not murders:
+            return
+        murder_history = murders[murder_index]
+        # A leader or an accomplice can leave several records on the same victim.
+        occurrence = sum(record["victim"] == victim.ID and record["moon"] == murder_history["moon"]
+                         for record in murders[:murder_index if murder_index >= 0 else len(murders) + murder_index])
+        victim_history = [record for record in History.get_murders(victim)["is_victim"]
+                          if record["murderer"] == cat.ID and record["moon"] == murder_history["moon"]][occurrence]
+        clan_reveal = shunned or other_cat is None
+        for record in (murder_history, victim_history):
+            record["clan_discovery"] = record.get("clan_discovery", record["revealed"]) or clan_reveal
+            aware = record.setdefault("aware_individuals", [])
+            if other_cat and other_cat.ID not in aware:
+                aware.append(other_cat.ID)
 
-                if cat.status not in ["apprentice", "kitten", "elder", "warrior"]:
-                    murder_history["demoted_from"] = cat.status
-                if cat.status == "leader":
-                    game.clan.apply_leader_life_limit()
-                    murder_history["remaining_lives"] = game.clan.leader_lives
-                    murder_history["leader_lives_reserve"] = game.clan.leader_lives_reserve
+        murder_history["revealed"] = True
+        murder_history["revealed_by"] = other_cat.ID if other_cat else None
+        murder_history["revelation_moon"] = game.clan.age
 
-                if not other_cat:
-                    murder_history["revelation_text"] = \
-                        "The truth of {PRONOUN/m_c/poss} crime against [victim] is known to the Clan."
-                else:
-                    murder_history["revelation_text"] = \
-                        "The truth of {PRONOUN/m_c/poss} crime against [victim] was discovered by [discoverer]."
+        if shunned:
+            if cat.status not in ["apprentice", "kitten", "elder", "warrior"]:
+                murder_history["demoted_from"] = cat.status
+            if cat.status == "leader":
+                game.clan.apply_leader_life_limit()
+                murder_history["remaining_lives"] = game.clan.leader_lives
+                murder_history["leader_lives_reserve"] = game.clan.leader_lives_reserve
 
-                victim_history = victim_history["is_victim"][0]
-                victim_history["revealed"] = True
-                victim_history["revealed_by"] = other_cat.ID if other_cat else None
-                victim_history["revelation_moon"] = game.clan.age
-                if not other_cat:
-                    victim_history["revelation_text"] = \
-                        "The truth of {PRONOUN/m_c/poss} murder is known to the Clan."
-                else:
-                    victim_history["revelation_text"] = \
-                        "The truth of {PRONOUN/m_c/poss} murder was discovered by [discoverer]."
+        if not other_cat:
+            murder_history["revelation_text"] = \
+                "The truth of {PRONOUN/m_c/poss} crime against [victim] is known to the Clan."
+        elif clan_reveal:
+            murder_history["revelation_text"] = \
+                "The truth of {PRONOUN/m_c/poss} crime against [victim] was made known to the Clan by [discoverer]."
+        else:
+            murder_history["revelation_text"] = \
+                "The truth of {PRONOUN/m_c/poss} crime against [victim] was discovered by [discoverer]."
 
-                discoverer: str = ""
-                if other_cat:
-                    discoverer = str(other_cat.name)
-                if "clan_discovery" in murder_history:
-                    discoverer = game.clan.name
+        victim_history["revealed"] = True
+        victim_history["revealed_by"] = other_cat.ID if other_cat else None
+        victim_history["revelation_moon"] = game.clan.age
+        if not other_cat:
+            victim_history["revelation_text"] = \
+                "The truth of {PRONOUN/m_c/poss} murder is known to the Clan."
+        elif clan_reveal:
+            victim_history["revelation_text"] = \
+                "The truth of {PRONOUN/m_c/poss} murder was made known to the Clan by [discoverer]."
+        else:
+            victim_history["revelation_text"] = \
+                "The truth of {PRONOUN/m_c/poss} murder was discovered by [discoverer]."
 
-                murder_history["revelation_text"] = murder_history["revelation_text"].replace('[victim]',
-                                                                                              str(victim.name))
-                murder_history["revelation_text"] = murder_history["revelation_text"].replace('[discoverer]',
-                                                                                              discoverer)
-                victim_history["revelation_text"] = victim_history["revelation_text"].replace('[discoverer]',
-                                                                                              discoverer)
+        discoverer: str = ""
+        if other_cat:
+            discoverer = str(other_cat.name)
+
+        murder_history["revelation_text"] = murder_history["revelation_text"].replace('[victim]',
+                                                                                      str(victim.name))
+        murder_history["revelation_text"] = murder_history["revelation_text"].replace('[discoverer]',
+                                                                                      discoverer)
+        victim_history["revelation_text"] = victim_history["revelation_text"].replace('[discoverer]',
+                                                                                      discoverer)

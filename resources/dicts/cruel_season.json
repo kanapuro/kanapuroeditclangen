@@ -12,6 +12,17 @@
             "repository": "https://github.com/sedgestripe/clangen",
             "commit": "bab3814eee64852125c004dac588fab809a730e9",
             "path": "resources/dicts/cruel_season"
+        },
+        {
+            "project": "ClanGen",
+            "repository": "https://github.com/ClanGenOfficial/clangen",
+            "commit": "ffed8e8864a99f2c8a48dc895b3e45d5f01209f8",
+            "path": "resources/dicts/cruel_season/environment_cards.json",
+            "cards": [
+                "crowfood"
+            ],
+            "license": "MPL-2.0 code; CC BY-NC 4.0 sprites/art/icons",
+            "adaptations": "Retain the local ordinary four-moon prey lifetime. Crowfood uses the source one-moon lifetime and expiry-before-feeding order. Prevent combining it with Survival of the Fittest because manual feeding is required, as requested by the maintainer."
         }
     ],
     "limit": 12,
@@ -21,6 +32,22 @@
             "always_greenleaf",
             "always_leaf-fall",
             "always_leaf-bare"
+        ],
+        "litters": [
+            "mouths_to_feed",
+            "underpopulated"
+        ],
+        "leader_life_count": [
+            "weak_stars",
+            "forsaken"
+        ],
+        "manual_feeding": [
+            "crowfood",
+            "survival_of_fittest"
+        ],
+        "no_mates": [
+            "heartless",
+            "mate_breakup"
         ]
     },
     "cards": {
@@ -174,6 +201,312 @@
                 "condition_related.expanded_illness_chance": 175
             },
             "card_art": "danger/miasma.png"
+        },
+        "burnout": {
+            "name": "Burnout",
+            "category": "Behavior",
+            "description": "Base medical capacity is reduced from 10 to 5. Experience and healing skills still improve how many cats medicine cats can care for.",
+            "card_art": "behavior/burnout.png",
+            "modifiers": {
+                "condition_related.medcats.medcat_base_capacity": 5
+            }
+        },
+        "longer_illnesses": {
+            "name": "Longer Illnesses",
+            "category": "Environment",
+            "description": "Illnesses last twice as long, including with medicine-cat care. Injuries are unaffected; herbs can still shorten recovery.",
+            "card_art": "environment/tainted.png",
+            "modifiers": {
+                "condition_related.duration_modifier": 2,
+                "condition_related.duration_modifier_tags": [
+                    "illness"
+                ]
+            }
+        },
+        "plague_ridden": {
+            "name": "Plague Ridden",
+            "category": "Danger",
+            "description": "Illness outbreaks can occur in any season and spread further through the colony. Medicine cats cannot reduce the chance of an outbreak.",
+            "card_art": "danger/tooth_and_claw.png",
+            "modifiers": {
+                "condition_related.med_infection_reduction": 0.0,
+                "condition_related.illness_outbreak_season": [
+                    "Leaf-bare",
+                    "Leaf-fall",
+                    "Greenleaf",
+                    "Newleaf"
+                ],
+                "condition_related.illness_percentage_max": 1.25
+            }
+        },
+        "mouths_to_feed": {
+            "name": "Mouths to Feed",
+            "category": "Behavior",
+            "description": "Larger litters are more likely. With larger litters enabled, the biggest litter category still includes up to twelve kits.",
+            "modifiers": {
+                "pregnancy.one_kit_possibility.young adult": 0,
+                "pregnancy.one_kit_possibility.adult": 4,
+                "pregnancy.one_kit_possibility.senior adult": 4,
+                "pregnancy.one_kit_possibility.senior": 2,
+                "pregnancy.two_kit_possibility.young adult": 2,
+                "pregnancy.two_kit_possibility.adult": 5,
+                "pregnancy.two_kit_possibility.senior adult": 5,
+                "pregnancy.two_kit_possibility.senior": 2,
+                "pregnancy.three_kit_possibility.young adult": 9,
+                "pregnancy.three_kit_possibility.adult": 11,
+                "pregnancy.three_kit_possibility.senior adult": 8,
+                "pregnancy.three_kit_possibility.senior": 3,
+                "pregnancy.four_kit_possibility.young adult": 17,
+                "pregnancy.four_kit_possibility.adult": 16,
+                "pregnancy.four_kit_possibility.senior adult": 8,
+                "pregnancy.four_kit_possibility.senior": 1,
+                "pregnancy.five_kit_possibility.young adult": 15,
+                "pregnancy.five_kit_possibility.adult": 7,
+                "pregnancy.five_kit_possibility.senior adult": 5,
+                "pregnancy.five_kit_possibility.senior": 0,
+                "pregnancy.max_kit_possibility.young adult": 12,
+                "pregnancy.max_kit_possibility.adult": 3,
+                "pregnancy.max_kit_possibility.senior adult": 2,
+                "pregnancy.max_kit_possibility.senior": 0,
+                "pregnancy.six_kit_possibility.young adult": 0,
+                "pregnancy.six_kit_possibility.adult": 0,
+                "pregnancy.six_kit_possibility.senior adult": 0,
+                "pregnancy.six_kit_possibility.senior": 0,
+                "pregnancy.seven_kit_possibility.young adult": 0,
+                "pregnancy.seven_kit_possibility.adult": 0,
+                "pregnancy.seven_kit_possibility.senior adult": 0,
+                "pregnancy.seven_kit_possibility.senior": 0,
+                "pregnancy.eight_kit_possibility.young adult": 0,
+                "pregnancy.eight_kit_possibility.adult": 0,
+                "pregnancy.eight_kit_possibility.senior adult": 0,
+                "pregnancy.eight_kit_possibility.senior": 0,
+                "pregnancy.nine_kit_possibility.young adult": 0,
+                "pregnancy.nine_kit_possibility.adult": 0,
+                "pregnancy.nine_kit_possibility.senior adult": 0,
+                "pregnancy.nine_kit_possibility.senior": 0,
+                "pregnancy.ten_kit_possibility.young adult": 0,
+                "pregnancy.ten_kit_possibility.adult": 0,
+                "pregnancy.ten_kit_possibility.senior adult": 0,
+                "pregnancy.ten_kit_possibility.senior": 0,
+                "pregnancy.eleven_kit_possibility.young adult": 0,
+                "pregnancy.eleven_kit_possibility.adult": 0,
+                "pregnancy.eleven_kit_possibility.senior adult": 0,
+                "pregnancy.eleven_kit_possibility.senior": 0,
+                "pregnancy.one_kit_modded.young adult": 0,
+                "pregnancy.two_kit_modded.young adult": 114,
+                "pregnancy.three_kit_modded.young adult": 513,
+                "pregnancy.four_kit_modded.young adult": 969,
+                "pregnancy.five_kit_modded.young adult": 855,
+                "pregnancy.six_kit_modded.young adult": 384,
+                "pregnancy.seven_kit_modded.young adult": 192,
+                "pregnancy.nine_kit_modded.young adult": 96,
+                "pregnancy.max_kit_modded.young adult": 12,
+                "pregnancy.one_kit_modded.adult": 60,
+                "pregnancy.two_kit_modded.adult": 75,
+                "pregnancy.three_kit_modded.adult": 165,
+                "pregnancy.four_kit_modded.adult": 240,
+                "pregnancy.five_kit_modded.adult": 105,
+                "pregnancy.six_kit_modded.adult": 24,
+                "pregnancy.seven_kit_modded.adult": 12,
+                "pregnancy.nine_kit_modded.adult": 6,
+                "pregnancy.max_kit_modded.adult": 3,
+                "pregnancy.one_kit_modded.senior adult": 112,
+                "pregnancy.two_kit_modded.senior adult": 140,
+                "pregnancy.three_kit_modded.senior adult": 224,
+                "pregnancy.four_kit_modded.senior adult": 224,
+                "pregnancy.five_kit_modded.senior adult": 140,
+                "pregnancy.six_kit_modded.senior adult": 32,
+                "pregnancy.seven_kit_modded.senior adult": 16,
+                "pregnancy.nine_kit_modded.senior adult": 6,
+                "pregnancy.max_kit_modded.senior adult": 2,
+                "pregnancy.one_kit_modded.senior": 58,
+                "pregnancy.two_kit_modded.senior": 58,
+                "pregnancy.three_kit_modded.senior": 87,
+                "pregnancy.four_kit_modded.senior": 29,
+                "pregnancy.five_kit_modded.senior": 0,
+                "pregnancy.six_kit_modded.senior": 0,
+                "pregnancy.seven_kit_modded.senior": 0,
+                "pregnancy.nine_kit_modded.senior": 0,
+                "pregnancy.max_kit_modded.senior": 0
+            },
+            "card_art": "behavior/mouths_to_feed.png"
+        },
+        "underpopulated": {
+            "name": "Underpopulated",
+            "category": "Behavior",
+            "description": "Smaller litters are more likely. This also applies with larger litters enabled.",
+            "modifiers": {
+                "pregnancy.one_kit_possibility.young adult": 12,
+                "pregnancy.one_kit_possibility.adult": 10,
+                "pregnancy.one_kit_possibility.senior adult": 11,
+                "pregnancy.one_kit_possibility.senior": 5,
+                "pregnancy.two_kit_possibility.young adult": 11,
+                "pregnancy.two_kit_possibility.adult": 14,
+                "pregnancy.two_kit_possibility.senior adult": 16,
+                "pregnancy.two_kit_possibility.senior": 4,
+                "pregnancy.three_kit_possibility.young adult": 17,
+                "pregnancy.three_kit_possibility.adult": 15,
+                "pregnancy.three_kit_possibility.senior adult": 5,
+                "pregnancy.three_kit_possibility.senior": 1,
+                "pregnancy.four_kit_possibility.young adult": 7,
+                "pregnancy.four_kit_possibility.adult": 4,
+                "pregnancy.four_kit_possibility.senior adult": 2,
+                "pregnancy.four_kit_possibility.senior": 0,
+                "pregnancy.five_kit_possibility.young adult": 1,
+                "pregnancy.five_kit_possibility.adult": 2,
+                "pregnancy.five_kit_possibility.senior adult": 0,
+                "pregnancy.five_kit_possibility.senior": 0,
+                "pregnancy.max_kit_possibility.young adult": 1,
+                "pregnancy.max_kit_possibility.adult": 0,
+                "pregnancy.max_kit_possibility.senior adult": 0,
+                "pregnancy.max_kit_possibility.senior": 0,
+                "pregnancy.six_kit_possibility.young adult": 0,
+                "pregnancy.six_kit_possibility.adult": 0,
+                "pregnancy.six_kit_possibility.senior adult": 0,
+                "pregnancy.six_kit_possibility.senior": 0,
+                "pregnancy.seven_kit_possibility.young adult": 0,
+                "pregnancy.seven_kit_possibility.adult": 0,
+                "pregnancy.seven_kit_possibility.senior adult": 0,
+                "pregnancy.seven_kit_possibility.senior": 0,
+                "pregnancy.eight_kit_possibility.young adult": 0,
+                "pregnancy.eight_kit_possibility.adult": 0,
+                "pregnancy.eight_kit_possibility.senior adult": 0,
+                "pregnancy.eight_kit_possibility.senior": 0,
+                "pregnancy.nine_kit_possibility.young adult": 0,
+                "pregnancy.nine_kit_possibility.adult": 0,
+                "pregnancy.nine_kit_possibility.senior adult": 0,
+                "pregnancy.nine_kit_possibility.senior": 0,
+                "pregnancy.ten_kit_possibility.young adult": 0,
+                "pregnancy.ten_kit_possibility.adult": 0,
+                "pregnancy.ten_kit_possibility.senior adult": 0,
+                "pregnancy.ten_kit_possibility.senior": 0,
+                "pregnancy.eleven_kit_possibility.young adult": 0,
+                "pregnancy.eleven_kit_possibility.adult": 0,
+                "pregnancy.eleven_kit_possibility.senior adult": 0,
+                "pregnancy.eleven_kit_possibility.senior": 0,
+                "pregnancy.one_kit_modded.young adult": 684,
+                "pregnancy.two_kit_modded.young adult": 627,
+                "pregnancy.three_kit_modded.young adult": 969,
+                "pregnancy.four_kit_modded.young adult": 399,
+                "pregnancy.five_kit_modded.young adult": 57,
+                "pregnancy.six_kit_modded.young adult": 32,
+                "pregnancy.seven_kit_modded.young adult": 16,
+                "pregnancy.nine_kit_modded.young adult": 8,
+                "pregnancy.max_kit_modded.young adult": 1,
+                "pregnancy.one_kit_modded.adult": 150,
+                "pregnancy.two_kit_modded.adult": 210,
+                "pregnancy.three_kit_modded.adult": 225,
+                "pregnancy.four_kit_modded.adult": 60,
+                "pregnancy.five_kit_modded.adult": 30,
+                "pregnancy.six_kit_modded.adult": 0,
+                "pregnancy.seven_kit_modded.adult": 0,
+                "pregnancy.nine_kit_modded.adult": 0,
+                "pregnancy.max_kit_modded.adult": 0,
+                "pregnancy.one_kit_modded.senior adult": 308,
+                "pregnancy.two_kit_modded.senior adult": 448,
+                "pregnancy.three_kit_modded.senior adult": 140,
+                "pregnancy.four_kit_modded.senior adult": 56,
+                "pregnancy.five_kit_modded.senior adult": 0,
+                "pregnancy.six_kit_modded.senior adult": 0,
+                "pregnancy.seven_kit_modded.senior adult": 0,
+                "pregnancy.nine_kit_modded.senior adult": 0,
+                "pregnancy.max_kit_modded.senior adult": 0,
+                "pregnancy.one_kit_modded.senior": 145,
+                "pregnancy.two_kit_modded.senior": 116,
+                "pregnancy.three_kit_modded.senior": 29,
+                "pregnancy.four_kit_modded.senior": 0,
+                "pregnancy.five_kit_modded.senior": 0,
+                "pregnancy.six_kit_modded.senior": 0,
+                "pregnancy.seven_kit_modded.senior": 0,
+                "pregnancy.nine_kit_modded.senior": 0,
+                "pregnancy.max_kit_modded.senior": 0
+            },
+            "card_art": "behavior/underpopulated.png"
+        },
+        "clumsy_paws": {
+            "name": "Clumsy Paws",
+            "category": "Behavior",
+            "description": "Experience and skill gains slow as cats approach their maximum. Small gains can still improve skills and training.",
+            "card_art": "behavior/sorrow.png",
+            "modifiers": {
+                "progress.difficulty_modifier": 0.5
+            }
+        },
+        "survival_of_fittest": {
+            "name": "Survival of the Fittest",
+            "category": "Society",
+            "description": "Hunters are fed first, then cats with more experience. Feeding priorities are locked and manual meals are disabled.",
+            "modifiers": {
+                "prey.feeding.lock_order": true,
+                "prey.feeding.lock_priority": true,
+                "prey.feeding.allow_manual_feeding": false,
+                "prey.feeding.priorities": [
+                    "hunter first",
+                    "more experience first"
+                ]
+            },
+            "card_art": "society/survival_of_fittest.png"
+        },
+        "weak_stars": {
+            "name": "Weakened Stars",
+            "category": "Behavior",
+            "description": "Each new leader receives one to five lives. Their grant is saved and cannot be increased by changing life settings.",
+            "modifiers": {
+                "death_related.max_leader_lives": 5,
+                "death_related.min_leader_lives": 1
+            },
+            "card_art": "behavior/weakened_stars.png"
+        },
+        "forsaken": {
+            "name": "Forsaken",
+            "category": "Behavior",
+            "description": "Leaders receive only one life, including successors. Colony and individual life settings cannot grant extra lives.",
+            "modifiers": {
+                "death_related.max_leader_lives": 1,
+                "death_related.min_leader_lives": 1
+            },
+            "card_art": "behavior/forsaken.png"
+        },
+        "mate_breakup": {
+            "name": "Not Made To Last",
+            "category": "Behavior",
+            "description": "Mates are more likely to break up. Only exceptionally strong overall bonds protect them; both partners\u2019 feelings and existing relationship controls still matter.",
+            "modifiers": {
+                "mates.breakup.initial_chance.threshold": 360,
+                "mates.breakup.initial_chance.default_chance": 15
+            },
+            "card_art": "behavior/sorrow.png"
+        },
+        "crowfood": {
+            "name": "Crowfood Chaos",
+            "category": "Environment",
+            "description": "Fresh prey rots at the next timeskip, before automatic feeding. Feed cats manually before skipping a moon. Cannot combine with Survival of the Fittest.",
+            "modifiers": {
+                "prey.time_to_rot": 1
+            },
+            "card_art": "environment/lean_meat.png"
+        },
+        "for_the_throne": {
+            "name": "Anything For The Throne",
+            "category": "Danger",
+            "description": "Deputies have more negative interactions with leaders, lose respect more often, prefer eligible leaders as murder targets and are more likely to attack them.",
+            "card_art": "danger/for_the_throne.png",
+            "modifiers": {
+                "death_related.murder.deputy_murder_modifier": 40,
+                "relationship.deputy_to_leader_neg_buff": true,
+                "relationship.deputy_envy_leader_influence": 3,
+                "death_related.murder.deputy_prefer_leader": true
+            }
+        },
+        "heartless": {
+            "name": "Heartless",
+            "category": "Behavior",
+            "description": "New mate bonds cannot form automatically, and manual mate changes are disabled. Existing mates and family history remain; feelings and parentage follow their usual rules.",
+            "card_art": "behavior/sorrow.png",
+            "modifiers": {
+                "mates.allow_manual": false,
+                "mates.allow_mating": false
+            }
         }
     },
     "artwork": {
@@ -195,7 +528,15 @@
             "environment/always_newleaf.png",
             "environment/lean_meat.png",
             "origin/public_enemy.png",
-            "society/resolute.png"
+            "society/resolute.png",
+            "behavior/burnout.png",
+            "environment/tainted.png",
+            "behavior/underpopulated.png",
+            "behavior/sorrow.png",
+            "society/survival_of_fittest.png",
+            "behavior/weakened_stars.png",
+            "behavior/forsaken.png",
+            "danger/for_the_throne.png"
         ]
     },
     "ui_sources": [

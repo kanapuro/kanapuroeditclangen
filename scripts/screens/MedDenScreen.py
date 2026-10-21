@@ -15,7 +15,6 @@ from scripts.utility import (
     ui_scale,
     get_alive_status_cats,
     shorten_text_to_fit,
-    get_living_clan_cat_count,
 )
 from .Screens import Screens
 from ..conditions import get_amount_cat_for_one_medic, medical_cats_condition_fulfilled
@@ -158,7 +157,8 @@ class MedDenScreen(Screens):
                 manager=MANAGER,
                 tool_tip_text="Your medicine cats will gather herbs over each timeskip and during any patrols you send "
                 "them on. You can see what was gathered in the Log below! Your medicine cats will give"
-                " these to any hurt or sick cats that need them, helping those cats to heal quicker."
+                " these to hurt or sick cats, helping them to heal quicker. Severe cases are treated first."
+                " If no medicine cats can work, they can only treat themselves."
                 "<br><br>"
                 "Hover your mouse over the medicine den image to see what herbs your Clan has!",
             )
@@ -268,7 +268,7 @@ class MedDenScreen(Screens):
 
         self.meds_messages = UITextBoxTweaked(
             "",
-            ui_scale(pygame.Rect((108, 310), (600, 80))),
+            ui_scale(pygame.Rect((108, 310), (600, 100))),
             object_id=get_text_box_theme("#text_box_30_horizcenter_vertcenter"),
             line_spacing=1,
         )
@@ -291,35 +291,9 @@ class MedDenScreen(Screens):
             if len(self.meds) >= 1 and number == 0:
                 meds_cover = f"You have no medicine cats who are able to work. Your Clan will be at a higher risk of death and disease."
 
-            herb_amount = sum(game.clan.herbs.values())
-            needed_amount = int(get_living_clan_cat_count(Cat) * 4)
-            med_concern = f"This should not appear."
-            if herb_amount == 0:
-                med_concern = (
-                    f"The herb stores are empty and bare, this does not bode well."
-                )
-            elif 0 < herb_amount <= needed_amount / 4:
-                if len(self.meds) == 1:
-                    med_concern = f"The medicine cat worries over the herb stores, they don't have nearly enough for the Clan."
-                else:
-                    med_concern = f"The medicine cats worry over the herb stores, they don't have nearly enough for the Clan."
-            elif needed_amount / 4 < herb_amount <= needed_amount / 2:
-                med_concern = f"The herb stores are small, but it's enough for now."
-            elif needed_amount / 2 < herb_amount <= needed_amount:
-                if len(self.meds) == 1:
-                    med_concern = f"The medicine cat is content with how many herbs they have stocked up."
-                else:
-                    med_concern = f"The medicine cats are content with how many herbs they have stocked up."
-            elif needed_amount < herb_amount <= needed_amount * 2:
-                if len(self.meds) == 1:
-                    med_concern = f"The herb stores are overflowing and the medicine cat has little worry."
-                else:
-                    med_concern = f"The herb stores are overflowing and the medicine cats have little worry."
-            elif needed_amount * 2 < herb_amount:
-                if len(self.meds) == 1:
-                    med_concern = f"The stars have blessed them with plentiful herbs and the medicine cat sends their thanks to Silverpelt."
-                else:
-                    med_concern = f"The stars have blessed them with plentiful herbs and the medicine cats send their thanks to Silverpelt."
+            med_concern = ""
+            if game.clan.game_mode != "classic":
+                med_concern = game.clan.herbs.get_status_message(game.clan, self.meds[0])
 
             med_messages.append(meds_cover)
             med_messages.append(med_concern)

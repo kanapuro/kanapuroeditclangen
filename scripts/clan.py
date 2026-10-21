@@ -27,7 +27,9 @@ from scripts.cat.names import names
 from scripts.cat.sprites import sprites
 from scripts.cat.names import Name
 from scripts.clan_resources.freshkill import FreshkillPile, Nutrition
+from scripts.clan_resources.herbs import HerbSupply
 from scripts.events_module.generate_events import OngoingEvent
+from scripts.events_module.future_event import FutureEvent
 from scripts.game_structure.game_essentials import game
 from scripts.housekeeping.datadir import get_save_dir
 from scripts.housekeeping.version import get_version_info, SAVE_VERSION_NUMBER
@@ -134,6 +136,9 @@ class Clan:
                 self_run_init_functions = False,
                 cruel_cards=None):
         self.history = History()
+        self.all_clans = []
+        self.future_events = []
+        self._litter_style_cache = {}
         self.your_cat = your_cat
         # None preserves old Cruel Season saves; a list opts into card-based rules.
         self.cruel_cards = None if cruel_cards is None else validate_cards(cruel_cards)
@@ -217,7 +222,8 @@ class Clan:
         self.clan_settings["feeding status order"] = game.prey_config["feeding_order"].copy()
 
         # Apply default leader lives from settings
-        self.leader_lives = self.get_default_leader_lives()
+        self.leader_lives_granted = 9
+        self.leader_lives = self.get_starting_leader_lives(self.leader)
         self.leader_lives_reserve = 9
         self.leader_lives_last_applied = self.leader_lives
 
@@ -229,7 +235,8 @@ class Clan:
         self.starting_members = starting_members
         if game_mode in ["expanded", "cruel season"]:
             self.freshkill_pile = FreshkillPile(start_amount=apply_modifiers(
-                self.cruel_cards, ("prey", "start_amount"), game.prey_config["start_amount"]))
+                self.cruel_cards, ("prey", "start_amount"), game.prey_config["start_amount"]),
+                time_to_rot=apply_modifiers(self.cruel_cards, ("prey", "time_to_rot"), game.prey_config["time_to_rot"]))
         else:
             self.freshkill_pile = None
         self.primary_disaster = None
@@ -269,6 +276,14 @@ class Clan:
                 Cat.all_cats[self.medicine_cat.ID].status_change("medicine cat")
 
     @property
+    def herbs(self):
+        return self._herbs
+
+    @herbs.setter
+    def herbs(self, value):
+        self._herbs = value if isinstance(value, HerbSupply) else HerbSupply(value)
+
+    @property
     def simulation_mode(self):
         if self.game_mode == "cruel season" and self.cruel_cards is not None:
             return "expanded"
@@ -292,9 +307,7 @@ class Clan:
 
         # create_clan() writes the first save itself, so leader lives must be
         # finalized before any of that save work begins.
-        self.leader_lives = self.get_starting_leader_lives(self.leader)
-        self.leader_lives_reserve = 9
-        self.leader_lives_last_applied = self.leader_lives
+        self.reset_leader_lives()
 
         self.instructor = Cat(status=choice(["apprentice", "mediator apprentice", "medicine cat apprentice", "warrior",
                                             "medicine cat", "leader", "mediator", "queen", "queen's apprentice", "deputy", "elder"]),
@@ -398,6 +411,11 @@ class Clan:
             self.all_clans.append(other_clan)
         if 'other_med' in game.switches:
             del game.switches['other_med']
+        if not self.herbs and not game.get_config_value("clan_resources", "herbs", "empty_starting_storage"):
+            clan_size = sum(1 for cat_id in self.clan_cats if cat_id in Cat.all_cats
+                            and not Cat.all_cats[cat_id].dead and not Cat.all_cats[cat_id].outside
+                            and not Cat.all_cats[cat_id].exiled)
+            self.herbs.start_storage(clan_size)
         self.save_clan()
         game.save_clanlist(self.name)
         game.switches["clan_list"] = game.read_clans()
@@ -415,6 +433,8 @@ class Clan:
             self.generate_outsider_mates()
             self.generate_outsider_families()
 
+        if self.leader_lives_granted < 9:
+            self.history.add_lead_ceremony(self.leader)
         game.save_cats()
         self.save_clan()
 
@@ -833,25 +853,29 @@ class Clan:
         """
         if leader:
             leader.status_change("leader")
-            self.history.add_lead_ceremony(leader)
             self.leader = leader
             self.leader_predecessors += 1
-            self.leader_lives = self.get_starting_leader_lives(leader)
-            self.leader_lives_reserve = 9
-            self.leader_lives_last_applied = self.leader_lives
+            self.reset_leader_lives()
+            self.history.add_lead_ceremony(leader)
             for clan_cat in game.clan.clan_cats:
                 clan_cat_cat = Cat.fetch_cat(clan_cat)
                 if clan_cat_cat:
                     clan_cat_cat.faith += round(random.uniform(0,1), 2)
 
+    def reset_leader_lives(self):
+        minimum = apply_modifiers(self.cruel_cards, ("death_related", "min_leader_lives"), game.config["death_related"]["min_leader_lives"])
+        maximum = apply_modifiers(self.cruel_cards, ("death_related", "max_leader_lives"), game.config["death_related"]["max_leader_lives"])
+        self.leader_lives_granted = randint(minimum, maximum) if minimum != maximum else maximum
+        self.leader_lives = self.get_starting_leader_lives(self.leader)
+        self.leader_lives_reserve = self.leader_lives_granted
+        self.leader_lives_last_applied = self.leader_lives
+
     def get_starting_leader_lives(self, leader):
-        """Resolve a leader's initial lives from their override and the colony default."""
+        """Resolve the leader's life limit without rerolling their original grant."""
         override = getattr(leader, "leader_life_override", None)
-        if override is True:
-            return 1
-        if override is False:
-            return 9
-        return self.get_default_leader_lives()
+        requested = 1 if override is True else 9 if override is False else self.get_default_leader_lives()
+        maximum = apply_modifiers(self.cruel_cards, ("death_related", "max_leader_lives"), game.config["death_related"]["max_leader_lives"])
+        return min(requested, maximum, self.leader_lives_granted)
 
     def get_default_leader_lives(self):
         setting = self.clan_settings.get("leader_life_default", False)
@@ -935,6 +959,7 @@ class Clan:
             validate_cards(self.cruel_cards)
         self.apply_leader_life_limit()
         clan_data = {
+            "leader_lives_granted": self.leader_lives_granted,
             "leader_lives_reserve": self.leader_lives_reserve,
             "leader_lives_last_applied": self.leader_lives_last_applied,
             "clanname": self.name,
@@ -1003,6 +1028,7 @@ class Clan:
         clan_data["other_clans"] = [vars(i) for i in self.all_clans]
         
         clan_data["war"] = self.war
+        clan_data["future_events"] = [event.to_dict() for event in self.future_events]
         clan_data['achievements'] = self.achievements
         clan_data['talks'] = self.talks
         clan_data["disaster"] = self.disaster
@@ -1342,6 +1368,7 @@ class Clan:
             self_run_init_functions=False,
         )
         game.clan.post_initialization_functions()
+        game.clan.future_events = [FutureEvent(**event) for event in clan_data.get("future_events", [])]
 
         if "following_starclan" in clan_data:
             game.clan.followingsc = clan_data['following_starclan']
@@ -1361,6 +1388,7 @@ class Clan:
 
         game.switches["error_message"] = "Error loading ---clan.json. Check Leader related info"
         game.clan.leader_lives = leader_lives
+        game.clan.leader_lives_granted = clan_data.get("leader_lives_granted", 9)
         game.clan.leader_lives_reserve = clan_data.get("leader_lives_reserve")
         game.clan.leader_lives_last_applied = clan_data.get("leader_lives_last_applied")
         game.clan.leader_predecessors = clan_data["leader_predecessors"]
@@ -1644,14 +1672,17 @@ class Clan:
     def load_clan_settings(self):
         _load_settings = {}
         if os.path.exists(
-            get_save_dir() + f'/{game.switches["clan_list"][0]}/clan_settings.json'
+            get_save_dir() + f"/{self.name}/clan_settings.json"
         ):
             with open(
-                get_save_dir() + f'/{game.switches["clan_list"][0]}/clan_settings.json',
+                get_save_dir() + f"/{self.name}/clan_settings.json",
                 "r",
                 encoding="utf-8",
             ) as write_file:
                 _load_settings = ujson.loads(write_file.read())
+
+        if "affair" in _load_settings and "unmated parentage" not in _load_settings:
+            _load_settings["unmated parentage"] = _load_settings["affair"]
 
         if "random camp lighting" in _load_settings and not game._random_camp_lighting_loaded:
             game.settings["random camp lighting"] = _load_settings["random camp lighting"]
@@ -1662,37 +1693,22 @@ class Clan:
                 self.clan_settings[key] = value
 
     def load_herbs(self, clan):
-        """
-        TODO: DOCS
-        """
-        if not game.clan.name:
+        if not clan.name:
             return
-        file_path = get_save_dir() + f"/{game.clan.name}/herbs.json"
+        file_path = f"{get_save_dir()}/{clan.name}/herbs.json"
         if os.path.exists(file_path):
-            with open(
-                file_path, "r", encoding="utf-8"
-            ) as read_file:  # pylint: disable=redefined-outer-name
+            with open(file_path, "r", encoding="utf-8") as read_file:
                 clan.herbs = ujson.loads(read_file.read())
-
         else:
-            # generate a random set of herbs since the Clan didn't have any saved
             herbs = {}
-            random_herbs = random.choices(HERBS, k=random.randrange(3, 8))
-            for herb in random_herbs:
-                herbs.update({herb: random.randint(1, 3)})
-            with open(file_path, "w", encoding="utf-8") as rel_file:
-                json_string = ujson.dumps(herbs, indent=4)
-                rel_file.write(json_string)
+            for herb in random.choices(HERBS, k=random.randrange(3, 8)):
+                herbs[herb] = random.randint(1, 3)
             clan.herbs = herbs
+            self.save_herbs(clan)
 
     def save_herbs(self, clan):
-        """
-        TODO: DOCS
-        """
-        if not game.clan.name:
-            return
-
-        game.safe_save(f"{get_save_dir()}/{game.clan.name}/herbs.json", clan.herbs)
+        if clan.name:
+            game.safe_save(f"{get_save_dir()}/{clan.name}/herbs.json", clan.herbs.to_dict())
 
     def load_pregnancy(self, clan):
         """

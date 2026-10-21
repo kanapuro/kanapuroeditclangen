@@ -89,7 +89,7 @@ class TestConditionHistory(unittest.TestCase):
         from scripts.cat.history import History
         from scripts.game_structure.game_essentials import game
         self.game = game
-        clan = Clan(name="HistoryTest")
+        clan = Clan(name="HistoryTest", camp_bg="camp1")
         clan.clan_cats = []
         clan.age = 17
         for target, attribute, value in ((game, "clan", clan), (Cat, "all_cats", {}), (Cat, "all_cats_list", [])):

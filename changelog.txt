@@ -1,3 +1,109 @@
+<strong>v0.1.0.36-KanapuroEdit: </strong>
+- Added work-eligibility checks to existing patrol, hunting and Gathering relationship scenes. Mixed entries now distinguish participants who must work from cats receiving visits, prey or news; ordinary camp interactions and recovering cats' social lives remain available.
+- Fixed Rest and Recover failing to shorten illness and injury recovery. Infected injuries still wait for their complication to clear.
+- Injuries now retain the medical-care recovery duration and normal variation calculated when they are acquired, instead of always storing the raw base duration. Existing saved injury timelines are preserved.
+- Fixed crashes when an injury blinds a cat's second eye or removes a paw while incompatible accessories are equipped. Combined eye scars and accessory cleanup now update the correct lists.
+- Healed injuries can add scars beyond the old four-scar limit, preserving existing scars and recording the new injury in history.
+
+<strong>v0.1.0.35-KanapuroEdit: </strong>
+- Added Anything For The Throne. Deputies have more negative interactions with leaders, lose respect more often and favor eligible leaders when attempting murder. Their deliberate attacks on leaders are more likely; player-controlled murder and ordinary colony odds keep their existing rules.
+- Added Heartless. New mate bonds cannot form automatically, and manual mate changes are disabled with explanatory hover help. Existing mates, family history, feelings and parentage remain intact, and existing pairs can still break up. Heartless cannot be combined with Not Made To Last.
+- Autonomous murder no longer targets dead, outside, exiled or removed cats through stale relationships. Deputy attacks retain existing leader-life losses, histories and delayed discoveries through saving and reloading.
+
+<strong>v0.1.0.34-KanapuroEdit: </strong>
+- Added Crowfood Chaos: fresh prey rots at the next timeskip, before automatic feeding. Feed cats manually before skipping a moon. The card cannot be combined with Survival of the Fittest, which disables manual feeding; card selection, deck entry and random choices respect this restriction.
+- Crowfood Chaos applies to starting stores, patrol catches, hunting focuses, monthly catches and prey-gain events. Ordinary colonies keep their four-moon prey lifetime, and loading a save preserves the remaining ages of existing food.
+- Fixed prey-gain events crashing instead of adding food. Fixed events meant to remove an eighth of the pile increasing its contents instead.
+
+<strong>v0.1.0.33-KanapuroEdit: </strong>
+- Added Weakened Stars and Forsaken. Each new leader receives one to five lives or one life respectively, including successors. Grants survive saving and reloading; changing colony or individual life settings cannot increase them, and revival does not refill spent lives. Ordinary colonies and old Cruel Season saves retain their existing life rules.
+- Leader ceremonies now give the correct number of blessings for the leader's life grant and settings, instead of always describing nine. Promotion establishes the new leader's lives before recording their ceremony.
+- Added Not Made To Last. Mates are more likely to break up, while exceptionally strong overall bonds still protect them. Both partners' feelings, separate dislike/jealousy values, relationship controls and existing breakup outcomes remain in use. Ordinary breakup odds are unchanged.
+
+<strong>v0.1.0.32-KanapuroEdit: </strong>
+- Added Mouths to Feed and Underpopulated. Their larger/smaller litter probabilities apply to pregnancy and adoption across parent ages, including the larger-litters setting and litters up to twelve kits. The two cards cannot be combined.
+- Added Clumsy Paws. Experience and skills become harder to improve near their maximum, including patrol rewards, training, mentor influence, mediation and queen activities. Small gains remain possible. Normal learning, existing saved progress and direct editor/command changes keep their existing behavior.
+- Added Survival of the Fittest. Hunters and experienced cats eat first; feeding order is locked and manual meals are disabled in both feeding interfaces and the feeding backend. The controls explain the restriction. Custom tactics and status orders remain intact, and rationing is still available.
+- Fixed card-based Cruel Season patrol success retaining an extra legacy difficulty penalty. Card games now use their intended Expanded baseline; original Cruel Season saves retain their difficulty. Mentor influence now records points actually gained instead of overstating gains at a skill cap.
+
+<strong>v0.1.0.31-KanapuroEdit: </strong>
+- Added three Cruel Season cards: Burnout reduces base medical capacity, Plague Ridden allows outbreaks in every season without medicine-cat prevention, and Longer Illnesses doubles illness duration while preserving herb treatment. Cards, effects and existing illness durations survive saving and reloading.
+- Diplomacy now reports the relationship change that actually happened. Enmity no longer produces misleading improvement messages when relations are already capped; the leader-den interaction explains the cap. Public Enemy continues to allow relations to improve after its hostile start.
+- Fixed first-tier healing skill being skipped when calculating medicine-cat coverage.
+
+<strong>v0.1.0.30-KanapuroEdit: </strong>
+- Added LifeGen's concealed drowning and wilderness murders, with saved discoveries 1-12 moons later. Their initial event and death history keep the culprit secret; history reveals the true cause when the crime is discovered.
+- Added seven discovery variants, including confessions, medicine-cat findings, forgiveness visions and ghost witnesses. Witnesses react according to their personalities, with named relationship logs and separate private/public discovery and shunning behavior.
+- Adapted these reactions to our separate liking/dislike values while retaining all seven relationship measures. Existing murder choices, saved histories and leader-life rules remain compatible.
+
+<strong>v0.1.0.29-KanapuroEdit: </strong>
+- Added LifeGen's delayed murder discoveries to seven more events involving leaders: ravine falls, thin ice, monsters, deputy coups, abandonment during dog attacks, traps and grievance-driven attacks. Existing life losses, custom requirements, event wording and relationship effects are preserved, including attacks a leader survives.
+- Scheduled discoveries now remember the specific attack that caused them. If a leader is attacked more than once, discovering a later attack first updates the correct history entry. Already public, missing or mismatched scheduled attacks finish without revealing a different crime. Older pending events remain compatible.
+
+<strong>v0.1.0.28-KanapuroEdit: </strong>
+- Fixed creation's name dice copying the name text but losing its warrior, ancient, single or syllable style. The selected style and special-suffix checkbox now stay together, and rolling/toggling remains a draft until Next Step. Going back leaves the cat's original name intact.
+- Fixed the in-game rename window changing a cat's stored suffix before Done was pressed. Toggling between custom and rank suffixes preserves the draft; closing without Done cancels it. Saving with -kit/-paw/-star visible retains the custom suffix behind it.
+- Newborns now inherit their parents' stored naming style instead of guessing from displayed spelling. Custom warrior suffixes, ancient names displaying a rank suffix, single names resembling warrior names and syllable names are recognized correctly. Litter-style choices are scoped to the colony and birth moon rather than leaking across colonies or remaining stale for later litters. Existing saved names and naming preferences are retained.
+
+<strong>v0.1.0.27-KanapuroEdit: </strong>
+- Eight more murder events now schedule LifeGen's saved discovery follow-ups: staged-accident murders, five medicine-cat poisoning/herb cases and both deputy-targeting cases. Discoveries retain their culprit, victim and witness through saving/reloading, with a 1-12 moon delay.
+- Source participant exclusions now hide the culprit's cat button where these events keep their identity secret. Existing event wording, custom role/skill requirements, relationship effects and manual weights remain intact.
+
+<strong>v0.1.0.26-KanapuroEdit: </strong>
+- A witness learning a murderer's secret privately no longer prevents the truth from becoming public later. Individual witnesses are remembered, so the same cat cannot discover the same secret twice. Existing public-reveal shunning and player-directed murder choices are preserved.
+- Revelation now updates the matching attack in both cats' histories, including multiple attackers, accomplices and repeated attacks on a leader. Private discoveries no longer record a leader demotion or alter their life balance. Missing historical victims no longer block another unresolved crime, and obsolete scheduled revelations finish without repeating their effects.
+- Fixed neighboring clans leaking between colony instances and multiplying after repeated save loads. Each colony now owns its own neighbor list; loading preserves exactly the neighbors already saved.
+- Added LifeGen's saved, delayed discovery follow-ups to the first three ordinary murder events, with a 1-12 moon delay. The unknown-culprit event no longer exposes the murderer through a cat button. Existing event wording, custom eligibility and manual weights are retained; older history records retain their existing reveal status.
+
+<strong>v0.1.0.25-KanapuroEdit: </strong>
+- Breakups now have LifeGen's five distinct outcomes: a fight, remaining friends, lost feelings, a bad breakup or an amicable separation. Each partner receives the corresponding relationship changes and a saved relationship log, while our separate liking/dislike values and other poly partners are preserved.
+- Former mates now have dedicated reconciliation and rejection events, including poly variants. Player reconciliation still waits for the existing accept/reject window, which now explains that the proposal is to become mates again. Existing eligibility, consent and mate-formation rules remain.
+- Fixed breakups leaving relationships marked as mates when no extra breakup penalties were requested. Breakup chance now considers both partners' romantic feelings, and rejected confessions display their previously missing event text. Poly confession text names the partners present before the new relationship begins.
+
+<strong>v0.1.0.24-KanapuroEdit: </strong>
+- Added separate Colony Settings controls for unmated cats having kits together and parentage outside existing mate relationships. Relationship-based and random parent selection respect both participants' mate status, so enabling unmated co-parenting does not permit affairs involving mated cats.
+- Existing saves initialize both controls from their previous affair preference without writing to the save during loading. Explicitly saved independent choices are preserved, new colonies keep both off by default, and settings load from the requested colony's own folder.
+- Co-parent selection now honors same-sex adoption as well as the biology setting. Existing mates and poly mates, unknown second parents, parent eligibility and pregnancies already underway retain their existing paths. Explicit player-directed affairs remain player choices, as explained in the setting tooltip.
+
+<strong>v0.1.0.23-KanapuroEdit: </strong>
+- Grandparents, aunts/uncles, older siblings and other extended relatives now react to newborn family members using LifeGen's parent-relationship reflection and birth reaction logs. Biological and adoptive family links are resolved before these reactions, with a separate response to each surviving kit.
+- Relatives' existing affection or hostility toward the parents can influence their initial feelings toward a newborn, while preserving our separate liking/dislike values and keeping romance unchanged. Parent bonds, littermate buffs and realistic litter mortality remain intact.
+- Absent or dead relatives, parents and the newborn litter are excluded from extended-family reactions. Births outside the colony and litters with no surviving kits do not produce colony family visits. Reaction logs and all seven relationship values use the existing save format.
+
+<strong>v0.1.0.22-KanapuroEdit: </strong>
+- Monthly herbal care now treats severe patients before major and minor cases, so scarce supplies no longer go to whichever cat happens to have their health events first. Treatment has its own pass before monthly health checks; other cat events retain their existing order.
+- Expanded and Cruel Season require a working medicine cat or medicine apprentice to treat the colony. Sick medicine cats can still treat themselves when nobody can work, without accidentally stopping care for other sick medicine cats. Dead, outside, exiled and non-member cats cannot provide or consume colony treatment.
+- Each revealed condition is considered once per moon; the health handlers no longer repeat herb consumption. Hidden congenital conditions wait until they are revealed. Chronic treatment limits, oldest-first stock use and Classic's basic care without stock consumption are retained.
+
+<strong>v0.1.0.21-KanapuroEdit: </strong>
+- The medicine den and Herbs window now assess supplies using LifeGen's stock-variety and colony-size thresholds rather than the old total-count estimate, with the released storage status messages. Missing herbs count toward the assessment; merged herb types remain included.
+- Herb messages adapt to available medicine cats, leaders and deputies without leaving names or pronoun tags unresolved. The Herbs window retains quantity totals and the full monthly log, even without a medicine cat.
+- Restored the source medicine-den message height so longer herb reports fit above the patient tabs. Classic no longer displays misleading herb-stock reports for its stock-free treatment.
+
+<strong>v0.1.0.20-KanapuroEdit: </strong>
+- Herbs now age in monthly batches with LifeGen's individual shelf lives. Treatment and other stock losses use the oldest herbs first; fresh harvests keep their own age. Expiry is reported in the herb log, and stock ages survive saving/reloading. Old herb saves retain every quantity as fresh stock.
+- Medicine cats and random herb patrols now gather according to biome, season, current patient needs and existing supplies. SENSE finds more varieties, CLEVER increases quantities, and CAMP can improve storage to delay expiry. Authored patrol rewards still grant their specified herbs.
+- New colonies receive source-style starting herb stores; Barren Stocks retains its empty start. Existing colonies keep their supplies.
+- Fixed herb-focused colony actions overwriting existing stores. Fractional closed-border gathering can now succeed instead of always rounding down to nothing. Fixed whole-store event increases treating quantities as text and herb loading/saving using the wrong colony name.
+- Chronic conditions stop using herbs once sufficiently treated. Risk treatment preserves disabled complications rather than making them possible again. Classic retains basic treatment without consuming stock.
+
+<strong>v0.1.0.19-KanapuroEdit: </strong>
+- Added LifeGen's breathless fit, tick fever, sore throat, absent, damaged throat, selective mutism and strange lump conditions, with treatment, healing/death/reveal text and progression through existing illnesses, injuries and permanent conditions. Tick fever joins the Newleaf/Greenleaf illness pools; existing custom conditions are retained.
+- Fixed treatment changing temporary copies instead of the patient's condition. Healing time, mortality and risk improvements now reach the affected cat, and treatment/progression no longer changes other cats' risks or the condition definitions.
+- Fixed strength-tier herb lists being read as herb names, preventing treatment of permanent conditions. Tiered treatments now use stocked herbs and their strength; Classic gets basic treatment without consuming stock. Existing ordered herb treatments remain supported.
+- Condition complications and injury recovery now record their cause in health history. Already-active complications are not reported as newly acquired again, and condition messages choose text that works when no medicine cat is available.
+- Fixed health-related thoughts rejecting affected cats or crashing on illness/injury checks. Permanent-condition thoughts require the condition to be revealed, including congenital conditions that appear later in life.
+
+<strong>v0.1.0.18-KanapuroEdit: </strong>
+- Added LifeGen/ClanGen frequency pools and constraint-based weighting for newer short events and patrols. Empty pools fall back to other frequencies; existing resources retain their manual weights and selection behavior until individually adapted.
+- Added support for delayed short-event follow-ups, including scheduling from patrol outcomes, saved participant roles, seasonal retries and chained follow-ups. Pending events survive colony saves/reloads, run once, and expire or cancel when their required cats become unavailable. Older saves start with an empty queue; existing murder-reveal behavior is retained pending its separate content migration.
+- Fixed faith events becoming progressively less likely each time their cached data was filtered. Companion adjustments now use that cat's own affected flag.
+- Fixed short events requiring both a trait and skill checking the skill backward, camp-specific events appearing in other camps within the same biome, and companion shunning requirements checking the main cat instead.
+
+<strong>v0.1.0.17-KanapuroEdit: </strong>
+- The header moon now cycles through LifeGen's phase animation after a timeskip. Its age tooltip and seasonal vines refresh immediately; screen/display rebuilds preserve an ongoing cycle, and switching colonies starts with that colony's own phase. The existing header preference and permanent-season cards are preserved.
+- Added upstream support for marking short-event cats as context-only. These cats still receive their normal event effects and remain available to the text, but are omitted from event profile links and favorite/player filters. Exclusions for new-cat groups cover the whole group, and the displayed participants survive saving/reloading. Older event resources keep their existing behavior.
+
 <strong>v0.1.0.16-KanapuroEdit: </strong>
 - Fixed tint-list wheel scrolling in the shared cat editor: scroll anywhere over the list, with a minimum thumb height so the drag handle remains easy to grab. The scrollbar track keeps its original width. Applies to pelt and white-patch/point tints in creation and in-game editing.
 - Nudged the patrol relationship-inspection tab right so its hovered border clears the nearby cat frame.

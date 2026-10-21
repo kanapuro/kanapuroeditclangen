@@ -8,7 +8,7 @@ from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import GameWindow, UIImageButton, UISurfaceImageButton, UITextBoxTweaked, UICatListDisplay
 from scripts.ui.generate_button import ButtonStyles, get_button_dict
 from scripts.ui.icon import Icon
-from scripts.utility import ui_scale, ui_scale_dimensions
+from scripts.utility import get_alive_status_cats, ui_scale, ui_scale_dimensions
 
 
 class HerbManagementWindow(GameWindow):
@@ -18,9 +18,12 @@ class HerbManagementWindow(GameWindow):
         self.help_button = UIImageButton(
             ui_scale(pygame.Rect((18, 18), (34, 34))), "", object_id="#help_button",
             container=self, manager=MANAGER,
-            tool_tip_text="Medicine cats gather herbs each timeskip and treat their patients. Gathered and used herbs are reported in this log. Visit the medicine cat den to inspect the stores and sick or injured cats.",
+            tool_tip_text="Medicine cats gather herbs each timeskip. Working medicine cats treat severe cases first; if none can work, medicine cats can only treat themselves. Gathered, used and expired herbs are reported in this log. Treatment uses the oldest stock first. Visit the medicine cat den to inspect the stores and sick or injured cats.",
         )
         log = [f"<b>Herbs in store:</b> {sum(game.clan.herbs.values()):g}"]
+        meds = [cat for cat in get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"], sort=True)
+                if cat.ID in game.clan.clan_cats and not cat.shunned]
+        log.append(game.clan.herbs.get_status_message(game.clan, meds[0] if meds else None))
         log.extend(game.herb_events_list or ["Nothing to report."])
         self.log = UITextBoxTweaked(
             "<br>-------------------------------<br>".join(log),
@@ -126,6 +129,10 @@ class FreshkillManagementWindow(GameWindow):
                 container=self, manager=MANAGER,
             )
         self.view_elements["feed_selected"].disable()
+        if not pile.manual_feeding_allowed:
+            for key in ("feed_all", "feed_selected"):
+                self.view_elements[key].disable()
+                self.view_elements[key].set_tooltip("Survival of the Fittest disables manual feeding.")
         if not self.hungry_cats or pile.total_amount <= 0:
             self.view_elements["feed_all"].disable()
         self.view_elements["ration"] = UIImageButton(
@@ -151,7 +158,7 @@ class FreshkillManagementWindow(GameWindow):
         )
 
     def feed_cats(self, cats):
-        if not cats:
+        if not cats or not game.clan.freshkill_pile.manual_feeding_allowed:
             return
         pile = game.clan.freshkill_pile
         pile.already_fed = []
@@ -164,7 +171,8 @@ class FreshkillManagementWindow(GameWindow):
     def update(self, time_delta):
         super().update(time_delta)
         if self.open_view == "feed" and self.cat_list is not None:
-            selected = bool(self.cat_list.selected) and game.clan.freshkill_pile.total_amount > 0
+            selected = (bool(self.cat_list.selected) and game.clan.freshkill_pile.total_amount > 0
+                        and game.clan.freshkill_pile.manual_feeding_allowed)
             self.view_elements["feed_selected"].enable() if selected else self.view_elements["feed_selected"].disable()
 
     def process_event(self, event):

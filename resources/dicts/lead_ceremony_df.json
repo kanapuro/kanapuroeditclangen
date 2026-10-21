@@ -2482,7 +2482,7 @@
           ]
         },
         {
-          "text": "If m_c wastes all of {PRONOUN/m_c/poss} nine lives thinking, {PRONOUN/m_c/subject} will never be able to save c_n. That is the lie r_c speaks as {PRONOUN/r_c/subject} {VERB/r_c/give/gives} a life for [virtue].",
+          "text": "If m_c wastes all of {PRONOUN/m_c/poss} [total_lives] lives thinking, {PRONOUN/m_c/subject} will never be able to save c_n. That is the lie r_c speaks as {PRONOUN/r_c/subject} {VERB/r_c/give/gives} a life for [virtue].",
           "virtue": [
             "ambition",
             "bravery",

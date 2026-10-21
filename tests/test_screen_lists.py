@@ -1583,6 +1583,40 @@ class TestFeedingControls(unittest.TestCase):
         self.assertEqual(pile.get_status_order()[:2], [before[1], before[0]])
         self.assertIn("1. hunter first", self.screen.tactic_text["hunter first"].html_text)
 
+    def test_survival_card_locks_native_controls_without_overwriting_custom_tactics(self):
+        self.clan.game_mode = "cruel season"
+        self.clan.cruel_cards = ["survival_of_fittest"]
+        self.clan.clan_settings["feeding priorities"] = ["younger first"]
+        original_order = self.clan.freshkill_pile.get_status_order().copy()
+        self.screen.create_checkboxes()
+        buttons = [self.screen.default_tactics_button, *self.screen.tactic_boxes.values(),
+                   *self.screen.tactic_moves.values(), *self.screen.status_moves.values()]
+        self.assertTrue(all(not button.is_enabled for button in buttons))
+        for button in buttons:
+            self.press(button)
+        self.assertEqual(self.clan.clan_settings["feeding priorities"], ["younger first"])
+        self.assertEqual(self.clan.freshkill_pile.get_status_order(), original_order)
+        self.press(self.screen.checkboxes["ration prey"])
+        self.assertTrue(self.clan.clan_settings["ration prey"])
+        self.press(self.screen.cats_tab)
+        cat = self.clan.your_cat
+        self.clan.freshkill_pile.nutrition_info[cat.ID].current_score = 0
+        self.screen.update_cats_list()
+        self.screen.focus_cat_object = cat
+        self.screen.update_focus_cat()
+        self.assertFalse(self.screen.feed_one_button.is_enabled)
+        self.assertFalse(self.screen.feed_max_button.is_enabled)
+        before = self.clan.freshkill_pile.total_amount
+        for button in (self.screen.feed_one_button, self.screen.feed_max_button, self.screen.feed_all_button):
+            self.press(button)
+        self.assertEqual(self.clan.freshkill_pile.total_amount, before)
+        self.clan.cruel_cards = []
+        self.screen.create_checkboxes()
+        self.screen.update_focus_cat()
+        self.assertTrue(self.screen.default_tactics_button.is_enabled)
+        self.assertTrue(self.screen.feed_one_button.is_enabled)
+        self.assertEqual(self.clan.freshkill_pile.get_feeding_priorities(), ["younger first"])
+
     def test_default_restores_rules_status_order_and_rationing(self):
         self.press(self.screen.tactic_boxes["hunter first"])
         self.press(self.screen.status_moves["leader", -1])

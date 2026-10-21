@@ -80,6 +80,9 @@ class ClearingScreen(Screens):
     def handle_event(self, event):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             self.mute_button_pressed(event)
+            if (event.ui_element in (self.feed_all_button, self.feed_one_button, self.feed_max_button)
+                    and not game.clan.freshkill_pile.manual_feeding_allowed):
+                return
 
             if event.ui_element == self.back_button:
                 self.change_screen(game.last_screen_forupdate)
@@ -104,7 +107,7 @@ class ClearingScreen(Screens):
                         self.focus_cat_object.ID
                     ].current_score
                     amount = max_amount - current_amount
-                game.clan.freshkill_pile.feed_cat(self.focus_cat_object, amount, 0)
+                game.clan.freshkill_pile.feed_cat(self.focus_cat_object, amount, 0, manual=True)
                 Condition_Events.handle_nutrient(
                     self.focus_cat_object, game.clan.freshkill_pile.nutrition_info
                 )
@@ -178,7 +181,7 @@ class ClearingScreen(Screens):
                 self.cats_tab.enable()
                 self.tactic_tab.enable()
                 self.handle_tab_toggles()
-            elif event.ui_element == self.default_tactics_button:
+            elif event.ui_element == self.default_tactics_button and not game.clan.freshkill_pile.feeding_locked:
                 for code, desc in settings_dict["freshkill_tactics"].items():
                     game.clan.clan_settings[code] = desc[2]
                 game.clan.clan_settings["feeding priorities"] = []
@@ -193,9 +196,10 @@ class ClearingScreen(Screens):
                 self.tactic_tab.disable()
                 self.handle_tab_toggles()
 
-            if len(self.hungry_cats) >= 1 and not self.feed_all_button.is_enabled:
+            if (len(self.hungry_cats) >= 1 and game.clan.freshkill_pile.manual_feeding_allowed
+                and not self.feed_all_button.is_enabled):
                 self.feed_all_button.enable()
-            if len(self.hungry_cats) <= 0 and self.feed_all_button.is_enabled:
+            if (len(self.hungry_cats) <= 0 or not game.clan.freshkill_pile.manual_feeding_allowed) and self.feed_all_button.is_enabled:
                 self.feed_all_button.disable()
             self.handle_checkbox_events(event)
 
@@ -376,9 +380,10 @@ class ClearingScreen(Screens):
         self.update_nutrition_cats()
         self.update_focus_cat()
 
-        if len(self.hungry_cats) >= 1 and not self.feed_all_button.is_enabled:
+        if (len(self.hungry_cats) >= 1 and game.clan.freshkill_pile.manual_feeding_allowed
+                and not self.feed_all_button.is_enabled):
             self.feed_all_button.enable()
-        if len(self.hungry_cats) <= 0 and self.feed_all_button.is_enabled:
+        if (len(self.hungry_cats) <= 0 or not game.clan.freshkill_pile.manual_feeding_allowed) and self.feed_all_button.is_enabled:
             self.feed_all_button.disable()
 
         self.draw_pile()
@@ -419,9 +424,10 @@ class ClearingScreen(Screens):
             self.cats_tab.disable()
             self.tactic_tab.enable()
 
-        if len(self.hungry_cats) >= 1 and not self.feed_all_button.is_enabled:
+        if (len(self.hungry_cats) >= 1 and game.clan.freshkill_pile.manual_feeding_allowed
+                and not self.feed_all_button.is_enabled):
             self.feed_all_button.enable()
-        if len(self.hungry_cats) <= 0 and self.feed_all_button.is_enabled:
+        if (len(self.hungry_cats) <= 0 or not game.clan.freshkill_pile.manual_feeding_allowed) and self.feed_all_button.is_enabled:
             self.feed_all_button.disable()
 
         self.handle_tab_toggles()
@@ -507,8 +513,11 @@ class ClearingScreen(Screens):
             self.create_checkboxes()
 
     def update_focus_cat(self):
+        for button in (self.feed_all_button, self.feed_one_button, self.feed_max_button):
+            button.set_tooltip("Survival of the Fittest disables manual feeding."
+                               if not game.clan.freshkill_pile.manual_feeding_allowed else None)
         if not self.focus_cat_object:
-            self.feed_all_button.enable()
+            self.feed_all_button.enable() if game.clan.freshkill_pile.manual_feeding_allowed else self.feed_all_button.disable()
             return
         if self.focus_cat:
             self.focus_cat.kill()
@@ -526,7 +535,7 @@ class ClearingScreen(Screens):
         p = 100
         if self.focus_cat_object.ID in nutrition_info:
             p = int(nutrition_info[self.focus_cat_object.ID].percentage)
-        if p >= 100:
+        if p >= 100 or not game.clan.freshkill_pile.manual_feeding_allowed:
             self.feed_one_button.disable()
             self.feed_max_button.disable()
         else:
@@ -864,6 +873,13 @@ class ClearingScreen(Screens):
         )
 
         self.refresh_checkboxes("general")
+        if game.clan.freshkill_pile.feeding_locked:
+            for button in [self.default_tactics_button, *self.tactic_boxes.values(),
+                           *self.tactic_moves.values(), *self.status_moves.values()]:
+                button.disable()
+                button.set_tooltip("Survival of the Fittest locks feeding priorities.")
+        else:
+            self.default_tactics_button.enable()
         if self.tactic_text["container_general"].vert_scroll_bar:
             self.tactic_text["container_general"].vert_scroll_bar.set_scroll_from_start_percentage(scroll)
         if self.additional_text["container_general"].vert_scroll_bar:
@@ -973,6 +989,8 @@ class ClearingScreen(Screens):
                 n += 1
 
     def handle_checkbox_events(self, event):
+        if game.clan.freshkill_pile.feeding_locked and event.ui_element not in self.checkboxes.values():
+            return
         for (status, direction), button in self.status_moves.items():
             if button == event.ui_element and button.is_enabled:
                 order = game.clan.freshkill_pile.get_status_order().copy()

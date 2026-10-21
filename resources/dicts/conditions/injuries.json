@@ -247,6 +247,10 @@
             {
                 "name": "an infected wound",
                 "chance": 40
+            },
+            {
+                "name": "tick fever",
+                "chance": 50
             }
         ],
         "also_got": [],
@@ -311,7 +315,8 @@
             "bruises"
         ],
         "cause_permanent": [
-            "crooked jaw"
+            "crooked jaw",
+            "damaged throat"
         ],
         "herbs": [
             "cobwebs",
@@ -977,7 +982,9 @@
         "risks": [],
         "also_got": [],
         "cause_permanent": [
-            "recurring shock"
+            "recurring shock",
+            "absent",
+            "selective mutism"
         ],
         "herbs": [
             "thyme",
@@ -1043,6 +1050,10 @@
             {
                 "name": "heat exhaustion",
                 "chance": 10
+            },
+            {
+                "name": "sore throat",
+                "chance": 10
             }
         ],
         "also_got": [
@@ -1086,7 +1097,8 @@
             "blind",
             "constantly dizzy",
             "partial hearing loss",
-            "persistent headaches"
+            "persistent headaches",
+            "absent"
         ],
         "herbs": [
             "juniper",
@@ -1338,5 +1350,33 @@
         "also_got": [],
         "cause_permanent": [],
         "herbs": []
+    },
+    "sore throat": {
+        "duration": 1,
+        "severity": "minor",
+        "medicine_duration": 1,
+        "mortality": {
+            "newborn": 0,
+            "kitten": 0,
+            "adolescent": 0,
+            "young adult": 0,
+            "adult": 0,
+            "senior adult": 0,
+            "senior": 0
+        },
+        "illness_infectiousness": [],
+        "risks": [],
+        "also_got": [],
+        "cause_permanent": [
+            "damaged throat"
+        ],
+        "herbs": {
+            "1": [
+                "poppy",
+                "juniper"
+            ],
+            "2": [],
+            "3": []
+        }
     }
 }

@@ -136,25 +136,16 @@
 	{
 		"id": "dislike_inc_med3",
 		"interactions": [
-			"m_c had a disagreement with r_c while on patrol earlier.",
-			"m_c stole r_c's catch right out from under {PRONOUN/r_c/poss} claws.",
-			"m_c prays that {PRONOUN/m_c/subject} {VERB/m_c/aren't/isn't} on patrol with r_c tomorrow.",
-			"m_c sighs loudly every time r_c does anything on patrol.",
-			"While on a patrol, m_c secretly pulled back a branch and made it whop r_c in the face.",
-			"m_c laughed at r_c for making a mistake on a patrol.",
-			"m_c ignored r_c's advice on a patrol and nearly got hurt because of it.",
-			"m_c and r_c couldn't agree which way to go on a patrol and got home late.",
-			"m_c claimed to catch the prey that r_c caught on their patrol.",
 			"m_c lied about r_c being sick to take {PRONOUN/r_c/poss} spot on a patrol.",
-            "m_c scared away the prey r_c was stalking.",
-            "m_c pulled r_c's tail during training.",
-            "m_c made sure to let all the prey r_c likes get away during {PRONOUN/r_c/poss} patrol.",
-            "m_c keeps upstaging r_c.",
-            "m_c refused to do a task with r_c, opting to do something else instead even while r_c scolded {PRONOUN/m_c/object} for ditching the task.",
-            "m_c tripped r_c during a patrol.",
-            "m_c and r_c were not in sync during training today.",
-            "m_c threatens r_c to use {PRONOUN/m_c/poss} claws next time they train together.",
-            "m_c overheard r_c taking credit for catching the prey {PRONOUN/m_c/subject} caught."
+			"m_c scared away the prey r_c was stalking.",
+			"m_c pulled r_c's tail during training.",
+			"m_c made sure to let all the prey r_c likes get away during {PRONOUN/r_c/poss} patrol.",
+			"m_c keeps upstaging r_c.",
+			"m_c refused to do a task with r_c, opting to do something else instead even while r_c scolded {PRONOUN/m_c/object} for ditching the task.",
+			"m_c tripped r_c during a patrol.",
+			"m_c and r_c were not in sync during training today.",
+			"m_c threatens r_c to use {PRONOUN/m_c/poss} claws next time they train together.",
+			"m_c overheard r_c taking credit for catching the prey {PRONOUN/m_c/subject} caught."
 		],
 		"main_status_constraint": [
 			"apprentice",
@@ -170,6 +161,39 @@
 		],
 		"reaction_random_cat": {
 			"dislike": "increase"
+		}
+	},
+	{
+		"id": "dislike_inc_med3_working_main_random",
+		"interactions": [
+			"m_c had a disagreement with r_c while on patrol earlier.",
+			"m_c stole r_c's catch right out from under {PRONOUN/r_c/poss} claws.",
+			"m_c prays that {PRONOUN/m_c/subject} {VERB/m_c/aren't/isn't} on patrol with r_c tomorrow.",
+			"m_c sighs loudly every time r_c does anything on patrol.",
+			"While on a patrol, m_c secretly pulled back a branch and made it whop r_c in the face.",
+			"m_c laughed at r_c for making a mistake on a patrol.",
+			"m_c ignored r_c's advice on a patrol and nearly got hurt because of it.",
+			"m_c and r_c couldn't agree which way to go on a patrol and got home late.",
+			"m_c claimed to catch the prey that r_c caught on their patrol."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy",
+			"leader"
+		],
+		"random_status_constraint": [
+			"apprentice",
+			"warrior",
+			"deputy",
+			"leader"
+		],
+		"reaction_random_cat": {
+			"dislike": "increase"
+		},
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
 		}
 	},
 	{
@@ -443,15 +467,11 @@
 	{
 		"id": "dislike_dep_leader_inc_med1",
 		"interactions": [
-			"m_c punishes r_c with extra work.",
-			"m_c divides r_c into extra patrols.",
-			"m_c gives r_c a particularly hard task, expecting {PRONOUN/r_c/object} to fail.",
-			"m_c always tries to avoid making r_c the leader of a patrol.",
 			"m_c scolds r_c like a kit for something trivial.",
 			"m_c says r_c sets a bad example of a warrior.",
 			"m_c threatens r_c with never passing {PRONOUN/r_c/poss} assessment!",
 			"m_c tells other cats that r_c is not doing well in {PRONOUN/r_c/poss} training.",
-			 "m_c gave r_c twice as much work as the other cats {PRONOUN/r_c/poss} age."
+			"m_c gave r_c twice as much work as the other cats {PRONOUN/r_c/poss} age."
 		],
 		"main_status_constraint": [
 			"deputy",
@@ -465,11 +485,49 @@
 		}
 	},
 	{
-		"id": "dislike_dep_leader_inc_med2",
+		"id": "dislike_dep_leader_inc_med1_working_random",
 		"interactions": [
 			"m_c punishes r_c with extra work.",
 			"m_c divides r_c into extra patrols.",
-			"m_c gives r_c a particularly hard task, expecting {PRONOUN/r_c/object} to fail.",
+			"m_c gives r_c a particularly hard task, expecting {PRONOUN/r_c/object} to fail."
+		],
+		"main_status_constraint": [
+			"deputy",
+			"leader"
+		],
+		"random_status_constraint": [
+			"warrior"
+		],
+		"reaction_random_cat": {
+			"dislike": "increase"
+		},
+		"working_constraint": {
+			"r_c": true
+		}
+	},
+	{
+		"id": "dislike_dep_leader_inc_med1_working_main_random",
+		"interactions": [
+			"m_c always tries to avoid making r_c the leader of a patrol."
+		],
+		"main_status_constraint": [
+			"deputy",
+			"leader"
+		],
+		"random_status_constraint": [
+			"warrior"
+		],
+		"reaction_random_cat": {
+			"dislike": "increase"
+		},
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
+		}
+	},
+	{
+		"id": "dislike_dep_leader_inc_med2",
+		"interactions": [
 			"m_c threatens r_c with never passing {PRONOUN/r_c/poss} assessment!",
 			"m_c tells other cats that r_c is not doing well in {PRONOUN/r_c/poss} training.",
 			"m_c scolds r_c like a kit for something trivial.",
@@ -487,11 +545,82 @@
 		}
 	},
 	{
-		"id": "dislike_dep_leader_inc_high1",
-        "intensity": "high",
+		"id": "dislike_dep_leader_inc_med2_working_random",
 		"interactions": [
-            "m_c pulls r_c aside and reminds {PRONOUN/r_c/object} {PRONOUN/m_c/subject} could easily exile {PRONOUN/r_c/object}.",
-            "m_c scolded r_c for not doing the hard task {PRONOUN/m_c/subject} assigned {PRONOUN/r_c/object} despite knowing it was a job for more then one cat.",
+			"m_c punishes r_c with extra work.",
+			"m_c divides r_c into extra patrols.",
+			"m_c gives r_c a particularly hard task, expecting {PRONOUN/r_c/object} to fail."
+		],
+		"main_status_constraint": [
+			"deputy",
+			"leader"
+		],
+		"random_status_constraint": [
+			"apprentice"
+		],
+		"reaction_random_cat": {
+			"dislike": "increase"
+		},
+		"working_constraint": {
+			"r_c": true
+		}
+	},
+	{
+		"id": "dislike_dep_leader_inc_high1",
+		"intensity": "high",
+		"interactions": [
+			"m_c pulls r_c aside and reminds {PRONOUN/r_c/object} {PRONOUN/m_c/subject} could easily exile {PRONOUN/r_c/object}.",
+			"m_c scolded r_c for not doing the hard task {PRONOUN/m_c/subject} assigned {PRONOUN/r_c/object} despite knowing it was a job for more then one cat."
+		],
+		"main_status_constraint": [
+			"deputy",
+			"leader"
+		],
+		"main_trait_constraint": [
+			"strict",
+			"vengeful",
+			"fierce",
+			"childish",
+			"righteous",
+			"arrogant",
+			"destructive",
+			"grim",
+			"spiteful",
+			"remorseless",
+			"antagonistic",
+			"wrongful",
+			"rebellious",
+			"scary",
+			"chaotic",
+			"manipulative",
+			"moody",
+			"malicious",
+			"frustrated",
+			"fox-hearted",
+			"macabre",
+			"arguementative",
+			"blunt",
+			"calculating",
+			"crude",
+			"deceitful",
+			"cruel",
+			"devious",
+			"resentful",
+			"sadistic",
+			"venomous"
+		],
+		"random_status_constraint": [
+			"apprentice",
+			"warrior"
+		],
+		"reaction_random_cat": {
+			"dislike": "increase"
+		}
+	},
+	{
+		"id": "dislike_dep_leader_inc_high1_working_random",
+		"intensity": "high",
+		"interactions": [
 			"m_c gives r_c a particularly hard task, expecting {PRONOUN/r_c/object} to fail."
 		],
 		"main_status_constraint": [
@@ -537,6 +666,9 @@
 		],
 		"reaction_random_cat": {
 			"dislike": "increase"
+		},
+		"working_constraint": {
+			"r_c": true
 		}
 	},
 	{
@@ -729,7 +861,6 @@
 		"intensity": "high",
 		"interactions": [
 			"m_c thinks {PRONOUN/m_c/subject} should be deputy instead of r_c.",
-			"m_c is tired from r_c putting {PRONOUN/m_c/object} on so many patrols.",
 			"m_c rolls {PRONOUN/m_c/poss} eyes whenever r_c assigns patrols.",
 			"m_c tries to convince other cats that r_c should step down from being deputy."
 		],
@@ -745,6 +876,30 @@
 		],
 		"also_influences": {
 			"jealousy": "increase"
+		}
+	},
+	{
+		"id": "dislike_inc_high7_working_main_random",
+		"intensity": "high",
+		"interactions": [
+			"m_c is tired from r_c putting {PRONOUN/m_c/object} on so many patrols."
+		],
+		"relationship_constraint": [
+			"dislike_40"
+		],
+		"random_status_constraint": [
+			"deputy"
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"warrior"
+		],
+		"also_influences": {
+			"jealousy": "increase"
+		},
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
 		}
 	},
 	{

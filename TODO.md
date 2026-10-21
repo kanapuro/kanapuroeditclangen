@@ -1,26 +1,5 @@
 OH FUCK MAKE SURE WE CREDIT WHOEVER WE PULL FROM IN CREDITS_TEXT.JSON AND THAT ANY BIG CHANGES CHANG THE VERSION # AS WELL 
-- (PRIORITY) UPDATE TO MODERN LIFEGEN/CLANGEN FEATURES (GAMEMODES, CRUEL SEASON, NEW ASSETS, ETC.)
-
-## LifeGen / ClanGen modernization
-
-- [x] Compare upstream changelogs, code, gameplay systems and assets; identify compatibility requirements and implementation order.
-- [x] Update mode/card selection, Quick Start and creation flow, music playback, shared navigation/header, Events pagination/saving and Supplies windows through v0.1.0.13.
-- [x] Add Game Settings access from Colony Settings with the correct return route, and rank-based profile den shortcuts (v0.1.0.14). Retain recovery access and custom role restrictions.
-- [x] Add source-style patrol relationship inspection for all seven local values, with paging, hover details and a return route that preserves the outcome (v0.1.0.15).
-- [x] Add alpha-aware cat selection and matching camp drag hit regions, including refreshed sprites, scrolling and fractional-scale movement (v0.1.0.16).
-- [ ] Continue UI parity: animated moon transitions and remaining profile/popup layouts.
-- [ ] Compare missing icons and wording; add Quay/Bridge camps with placements and credits. New long-fur poses need matching custom outlines.
-- [ ] Implement remaining Cruel Season card mechanics individually with save compatibility and focused verification.
-- [ ] Adapt released event contracts before importing affected content: frequency/constraint weighting, future events and involved-cat exclusions.
-- [ ] Adapt seven missing condition lifecycles, herb aging/collection/capacity, extended-family newborn reactions, breakup/makeup behavior and separate affair settings.
-- [ ] Review save identity/switching, voluntary departure/outside behavior, group history and temperament changes separately from development-only upstream systems.
-- [ ] Complete audio parity: ambiance, separate volume, intermittent music and season/biome/camp coverage.
-- [ ] Revisit ClanGen-style Clan-member selection before choosing the player kit as a future design option.
-
-## Existing backlog
-
-- [x] Fix shared-editor tint scrolling: wheel input across the list viewport and a usable minimum drag-thumb height, keeping the original track width (v0.1.0.16).
-
+- Murder motives: record the reason for a murder and show it in history.
 - Leader lives: manually verify one/nine-life toggles, reloads, deputy promotion, and command/MC revivals. New saves preserve the hidden nine-life balance; old saves already capped at one may lack the original balance and must not receive invented lives. Manually verify the corrected revival/one-life history wording, especially older retired-leader saves and multiple-life death events.
 - merge w genemod - advanced genetics and (PRIORITY) multi-clan management - https://github.com/narvin42/genemod-expanded 
 - merge w reincarnation lifegen mod (kinda lost this.. its a simple concept tho. just characters being reborn with the same history and other features) 
@@ -30,7 +9,6 @@ OH FUCK MAKE SURE WE CREDIT WHOEVER WE PULL FROM IN CREDITS_TEXT.JSON AND THAT A
 - merge: dumb potato's extras (https://ptb.discord.com/channels/1125069186985640063/1202061506997657612), sprout's text expansions (https://ptb.discord.com/channels/1003759225522110524/1188095282915848202), cypress' more grief thoughts (https://ptb.discord.com/channels/1125069186985640063/1226623287283552296), bits from bingle's strange add-ons (https://ptb.discord.com/channels/1345739018792599643/1358826134602645725), caliiriin's extra pelts (https://ptb.discord.com/channels/1345739018792599643/1360109835005460538), multiroles
 - trailblazers themed content (horns, wings, stuff!) / horn/antler accessories!!!!!!!! yay!!!!!!!!!!!
 - leader update pt2: one primary leader, optional ordered subleaders that replace the deputy system. how do pick? player chosen or auto-fill list by rule (think feeding order: oldest first, family first, highest rank, etc.).
-- fix the fuck outta clangen/lifegen buglist: https://docs.google.com/document/d/1hlOsVhGfFTuR1ep8QayjFCHLry8xR-QKb57tJC1RFbM/edit?tab=t.0
 - add new subpatrols. date patrol - outing/date buttons. "dark forest" = dreams - parasite dream (dark forest), ascender dream (stc), wandering dream (wanderers) (names for these pending!). rename lifegen to daily life?
 - plotlines? long term events like wars with many interconnected events
 - cross-colony relationships or relationships with outsiders | outsider reationships are a medium-high effort change: core relationship object and save/load path exist but live behavior is explicitly gated off in several places: relationship interactions refuse outside cats, dateability/friendly outing checks refuse em, moon skips only advance thoughts for them rather than interaction loop. the main touch points i can see are relationship.py:76, cats.py:2491, cats.py:2614, cats.py:3506, cats.py:3745, cats.py:3888, thoughts.py:13, thoughts.py:243, clan.py:542, and possibly relationship.py:246. outside-cat romance the first gate is cats.py:3506 (is_dateable blocking), then outside cats need to participate in normal relationship interaction loops (cats.py:2487, cats.py:2614 - skip moon-step behavior, BEGIN WITH GIVING OUTSIDE CATS THEIR OWN MOONSKIP BEHAVIORS!!!<- and relations picker only chooses non-outside cats), mate/rel model itself is already capable of storing the data (cats.py:3745, cats.py:3888), main limitation is live code refuses to run for outside cats in relationship.py:76. tldr: remove or parameterize outside-cat rejection in is_dateable, set up unique outside cat moon-skip behaviors and use that system to integrate relationships, relax living-cat-only check so it works for outsiders (but not undead!), make sure patrol/date selection code that calls is_friendlyable or is_dateable is consistent with new rules.
@@ -60,5 +38,13 @@ OH FUCK MAKE SURE WE CREDIT WHOEVER WE PULL FROM IN CREDITS_TEXT.JSON AND THAT A
 - "Randomize camp lighting on each visit" rename to "Random camp lighting" and put it in general settings not clan settings | Status: implemented in General Settings and applied across colonies. The first older colony loaded transfers its previous choice only if no global preference has been saved. Checkbox/Save clicks, save/reload, independent lighting, and camp-position reshuffling are verified with disposable data.
 - fix potential bug where clicking "request apprentice" will spawn a new apprentice into the clan (rather tahn waiting until the newest logical one is available, ie a kit nearing apprentice age) and then not give that apprentice to the character | Status: confirmed that the request button does not create cats; fixed incompatible mentor assignment and apprentice role/name/ceremony mismatches. Requests are handled at an existing kitten's normal apprenticeship ceremony, using the player's role, and no longer redirect unrelated six-moon recruits. The button excludes shunned players and explains the wait. All six mentor roles and a native profile-button-to-ceremony flow are verified; hands-on confirmation pending.
 - when you select a kit on the selection screen and then press customize/make your own/wahtever the button is, it should use the kit you selected as the base for what youre customizing ,rather than giving you a white one!
-- ensure that clanmates/clans/rogues/loners are generated before you pick your kit (probably After you choose your clan size and other settings. hell, multiclan/gamemode update may add other screens, so just make sure this is RIGHT BEFORE You pick your kit character) so that you can select your parents and influence your backstory! :D this would of course be optional because the user may want to randomly pick or generate your family based off of backstory. maybe that'd be a setting in backstory section... "build your own" idk??? idk q_q.... we'd also have to see if we culd get appearance from our parents, or keep the appearance, or overwrite what you made, etc.
 - (longterm) colony expansion concept; origins, plotlines, etc. 
+- ABORTION CAT PLAN B 
+- troll mode (illi ideas)
+- kits can hunt! with a toggleable setting and high risk.... also patrol.. ,maybe..... im thinking like broksesnstar tyle.. maybe i need to have like a code system.. like clan code.. idk... 
+- temperature sensitivity (more likely to get frostbite and heatstroke conditions)
+- add selectors to date tab so you can CHOOSE date/outing (of course gray out if incompatible)
+- i often find myself manually adding accessories that are relevant/have higher "weights" to rogues (spike collars), kittypets (collars/bows/bells/scarfs) and matching them to the color of their eyes or something... would love to automate that
+- adjustment system for outsiders (especially kittypets) to adjust to the new environment: get sick or injured eaasier ,get lost on hunts or trips, new strings for their interactions with the clan, like a cooloff stage, still refer to some things improperly and be at odds with some people, PICKY ABOUT FOOD/disgusted about taking from freshkill? (debuff in eating/staturation:D) maybe obviously differ per cat
+- NAMES ARE EXTREMELY BUGGED AND I HATE IT!!!!!!!!!!!!! they should NOT enforce or remove spaces in the prefix and suffix. the name selection for kits should natively read and try to decode what kind of name is being listed for the cat, and fallback to the clan's preferred naming system if that fails. i should NOT be forced to keep or remove spaces between the prefix and suffix, thats pissing me right the hell off.
+- bug: if you click onto the dead view and then clikc anotehr tab or cat, and when you click back you will no longer be on the dead view. you need that view preserved to reduce confusion. in the future this may also be a bug with other clan management.

@@ -385,6 +385,10 @@ class Relationship:
         if comp is not None:
             list_to_choice.append(comp)
 
+        if (self.cat_from.status == "deputy" and self.cat_to.status == "leader"
+                and game.get_config_value("relationship", "deputy_to_leader_neg_buff")):
+            list_to_choice.append(False)
+
         # further influence the partition based on the relationship
         list_to_choice += [True] * int(self.platonic_like / 10)
         list_to_choice += [False] * int(self.dislike / 10)
@@ -421,6 +425,8 @@ class Relationship:
         else:
             value_weights["dislike"] += 1
             value_weights["jealousy"] += 1
+            if self.cat_from.status == "deputy" and self.cat_to.status == "leader":
+                value_weights["admiration"] += game.get_config_value("relationship", "deputy_envy_leader_influence")
 
         # increase the chance of a romantic interaction if they are already mates
         if self.mates:

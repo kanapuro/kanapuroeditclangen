@@ -467,7 +467,8 @@ class ProfileScreen(Screens):
             elif event.ui_element == self.see_relationships_button:
                 self.change_screen("relationship screen")
             elif event.ui_element == self.choose_mate_button:
-                self.change_screen("choose mate screen")
+                if game.get_config_value("mates", "allow_manual"):
+                    self.change_screen("choose mate screen")
             elif event.ui_element == self.change_adoptive_parent_button:
                 self.change_screen("choose adoptive parent screen")
 
@@ -3048,32 +3049,24 @@ class ProfileScreen(Screens):
                     and self.the_cat.status == "leader"
                     and game.clan.get_starting_leader_lives(self.the_cat) == 1
                 )
+            death_occurrences = {}
             for index, death in enumerate(death_history):
-                found_murder = (
-                    False  # Add this line to track if a matching murder event is found
+                text = death["text"]
+                key = (text, death["involved"], death["moon"])
+                occurrence = death_occurrences.get(key, 0)
+                death_occurrences[key] = occurrence + 1
+                murders = [murder for murder in murder_history.get("is_victim", [])
+                           if (murder["text"], murder["murderer"], murder["moon"]) == key]
+                if occurrence < len(murders) and murders[occurrence].get("hidden"):
+                    murder = murders[occurrence]
+                    if not murder["revealed"]:
+                        text = murder["unrevealed_text"]
+                    if (self.the_cat.status == "leader" or death_number > 1) and text.startswith("m_c "):
+                        text = text[4:]
+                text = event_text_adjust(
+                    Cat, text, main_cat=self.the_cat,
+                    random_cat=Cat.fetch_cat(death["involved"]),
                 )
-                if "is_victim" in murder_history:
-                    for event in murder_history["is_victim"]:
-                        text = None
-                        # text = self.get_text_for_murder_event(event, death)
-                        if text is not None:
-                            found_murder = True  # Update the flag if a matching murder event is found
-                            break
-
-                        if found_murder and text is not None and not event["revealed"]:
-                            text = event_text_adjust(
-                                Cat,
-                                event["text"],
-                                main_cat=self.the_cat,
-                                random_cat=Cat.fetch_cat(death["involved"]),
-                            )
-                if not found_murder:
-                    text = event_text_adjust(
-                        Cat,
-                        death["text"],
-                        main_cat=self.the_cat,
-                        random_cat=Cat.fetch_cat(death["involved"]),
-                    )
 
                 if has_revivals or one_life_history:
                     if text == "multi_lives":
@@ -3990,6 +3983,11 @@ class ProfileScreen(Screens):
                 self.choose_mate_button.disable()
             else:
                 self.choose_mate_button.enable()
+            if not game.get_config_value("mates", "allow_manual"):
+                self.choose_mate_button.disable()
+                self.choose_mate_button.set_tooltip("Cruel Season prevents manual mate changes.")
+            else:
+                self.choose_mate_button.set_tooltip(None)
 
         # Roles Tab
         elif self.open_tab == "roles":

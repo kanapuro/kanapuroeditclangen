@@ -1346,6 +1346,7 @@ class EventsScreen(Screens):
     def timeskip_done(self):
         """Various sorting and other tasks that must be done with the timeskip is over."""
 
+        self.update_moon_and_season()
         game.switches["saved_scroll_positions"] = {}
         self.saved_page_positions.clear()
         self.current_page = 1

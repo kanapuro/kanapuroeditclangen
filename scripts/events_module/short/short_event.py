@@ -17,7 +17,7 @@ class ShortEvent:
             season: List[str] = None,
             sub_type: List[str] = None,
             tags: List[str] = None,
-            weight: int = 0,
+            weight: int = None,
             text: str = "",
             new_accessory: List[str] = None,
             m_c=None,
@@ -29,17 +29,47 @@ class ShortEvent:
             outsider: dict = None,
             other_clan: dict = None,
             supplies: list = None,
-            new_gender: List[str] = None
+            new_gender: List[str] = None,
+            exclude_involved: List[str] = None,
+            frequency: int = None,
+            future_event: list = None
     ):
         if not event_id:
             print("WARNING: moon event has no event_id")
+        self.frequency = frequency
+        if frequency is not None and frequency not in (1, 2, 3, 4):
+            raise ValueError(f"Invalid frequency for {event_id}: {frequency}")
+        if frequency is not None and weight is None:
+            from scripts.cat.cats import Cat
+            from scripts.cat.personality import Personality
+            from scripts.cat.skills import SkillPath
+
+            weight = 1
+            if location and "any" not in location:
+                weight += 1
+            if season and "any" not in season:
+                weight += 4 - len(season)
+            for constraints in (m_c, r_c):
+                if not constraints:
+                    continue
+                for key, count in (("age", len(Cat.ages)), ("status", len(Cat.rank_sort_order)),
+                                   ("skill", len(SkillPath)),
+                                   ("trait", sum(len(traits) for traits in Personality.trait_ranges.values()))):
+                    values = constraints.get(key)
+                    if values and "any" not in values:
+                        weight += max(0, count - len(values))
+                for key in ("relationship_status", "not_skill", "not_trait"):
+                    weight += len(constraints.get(key, []))
+                if constraints.get("backstory"):
+                    weight += 1
+        self.future_event = future_event if future_event else []
         self.event_id = event_id
         self.location = location if location else ["any"]
         self.faith_effect = faith_effect if faith_effect else 0
         self.season = season if season else ["any"]
         self.sub_type = sub_type if sub_type else []
         self.tags = tags if tags else []
-        self.weight = weight
+        self.weight = weight if weight is not None else 0
         self.text = text
         self.new_accessory = new_accessory
         self.m_c = m_c if m_c else {"age": ["any"]}
@@ -108,3 +138,4 @@ class ShortEvent:
                 self.other_clan["changed"] = 0
         self.supplies = supplies if supplies else []
         self.new_gender = new_gender
+        self.exclude_involved = list(exclude_involved) if exclude_involved else []

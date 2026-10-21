@@ -150,13 +150,14 @@ class GenerateEvents:
                         season=event["season"] if "season" in event else ["any"],
                         sub_type=event["sub_type"] if "sub_type" in event else [],
                         tags=event["tags"] if "tags" in event else [],
-                        weight=event["weight"] if "weight" in event else 20,
+                        weight=event.get("weight", None if "frequency" in event else 20),
                         text=event_text,
                         new_accessory=event["new_accessory"]
                         if "new_accessory" in event
                         else [],
                         m_c=event["m_c"] if "m_c" in event else {},
-                        r_c=event["r_c"] if "r_c" in event else {},
+                        r_c=(event["r_c"] or {"age": ["any"]})
+                        if "frequency" in event and "r_c" in event else event.get("r_c", {}),
                         new_cat=event["new_cat"] if "new_cat" in event else [],
                         injury=event["injury"] if "injury" in event else [],
                         history=event["history"] if "history" in event else [],
@@ -166,14 +167,17 @@ class GenerateEvents:
                         outsider=event["outsider"] if "outsider" in event else {},
                         other_clan=event["other_clan"] if "other_clan" in event else {},
                         supplies=event["supplies"] if "supplies" in event else [],
-                        new_gender=event["new_gender"] if "new_gender" in event else []
+                        new_gender=event["new_gender"] if "new_gender" in event else [],
+                        exclude_involved=event.get("exclude_involved", []),
+                        frequency=event.get("frequency"),
+                        future_event=event.get("future_event", []),
                     )
                     event_list.append(event)
 
                 # Add to loaded events.
                 GenerateEvents.loaded_events[file_path] = event_list
                 return event_list
-        except:
+        except OSError:
             print(f"WARNING: {file_path} was not found, check short event generation")
 
     @staticmethod
@@ -256,9 +260,11 @@ class GenerateEvents:
         freshkill_active,
         freshkill_trigger_factor,
         sub_types=None,
+        ignore_subtyping=False,
     ):
         final_events = []
         incorrect_format = []
+        sub_types = list(sub_types or [])
 
         # Chance to bypass the skill or trait requirements.
         trait_skill_bypass = 15
@@ -302,7 +308,7 @@ class GenerateEvents:
                 if sub not in sub_types:
                     wrong_type = True
 
-            if wrong_type:
+            if wrong_type and not ignore_subtyping:
                 continue
 
             discard = True
@@ -318,17 +324,8 @@ class GenerateEvents:
                     req_biome = location
                     req_camps = ["any"]
 
-                if req_biome == game.clan.biome.lower():
+                if req_biome == game.clan.biome.lower() and (game.clan.camp_bg in req_camps or "any" in req_camps):
                     discard = False
-                else:
-                    continue
-
-                if game.clan.camp_bg in req_camps or "any" in req_camps:
-                    discard = False
-                else:
-                    continue
-
-                if not discard:
                     break
 
             if discard:
@@ -525,7 +522,7 @@ class GenerateEvents:
                                 break
 
                     if event.m_c["trait"] and event.m_c["skill"]:
-                        if not has_trait or has_skill:
+                        if not has_trait or not has_skill:
                             continue
                     elif event.m_c["trait"]:
                         if not has_trait:
@@ -611,9 +608,9 @@ class GenerateEvents:
                             continue
 
                 if "shunned" in event.r_c:
-                    if event.r_c["shunned"] is True and cat.shunned == 0:
+                    if event.r_c["shunned"] is True and random_cat.shunned == 0:
                         continue
-                    elif event.r_c["shunned"] is False and cat.shunned != 0:
+                    elif event.r_c["shunned"] is False and random_cat.shunned != 0:
                         continue
 
                 # check cat trait and skill
@@ -660,7 +657,7 @@ class GenerateEvents:
                                 break
 
                     if event.r_c["trait"] and event.r_c["skill"]:
-                        if not has_trait or has_skill:
+                        if not has_trait or not has_skill:
                             continue
                     elif event.r_c["trait"]:
                         if not has_trait:
@@ -996,46 +993,13 @@ class GenerateEvents:
                 if discard:
                     continue
 
-            # LG
-            # Slightly changing the event weight based on the cats current faiths
+            weight = event.weight
             if event.faith_effect:
-                if event.faith_effect > 0:
-                    if event.m_c:
-                        if "affected" in event.m_c and event.m_c["affected"] is True:
-                            if cat.faith < 0:
-                                event.weight -= round(event.weight / 3)
-                    if event.r_c and random_cat:
-                        if "affected" in event.m_c and event.m_c["affected"] is True:
-                            if random_cat.faith < 0:
-                                event.weight -= round(event.weight / 3)
-                elif event.faith_effect < 0:
-                    if event.m_c:
-                        if "affected" in event.m_c and event.m_c["affected"] is True:
-                            if cat.faith > 0:
-                                event.weight -= round(event.weight / 3)
-                    if event.r_c and random_cat:
-                        if "affected" in event.m_c and event.m_c["affected"] is True:
-                            if random_cat.faith > 0:
-                                event.weight -= round(event.weight / 3)
-                elif event.faith_effect == 0:
-                    if event.m_c:
-                        if "affected" in event.m_c and event.m_c["affected"] is True:
-                            if (
-                                cat.faith > 2 or
-                                cat.faith < 2
-                                ):
-                                event.weight -= round(event.weight / 3)
-                    if event.r_c and random_cat:
-                        if "affected" in event.m_c and event.m_c["affected"] is True:
-                            if (
-                                random_cat.faith > 2 or
-                                random_cat.faith < 2
-                                ):
-                                event.weight -= round(event.weight / 3)
-            # ------
+                for actor, constraints in ((cat, event.m_c), (random_cat, event.r_c)):
+                    if actor and constraints.get("affected") and actor.faith * event.faith_effect < 0:
+                        weight -= round(weight / 3)
 
-
-            final_events.extend([event] * event.weight)
+            final_events.extend([event] * weight)
 
         for notice in incorrect_format:
             print(notice)

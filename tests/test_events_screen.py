@@ -287,3 +287,48 @@ def test_settings_save_failure_does_not_mark_colony_saved(events_screen):
         route.assert_called_once_with("start screen")
     assert not game.switches["saved_clan"]
     assert not screen.save_states["saved"].visible
+
+
+def test_timeskip_completion_starts_header_animation_and_refreshes_age(events_screen):
+    game.clan.age += 1
+    assert not core.moon_frames
+    events_screen.timeskip_done()
+    assert core.moon_age == game.clan.age
+    assert 5 <= len(core.moon_frames) <= 8
+    assert str(game.clan.age) in core.menu_buttons["moon_indicator"].tool_tip_text
+
+
+def test_context_only_cats_stay_out_of_links_and_filters_after_reload(events_screen, tmp_path, monkeypatch):
+    import json
+    from scripts.cat.history import History
+    from scripts.events_module.short.handle_short_events import HandleShortEvents
+    from scripts.events_module.short.short_event import ShortEvent
+    from scripts.events_module.generate_events import GenerateEvents
+
+    screen = events_screen
+    actor = game.clan.your_cat
+    actor.history = History()
+    context = Cat(status="warrior", moons=30)
+    context.favourite = 1
+    event = ShortEvent(event_id="context_test", text="m_c notices r_c.",
+        r_c={"age": ["any"]}, exclude_involved=["r_c"])
+    with patch.object(GenerateEvents, "possible_short_events", return_value=[event]), patch.object(
+        GenerateEvents, "filter_possible_short_events", return_value=[event]):
+        HandleShortEvents().handle_event("misc", actor, context, None)
+    monkeypatch.setattr(game, "other_events_list", [])
+    monkeypatch.setattr("scripts.game_structure.game_essentials.get_save_dir", lambda: str(tmp_path))
+    (tmp_path / game.clan.name).mkdir()
+    guard = game.safe_save
+    with patch.object(game, "safe_save", type(game).safe_save):
+        game.save_events()
+    assert game.safe_save is guard
+    data = json.loads((tmp_path / game.clan.name / "events.json").read_text(encoding="utf-8"))
+    assert data[0]["cats_involved"] == [actor.ID]
+    game.cur_events_list = []
+    game.load_events()
+    assert game.cur_events_list[0].cats_involved == [actor.ID]
+    screen.update_events_display()
+    press(screen, screen.involved_cat_buttons[0])
+    assert [button.cat_id for button in screen.cat_profile_buttons] == [actor.ID]
+    press(screen, screen.fave_filter_elements["fave_group_1"])
+    assert not screen.display_events

@@ -110,6 +110,8 @@ class ChooseMateScreen(Screens):
                 self.selected_mate_index = 0
                 self.change_screen("profile screen")
             elif event.ui_element == self.toggle_mate:
+                if not game.get_config_value("mates", "allow_manual"):
+                    return
                 if self.work_thread is not None and self.work_thread.is_alive():
                     return
                 self.work_thread = self.loading_screen_start_work(self.change_mate)
@@ -393,7 +395,7 @@ class ChooseMateScreen(Screens):
         self.switch_tab()
 
     def change_mate(self):
-        if not self.selected_cat:
+        if not game.get_config_value("mates", "allow_manual") or not self.selected_cat:
             return
 
         if self.selected_cat.ID not in self.the_cat.mates:
@@ -1089,6 +1091,10 @@ class ChooseMateScreen(Screens):
                 get_button_dict(ButtonStyles.SQUOVAL, (153, 30)),
                 object_id="@buttonstyles_squoval",
             )
+
+        if not game.get_config_value("mates", "allow_manual"):
+            self.toggle_mate.disable()
+            self.toggle_mate.set_tooltip("Cruel Season prevents manual mate changes.")
 
         if (
             not game.clan.clan_settings["same sex birth"]

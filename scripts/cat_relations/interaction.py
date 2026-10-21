@@ -24,6 +24,7 @@ class SingleInteraction:
         random_skill_constraint=None,
         reaction_random_cat=None,
         also_influences=None,
+        working_constraint=None,
     ):
         self.id = interact_id
         self.intensity = intensity
@@ -63,6 +64,7 @@ class SingleInteraction:
         )
         self.reaction_random_cat = reaction_random_cat if reaction_random_cat else {}
         self.also_influences = also_influences if also_influences else {}
+        self.working_constraint = working_constraint if working_constraint else {}
 
 
 class GroupInteraction:
@@ -234,6 +236,11 @@ def cats_fulfill_single_interaction_constraints(
     main_cat, random_cat, interaction, game_mode
 ) -> bool:
     """Check if the two cats fulfills the interaction constraints."""
+    for abbreviation, cat in (("m_c", main_cat), ("r_c", random_cat)):
+        if abbreviation in interaction.working_constraint:
+            if cat.not_working() == interaction.working_constraint[abbreviation]:
+                return False
+
     if len(interaction.main_status_constraint) >= 1:
         if main_cat.status not in interaction.main_status_constraint:
             return False
@@ -355,6 +362,7 @@ def create_interaction(inter_list) -> list:
                     if "reaction_random_cat" in inter
                     else None
                 ),
+                working_constraint=inter.get("working_constraint"),
                 also_influences=(
                     inter["also_influences"] if "also_influences" in inter else None
                 ),

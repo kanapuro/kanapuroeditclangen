@@ -1,3 +1,4 @@
+import math
 import random
 from random import choice, randint
 
@@ -29,6 +30,9 @@ class Pregnancy_Events:
     PREGNANT_STRINGS = None
     with open(f"resources/dicts/conditions/pregnancy.json", "r") as read_file:
         PREGNANT_STRINGS = ujson.loads(read_file.read())
+
+    with open("resources/dicts/relationship_events/newborn_relative_logs.json", encoding="utf-8") as read_file:
+        NEWBORN_REL_REACTIONS = ujson.load(read_file)
 
     @staticmethod
     def handle_post_birth_mortality(kit, clan):
@@ -131,7 +135,8 @@ class Pregnancy_Events:
 
         # Check if they can have kits.
         can_have_kits = Pregnancy_Events.check_if_can_have_kits(
-            cat, clan.clan_settings["single parentage"], clan.clan_settings["affair"]
+            cat, clan.clan_settings["single parentage"], clan.clan_settings["affair"],
+            allow_unmated=clan.clan_settings["unmated parentage"],
         )
         if not can_have_kits:
             return
@@ -148,6 +153,7 @@ class Pregnancy_Events:
             clan.clan_settings["affair"],
             clan.clan_settings["same sex birth"],
             clan.clan_settings["same sex adoption"],
+            allow_unmated=clan.clan_settings["unmated parentage"],
         )
         if second_parent:
             if not can_have_kits:
@@ -577,7 +583,7 @@ class Pregnancy_Events:
     # ---------------------------------------------------------------------------- #
 
     @staticmethod
-    def check_if_can_have_kits(cat, single_parentage, allow_affair):
+    def check_if_can_have_kits(cat, single_parentage, allow_affair, allow_unmated=False):
         """Check if the given cat can have kits, see for age, birth-cooldown and so on."""
         if not cat:
             return False
@@ -608,8 +614,7 @@ class Pregnancy_Events:
                 valid_mates.append(mate_id)
             cat.mates = valid_mates
 
-        # If the "single parentage setting in on, we should only allow cats that have mates to have kits.
-        if not single_parentage and len(cat.mates) < 1 and not allow_affair:
+        if not (single_parentage or allow_unmated or allow_affair) and not cat.mates:
             return False
 
         # if function reaches this point, having kits is possible
@@ -720,6 +725,7 @@ class Pregnancy_Events:
         allow_affair: bool,
         same_sex_birth: bool,
         same_sex_adoption: bool,
+        allow_unmated: bool = False,
     ):
         """
         This checks to see if the chosen second parent and CAT can have kits. It assumes CAT can have kits.
@@ -729,7 +735,7 @@ class Pregnancy_Events:
 
         # Checks for second parent alone:
         if not Pregnancy_Events.check_if_can_have_kits(
-            second_parent, single_parentage, allow_affair
+            second_parent, single_parentage, allow_affair, allow_unmated=allow_unmated
         ):
             return False, False
 
@@ -754,12 +760,19 @@ class Pregnancy_Events:
     # ---------------------------------------------------------------------------- #
 
     @staticmethod
+    def allows_nonmate_parentage(cat, other_cat, clan):
+        if cat.mates or other_cat.mates:
+            return clan.clan_settings["affair"]
+        return clan.clan_settings["unmated parentage"]
+
+    @staticmethod
     def get_second_parent(cat, clan):
         """
         Return the second parent of a cat, which will have kits.
         Also returns a bool that is true if an affair was triggered.
         """
         samesex = clan.clan_settings["same sex birth"]
+        allow_same_sex = samesex or clan.clan_settings["same sex adoption"]
         allow_affair = clan.clan_settings["affair"]
         mate = None
 
@@ -778,8 +791,7 @@ class Pregnancy_Events:
             if len(opposite_mate) > 0:
                 mate = choice(opposite_mate)
 
-        if not allow_affair:
-            # if affairs setting is OFF, second parent (mate) will be returned
+        if not allow_affair and (mate or not clan.clan_settings["unmated parentage"]):
             return mate, False
 
         # get relationships to influence the affair chance
@@ -792,7 +804,7 @@ class Pregnancy_Events:
         # LOVE AFFAIR
         # Handle love affair chance.
         affair_partner = Pregnancy_Events.determine_love_affair(
-            cat, mate, mate_relation, samesex
+            cat, mate, mate_relation, allow_same_sex, clan=clan
         )
         if affair_partner:
             return affair_partner, True
@@ -822,8 +834,9 @@ class Pregnancy_Events:
                 i
                 for i in Cat.all_cats_list
                 if i.is_potential_mate(cat, for_love_interest=True)
-                and (samesex or i.gender != cat.gender)
+                and (allow_same_sex or i.gender != cat.gender)
                 and i.ID not in cat.mates
+                and Pregnancy_Events.allows_nonmate_parentage(cat, i, clan)
             ]
             if special_affair:
                 possible_affair_partners = [
@@ -850,14 +863,17 @@ class Pregnancy_Events:
         return mate, False
 
     @staticmethod
-    def determine_love_affair(cat, mate, mate_relation, samesex):
+    def determine_love_affair(cat, mate, mate_relation, samesex, clan=None):
         """
         Function to handle everything around love affairs.
         Will return a second parent if a love affair is triggerd, and none otherwise.
         """
 
+        clan = clan or game.clan
+        candidates = [relation for relation in cat.relationships.values()
+                      if Pregnancy_Events.allows_nonmate_parentage(cat, relation.cat_to, clan)]
         highest_romantic_relation = get_highest_romantic_relation(
-            cat.relationships.values(), exclude_mate=True, potential_mate=True
+            candidates, exclude_mate=True, potential_mate=True
         )
 
         if mate and highest_romantic_relation:
@@ -1173,6 +1189,40 @@ class Pregnancy_Events:
                         trust=parent_to_kit["trust"],
                     )
 
+        if all_kitten and not (cat and (cat.outside or cat.exiled)):
+            parents = list(all_kitten[0].get_parents())
+            litter_ids = {kit.ID for kit in all_kitten}
+            relatives = [relative for cat_id in dict.fromkeys(all_kitten[0].get_relatives())
+                         if cat_id not in parents and cat_id not in litter_ids
+                         and cat_id in clan.clan_cats and (relative := Cat.all_cats.get(cat_id))
+                         and not (relative.dead or relative.outside or relative.exiled)]
+            reflection = game.config["new_cat"]["ext_relative_modifier"] * len(parents)
+            variation = math.ceil(20 / len(parents))
+            for kit in all_kitten:
+                for relative in relatives:
+                    y = random.randrange(-variation, variation)
+                    values = {"platonic_like": 0, "comfortable": 0, "admiration": 0, "trust": 0}
+                    for parent_id in parents:
+                        relation = relative.relationships.get(parent_id)
+                        if relation is None:
+                            continue
+                        # Upstream's signed liking maps to our separate liking/dislike values.
+                        liking = relation.platonic_like - relation.dislike
+                        values["platonic_like"] += int(liking / reflection) + y if liking else 5
+                        for field in ("comfortable", "admiration", "trust"):
+                            amount = getattr(relation, field)
+                            values[field] += int(amount / reflection) + y if amount else 0
+                    positive = any(amount >= 0 for amount in values.values())
+                    negative = any(amount < 0 for amount in values.values())
+                    reaction = "neutral" if positive and negative else "negative" if negative else "positive"
+                    text = event_text_adjust(Cat, choice(Pregnancy_Events.NEWBORN_REL_REACTIONS[reaction + "_log"]),
+                                             main_cat=relative, random_cat=kit, clan=clan)
+                    # Keep hostility expressible without changing the relationship save format.
+                    dislike = max(0, -values["platonic_like"])
+                    values["platonic_like"] = max(0, values["platonic_like"])
+                    change_relationship_values(cats_from=[relative], cats_to=[kit], dislike=dislike,
+                                               log=text + f" ({reaction} effect) ", **values)
+
         if blood_parent:
             blood_parent.outside = True
             if not getattr(blood_parent, 'df', False):
@@ -1186,39 +1236,40 @@ class Pregnancy_Events:
         # Check if bigger litters setting is enabled
         use_modded = game.clan.clan_settings.get("bigger_litters", False)
         
-        min_kits = game.config["pregnancy"]["min_kits"]
+        config = game.get_config_value("pregnancy")
+        min_kits = config["min_kits"]
         
         if use_modded:
-            one_kit = [min_kits] * game.config["pregnancy"]["one_kit_modded"][cat.age]
-            two_kits = [min_kits + 1] * game.config["pregnancy"]["two_kit_modded"][cat.age]
-            three_kits = [min_kits + 2] * game.config["pregnancy"]["three_kit_modded"][cat.age]
-            four_kits = [min_kits + 3] * game.config["pregnancy"]["four_kit_modded"][cat.age]
-            five_kits = [min_kits + 4] * game.config["pregnancy"]["five_kit_modded"][cat.age]
-            six_kits = [min_kits + 5] * game.config["pregnancy"]["six_kit_modded"][cat.age]
+            one_kit = [min_kits] * config["one_kit_modded"][cat.age]
+            two_kits = [min_kits + 1] * config["two_kit_modded"][cat.age]
+            three_kits = [min_kits + 2] * config["three_kit_modded"][cat.age]
+            four_kits = [min_kits + 3] * config["four_kit_modded"][cat.age]
+            five_kits = [min_kits + 4] * config["five_kit_modded"][cat.age]
+            six_kits = [min_kits + 5] * config["six_kit_modded"][cat.age]
             
-            seven_eight_kits = [choice([min_kits + 6, min_kits + 7])] * game.config["pregnancy"]["seven_kit_modded"][cat.age]
+            seven_eight_kits = [choice([min_kits + 6, min_kits + 7])] * config["seven_kit_modded"][cat.age]
             
-            nine_plus_kits = [choice([min_kits + 8, min_kits + 9, min_kits + 10, min_kits + 11])] * game.config["pregnancy"]["nine_kit_modded"][cat.age]
+            nine_plus_kits = [choice([min_kits + 8, min_kits + 9, min_kits + 10, min_kits + 11])] * config["nine_kit_modded"][cat.age]
             
-            max_kits = [game.config["pregnancy"]["max_kits"]] * game.config["pregnancy"]["max_kit_modded"][cat.age]
+            max_kits = [config["max_kits"]] * config["max_kit_modded"][cat.age]
             
             amount = choice(
                 one_kit + two_kits + three_kits + four_kits + five_kits + six_kits + seven_eight_kits + nine_plus_kits + max_kits
             )
         else:
             # Use standard configuration
-            min_kit = [min_kits] * game.config["pregnancy"]["one_kit_possibility"][cat.age]
-            two_kits = [min_kits + 1] * game.config["pregnancy"]["two_kit_possibility"][cat.age]
-            three_kits = [min_kits + 2] * game.config["pregnancy"]["three_kit_possibility"][cat.age]
-            four_kits = [min_kits + 3] * game.config["pregnancy"]["four_kit_possibility"][cat.age]
-            five_kits = [min_kits + 4] * game.config["pregnancy"]["five_kit_possibility"][cat.age]
-            six_kits = [min_kits + 5] * game.config["pregnancy"]["six_kit_possibility"][cat.age]
-            seven_kits = [min_kits + 6] * game.config["pregnancy"]["seven_kit_possibility"][cat.age]
-            eight_kits = [min_kits + 7] * game.config["pregnancy"]["eight_kit_possibility"][cat.age]
-            nine_kits = [min_kits + 8] * game.config["pregnancy"]["nine_kit_possibility"][cat.age]
-            ten_kits = [min_kits + 9] * game.config["pregnancy"]["ten_kit_possibility"][cat.age]
-            eleven_kits = [min_kits + 10] * game.config["pregnancy"]["eleven_kit_possibility"][cat.age]
-            max_kits = [game.config["pregnancy"]["max_kits"]] * game.config["pregnancy"]["max_kit_possibility"][cat.age]
+            min_kit = [min_kits] * config["one_kit_possibility"][cat.age]
+            two_kits = [min_kits + 1] * config["two_kit_possibility"][cat.age]
+            three_kits = [min_kits + 2] * config["three_kit_possibility"][cat.age]
+            four_kits = [min_kits + 3] * config["four_kit_possibility"][cat.age]
+            five_kits = [min_kits + 4] * config["five_kit_possibility"][cat.age]
+            six_kits = [min_kits + 5] * config["six_kit_possibility"][cat.age]
+            seven_kits = [min_kits + 6] * config["seven_kit_possibility"][cat.age]
+            eight_kits = [min_kits + 7] * config["eight_kit_possibility"][cat.age]
+            nine_kits = [min_kits + 8] * config["nine_kit_possibility"][cat.age]
+            ten_kits = [min_kits + 9] * config["ten_kit_possibility"][cat.age]
+            eleven_kits = [min_kits + 10] * config["eleven_kit_possibility"][cat.age]
+            max_kits = [config["max_kits"]] * config["max_kit_possibility"][cat.age]
             
             amount = choice(
                 min_kit + two_kits + three_kits + four_kits + five_kits + six_kits + seven_kits + eight_kits + nine_kits + ten_kits + eleven_kits + max_kits
@@ -1340,8 +1391,8 @@ class Pregnancy_Events:
         if not clan.clan_settings["single parentage"]:
             inverse_chance = int(inverse_chance * 0.7)
 
-        # - decrease inverse chance if affairs are not allowed
-        if not clan.clan_settings["affair"]:
+        # - compensate when neither form of nonmate parentage is allowed
+        if not (clan.clan_settings["affair"] or clan.clan_settings["unmated parentage"]):
             inverse_chance = int(inverse_chance * 0.7)
 
         # CURRENT CAT AMOUNT

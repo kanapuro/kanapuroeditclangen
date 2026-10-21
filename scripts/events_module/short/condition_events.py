@@ -1,5 +1,4 @@
 import random
-from copy import deepcopy
 
 import ujson
 
@@ -467,6 +466,10 @@ class Condition_Events:
             "recurring shock",
             "lasting grief",
             "persistent headaches",
+            "absent",
+            "damaged throat",
+            "selective mutism",
+            "strange lump",
             "cleft palate",
             "persistent headaches",
             "testosterone deficiency", "excess testosterone", "aneuploidy", "mosaicism", "chimerism"
@@ -512,7 +515,8 @@ class Condition_Events:
             perm_condition = condition
 
         if perm_condition is not None:
-            got_condition = cat.get_permanent_condition(perm_condition, born_with)
+            got_condition = cat.get_permanent_condition(
+                perm_condition, born_with, cause=f"After recovering from {injury_name}." if injury_name else None)
 
         if got_condition is True:
             return perm_condition
@@ -542,15 +546,10 @@ class Condition_Events:
         # ---------------------------------------------------------------------------- #
 
         # making a copy, so we can iterate through copy and modify the real dict at the same time
-        illnesses = deepcopy(cat.illnesses)
+        illnesses = cat.illnesses.copy()
         for illness in illnesses:
             if illness in game.switches["skip_conditions"]:
                 continue
-
-            # use herbs
-            Condition_Events.use_herbs(
-                cat, illness, illnesses, Condition_Events.ILLNESSES
-            )
 
             # moon skip to try and kill or heal cat
             skipped = cat.moon_skip_illness(illness)
@@ -610,7 +609,7 @@ class Condition_Events:
 
                 # choose event string
                 random_index = int(random.random() * len(possible_string_list))
-                event = possible_string_list[random_index]
+                event = Condition_Events.condition_text(possible_string_list, random_index)
                 event = event_text_adjust(Cat, event, main_cat=cat, random_cat=None)
                 event_list.append(event)
                 game.herb_events_list.append(event)
@@ -657,12 +656,10 @@ class Condition_Events:
         # need to hold this number so that we can check if the leader has died
         starting_life_count = game.clan.leader_lives
 
-        injuries = deepcopy(cat.injuries)
+        injuries = cat.injuries.copy()
         for injury in injuries:
             if injury in game.switches["skip_conditions"]:
                 continue
-
-            Condition_Events.use_herbs(cat, injury, injuries, Condition_Events.INJURIES)
 
             skipped = cat.moon_skip_injury(injury)
             if skipped:
@@ -777,7 +774,7 @@ class Condition_Events:
                     ):
                         random_index = 2
 
-                    event = possible_string_list[random_index]
+                    event = Condition_Events.condition_text(possible_string_list, random_index, med_cat)
                     event = event_text_adjust(
                         Cat, event, main_cat=cat, random_cat=med_cat
                     )  # adjust the text
@@ -820,7 +817,7 @@ class Condition_Events:
             "partial hearing loss": "deaf",
         }
 
-        conditions = deepcopy(cat.permanent_condition)
+        conditions = cat.permanent_condition.copy()
         for condition in conditions:
             # checking if the cat has a congenital condition to reveal and handling duration and death
             prev_lives = game.clan.leader_lives
@@ -894,25 +891,12 @@ class Condition_Events:
                     med_cat = random.choice(med_list)
                     if med_cat == cat:
                         random_index = 1
-                event = possible_string_list[random_index]
+                event = Condition_Events.condition_text(possible_string_list, random_index, med_cat)
                 event = event_text_adjust(
                     Cat, event, main_cat=cat, random_cat=med_cat
                 )  # adjust the text
                 event_list.append(event)
                 continue
-
-            # trying herbs
-            chance = 0
-            if conditions[condition]["severity"] == "minor":
-                chance = 10
-            elif conditions[condition]["severity"] == "major":
-                chance = 6
-            elif conditions[condition]["severity"] == "severe":
-                chance = 3
-            if not int(random.random() * chance):
-                Condition_Events.use_herbs(
-                    cat, condition, conditions, Condition_Events.PERMANENT
-                )
 
             # give risks
             Condition_Events.give_risks(
@@ -1015,12 +999,19 @@ class Condition_Events:
 
                             
     @staticmethod
+    def condition_text(strings, index, med_cat=None):
+        text = strings[index]
+        if med_cat is None and "r_c" in text:
+            text = random.choice([text for text in strings if "r_c" not in text])
+        return text
+
+    @staticmethod
     def give_risks(cat, event_list, condition, progression, conditions, dictionary):
         event_triggered = False
         if dictionary == cat.permanent_condition:
             event_triggered = True
         for risk in conditions[condition]["risks"]:
-            if risk["name"] in (cat.injuries or cat.illnesses):
+            if risk["name"] in cat.injuries or risk["name"] in cat.illnesses or risk["name"] in cat.permanent_condition:
                 continue
             if (
                 risk["name"] == "an infected wound"
@@ -1118,7 +1109,7 @@ class Condition_Events:
                         med_cat = random.choice(med_list)
                         if med_cat == cat:
                             random_index = 1
-                    event = possible_string_list[random_index]
+                    event = Condition_Events.condition_text(possible_string_list, random_index, med_cat)
                 except KeyError:
                     print(
                         f"WARNING: {condition} couldn't be found in the risk strings! placeholder string was used"
@@ -1135,10 +1126,10 @@ class Condition_Events:
                 game.switches["skip_conditions"].append(new_condition_name)
                 # here we give the new condition
                 if new_condition_name in Condition_Events.INJURIES:
-                    cat.get_injured(new_condition_name, event_triggered=event_triggered)
+                    cat.get_injured(new_condition_name, event_triggered=event_triggered, cause=event)
                     break
                 elif new_condition_name in Condition_Events.ILLNESSES:
-                    cat.get_ill(new_condition_name, event_triggered=event_triggered)
+                    cat.get_ill(new_condition_name, event_triggered=event_triggered, cause=event)
                     if dictionary == cat.illnesses or removed_condition:
                         break
                     keys = dictionary[condition].keys()
@@ -1155,7 +1146,7 @@ class Condition_Events:
                     break
                 elif new_condition_name in Condition_Events.PERMANENT:
                     cat.get_permanent_condition(
-                        new_condition_name, event_triggered=event_triggered
+                        new_condition_name, event_triggered=event_triggered, cause=event
                     )
                     break
 
@@ -1163,106 +1154,108 @@ class Condition_Events:
                 break
 
     @staticmethod
+    def handle_herbs(clan):
+        patients = [cat for cat_id in clan.clan_cats
+                    if (cat := Cat.all_cats.get(cat_id)) and not (cat.dead or cat.outside or cat.exiled)]
+        medicine_ranks = ("medicine cat", "medicine cat apprentice")
+        has_medic = any(cat.status in medicine_ranks and not cat.shunned and not cat.not_working()
+                        for cat in patients)
+        severity = {"severe": 0, "major": 1, "minor": 2}
+        treatment = []
+        for cat in patients:
+            if clan.game_mode != "classic" and not has_medic and (
+                    cat.status not in medicine_ranks or cat.shunned):
+                continue
+            conditions = []
+            for current, source in ((cat.injuries, Condition_Events.INJURIES),
+                                    (cat.illnesses, Condition_Events.ILLNESSES),
+                                    (cat.permanent_condition, Condition_Events.PERMANENT)):
+                for name, info in current.items():
+                    if info.get("born_with") and info.get("moons_until") != -2:
+                        continue
+                    conditions.append((name, current, source))
+            if conditions:
+                priority = min(severity[current[name]["severity"]] for name, current, _ in conditions)
+                treatment.append((priority, cat, conditions))
+        # Sort treatment only; the main monthly cat loop retains its existing order.
+        treatment.sort(key=lambda entry: entry[0])
+        for _, cat, conditions in treatment:
+            for name, current, source in conditions:
+                Condition_Events.use_herbs(cat, name, current, source)
+
+    @staticmethod
     def use_herbs(cat, condition, conditions, source):
-        # herbs that can be used for the condition and the Clan has available
-        clan_herbs = set()
-        needed_herbs = set()
-        clan_herbs.update(game.clan.herbs.keys())
         try:
-            needed_herbs.update(source[condition]["herbs"])
+            herbs = source[condition]["herbs"]
         except KeyError:
-            print(
-                f"WARNING: {condition} does not exist in it's condition dict! if the condition is 'thorn in paw' or "
-                "'splinter', disregard this! otherwise, check that your condition is in the correct dict or report "
-                "this as a bug."
-            )
+            print(f"WARNING: {condition} could not be found in its condition dictionary; herbal treatment skipped.")
             return
-        if game.clan.game_mode == "classic":
-            herb_set = needed_herbs
+        tiered = isinstance(herbs, dict)
+        if tiered:
+            strengths = {herb: int(level) for level, group in herbs.items() for herb in group}
+            needed_herbs = list(strengths)
         else:
-            herb_set = clan_herbs.intersection(needed_herbs)
-        usable_herbs = list(herb_set)
-
-        if not source[condition]["herbs"]:
+            needed_herbs = herbs
+        if not needed_herbs:
             return
 
+        classic = game.clan.game_mode == "classic"
+        usable_herbs = [herb for herb in needed_herbs if classic or game.clan.herbs.get(herb, 0) > 0]
+        info = conditions[condition]
         if usable_herbs:
-            keys = conditions[condition].keys()
-            # determine the effect of the herb
             possible_effects = []
-            if conditions[condition]["mortality"] != 0:
-                possible_effects.append("mortality")
-            if conditions[condition]["risks"]:
-                possible_effects.append("risks")
-            if "duration" in keys:
-                if conditions[condition]["duration"] > 1:
-                    possible_effects.append("duration")
+            permanent = condition in cat.permanent_condition
+            mortality_limit = max(20, source[condition]["mortality"][cat.age])
+            if info["mortality"] and (not permanent or info["mortality"] <= mortality_limit):
+                possible_effects.extend(["mortality"] * (3 if tiered else 1))
+            risks_to_treat = [risk for risk in info["risks"] if risk["chance"] > 0]
+            if permanent:
+                default_risks = {risk["name"]: risk["chance"] for risk in source[condition]["risks"]}
+                risks_to_treat = [risk for risk in risks_to_treat
+                                  if risk["chance"] <= max(20, default_risks.get(risk["name"], 20))]
+            if risks_to_treat:
+                possible_effects.extend(["risks"] * (2 if tiered else 1))
+            if info.get("duration", 0) > 1:
+                possible_effects.append("duration")
             if not possible_effects:
                 return
-
             effect = random.choice(possible_effects)
-
             herb_used = usable_herbs[0]
-            # Failsafe, since I have no idea why we are getting 0-herb entries.
-
-            # classic doesn't actually count herbs
-            if game.clan.game_mode != "classic":
-                while game.clan.herbs[herb_used] <= 0:
-                    print(
-                        f"Warning: {herb_used} was chosen to use, although you currently have "
-                        f"{game.clan.herbs[herb_used]}. Removing {herb_used} from herb dict, finding a new herb..."
-                    )
-                    game.clan.herbs.pop(herb_used)
-                    usable_herbs.pop(0)
-                    if usable_herbs:
-                        herb_used = usable_herbs[0]
-                    else:
-                        print("No herbs to use for this injury")
-                        return
-
-            # deplete the herb
-            amount_used = 1
-            if game.clan.game_mode != "classic":
-                game.clan.herbs[herb_used] -= amount_used
-                if game.clan.herbs[herb_used] <= 0:
+            if tiered and not classic:
+                herb_used = max(usable_herbs, key=lambda herb: game.clan.herbs[herb])
+            if not classic:
+                game.clan.herbs[herb_used] -= 1
+                if game.clan.herbs[herb_used] == 0:
                     game.clan.herbs.pop(herb_used)
 
-            # applying a modifier for herb priority. herbs that are better for the condition will have stronger effects
-            count = 0
-            for herb in source[condition]["herbs"]:
-                count += 1
-                if herb == herb_used:
-                    break
-            modifier = count
-            if cat.status in ["elder", "kitten"]:
-                modifier = modifier * 2
+            if tiered:
+                strength = 1 if classic else strengths[herb_used]
+                effects = game.get_config_value("clan_resources", "herbs")
+                mortality_effect = effects["base_mortality_effect"] * strength + 1
+                risk_effect = effects["base_risk_effect"] * strength + 1
+                duration_effect = effects["base_duration_effect"] * strength
+            else:
+                modifier = herbs.index(herb_used) + 1
+                if cat.status in ["elder", "kitten"]:
+                    modifier *= 2
+                mortality_effect = risk_effect = 11 - modifier + 1
+                duration_effect = 1
 
-            effect_message = "this should not show up"
             if effect == "mortality":
+                info["mortality"] = max(1, info["mortality"] + mortality_effect)
                 effect_message = "They will be less likely to die."
-                conditions[condition]["mortality"] += (
-                    11 - modifier + int(amount_used * 1.5)
-                )
-                if conditions[condition]["mortality"] < 1:
-                    conditions[condition]["mortality"] = 1
             elif effect == "duration":
+                info["duration"] = max(0, info["duration"] - duration_effect)
                 effect_message = "They will heal sooner."
-                conditions[condition]["duration"] -= 1
-            elif effect == "risks":
-                effect_message = (
-                    "The risks associated with their condition are lowered."
-                )
-                for risk in conditions[condition]["risks"]:
-                    risk["chance"] += 11 - modifier + int(amount_used * 1.5)
-                    if risk["chance"] < 0:
-                        risk["chance"] = 0
-
-            text = f"{cat.name} was given {herb_used.replace('_', ' ')} as treatment for {condition}. {effect_message}"
-            game.herb_events_list.append(text)
+            else:
+                for risk in risks_to_treat:
+                    risk["chance"] = max(0, risk["chance"] + risk_effect)
+                effect_message = "The risks associated with their condition are lowered."
+            game.herb_events_list.append(
+                f"{cat.name} was given {herb_used.replace('_', ' ')} as treatment for {condition}. {effect_message}")
         else:
-            # if they didn't get any herbs, make them more likely to die!! kill the kitties >:)
-            if conditions[condition]["mortality"] > 2:
-                conditions[condition]["mortality"] -= 1
-            for risk in conditions[condition]["risks"]:
+            if info["mortality"] > 2:
+                info["mortality"] -= 1
+            for risk in info["risks"]:
                 if risk["chance"] > 2:
                     risk["chance"] -= 1

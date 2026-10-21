@@ -77,11 +77,7 @@
 	{
 		"id": "jealousy_app_de_med1",
 		"interactions": [
-			"m_c has been listening to r_c talk about how hard training has been.",
-			"m_c comforts r_c after a hard day's training.",
 			"m_c and r_c exchange stories about their mentors.",
-			"After going on a patrol together, m_c and r_c excitedly gush about how cool it is to be an apprentice.",
-			"r_c messes something up during training, so m_c reassures {PRONOUN/r_c/object} that it's okay to make mistakes.",
 			"m_c and r_c have a long conversation about what they want their warrior names to be."
 		],
 		"main_status_constraint": [
@@ -102,6 +98,65 @@
 		},
 		"also_influences": {
 			"platonic": "increase"
+		}
+	},
+	{
+		"id": "jealousy_app_de_med1_working_random",
+		"interactions": [
+			"m_c has been listening to r_c talk about how hard training has been.",
+			"m_c comforts r_c after a hard day's training.",
+			"r_c messes something up during training, so m_c reassures {PRONOUN/r_c/object} that it's okay to make mistakes."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"mediator apprentice",
+			"medicine cat apprentice",
+			"queen's apprentice"
+		],
+		"random_status_constraint": [
+			"medicine cat apprentice",
+			"apprentice",
+			"mediator apprentice",
+			"queen's apprentice"
+		],
+		"reaction_random_cat": {
+			"comfortable": "increase",
+			"platonic": "increase"
+		},
+		"also_influences": {
+			"platonic": "increase"
+		},
+		"working_constraint": {
+			"r_c": true
+		}
+	},
+	{
+		"id": "jealousy_app_de_med1_working_main_random",
+		"interactions": [
+			"After going on a patrol together, m_c and r_c excitedly gush about how cool it is to be an apprentice."
+		],
+		"main_status_constraint": [
+			"apprentice",
+			"mediator apprentice",
+			"medicine cat apprentice",
+			"queen's apprentice"
+		],
+		"random_status_constraint": [
+			"medicine cat apprentice",
+			"apprentice",
+			"mediator apprentice",
+			"queen's apprentice"
+		],
+		"reaction_random_cat": {
+			"comfortable": "increase",
+			"platonic": "increase"
+		},
+		"also_influences": {
+			"platonic": "increase"
+		},
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
 		}
 	},
 	{

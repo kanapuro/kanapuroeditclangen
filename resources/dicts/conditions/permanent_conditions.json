@@ -284,19 +284,22 @@
             "senior adult": 60,
             "senior": 30
         },
-        "illness_infectiousness": [
-        ],
+        "illness_infectiousness": [],
         "risks": [
             {
                 "name": "whitecough",
                 "chance": 20
+            },
+            {
+                "name": "breathless fit",
+                "chance": 10
             }
         ],
         "herbs": {
             "1": [
-            "betony",
-            "mullein"
-        ],
+                "betony",
+                "mullein"
+            ],
             "2": [],
             "3": []
         }
@@ -611,20 +614,23 @@
             "senior adult": 0,
             "senior": 0
         },
-        "illness_infectiousness": [
-        ],
+        "illness_infectiousness": [],
         "risks": [
             {
                 "name": "constant nightmares",
                 "chance": 20
+            },
+            {
+                "name": "selective mutism",
+                "chance": 250
             }
         ],
         "herbs": {
             "1": [
-            "thyme",
-            "juniper",
-            "poppy"
-        ],
+                "thyme",
+                "juniper",
+                "poppy"
+            ],
             "2": [],
             "3": []
         }
@@ -642,20 +648,23 @@
             "senior adult": 0,
             "senior": 0
         },
-        "illness_infectiousness": [
-        ],
+        "illness_infectiousness": [],
         "risks": [
             {
                 "name": "grief stricken",
+                "chance": 50
+            },
+            {
+                "name": "absent",
                 "chance": 50
             }
         ],
         "herbs": {
             "1": [
-            "thyme",
-            "juniper",
-            "poppy"
-        ],
+                "thyme",
+                "juniper",
+                "poppy"
+            ],
             "2": [],
             "3": []
         }
@@ -865,5 +874,157 @@
             "2": [],
             "3": []
         }
+    },
+    "strange lump": {
+        "severity": "major",
+        "congenital": "sometimes",
+        "moons_until": 40,
+        "mortality": {
+            "newborn": 0,
+            "kitten": 10,
+            "adolescent": 15,
+            "young adult": 35,
+            "adult": 55,
+            "senior adult": 65,
+            "senior": 75
+        },
+        "illness_infectiousness": [
+            {
+                "name": "whitecough",
+                "chance": 10
+            },
+            {
+                "name": "greencough",
+                "chance": 15
+            },
+            {
+                "name": "yellowcough",
+                "chance": 13
+            }
+        ],
+        "risks": [
+            {
+                "name": "seizure",
+                "chance": 30
+            },
+            {
+                "name": "paralyzed",
+                "chance": 60
+            },
+            {
+                "name": "redcough",
+                "chance": 50
+            }
+        ],
+        "herbs": {
+            "1": [
+                "juniper",
+                "ragwort",
+                "goldenrod",
+                "dandelion"
+            ],
+            "2": [
+                "betony",
+                "mullein"
+            ],
+            "3": [
+                "poppy"
+            ]
+        }
+    },
+    "absent": {
+        "severity": "severe",
+        "congenital": "sometimes",
+        "moons_until": 95,
+        "mortality": {
+            "newborn": 0,
+            "kitten": 0,
+            "adolescent": 0,
+            "young adult": 0,
+            "adult": 0,
+            "senior adult": 0,
+            "senior": 0
+        },
+        "illness_infectiousness": [],
+        "risks": [
+            {
+                "name": "joint pain",
+                "chance": 30
+            },
+            {
+                "name": "torn pelt",
+                "chance": 40
+            },
+            {
+                "name": "selective mutism",
+                "chance": 250
+            }
+        ],
+        "herbs": {
+            "1": [
+                "daisy",
+                "betony"
+            ],
+            "2": [
+                "thyme"
+            ],
+            "3": [
+                "juniper",
+                "ragwort"
+            ]
+        }
+    },
+    "selective mutism": {
+        "severity": "minor",
+        "congenital": "sometimes",
+        "moons_until": 4,
+        "mortality": {
+            "newborn": 0,
+            "kitten": 0,
+            "adolescent": 0,
+            "young adult": 0,
+            "adult": 0,
+            "senior adult": 0,
+            "senior": 0
+        },
+        "illness_infectiousness": [],
+        "risks": [],
+        "herbs": {
+            "1": [
+                "poppy",
+                "juniper"
+            ],
+            "2": [],
+            "3": []
+        }
+    },
+    "damaged throat": {
+        "severity": "minor",
+        "congenital": "never",
+        "moons_until": 4,
+        "mortality": {
+            "newborn": 0,
+            "kitten": 0,
+            "adolescent": 0,
+            "young adult": 0,
+            "adult": 0,
+            "senior adult": 0,
+            "senior": 0
+        },
+        "illness_infectiousness": [],
+        "risks": [
+            {
+                "name": "sore throat",
+                "chance": 30
+            }
+        ],
+        "herbs": {
+            "1": [
+                "poppy",
+                "juniper"
+            ],
+            "2": [],
+            "3": []
+        }
     }
-    }
+}

@@ -98,8 +98,16 @@ def test_supply_window_is_not_opened_during_moon_update(supplies):
     assert not MANAGER.get_window_stack().get_full_stack()
 
 
-def test_selected_feeding_changes_only_selected_cats(supplies):
+@pytest.mark.parametrize("cards", [None, ["crowfood"]])
+def test_selected_feeding_changes_only_selected_cats(supplies, cards):
     screen, clan, cats = supplies
+    if cards:
+        clan.game_mode, clan.cruel_cards = "cruel season", cards
+        clan.freshkill_pile = FreshkillPile(start_amount=100)
+        clan.freshkill_pile.living_cats = cats
+        clan.freshkill_pile.update_nutrition(cats)
+        for nutrition in clan.freshkill_pile.nutrition_info.values():
+            nutrition.current_score = 0
     window = FreshkillManagementWindow(screen)
     original = {key: nutrition.current_score for key, nutrition in clan.freshkill_pile.nutrition_info.items()}
     select(window, 0)
@@ -248,3 +256,95 @@ def test_supply_modal_text_keeps_source_contrast_in_both_themes(supplies, dark):
         window.kill()
         window = HerbManagementWindow(screen)
         assert "#dark" not in window.log.object_ids
+
+
+@pytest.mark.parametrize("has_med", [False, True])
+def test_herb_status_precedes_log_without_changing_stock_or_age(supplies, has_med):
+    screen, clan, cats = supplies
+    if has_med:
+        cats[0].status = "medicine cat"
+    clan.herbs = {"storage": {"catmint": [0, 4]}, "collected": {"cobwebs": 2}}
+    before = clan.herbs.to_dict()
+    game.herb_events_list[:] = ["Gathered cobwebs.", "Expired ragwort."]
+    with patch.object(clan.herbs, "get_status_message", return_value="Supplies are low.") as status:
+        window = HerbManagementWindow(screen)
+    status.assert_called_once_with(clan, cats[0] if has_med else None)
+    assert window.log.html_text.index("Supplies are low.") < window.log.html_text.index("Gathered cobwebs.")
+    assert "Expired ragwort." in window.log.html_text
+    assert clan.herbs.to_dict() == before
+    assert game.herb_events_list == ["Gathered cobwebs.", "Expired ragwort."]
+
+
+@pytest.mark.parametrize("mode", ["classic", "expanded", "cruel season"])
+@pytest.mark.parametrize("dark", [False, True])
+def test_medicine_den_uses_shared_herb_status_except_in_classic(supplies, mode, dark):
+    from scripts.screens.MedDenScreen import MedDenScreen
+
+    screen, clan, cats = supplies
+    clan.game_mode = mode
+    cats[0].status = "medicine cat"
+    clan.med_cat_list = [cats[0].ID]
+    clan.medicine_cat = cats[0]
+    den = MedDenScreen("herb status test")
+    with patch.dict(game.settings, {"dark mode": dark}):
+        with patch.object(clan.herbs, "get_status_message", return_value="Shared herb status.") as status:
+            den.screen_switches()
+            try:
+                MANAGER.update(0.01)
+                if mode == "classic":
+                    status.assert_not_called()
+                    assert "Shared herb status." not in den.meds_messages.html_text
+                else:
+                    status.assert_called_once_with(clan, cats[0])
+                    assert "Shared herb status." in den.meds_messages.html_text
+                assert den.meds_messages.visible
+            finally:
+                den.exit_screen()
+
+
+@pytest.mark.parametrize("dark", [False, True])
+def test_long_source_herb_message_fits_medicine_den(supplies, dark):
+    from scripts.clan_resources.herbs import HERB_MESSAGES
+    from scripts.screens.MedDenScreen import MedDenScreen
+
+    screen, clan, cats = supplies
+    cats[0].status = "medicine cat"
+    cats[0].name.prefix = "Moss"
+    cats[0].name.suffix = "fern"
+    clan.medicine_cat = cats[0]
+    clan.med_cat_list = [cats[0].ID]
+    den = MedDenScreen("long herb status test")
+    with patch.dict(game.settings, {"dark mode": dark}):
+        with patch("scripts.clan_resources.herbs.choice", return_value=max(HERB_MESSAGES["low"], key=len)):
+            den.screen_switches()
+            try:
+                MANAGER.update(0.01)
+                assert den.meds_messages.scroll_bar is None
+                assert "determined to find an upside." in den.meds_messages.html_text
+                assert den.meds_messages.rect.bottom <= den.hurt_sick_title.rect.top
+            finally:
+                den.exit_screen()
+
+
+
+def test_survival_card_disables_manual_supplies_controls_and_direct_actions(supplies):
+    screen, clan, cats = supplies
+    clan.game_mode = "cruel season"
+    clan.cruel_cards = ["survival_of_fittest"]
+    window = FreshkillManagementWindow(screen)
+    before = clan.freshkill_pile.total_amount
+    try:
+        assert not window.view_elements["feed_all"].is_enabled
+        window.cat_list.selected = [cats[0].ID]
+        window.update(.01)
+        assert not window.view_elements["feed_selected"].is_enabled
+        window.feed_cats(cats)
+        press(window, window.view_elements["feed_all"])
+        press(window, window.view_elements["feed_selected"])
+        assert clan.freshkill_pile.total_amount == before
+        assert game.switches["saved_clan"]
+        clan.cruel_cards = []
+        window.create_feed_view()
+        assert window.view_elements["feed_all"].is_enabled
+    finally:
+        window.kill()

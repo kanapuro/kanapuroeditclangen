@@ -141,7 +141,11 @@
 			"medicine cat",
 			"deputy",
 			"leader"
-		]
+		],
+		"working_constraint": {
+			"m_c": true,
+			"r_c": true
+		}
 	},
 	{
 		"id": "lifegen_queen_dis_h",

@@ -53,7 +53,7 @@ class Nutrition:
 class FreshkillPile:
     """Handle everything related to the freshkill pile of the clan."""
 
-    def __init__(self, pile: dict = None, start_amount=None) -> None:
+    def __init__(self, pile: dict = None, start_amount=None, time_to_rot=None) -> None:
         """
         Initialize the class.
 
@@ -72,12 +72,15 @@ class FreshkillPile:
                 total += v
             self.total_amount = total
         else:
+            if time_to_rot is None:
+                time_to_rot = game.get_config_value("prey", "time_to_rot")
             self.pile = {
-                "expires_in_4": start_amount,
+                "expires_in_4": 0,
                 "expires_in_3": 0,
                 "expires_in_2": 0,
                 "expires_in_1": 0
             }
+            self.pile[f"expires_in_{time_to_rot}"] = start_amount
             self.total_amount = start_amount
         self.nutrition_info = {}
         self.living_cats = []
@@ -97,7 +100,7 @@ class FreshkillPile:
             amount : int|float
                 the amount which should be added to the pile
         """
-        self.pile["expires_in_4"] += amount
+        self.pile[f"expires_in_{game.get_config_value('prey', 'time_to_rot')}"] += amount
         self.total_amount += amount
         self.total_amount = round(self.total_amount, 2)
 
@@ -213,6 +216,8 @@ class FreshkillPile:
             :param list living_cats: list of living cats which should be fed
             :param additional_food_round: Whether this is a manual feeding from the freshkill pile, default False
         """
+        if additional_food_round and not self.manual_feeding_allowed:
+            return
         if additional_food_round and game.clan:
             self.living_cats = [cat for cat in Cat.all_cats.values() if not (cat.dead or cat.outside or cat.exiled)]
             self.update_nutrition(self.living_cats)
@@ -224,7 +229,7 @@ class FreshkillPile:
             return
 
         priorities = self.get_feeding_priorities()
-        if game.clan.clan_settings["feeding priorities"]:
+        if game.clan.clan_settings["feeding priorities"] or self.feeding_locked:
             self.tactic_priorities(living_cats, priorities, additional_food_round)
         else:
             tactics = {
@@ -237,7 +242,18 @@ class FreshkillPile:
             }
             tactics[priorities[0]](living_cats, additional_food_round)
 
+    @property
+    def manual_feeding_allowed(self):
+        return not game.clan or game.get_config_value("prey", "feeding", "allow_manual_feeding")
+
+    @property
+    def feeding_locked(self):
+        return bool(game.clan and (game.get_config_value("prey", "feeding", "lock_order")
+                                  or game.get_config_value("prey", "feeding", "lock_priority")))
+
     def get_feeding_priorities(self):
+        if self.feeding_locked:
+            return game.get_config_value("prey", "feeding", "priorities")
         priorities = game.clan.clan_settings["feeding priorities"]
         if priorities:
             return priorities.copy()
@@ -595,7 +611,7 @@ class FreshkillPile:
                 needed_amount = 0
             self.feed_cat(cat, feeding_amount, needed_amount)
 
-    def feed_cat(self, cat: Cat, amount, actual_needed) -> None:
+    def feed_cat(self, cat: Cat, amount, actual_needed, manual=False) -> None:
         """
         Handle the feeding process.
 
@@ -607,7 +623,11 @@ class FreshkillPile:
                 the amount which will be consumed
             actual_needed : int|float
                 the amount the cat actually needs for the moon
+            manual : bool
+                whether this is a player-requested meal rather than monthly feeding
         """
+        if manual and not self.manual_feeding_allowed:
+            return
         ration = game.clan.clan_settings["ration prey"] if game.clan else False
         remaining_amount = amount
         amount_difference = actual_needed - amount

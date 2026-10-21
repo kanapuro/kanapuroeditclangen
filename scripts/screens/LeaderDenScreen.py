@@ -676,6 +676,10 @@ class LeaderDenScreen(Screens):
 
         self.focus_frame_elements["positive_interaction"].set_text(f"{interaction[1]}")
         self.focus_frame_elements["positive_interaction"].show()
+        if self.focus_clan.relations >= game.get_config_value("reputation", "other_clans", "relation_cap"):
+            self.focus_frame_elements["positive_interaction"].set_tooltip(
+                "Enmity prevents relations from rising above hostile." if "enmity" in (game.clan.cruel_cards or [])
+                else "Relations are already at their maximum.")
 
     def update_clan_interaction_choice(self, object_id):
         """

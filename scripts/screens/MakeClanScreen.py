@@ -424,8 +424,10 @@ class MakeClanScreen(CatCustomizer, Screens):
                 self.elements["error"].show()
                 return
             
+            self.your_cat.name.name_type = self.pending_name_type
             self.your_cat.name.prefix = new_prefix
             self.your_cat.name.suffix = new_suffix
+            self.your_cat.name.specsuffix_hidden = self.specsuffix_hidden
             if new_suffix and new_suffix[0].isspace():
                 self.your_cat.name.name_type = "ancient"
 
@@ -437,17 +439,19 @@ class MakeClanScreen(CatCustomizer, Screens):
         elif event.ui_element == self.elements["random"]:
             # Generate a new name respecting the current settings and special suffix preference
             from scripts.cat.names import Name
-            new_name_obj = Name(cat=self.your_cat, biome=game.clan.biome, specsuffix_hidden=self.your_cat.name.specsuffix_hidden)
+            new_name_obj = Name(cat=self.your_cat, biome=game.clan.biome, specsuffix_hidden=self.specsuffix_hidden)
             self.elements["prefix_entry"].set_text(new_name_obj.prefix)
             self.elements["suffix_entry"].set_text(new_name_obj.suffix)
+            self.pending_name_type = new_name_obj.name_type
+            self.specsuffix_hidden = new_name_obj.specsuffix_hidden
+            self.elements["use_spec_suffix"].change_object_id(
+                "@unchecked_checkbox" if new_name_obj.specsuffix_hidden else "@checked_checkbox"
+            )
         
         elif event.ui_element == self.elements["use_spec_suffix"]:
-            # Save what's in the text box
-            self.your_cat.name.suffix = self.elements["suffix_entry"].get_text()
-            # Just toggle the flag - don't touch the text box
-            self.your_cat.name.specsuffix_hidden = not self.your_cat.name.specsuffix_hidden
-            # Update button appearance
-            if self.your_cat.name.specsuffix_hidden:
+            self.specsuffix_hidden = not self.specsuffix_hidden
+            # Update button appearance without changing the name before Next Step.
+            if self.specsuffix_hidden:
                 self.elements["use_spec_suffix"].change_object_id("@unchecked_checkbox")
             else:
                 self.elements["use_spec_suffix"].change_object_id("@checked_checkbox")
@@ -1646,6 +1650,8 @@ class MakeClanScreen(CatCustomizer, Screens):
         """Opens the name clan screen"""
         
         self.clear_all_page()
+        self.pending_name_type = self.your_cat.name.name_type
+        self.specsuffix_hidden = self.your_cat.name.specsuffix_hidden
         
         self.elements["leader_image"] = pygame_gui.elements.UIImage(ui_scale(pygame.Rect((290, 150), (200, 200))),
                                                                     pygame.transform.scale(
@@ -1718,7 +1724,7 @@ class MakeClanScreen(CatCustomizer, Screens):
         self.elements["use_spec_suffix"] = UIImageButton(
             ui_scale(pygame.Rect((390, 465), (34, 34))),
             "",
-            object_id="@checked_checkbox" if not self.your_cat.name.specsuffix_hidden else "@unchecked_checkbox",
+            object_id="@checked_checkbox" if not self.specsuffix_hidden else "@unchecked_checkbox",
             tool_tip_text="When enabled, kittens get -kit, apprentices get -paw, and leaders get -star. When disabled, custom suffix is always used.",
             manager=MANAGER,
         )

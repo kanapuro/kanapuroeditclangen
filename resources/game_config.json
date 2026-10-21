@@ -1,9 +1,12 @@
 {
+    "progress": {"difficulty_modifier": 0},
 	"forced_starting_season": null,
 	"outsiders": {"max_reputation": 100, "starting_reputation": 80},
 	"reputation": {"other_clans": {"relation_cap": 30}},
-	"clan_resources": {"herbs": {"empty_starting_storage": false}},
+	"clan_resources": {"herbs": {"empty_starting_storage": false, "base_mortality_effect": 3, "base_duration_effect": 1, "base_risk_effect": 3, "required_herbs_per_cat": 1, "adequate": 3, "excess": 2, "primary_sense": 3, "secondary_sense": 2, "primary_clever": 3, "secondary_clever": 2, "general_amount_bonus": 2, "forest": {"newleaf": [2, 3, 2], "greenleaf": [1, 2, 3], "leaf-fall": [2, 3, 2], "leaf-bare": [5, 2, 1]}, "mountainous": {"newleaf": [2, 3, 2], "greenleaf": [1, 2, 3], "leaf-fall": [2, 3, 2], "leaf-bare": [5, 2, 1]}, "plains": {"newleaf": [2, 3, 2], "greenleaf": [1, 2, 3], "leaf-fall": [2, 3, 2], "leaf-bare": [5, 2, 1]}, "beach": {"newleaf": [2, 3, 2], "greenleaf": [1, 2, 3], "leaf-fall": [2, 3, 2], "leaf-bare": [5, 2, 1]}}},
 	"relationship":{
+        "deputy_to_leader_neg_buff": false,
+        "deputy_envy_leader_influence": 0,
 		"in_decrease_value":{
 			"low": 8,
 			"medium": 12,
@@ -25,6 +28,9 @@
 		]
 	},
 	"mates":{
+        "allow_manual": true,
+        "allow_mating": true,
+		"breakup": {"initial_chance": {"threshold": null, "default_chance": 30}, "default_weights": {"had_fight": 3, "decided_to_be_friends": 3, "lost_feelings": 2, "bad_breakup": 5, "chill_breakup": 5}, "variability": [-10, 10], "reactions": {"had_fight": {"romantic_love": -20, "platonic_like": -10, "trust": -15}, "decided_to_be_friends": {"romantic_love": -50, "platonic_like": 30, "trust": 20, "comfortable": 10, "admiration": 10}, "lost_feelings": {"romantic_love": -30, "platonic_like": -10, "comfortable": -10}, "bad_breakup": {"romantic_love": -20, "platonic_like": -10, "trust": -30, "comfortable": -20, "admiration": -10}, "chill_breakup": {"romantic_love": -20, "comfortable": -10, "admiration": 10}}},
 		"age_range": 40,
 		"override_same_age_group": false,
 		"chance_fulfilled_condition": 5,
@@ -99,6 +105,7 @@
 		]
 	},
 	"new_cat": {
+		"ext_relative_modifier": 2,
 		"parent_buff": {
 			"kit_to_parent": {
 				"romantic": 0,
@@ -328,6 +335,9 @@
 		"debug_ensure_event_id": null
 	},
 	"death_related": {
+        "murder": {"deputy_murder_modifier": 0, "deputy_prefer_leader": false},
+        "min_leader_lives": 9,
+        "max_leader_lives": 9,
 		"leader_death_chance": 50,
 		"classic_death_chance": 500,
 		"expanded_death_chance": 350,
@@ -345,6 +355,12 @@
 		]
 	},
 	"condition_related": {
+        "medcats": {"medcat_base_capacity": 10},
+        "duration_modifier": 1,
+        "duration_modifier_tags": [],
+        "med_infection_reduction": 7,
+        "illness_outbreak_season": ["Leaf-bare", "Leaf-fall"],
+        "illness_percentage_max": 0.25,
 		"expanded_illness_chance": 250,
 		"cruel season_illness_chance": 200,
 		"classic_illness_chance": 500,

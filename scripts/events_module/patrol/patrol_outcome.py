@@ -9,6 +9,7 @@ from typing import List, Dict, Union, TYPE_CHECKING, Optional, Tuple
 import pygame
 
 from scripts.events_module.short.handle_short_events import INJURY_GROUPS
+from scripts.events_module.future_event import prep_future_event
 
 if TYPE_CHECKING:
     from scripts.events_module.patrol.patrol import Patrol
@@ -25,7 +26,8 @@ from scripts.utility import (
     gather_cat_objects,
     lifegen_text_adjust,
     create_new_cat_block,
-    get_cluster
+    get_cluster,
+    adjust_list_text
 )
 from scripts.game_structure.game_essentials import game
 from scripts.cat.skills import SkillPath
@@ -77,8 +79,10 @@ class PatrolOutcome:
         relationship_constraints: List[str] = None,
         outcome_art: Union[str, None] = None,
         outcome_art_clean: Union[str, None] = None,
-        stat_cat: Cat = None
+        stat_cat: Cat = None,
+        future_event: list = None
     ):
+        self.future_event = future_event if future_event else []
         self.success = success
         self.antagonize = antagonize
         self.text = text if text is not None else ""
@@ -236,6 +240,7 @@ class PatrolOutcome:
                     relationship_constraints=_d.get("relationship_constraint"),
                     outcome_art=_d.get("art"),
                     outcome_art_clean=_d.get("art_clean"),
+                    future_event=_d.get("future_event"),
                 )
             )
 
@@ -331,6 +336,12 @@ class PatrolOutcome:
         results.append(self._handle_herbs(patrol))
         results.append(self._handle_exp(patrol))
         results.append(self._handle_mentor_app(patrol))
+
+        if self.future_event:
+            possible_cats = {"p_l": patrol.patrol_leader, "r_c": patrol.random_cat, "s_c": self.stat_cat}
+            possible_cats.update({f"app{index}": cat for index, cat in enumerate(patrol.patrol_apprentices)})
+            possible_cats.update({f"n_c:{index}": cats[0] for index, cats in enumerate(patrol.new_cats) if cats})
+            prep_future_event(self, patrol.patrol_event.patrol_id, possible_cats)
 
         # Filter out empty results strings
         results = [x for x in results if x]
@@ -567,9 +578,9 @@ class PatrolOutcome:
         if gained_exp or app_exp:
             for cat in patrol.patrol_cats:
                 if cat.status in ["apprentice", "medicine cat apprentice"]:
-                    cat.experience = cat.experience + app_exp
+                    cat.add_experience(app_exp)
                 else:
-                    cat.experience = cat.experience + gained_exp
+                    cat.add_experience(gained_exp)
 
         return ""
 
@@ -1000,62 +1011,26 @@ class PatrolOutcome:
         return f"Relations with {patrol.other_clan} have {insert}."
 
     def _handle_herbs(self, patrol: "Patrol") -> str:
-        """Handle giving herbs"""
-
         if not self.herbs or game.clan.simulation_mode == "classic":
             return ""
-
-        large_bonus = False
-        if "many_herbs" in self.herbs:
-            large_bonus = True
-
-        # Determine which herbs get picked
-        specific_herbs = [x for x in self.herbs if x in HERBS]
+        large_bonus = "many_herbs" in self.herbs
+        patrol_size_modifier = max(1, round(len(patrol.patrol_cats) * .8))
+        found = {}
         if "random_herbs" in self.herbs:
-            specific_herbs += random.sample(
-                HERBS, k=choices([1, 2, 3], [6, 5, 1], k=1)[0]
-            )
-
-        # Remove duplicates
-        specific_herbs = list(set(specific_herbs))
-
-        if not specific_herbs:
-            print(f"{self.herbs} - gave no herbs to give")
-            return ""
-
-        patrol_size_modifier = int(len(patrol.patrol_cats) * 0.5)
-        for _herb in specific_herbs:
+            found = game.clan.herbs.gather(patrol.patrol_leader, game.clan,
+                many_herbs=large_bonus, quantity_bonus=patrol_size_modifier)
+        for herb in dict.fromkeys(herb for herb in self.herbs if herb in HERBS):
+            amount = choices([2, 3, 4], weights=[2, 1, 1])[0] * patrol_size_modifier
             if large_bonus:
-                amount_gotten = 6
-            else:
-                amount_gotten = choices([2, 4, 6], [2, 3, 1], k=1)[0]
-
-            amount_gotten = int(amount_gotten * patrol_size_modifier)
-            amount_gotten = max(1, amount_gotten)
-
-            if _herb in game.clan.herbs:
-                game.clan.herbs[_herb] += amount_gotten
-            else:
-                game.clan.herbs[_herb] = amount_gotten
-
-        plural_herbs_list = ["cobwebs", "oak leaves"]
-
-        if len(specific_herbs) == 1 and specific_herbs[0] not in plural_herbs_list:
-            insert = f"{specific_herbs[0]} was"
-        elif len(specific_herbs) == 1 and specific_herbs[0] in plural_herbs_list:
-            insert = f"{specific_herbs[0]} were"
-        elif len(specific_herbs) == 2:
-            if str(specific_herbs[0]) == str(specific_herbs[1]):
-                insert = f"{specific_herbs[0]} was"
-            else:
-                insert = f"{specific_herbs[0]} and {specific_herbs[1]} were"
-        else:
-            insert = f"{', '.join(specific_herbs[:-1])}, and {specific_herbs[-1]} were"
-
-        insert = re.sub("[_]", " ", insert)
-
-        game.herb_events_list.append(f"{insert.capitalize()} gathered on a patrol.")
-        return f"{insert.capitalize()} gathered."
+                amount *= 2
+            game.clan.herbs[herb] = game.clan.herbs.get(herb, 0) + amount
+            found[herb] = found.get(herb, 0) + amount
+        if not found:
+            return ""
+        display = adjust_list_text([f"{amount} {herb.replace('_', ' ')}" for herb, amount in found.items()])
+        text = f"Gathered {display}."
+        game.herb_events_list.append(f"Gathered {display} on patrol.")
+        return text
 
     def _handle_prey(self, patrol: "Patrol") -> str:
         """Handle giving prey"""
