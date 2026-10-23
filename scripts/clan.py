@@ -215,6 +215,9 @@ class Clan:
                 self.clan_settings[setting_name] = inf[2]
                 self.setting_lists[setting_name] = [inf[2], not inf[2]]
 
+        for setting in ("leader", "deputy"):
+            if apply_modifiers(self.cruel_cards, ("settings", "force_enable", setting), False):
+                self.clan_settings[setting] = True
         if self.cruel_cards is not None:
             self.clan_settings["freshkill"] = False
         self.clan_settings["starting backstory"] = None
@@ -1065,6 +1068,9 @@ class Clan:
 
     def switch_setting(self, setting_name):
         """Call this function to change a setting given in the parameter by one to the right on it's list"""
+        if setting_name in ("leader", "deputy") and apply_modifiers(self.cruel_cards, ("settings", "force_enable", setting_name), False):
+            self.clan_settings[setting_name] = True
+            return
         self.settings_changed = True
 
         # Give the index that the list is currently at
@@ -1691,6 +1697,10 @@ class Clan:
         for key, value in _load_settings.items():
             if key in self.clan_settings:
                 self.clan_settings[key] = value
+
+        for setting in ("leader", "deputy"):
+            if apply_modifiers(self.cruel_cards, ("settings", "force_enable", setting), False):
+                self.clan_settings[setting] = True
 
     def load_herbs(self, clan):
         if not clan.name:

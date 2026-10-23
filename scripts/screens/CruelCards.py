@@ -4,7 +4,7 @@ import pygame
 import pygame_gui
 
 from scripts.game_structure.ui_elements import GameWindow as CruelCardsWindow
-from scripts.clan_resources.cruel_season import CARDS, validate_cards
+from scripts.clan_resources.cruel_season import CARDS, CARD_DATA, validate_cards
 from scripts.game_structure import image_cache
 from scripts.game_structure.screen_settings import MANAGER
 from scripts.game_structure.ui_elements import UISurfaceImageButton, UIImageButton, UITextBoxTweaked
@@ -155,3 +155,40 @@ class DeckListWindow(CruelCardsWindow):
                 self.kill()
             return True
         return handled
+
+
+class CruelCardConflicts(CruelCardsWindow):
+    # Choices adapted from ClanGen 904012b9e9c62ab24a8988ae23d8a516232ff7e2 (MPL-2.0).
+    def __init__(self, new_card, chosen_cards, apply_deck):
+        self.conflicting_cards = [card for card in chosen_cards if any(
+            card in group and new_card in group for group in CARD_DATA["conflicts"].values())]
+        self.cards = validate_cards([card for card in chosen_cards if card not in self.conflicting_cards] + [new_card])
+        self.apply_deck = apply_deck
+        super().__init__((200, 240, 400, 220))
+        names = ", ".join(CARDS[card]["name"] for card in self.conflicting_cards)
+        self.message = UITextBoxTweaked(
+            f"{CARDS[new_card]['name']} cannot be combined with {names}.<br><br>Keep your current cards, or replace the conflicting cards?",
+            ui_scale(pygame.Rect((20, 20), (360, 115))), container=self, manager=MANAGER,
+            object_id="#text_box_26_horizcenter",
+        )
+        self.keep_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((40, 160), (150, 30))), "Keep cards",
+            get_button_dict(ButtonStyles.SQUOVAL, (150, 30)), object_id="@buttonstyles_squoval",
+            container=self, manager=MANAGER,
+        )
+        self.replace_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((210, 160), (150, 30))), "Replace cards",
+            get_button_dict(ButtonStyles.SQUOVAL, (150, 30)), object_id="@buttonstyles_squoval",
+            container=self, manager=MANAGER,
+        )
+
+    def process_event(self, event):
+        if event.type == pygame_gui.UI_BUTTON_START_PRESS:
+            if event.ui_element == self.keep_button:
+                self.kill()
+                return True
+            if event.ui_element == self.replace_button:
+                self.apply_deck(self.cards)
+                self.kill()
+                return True
+        return super().process_event(event)

@@ -292,6 +292,7 @@ def json_load():
             new_cat.favourite = cat["favourite"] if "favourite" in cat else False
             new_cat.w_done = cat["w_done"] if "w_done" in cat else False
             new_cat.talked_to = cat["talked_to"] if "talked_to" in cat else False
+            new_cat.moonplace_visit_moon = cat.get("moonplace_visit_moon")
             new_cat.insulted = cat["insulted"] if "insulted" in cat else False
             new_cat.flirted = cat['flirted'] if "flirted" in cat else False
             new_cat.backstory_str = cat["backstory_str"] if "backstory_str" in cat else ""

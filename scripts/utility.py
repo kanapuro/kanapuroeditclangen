@@ -22,6 +22,7 @@ from pygame_gui.core import ObjectID
 logger = logging.getLogger(__name__)
 from scripts.game_structure import image_cache
 from scripts.cat.history import History
+from scripts.event_class import Single_Event
 from scripts.cat.names import names
 from scripts.cat.pelts import Pelt
 from scripts.cat.sprites import sprites
@@ -1962,6 +1963,41 @@ def get_leader_life_notice() -> str:
             text = 'The leader has no lives left and has wandered off into the unknown.'
 
     return text
+
+
+
+def handle_stolen_vitality(cat, lives_lost):
+    """Apply the revival price after the original death and history are recorded."""
+    if (not game.clan or cat is not game.clan.leader or not cat
+            or not game.get_config_value("cruel_season", "event", "stolen_vitality")):
+        return
+    revivals = max(0, lives_lost - (game.clan.leader_lives <= 0))
+    if not revivals:
+        return
+
+    candidates = [c for c in cat.all_cats.values()
+                  if c is not cat and c.ID in game.clan.clan_cats
+                  and not (c.dead or c.outside or c.exiled)]
+    victims = sample(candidates, min(revivals, len(candidates)))
+    for victim in victims:
+        victim.die()
+        History.add_death(victim, "m_c paid the price for r_c's revival.", other_cat=cat)
+
+    text = ""
+    if victims:
+        names = adjust_list_text([str(victim.name) for victim in victims])
+        revival = "single revival" if len(victims) == 1 else "repeated revivals"
+        text = f"With {cat.name}'s {revival}, {names} dropped dead."
+    if len(victims) < revivals:
+        text += f" The price could not be paid in full; {cat.name} pays the rest."
+        for _ in range(max(0, game.clan.leader_lives)):
+            History.add_death(cat, "No cat remained to give their life for m_c's.")
+        game.clan.leader_lives = 0
+        if not cat.dead:
+            cat.die()
+
+    game.cur_events_list.append(Single_Event(text.strip(), "birth_death", [cat.ID] + [c.ID for c in victims]))
+    return text.strip()
 
 
 def get_other_clan_relation(relation):

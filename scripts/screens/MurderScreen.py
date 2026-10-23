@@ -8,7 +8,7 @@ from scripts.cat.history import History
 from scripts.event_class import Single_Event
 
 from .Screens import Screens
-from scripts.utility import get_text_box_theme, process_text, pronoun_repl, ui_scale_dimensions
+from scripts.utility import handle_stolen_vitality, get_text_box_theme, process_text, pronoun_repl, ui_scale_dimensions
 from scripts.cat.cats import Cat, INJURIES
 from scripts.game_structure import image_cache
 from scripts.game_structure.ui_elements import UIImageButton, UISpriteButton, UISurfaceImageButton
@@ -1505,6 +1505,7 @@ class MurderScreen(Screens):
             return
 
         self.is_self_harm = False
+        lives_before_death = game.clan.leader_lives
 
         with open(f"{self.RESOURCE_DIR}murder.json",
                 encoding="ascii") as read_file:
@@ -1745,6 +1746,11 @@ class MurderScreen(Screens):
                 if death:
                     continue
 
+            if not game.clan.all_clans and murder_dict.get("texts") and not any(
+                "o_c_n" not in text for text in murder_dict["texts"]
+            ):
+                continue
+
             possible_keys.append(key)
             
             murder_events.update({key: murder_dict})
@@ -1760,9 +1766,11 @@ class MurderScreen(Screens):
         if "texts" in chosen_event[1]:
             if chosen_event[1]["texts"]:
                 for event in chosen_event[1]["texts"]:
-                    ceremony_txt.append(event)
+                    if game.clan.all_clans or "o_c_n" not in event:
+                        ceremony_txt.append(event)
             else:
                 print("Blank murder text for", chosen_event[0])
+                handle_stolen_vitality(game.clan.leader, lives_before_death - max(0, game.clan.leader_lives))
                 return
             
         if injury:
@@ -1777,9 +1785,10 @@ class MurderScreen(Screens):
 
         ceremony_txt = choice(ceremony_txt)
 
-        other_clan = choice(game.clan.all_clans)
+        if "o_c_n" in ceremony_txt:
+            other_clan = choice(game.clan.all_clans)
+            ceremony_txt = ceremony_txt.replace("o_c_n", str(other_clan.name))
         ceremony_txt = ceremony_txt.replace('c_n', game.clan.name)
-        ceremony_txt = ceremony_txt.replace("o_c_n", str(other_clan.name))
     
         medcats = []
         for cat in Cat.all_cats_list:
@@ -1836,7 +1845,7 @@ class MurderScreen(Screens):
         discover_chance = self.get_discover_chance(cat_to_murder, accomplice, accompliced)
         discovery_num = randint(1,100)
 
-        if not all_leader_lives:
+        if cat_to_murder.status == "leader" and not all_leader_lives:
             game.clan.leader_lives -= 1
             if discover_chance < 7:
                 discover_chance = randint(7,9)
@@ -1970,8 +1979,8 @@ class MurderScreen(Screens):
             "discovered": discovered,
             "complication": comp
         }
-        
-          
+        handle_stolen_vitality(game.clan.leader, lives_before_death - max(0, game.clan.leader_lives))
+
     def choose_discover_punishment(self, you, cat_to_murder, accomplice, accompliced):
         """determines punishment text, shunned and guilt outcomes"""
         if self.is_self_harm:
@@ -2419,6 +2428,7 @@ class MurderScreen(Screens):
     def handle_self_harm(self, you, accomplice, accompliced):
         """Handles successful self-harm attempts"""
         
+        lives_before_death = game.clan.leader_lives
         risk = randint(1, 100)
         death_chance = 60 if self.method in ["attack", "accident"] else 75
         
@@ -2521,6 +2531,7 @@ class MurderScreen(Screens):
             "discovered": False,
             "complication": None
         }
+        handle_stolen_vitality(you, lives_before_death - max(0, game.clan.leader_lives))
 
     def handle_self_harm_fail(self, you, accomplice, accompliced):
         """Handles failed self-harm attempts"""

@@ -337,11 +337,25 @@
     },
     "..": "these are special. they do not have a display name or a tooltip",
     "__other": {
+        "relationship feeling filter": [
+            "all",
+            "positive",
+            "negative",
+            "balanced"
+        ],
         "show dead relation": [
             false,
             true
         ],
         "show empty relation": [
+            false,
+            true
+        ],
+        "show family relation": [
+            false,
+            true
+        ],
+        "show romance relation": [
             false,
             true
         ],

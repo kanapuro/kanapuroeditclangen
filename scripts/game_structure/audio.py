@@ -17,6 +17,7 @@ creation_screens = ["make clan screen"]
 class MusicManager:
     def __init__(self):
         
+        self.screen = None
         self.current_playlist = []
         self.biome_playlist = []
         self.number_of_tracks = len(self.current_playlist)
@@ -47,10 +48,12 @@ class MusicManager:
         """
         checks if playlist currently playing is appropriate for the given screen and changes the playlist if needed
         """
+        self.screen = screen
         if self.muted or self.audio_disabled:
             return
 
-        self.biome_playlist = self.get_biome_music()
+        if screen not in menu_screens and screen not in creation_screens:
+            self.biome_playlist = self.get_biome_music()
         # print(f"biome playlist is {self.biome_playlist}, current playlist is {self.current_playlist}")
         # print(f"screen is {screen}")
         # print(f"menu playlist is {self.playlists['menu_playlist']}")
@@ -94,6 +97,9 @@ class MusicManager:
         self.number_of_tracks = len(self.current_playlist)
 
         if not self.current_playlist:  # don't play an empty playlist
+            self.current_track = None
+            if not self.audio_disabled:
+                pygame.mixer.music.stop()
             return
 
         self.queue_music()
@@ -143,6 +149,10 @@ class MusicManager:
         """
         Plays the currently queued track then queues the next track
         """
+        if self.muted or self.audio_disabled:
+            return
+        if self.screen is not None:
+            self.check_music(self.screen)
         if not self.queued_track:
             return
 
@@ -197,7 +207,7 @@ class MusicManager:
         # convert to a float and change volume accordingly
         self.volume = new_volume / 100
         game.settings["music_volume"] = new_volume
-        if pygame.mixer.music.get_busy():
+        if not self.audio_disabled:
             pygame.mixer.music.set_volume(self.volume)
 
     def get_biome_music(self):

@@ -26,6 +26,7 @@ from scripts.utility import (
     change_clan_reputation,
     create_new_cat_block,
     get_leader_life_notice,
+    handle_stolen_vitality,
     get_alive_status_cats,
     get_living_clan_cat_count,
     adjust_list_text,
@@ -271,10 +272,12 @@ class HandleShortEvents:
             self.handle_transition()
 
         # kill cats
+        lives_before_death = game.clan.leader_lives
         self.handle_death()
 
         # add necessary histories
         self.handle_death_history()
+        handle_stolen_vitality(game.clan.leader, lives_before_death - max(0, game.clan.leader_lives))
 
         # handle injuries and injury history
         self.handle_injury()

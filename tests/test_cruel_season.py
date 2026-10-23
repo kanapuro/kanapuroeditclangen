@@ -317,7 +317,11 @@ def test_card_selection_navigation_and_cancel_preserve_original_colony(colony, m
             card("always_leaf-bare")
             card("always_newleaf")
             assert screen.cruel_cards == ["always_leaf-bare"]
-            assert "Conflicting" in screen.elements["card_error"].html_text
+            from scripts.screens.CruelCards import CruelCardConflicts
+            from scripts.game_structure.screen_settings import MANAGER
+            window = next(w for w in MANAGER.get_window_stack().get_full_stack() if isinstance(w, CruelCardConflicts))
+            assert "Newleaf" in window.message.html_text
+            window.process_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=window.keep_button))
             card("lean_meat")
             press("previous_step")
             press("next_step")
@@ -1469,13 +1473,17 @@ def test_crowfood_conflict_is_explained_and_rejected_without_changing_the_deck(c
 
     screen = card_screen
     screen.apply_cruel_deck(["survival_of_fittest"])
-    screen.card_page = 1
+    available = [card for card in CARDS if card not in screen.cruel_cards]
+    screen.card_page = available.index("crowfood") // 12
     screen.refresh_cruel_cards()
     screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=screen.card_buttons["crowfood"]))
     assert screen.cruel_cards == ["survival_of_fittest"]
-    assert "Crowfood Chaos" in screen.elements["card_error"].html_text
-    assert "Survival of the Fittest" in screen.elements["card_error"].html_text
-    assert screen.elements["card_error"].visible
+    from scripts.screens.CruelCards import CruelCardConflicts
+    from scripts.game_structure.screen_settings import MANAGER
+    conflict = next(w for w in MANAGER.get_window_stack().get_full_stack() if isinstance(w, CruelCardConflicts))
+    assert "Crowfood Chaos" in conflict.message.html_text
+    assert "Survival of the Fittest" in conflict.message.html_text
+    conflict.process_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=conflict.keep_button))
     with patch("scripts.screens.MakeClanScreen.choice", side_effect=lambda choices: choices[0]) as choose:
         screen.random_cruel_card()
         assert "crowfood" not in choose.call_args.args[0]

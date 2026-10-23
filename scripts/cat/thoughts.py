@@ -41,7 +41,7 @@ class Thoughts:
         if "child/parent" in constraint and not random_cat.is_parent(main_cat):
             return False
 
-        if "mentor/app" in constraint and random_cat not in main_cat.apprentice:
+        if "mentor/app" in constraint and random_cat.ID not in main_cat.apprentice:
             return False
 
         if "app/mentor" in constraint and random_cat.ID != main_cat.mentor:
@@ -79,7 +79,8 @@ class Thoughts:
 
         # This is for checking if another cat is needed and there is another cat
         r_c_in = [thought_str for thought_str in thought["thoughts"] if "r_c" in thought_str]
-        if len(r_c_in) > 0 and not random_cat:
+        if not random_cat and (r_c_in or thought.get("relationship_constraint")
+                               or any(key.startswith("random_") for key in thought)):
             return False
 
         # This is for filtering certain relationship types between the main cat and random cat. 
@@ -98,8 +99,6 @@ class Thoughts:
             if (random_cat.status not in thought['random_status_constraint'] and
                     'any' not in thought['random_status_constraint']):
                 return False
-        elif 'random_status_constraint' in thought and not random_cat:
-            pass
 
         # main cat age constraint
         if 'main_age_constraint' in thought:
@@ -147,7 +146,7 @@ class Thoughts:
                     print("Throught constraint not properly formated", _skill)
                     continue
 
-                if random_cat.skills.meets_skill_requirement(spli[0], spli[1]):
+                if random_cat.skills.meets_skill_requirement(spli[0], int(spli[1])):
                     _flag = True
                     break
 
@@ -207,12 +206,12 @@ class Thoughts:
                 
         if "main_cluster_constraint" in thought:
             cluster, cluster2 = get_cluster(main_cat.personality.trait)
-            if cluster not in thought["main_cluster_constraint"] and (cluster2 and cluster2 not in thought["main_cluster_constraint"]):
+            if cluster not in thought["main_cluster_constraint"] and cluster2 not in thought["main_cluster_constraint"]:
                 return False
         
         if "random_cluster_constraint" in thought and random_cat:
             cluster, cluster2 = get_cluster(random_cat.personality.trait)
-            if cluster not in thought["random_cluster_constraint"] and (cluster2 and cluster2 not in thought["random_cluster_constraint"]):
+            if cluster not in thought["random_cluster_constraint"] and cluster2 not in thought["random_cluster_constraint"]:
                 return False
                     
         
@@ -224,10 +223,10 @@ class Thoughts:
                 living_status = "living"
             elif random_cat and random_cat.dead and random_cat.df:
                 living_status = "darkforest"
-            elif random_cat and random_cat.dead and not random_cat.df:
-                living_status = "starclan"
+            elif random_cat.outside:
+                living_status = "unknownresidence"
             else:
-                living_status = 'unknownresidence'
+                living_status = "starclan"
             if living_status and living_status not in thought['random_living_status']:
                 return False
 

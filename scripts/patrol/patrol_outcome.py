@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 from scripts.cat.history import History
 from scripts.clan import HERBS
 from scripts.utility import (
+    handle_stolen_vitality,
     change_clan_relations,
     change_clan_reputation,
     change_relationship_values, create_new_cat,
@@ -401,6 +402,7 @@ class PatrolOutcome():
         if "no_body" in self.dead_cats:
             body=False
         
+        lives_before_death = game.clan.leader_lives
         results = []
         for _cat in cats_to_kill:
             if _cat.status == "leader":
@@ -425,6 +427,9 @@ class PatrolOutcome():
             self.__handle_death_history(_cat, patrol)
             _cat.die(body)
             
+        price = handle_stolen_vitality(game.clan.leader, lives_before_death - max(0, game.clan.leader_lives))
+        if price:
+            results.append(price)
         return " ".join(results)
         
     def _handle_lost(self, patrol:'Patrol') -> str:

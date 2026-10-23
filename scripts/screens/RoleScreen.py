@@ -50,7 +50,12 @@ class RoleScreen(Screens):
                     self.update_selected_cat()
                 else:
                     print("invalid previous cat", self.previous_cat)
+            elif (not game.get_config_value("ranks", "can_manually_change", "all")
+                  or not game.get_config_value("ranks", "can_manually_change", "deputy") and self.the_cat == game.clan.deputy):
+                return
             elif event.ui_element == self.promote_leader:
+                if not game.get_config_value("ranks", "can_manually_change", "deputy"):
+                    return
                 if self.the_cat == game.clan.deputy:
                     game.clan.deputy = None
                 game.clan.new_leader(self.the_cat)
@@ -58,6 +63,8 @@ class RoleScreen(Screens):
                     Cat.sort_cats()
                 self.update_selected_cat()
             elif event.ui_element == self.promote_deputy:
+                if not game.get_config_value("ranks", "can_manually_change", "deputy"):
+                    return
                 game.clan.deputy = self.the_cat
                 self.the_cat.status_change("deputy", resort=True)
                 self.update_selected_cat()
@@ -629,6 +636,19 @@ class RoleScreen(Screens):
             self.switch_warrior_app.disable()
             self.switch_mediator_app.disable()
             self.switch_queen_app.disable()
+
+        all_locked = not game.get_config_value("ranks", "can_manually_change", "all")
+        deputy_locked = not game.get_config_value("ranks", "can_manually_change", "deputy")
+        if all_locked or deputy_locked and self.the_cat == game.clan.deputy:
+            for button in (self.promote_leader, self.promote_deputy, self.switch_warrior,
+                           self.switch_med_cat, self.switch_mediator, self.switch_queen, self.retire,
+                           self.switch_med_app, self.switch_warrior_app, self.switch_mediator_app, self.switch_queen_app):
+                button.disable()
+                button.set_tooltip("Fated Paths prevents manual rank changes." if all_locked else "Pride and Joy prevents manual changes to the deputy.")
+        elif deputy_locked:
+            for button in (self.promote_leader, self.promote_deputy):
+                button.disable()
+                button.set_tooltip("Pride and Joy requires automatic appointments and succession.")
 
     def get_role_blurb(self):
         if self.the_cat.status == "warrior":

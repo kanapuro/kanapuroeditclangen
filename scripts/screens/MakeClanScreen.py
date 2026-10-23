@@ -29,7 +29,7 @@ from scripts.utility import get_text_box_theme, ui_scale, ui_scale_blit, ui_scal
 from scripts.utility import ui_scale_dimensions, generate_sprite
 from .Screens import Screens
 from .CatCustomizer import CatCustomizer
-from .CruelCards import CruelCard, CruelCardIcon, DeckListWindow
+from .CruelCards import CruelCard, CruelCardIcon, DeckListWindow, CruelCardConflicts
 from scripts.clan_resources.cruel_season import CARDS, CARD_DATA, validate_cards
 from ..cat.sprites import sprites
 from ..game_structure.screen_settings import MANAGER, screen
@@ -537,7 +537,7 @@ class MakeClanScreen(CatCustomizer, Screens):
             if cat.status == "warrior":
                 if self.leader is None:
                     self.leader = cat
-                elif self.deputy is None:
+                elif self.deputy is None and game.get_config_value("clan_creation", "ranks_needed", "deputy"):
                     self.deputy = cat
                     cat.status = "deputy"
                 elif self.med_cat is None:
@@ -2469,6 +2469,8 @@ class MakeClanScreen(CatCustomizer, Screens):
         return choice(compatible) if compatible else None
 
     def handle_cruel_cards_event(self, event):
+        if any(window.is_blocking for window in MANAGER.get_window_stack().get_full_stack()):
+            return
         if event.ui_element == self.elements["previous_step"]:
             self.open_game_settings()
         elif event.ui_element == self.elements["next_step"]:
@@ -2488,6 +2490,12 @@ class MakeClanScreen(CatCustomizer, Screens):
             if event.ui_element == self.elements["random_card"]:
                 name = self.random_cruel_card()
             if name:
+                if name not in self.cruel_cards and any(
+                    name in group and any(card in group for card in self.cruel_cards)
+                    for group in CARD_DATA["conflicts"].values()
+                ):
+                    CruelCardConflicts(name, self.cruel_cards, self.apply_cruel_deck)
+                    return
                 cards = self.cruel_cards.copy()
                 cards.remove(name) if name in cards else cards.append(name)
                 try:

@@ -86,7 +86,9 @@ class GroupInteraction:
         backstory_constraint=None,
         specific_reaction=None,
         general_reaction=None,
+        age_constraint=None,
     ):
+        self.age_constraint = age_constraint if age_constraint else {}
         self.id = interact_id
         self.intensity = intensity
         self.biome = biome if biome else ["Any"]
@@ -377,6 +379,7 @@ def create_group_interaction(inter_list) -> list:
         created_list.append(
             GroupInteraction(
                 interact_id=inter["id"],
+                age_constraint=inter.get("age_constraint"),
                 biome=inter["biome"] if "biome" in inter else ["Any"],
                 season=inter["season"] if "season" in inter else ["Any"],
                 cat_amount=inter["cat_amount"] if "cat_amount" in inter else None,

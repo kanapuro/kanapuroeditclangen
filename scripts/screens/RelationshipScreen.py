@@ -31,6 +31,12 @@ from ..ui.icon import Icon
 
 class RelationshipScreen(Screens):
     checkboxes = {}  # To hold the checkboxes.
+    feeling_filters = {
+        "All feelings": "all",
+        "Positive": "positive",
+        "Negative": "negative",
+        "Balanced": "balanced",
+    }
     focus_cat_elements = {}
     relation_list_elements = {}
     sprite_buttons = {}
@@ -43,6 +49,8 @@ class RelationshipScreen(Screens):
 
     def __init__(self, name=None):
         super().__init__(name)
+        self.card_actions = {}
+        self.details_container = None
         self.all_relations = None
         self.the_cat = None
         self.previous_cat = None
@@ -61,23 +69,38 @@ class RelationshipScreen(Screens):
         self.log_icon = None
 
         self.search_bar_image = None
-        self.details_frame_image = None
-        self.toggle_frame_image = None
         self.list_frame_image = None
 
     def handle_event(self, event):
+        if any(window.is_blocking for window in MANAGER.get_window_stack().get_full_stack()):
+            return
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             self.mute_button_pressed(event)
 
             if event.ui_element in self.sprite_buttons.values():
                 self.inspect_cat = event.ui_element.return_cat_object()
                 self.update_inspected_relation()
+                self.details_container.show()
+            elif event.ui_element == self.details_close_button:
+                self.details_container.hide()
+            elif event.ui_element in self.card_actions:
+                if not event.ui_element.is_enabled:
+                    return
+                self.inspect_cat, action = self.card_actions[event.ui_element]
+                self.update_inspected_relation()
+                target = {"focus": self.switch_focus_button, "log": self.log_icon,
+                          "profile": self.view_profile_button}[action]
+                self.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=target))
             elif event.ui_element == self.back_button:
                 self.change_screen("patrol screen" if game.last_screen_forupdate == "patrol screen" else "profile screen")
             elif event.ui_element == self.switch_focus_button:
+                if not event.ui_element.is_enabled:
+                    return
                 game.switches["cat"] = self.inspect_cat.ID
                 self.update_focus_cat()
             elif event.ui_element == self.view_profile_button:
+                if not event.ui_element.is_enabled:
+                    return
                 game.switches["cat"] = self.inspect_cat.ID
                 self.change_screen("profile screen")
             elif event.ui_element == self.next_cat_button:
@@ -99,112 +122,66 @@ class RelationshipScreen(Screens):
                 self.current_page += 1
                 self.update_cat_page()
             elif event.ui_element == self.log_icon:
+                if not event.ui_element.is_enabled:
+                    return
                 if self.inspect_cat.ID not in self.the_cat.relationships:
                     return
-                if self.next_cat == 0 and self.previous_cat == 0:
-                    RelationshipLog(
-                        self.the_cat.relationships[self.inspect_cat.ID],
-                        [
-                            self.view_profile_button,
-                            self.switch_focus_button,
-                            self.next_page_button,
-                            self.previous_cat_button,
-                            self.next_page_button,
-                        ],
-                        [
-                            self.back_button,
-                            self.log_icon,
-                            self.checkboxes["show_dead"],
-                            self.checkboxes["show_empty"],
-                            self.checkboxes["show_you"],
-                            self.show_dead_text,
-                            self.show_empty_text,
-                            self.show_you_text,
-                        ],
-                    )
-                elif self.next_cat == 0:
-                    RelationshipLog(
-                        self.the_cat.relationships[self.inspect_cat.ID],
-                        [
-                            self.view_profile_button,
-                            self.switch_focus_button,
-                            self.previous_cat_button,
-                            self.next_page_button,
-                        ],
-                        [
-                            self.back_button,
-                            self.log_icon,
-                            self.checkboxes["show_dead"],
-                            self.checkboxes["show_empty"],
-                            self.checkboxes["show_you"],
-                            self.show_dead_text,
-                            self.show_empty_text,
-                            self.show_you_text,
-                        ],
-                    )
-                elif self.previous_cat == 0:
-                    RelationshipLog(
-                        self.the_cat.relationships[self.inspect_cat.ID],
-                        [
-                            self.view_profile_button,
-                            self.switch_focus_button,
-                            self.next_cat_button,
-                            self.next_page_button,
-                        ],
-                        [
-                            self.back_button,
-                            self.log_icon,
-                            self.checkboxes["show_dead"],
-                            self.checkboxes["show_empty"],
-                            self.checkboxes["show_you"],
-                            self.show_dead_text,
-                            self.show_empty_text,
-                            self.show_you_text,
-                        ],
-                    )
-                else:
-                    RelationshipLog(
-                        self.the_cat.relationships[self.inspect_cat.ID],
-                        [
-                            self.view_profile_button,
-                            self.switch_focus_button,
-                            self.next_page_button,
-                            self.next_cat_button,
-                            self.previous_cat_button,
-                            self.next_page_button,
-                        ],
-                        [
-                            self.back_button,
-                            self.log_icon,
-                            self.checkboxes["show_dead"],
-                            self.checkboxes["show_empty"],
-                            self.checkboxes["show_you"],
-                            self.show_dead_text,
-                            self.show_empty_text,
-                            self.show_you_text,
-                        ],
-                    )
+                controls = [self.view_profile_button, self.switch_focus_button, self.log_icon,
+                            self.details_close_button, self.next_cat_button, self.previous_cat_button,
+                            self.next_page_button, self.previous_page_button, self.search_bar]
+                controls.extend(self.card_actions)
+                controls.extend(button.button for button in self.sprite_buttons.values())
+                window = RelationshipLog(
+                    self.the_cat.relationships[self.inspect_cat.ID],
+                    [button for button in controls if button.visible and button.is_enabled],
+                    [self.back_button, *self.checkboxes.values(), self.show_dead_text,
+                     self.show_empty_text, self.show_you_text],
+                )
+                window.set_blocking(True)
             elif event.ui_element == self.checkboxes["show_dead"]:
                 game.clan.clan_settings[
                     "show dead relation"
                 ] = not game.clan.clan_settings["show dead relation"]
                 self.update_checkboxes()
-                self.apply_cat_filter()
+                self.apply_cat_filter(self.search_bar.get_text())
                 self.update_cat_page()
             elif event.ui_element == self.checkboxes["show_empty"]:
                 game.clan.clan_settings[
                     "show empty relation"
                 ] = not game.clan.clan_settings["show empty relation"]
                 self.update_checkboxes()
-                self.apply_cat_filter()
+                self.apply_cat_filter(self.search_bar.get_text())
                 self.update_cat_page()
-            elif event.ui_element == self.checkboxes["show_you"]:
-                game.clan.clan_settings[
-                    "show only you"
-                ] = not game.clan.clan_settings["show only you"]
-                self.update_checkboxes()
-                self.apply_cat_filter()
-                self.update_cat_page()
+        elif event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED and event.ui_element == self.checkboxes["show_you"]:
+            game.clan.clan_settings["show family relation"] = event.text == "Family"
+            game.clan.clan_settings["show romance relation"] = event.text == "Romance"
+            game.clan.clan_settings["show only you"] = event.text == "Only You"
+            self.apply_cat_filter(self.search_bar.get_text())
+            self.update_cat_page()
+
+        elif event.type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED and event.ui_element == self.checkboxes["feelings"]:
+            game.clan.clan_settings["relationship feeling filter"] = self.feeling_filters[event.text]
+            self.update_checkboxes()
+            self.apply_cat_filter(self.search_bar.get_text())
+            self.update_cat_page()
+        elif event.type == pygame.KEYDOWN and game.settings["keybinds"]:
+            expanded = [menu for menu in (self.checkboxes["show_you"], self.checkboxes["feelings"])
+                        if menu.current_state is menu.menu_states["expanded"]]
+            if expanded:
+                if event.key == pygame.K_ESCAPE:
+                    for menu in expanded:
+                        menu.unfocus()
+                return
+            if event.key == pygame.K_ESCAPE:
+                if self.details_container.visible:
+                    self.details_container.hide()
+                else:
+                    self.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=self.back_button))
+            elif not self.search_bar.is_focused:
+                button = {pygame.K_LEFT: self.previous_cat_button, pygame.K_RIGHT: self.next_cat_button,
+                          pygame.K_PAGEUP: self.previous_page_button, pygame.K_PAGEDOWN: self.next_page_button}.get(event.key)
+                if button and button.is_enabled:
+                    self.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=button))
 
     def screen_switches(self):
         super().screen_switches()
@@ -212,7 +189,7 @@ class RelationshipScreen(Screens):
 
         self.next_cat_button = UISurfaceImageButton(
             ui_scale(pygame.Rect((622, 25), (153, 30))),
-            "Next Cat " + get_arrow(3, arrow_left=False),
+            "Next Cat " + Icon.ARROW_RIGHT,
             get_button_dict(ButtonStyles.SQUOVAL, (153, 30)),
             object_id="@buttonstyles_squoval",
             manager=MANAGER,
@@ -220,7 +197,7 @@ class RelationshipScreen(Screens):
         )
         self.previous_cat_button = UISurfaceImageButton(
             ui_scale(pygame.Rect((25, 25), (153, 30))),
-            get_arrow(2, arrow_left=True) + " Previous Cat",
+            Icon.ARROW_LEFT + " Previous Cat",
             get_button_dict(ButtonStyles.SQUOVAL, (153, 30)),
             object_id="@buttonstyles_squoval",
             sound_id="page_flip",
@@ -248,37 +225,40 @@ class RelationshipScreen(Screens):
             ).convert_alpha(),
             ui_scale_dimensions((228, 39)),
         )
-        self.details_frame_image = get_box(
-            BoxStyles.ROUNDED_BOX, (230, 340), sides=(True, False, True, True)
+        self.details_container = pygame_gui.core.UIContainer(
+            ui_scale(pygame.Rect((40, 140), (240, 360))), MANAGER,
+            starting_height=10, visible=False,
+        )
+        self.details_frame = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((0, 0), (240, 360))),
+            get_box(BoxStyles.ROUNDED_BOX, (240, 360)),
+            container=self.details_container, manager=MANAGER,
         )
         self.selected_cat_container = pygame_gui.core.UIContainer(
-            ui_scale(pygame.Rect((53, 143), (220, 320))), MANAGER
+            ui_scale(pygame.Rect((10, 30), (220, 320))), MANAGER,
+            container=self.details_container, starting_height=2,
         )
-        self.toggle_frame_image = get_box(
-            BoxStyles.ROUNDED_BOX, (220, 120), sides=(True, False, True, True)
+        self.details_close_button = UIImageButton(
+            ui_scale(pygame.Rect((207, 5), (22, 22))), "",
+            object_id="#exit_window_button", container=self.details_container,
+            starting_height=3, manager=MANAGER,
         )
-
-        self.list_frame_image = pygame.transform.scale(
-            image_cache.load_image(
-                "resources/images/relationship_list_frame.png"
-            ).convert_alpha(),
-            ui_scale_dimensions((502, 500)),
-        )
+        self.list_frame_image = get_box(BoxStyles.DARK_ROUNDED_BOX, (680, 500))
 
         self.show_dead_text = pygame_gui.elements.UITextBox(
-            "Show Dead",
-            ui_scale(pygame.Rect((110, 490), (100, 30))),
-            object_id="#text_box_30_horizleft",
+            "Dead",
+            ui_scale(pygame.Rect((224, 25), (60, 30))),
+            object_id=get_text_box_theme("#text_box_22_horizleft"),
         )
         self.show_empty_text = pygame_gui.elements.UITextBox(
-            "Show Empty",
-            ui_scale(pygame.Rect((110, 525), (100, 30))),
-            object_id="#text_box_30_horizleft",
+            "Empty",
+            ui_scale(pygame.Rect((318, 25), (65, 30))),
+            object_id=get_text_box_theme("#text_box_22_horizleft"),
         )
         self.show_you_text = pygame_gui.elements.UITextBox(
-            "Only You",
-            ui_scale(pygame.Rect((110, 560), (100, 30))),
-            object_id="#text_box_30_horizleft",
+            "Show:",
+            ui_scale(pygame.Rect((383, 25), (57, 30))),
+            object_id=get_text_box_theme("#text_box_22_horizleft"),
         )
 
         # Draw the checkboxes
@@ -336,6 +316,13 @@ class RelationshipScreen(Screens):
         )
         self.log_icon.disable()
 
+        for button, text in ((self.back_button, "Back (Escape)"),
+                             (self.previous_cat_button, "Previous cat (Left arrow)"),
+                             (self.next_cat_button, "Next cat (Right arrow)"),
+                             (self.previous_page_button, "Previous page (Page Up)"),
+                             (self.next_page_button, "Next page (Page Down)")):
+            button.set_tooltip(text)
+
         # Updates all info for the currently focused cat.
         self.update_focus_cat()
 
@@ -344,7 +331,7 @@ class RelationshipScreen(Screens):
             self.checkboxes[ele].kill()
         self.checkboxes = {}
 
-        self.selected_cat_container.kill()
+        self.details_container.kill()
 
         for ele in self.focus_cat_elements:
             self.focus_cat_elements[ele].kill()
@@ -353,6 +340,7 @@ class RelationshipScreen(Screens):
         for ele in self.relation_list_elements:
             self.relation_list_elements[ele].kill()
         self.relation_list_elements = {}
+        self.card_actions = {}
 
         for ele in self.sprite_buttons:
             self.sprite_buttons[ele].kill()
@@ -401,7 +389,7 @@ class RelationshipScreen(Screens):
             checkbox_type = "@unchecked_checkbox"
 
         self.checkboxes["show_dead"] = UIImageButton(
-            ui_scale(pygame.Rect((78, 490), (34, 34))), "", object_id=checkbox_type
+            ui_scale(pygame.Rect((190, 23), (34, 34))), "", object_id=checkbox_type
         )
 
         if game.clan.clan_settings["show empty relation"]:
@@ -410,24 +398,41 @@ class RelationshipScreen(Screens):
             checkbox_type = "@unchecked_checkbox"
 
         self.checkboxes["show_empty"] = UIImageButton(
-            ui_scale(pygame.Rect((78, 525), (34, 34))), "", object_id=checkbox_type
+            ui_scale(pygame.Rect((284, 23), (34, 34))), "", object_id=checkbox_type
         )
 
-        # LG: only you filter
-        if game.clan.clan_settings["show only you"]:
-            checkbox_type = "@checked_checkbox"
-        else:
-            checkbox_type = "@unchecked_checkbox"
-
-        self.checkboxes["show_you"] = UIImageButton(
-            ui_scale(pygame.Rect((78, 560), (34, 34))), "", object_id=checkbox_type
+        selected = "Everyone"
+        if game.clan.clan_settings["show family relation"]:
+            selected = "Family"
+        elif game.clan.clan_settings["show romance relation"]:
+            selected = "Romance"
+        elif game.clan.clan_settings["show only you"]:
+            selected = "Only You"
+        self.checkboxes["show_you"] = pygame_gui.elements.UIDropDownMenu(
+            ["Everyone", "Family", "Romance", "Only You"],
+            selected,
+            ui_scale(pygame.Rect((440, 25), (160, 30))),
+            manager=MANAGER,
         )
+
+        selected_feeling = next(label for label, value in self.feeling_filters.items()
+                                if value == game.clan.clan_settings["relationship feeling filter"])
+        feeling_rect = ui_scale(pygame.Rect((160, 0), (190, 30)))
+        # Drop-up menus need a positive position, rather than a bottom-relative rectangle.
+        feeling_rect.top = self.back_button.rect.top - MANAGER.get_root_container().rect.top
+        self.checkboxes["feelings"] = pygame_gui.elements.UIDropDownMenu(
+            list(self.feeling_filters), selected_feeling, feeling_rect, manager=MANAGER, object_id="#dropup",
+        )
+        help_text = ("Filters feelings toward the other cat. Adds romantic love, platonic like, admiration, "
+                     "comfort and trust; subtracts dislike and jealousy. Balanced means a total of zero.")
+        self.checkboxes["feelings"].set_tooltip(help_text)
 
     def update_focus_cat(self):
         for ele in self.focus_cat_elements:
             self.focus_cat_elements[ele].kill()
         self.focus_cat_elements = {}
 
+        self.details_container.hide()
         self.the_cat = Cat.all_cats.get(game.switches["cat"], game.clan.instructor)
 
         self.current_page = 1
@@ -690,6 +695,7 @@ class RelationshipScreen(Screens):
 
     def apply_cat_filter(self, search_text=""):
         # Filter for dead or empty cats
+        self.current_page = 1
         self.filtered_cats = self.all_relations.copy()
         if not game.clan.clan_settings["show dead relation"]:
             self.filtered_cats = list(
@@ -713,13 +719,24 @@ class RelationshipScreen(Screens):
                 )
             )
 
-        # LG: you filter
-        if game.clan.clan_settings["show only you"]:
-            self.filtered_cats = list(
-                filter(lambda rel: rel.cat_to.ID == game.clan.your_cat.ID, self.filtered_cats)
-            )
-        # ---
+        if game.clan.clan_settings["show family relation"]:
+            self.filtered_cats = [rel for rel in self.filtered_cats
+                                  if self.the_cat.is_related(rel.cat_to, cousin_allowed=False)]
+        elif game.clan.clan_settings["show romance relation"]:
+            self.filtered_cats = [rel for rel in self.filtered_cats if self.the_cat.is_dateable(rel.cat_to)]
+        elif game.clan.clan_settings["show only you"]:
+            self.filtered_cats = [rel for rel in self.filtered_cats if rel.cat_to.ID == game.clan.your_cat.ID]
 
+        feeling = game.clan.clan_settings["relationship feeling filter"]
+        if feeling != "all":
+            matches = []
+            for rel in self.filtered_cats:
+                total = (rel.romantic_love + rel.platonic_like + rel.admiration + rel.comfortable
+                         + rel.trust - rel.dislike - rel.jealousy)
+                if ((feeling == "positive" and total > 0) or (feeling == "negative" and total < 0)
+                        or (feeling == "balanced" and total == 0)):
+                    matches.append(rel)
+            self.filtered_cats = matches
 
         # Filter for search
         search_cats = []
@@ -739,9 +756,13 @@ class RelationshipScreen(Screens):
             print("duplicates: " + seen)
 
     def update_cat_page(self):
+        self.details_container.hide()
+        self.inspect_cat = None
+        self.update_inspected_relation()
         for ele in self.relation_list_elements:
             self.relation_list_elements[ele].kill()
         self.relation_list_elements = {}
+        self.card_actions = {}
 
         for ele in self.sprite_buttons:
             self.sprite_buttons[ele].kill()
@@ -756,19 +777,26 @@ class RelationshipScreen(Screens):
         else:
             display_rel = []
 
-        pos_x = 290
+        pos_x = 65
         pos_y = 150
         i = 0
         for rel in display_rel:
             self.generate_relation_block((pos_x, pos_y), rel, i)
 
             i += 1
-            pos_x += 122
-            if pos_x > 700:
+            pos_x += 170
+            if pos_x > 600:
                 pos_y += 242
-                pos_x = 290
+                pos_x = 65
 
-        self.page_number.set_text(f"{self.current_page} / {len(all_pages)}")
+        self.page_number.set_text(f"{self.current_page if all_pages else 0} / {len(all_pages)}")
+        if not display_rel:
+            self.relation_list_elements["empty"] = pygame_gui.elements.UITextBox(
+                "No relationships match these filters.",
+                ui_scale(pygame.Rect((150, 335), (500, 60))),
+                object_id="#text_box_30_horizcenter",
+                manager=MANAGER,
+            )
 
         # Enable and disable page buttons.
         if len(all_pages) <= 1:
@@ -790,8 +818,32 @@ class RelationshipScreen(Screens):
         pos_x = pos[0]
         pos_y = pos[1]
 
+        self.relation_list_elements[f"frame{i}"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((pos_x - 5, pos_y - 25), (120, 240))),
+            get_box(BoxStyles.INNER_BOX, (120, 240)), manager=MANAGER,
+        )
+        self.relation_list_elements[f"nameplate{i}"] = pygame_gui.elements.UIImage(
+            ui_scale(pygame.Rect((pos_x - 10, pos_y - 25), (130, 30))),
+            get_box(BoxStyles.NAMEPLATE, (130, 30)), manager=MANAGER,
+        )
+        for row, (action, icon, description) in enumerate((
+            ("focus", Icon.ARROW_RIGHT, "Switch relationship focus to this cat"),
+            ("log", Icon.NOTEPAD, "View relationship log"),
+            ("profile", Icon.CAT_HEAD, "View profile"),
+        )):
+            button = UISurfaceImageButton(
+                ui_scale(pygame.Rect((pos_x + 115, pos_y + 5 + row * 40), (36, 36))),
+                icon, get_button_dict(ButtonStyles.ICON_TAB_LEFT, (36, 36)),
+                object_id="@buttonstyles_icon_tab_left", manager=MANAGER,
+                tool_tip_text=description,
+            )
+            if action == "focus" and the_relationship.cat_to.dead:
+                button.disable()
+            self.card_actions[button] = (the_relationship.cat_to, action)
+            self.relation_list_elements[f"{action}{i}"] = button
+
         self.sprite_buttons["image" + str(i)] = UISpriteButton(
-            ui_scale(pygame.Rect((pos_x + 22, pos_y), (50, 50))),
+            ui_scale(pygame.Rect((pos_x + 30, pos_y), (50, 50))),
             the_relationship.cat_to.sprite,
             cat_object=the_relationship.cat_to,
         )
@@ -803,6 +855,10 @@ class RelationshipScreen(Screens):
             short_name,
             ui_scale(pygame.Rect((pos_x - 5, pos_y - 25), (110, 30))),
             object_id="#text_box_26_horizcenter",
+        )
+
+        self.relation_list_elements["name" + str(i)].set_tooltip(
+            f"{name}<br>{the_relationship.cat_to.status}, {the_relationship.cat_to.moons} moons"
         )
 
         # Gender alignment
@@ -888,6 +944,14 @@ class RelationshipScreen(Screens):
                         "resources/images/dot_big.png"
                     ).convert_alpha(),
                 )
+
+        if the_relationship.cat_to.ID in self.the_cat.previous_mates and the_relationship.cat_to.ID not in self.the_cat.mates:
+            self.relation_list_elements[f"ex_mate_icon{i}"] = pygame_gui.elements.UIImage(
+                ui_scale(pygame.Rect((pos_x + 5, pos_y + 20), (10, 10))),
+                image_cache.load_image("resources/images/relationship_screen/ex_mate_indicator.png").convert_alpha(),
+                manager=MANAGER,
+            )
+            self.relation_list_elements[f"ex_mate_icon{i}"].set_tooltip("Former mate")
 
         # ------------------------------------------------------------------------------------------------------------ #
         # RELATION BARS
@@ -1132,20 +1196,32 @@ class RelationshipScreen(Screens):
             dark_mode=game.settings["dark mode"],
         )
 
+        for key, label, value in (
+            ("romantic", "Romantic affection", display_romantic),
+            ("plantonic", "Platonic affection", the_relationship.platonic_like),
+            ("dislike", "Dislike", the_relationship.dislike),
+            ("admiration", "Respect", the_relationship.admiration),
+            ("comfortable", "Comfort", the_relationship.comfortable),
+            ("jealous", "Jealousy", the_relationship.jealousy),
+            ("trust", "Trust", the_relationship.trust),
+        ):
+            self.relation_list_elements[f"{key}_text{i}"].set_tooltip(f"{label}: {value}/100")
+
     def on_use(self):
         super().on_use()
 
         # LOAD UI IMAGES
         screen.blit(self.search_bar_image, ui_scale_blit((535, 90)))
-        screen.blit(
-            self.details_frame_image,
-            ui_scale_blit((43, 133)),
-        )
-        screen.blit(
-            self.toggle_frame_image,
-            ui_scale_blit((53, 482)),
-        )
-        screen.blit(self.list_frame_image, ui_scale_blit((273, 122)))
+        screen.blit(self.list_frame_image, ui_scale_blit((50, 122)))
+
+        if any(window.is_blocking for window in MANAGER.get_window_stack().get_full_stack()):
+            return
+        # Dropdowns recreate their buttons when opened or closed.
+        menu = self.checkboxes["feelings"]
+        if menu.current_state is menu.menu_states["closed"]:
+            for button in (menu.current_state.selected_option_button, menu.current_state.open_button):
+                if button.tool_tip_text != menu.tool_tip_text:
+                    button.set_tooltip(menu.tool_tip_text)
 
         # Only update the postions if the search text changes
         if self.search_bar.get_text() != self.previous_search_text:

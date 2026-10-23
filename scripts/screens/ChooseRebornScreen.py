@@ -370,7 +370,6 @@ class ChooseRebornScreen(Screens):
             if cat.talked_to is True:
                 cat.talked_to = False
 
-        game.switches["attended half-moon"] = False
         if game.clan.your_cat.status not in ['newborn', 'kitten', 'apprentice', 'medicine cat apprentice', 'mediator apprentice', "queen's apprentice"]:
             game.clan.your_cat.w_done = True
         game.switches['cur_screen'] = "events screen"

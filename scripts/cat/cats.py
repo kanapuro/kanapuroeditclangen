@@ -751,6 +751,7 @@ class Cat:
         self.experience_level = None
         self.w_done = False
         self.talked_to = False
+        self.moonplace_visit_moon = None
         self.insulted = False
         self.flirted = False
         self.joined_df = False
@@ -1456,9 +1457,9 @@ class Cat:
             you.exiled = False
             if you.moons > 119:
                 you.status_change("elder")
-            elif you.moons > 12:
+            elif you.moons >= 12:
                 you.status_change("warrior")
-            elif you.moons > 6:
+            elif you.moons >= 6:
                 you.status_change("apprentice")
             else:
                 you.status_change("kitten")
@@ -1474,9 +1475,9 @@ class Cat:
             Cat.die(you)
             if you.moons > 119:
                 you.status_change("elder")
-            elif you.moons > 12:
+            elif you.moons >= 12:
                 you.status_change("warrior")
-            elif you.moons > 6:
+            elif you.moons >= 6:
                 you.status_change("apprentice")
             else:
                 you.status_change("kitten")
@@ -1490,7 +1491,8 @@ class Cat:
             "LEGBITE", "NECKBITE", "FACE", "MANLEG", "MANTAIL", "BRIDGE", "RIGHTBLIND", "LEFTBLIND",
             "BOTHBLIND", "CATBITE", "HINDLEG", "BACK", "SCRATCHSIDE", "CATBITETWO", "FOUR"])
 
-            you.pelt.scars.append(scar if scar not in you.pelt.scars and len(you.pelt.scars) < 4 else None)
+            if scar not in you.pelt.scars:
+                you.pelt.scars.append(scar)
             you.thought = "Licks their wounds"
         else:
             event_text = event_text + choice([ f"When one finally comes along, they meet you with wary eyes. A few of the more forthcoming members of the group share some Clan news, but when they turn to head back to camp, you're not invited, and the leader of the patrol lingers nearby until you turn to leave.",
@@ -1704,6 +1706,17 @@ class Cat:
         else:
             return "general"
 
+    def leave_clan(self, status):
+        if status not in ("loner", "rogue", "kittypet"):
+            raise ValueError("Invalid departure status: " + str(status))
+        if self.dead or self.outside or self.moons < 6:
+            return False
+        if self.status in ("leader", "deputy", "medicine cat"):
+            self.status_change("warrior")
+        self.gone()
+        self.status_change(status)
+        return True
+
     def gone(self):
         """Makes a Clan cat an "outside" cat. Handles removing them from special positions, and removing
         mentors and apprentices."""
@@ -1726,7 +1739,7 @@ class Cat:
         """Makes an "outside cat" a Clan cat. Returns a list of IDs for any additional cats that
         are coming with them."""
         self.outside = False
-        if not self.exiled:
+        if not self.exiled and not History.get_beginning(self):
             History.add_beginning(self)
         self.exiled = False
         game.clan.add_to_clan(self)
@@ -1743,7 +1756,6 @@ class Cat:
                 and child.moons < 12
             ):
                 child.add_to_clan()
-                History.add_beginning(child)
                 ids.append(child_id)
 
         return ids
@@ -2466,8 +2478,13 @@ class Cat:
 
     def thoughts(self):
         """Generates a thought for the cat, which displays on their profile."""
-        all_cats = self.all_cats
-        other_cat = choice(list(all_cats.keys()))
+        candidates = [cat for cat in self.all_cats.values()
+                      if cat.ID != self.ID and cat.moons >= 0]
+        if not self.dead:
+            candidates = [cat for cat in candidates if cat.ID in self.relationships]
+            if not self.outside and getrandbits(4) != 1:
+                candidates = [cat for cat in candidates if not cat.dead]
+        other_cat = choice(candidates) if candidates else None
         game_mode = game.switches["game_mode"]
         biome = game.switches["biome"]
         camp = game.switches["camp_bg"]
@@ -2475,59 +2492,6 @@ class Cat:
             season = game.clan.current_season
         except Exception:
             season = None
-
-        # this figures out where the cat is
-        where_kitty = None
-        if not self.dead and not self.outside:
-            where_kitty = "inside"
-        elif self.dead and not self.df and not self.outside:
-            where_kitty = "starclan"
-        elif self.dead and self.df:
-            where_kitty = "hell"
-        elif self.dead:
-            where_kitty = "UR"
-        else:
-            where_kitty = "outside"
-        # get other cat
-        i = 0
-        # for cats inside the clan
-        if where_kitty == "inside":
-            dead_chance = getrandbits(4)
-            while (
-                other_cat == self.ID
-                and len(all_cats) > 1
-                or (all_cats.get(other_cat).dead and dead_chance != 1)
-                or (other_cat not in self.relationships)
-            ):
-                other_cat = choice(list(all_cats.keys()))
-                i += 1
-                if i > 100:
-                    other_cat = None
-                    break
-        # for dead cats
-        elif where_kitty in ["starclan", "hell", "UR"]:
-            while other_cat == self.ID and len(all_cats) > 1:
-                other_cat = choice(list(all_cats.keys()))
-                i += 1
-                if i > 100:
-                    other_cat = None
-                    break
-        # for cats currently outside
-        # it appears as for now, kittypets and loners can only think about outsider cats
-        elif where_kitty == "outside":
-            while (
-                other_cat == self.ID
-                and len(all_cats) > 1
-                or (other_cat not in self.relationships)
-            ):
-                # or (self.status in ['kittypet', 'loner'] and not all_cats.get(other_cat).outside):
-                other_cat = choice(list(all_cats.keys()))
-                i += 1
-                if i > 100:
-                    other_cat = None
-                    break
-
-        other_cat = all_cats.get(other_cat)
 
         # get chosen thought
         chosen_thought = Thoughts.get_chosen_thought(
@@ -3081,6 +3045,14 @@ class Cat:
             if not born_with or new_perm_condition.moons_until == -2:
                 History.add_condition(self, name, "permanent", "Present from birth." if born_with else cause)
         return new_condition
+
+    def can_visit_moonplace(self):
+        if self.dead or self.outside or self.shunned > 0 or self.moons < 6 or self.not_working():
+            return False
+        if self.status in ("medicine cat", "medicine cat apprentice"):
+            return game.clan.age % 6 == 0 and self.moonplace_visit_moon != game.clan.age
+        return (self.status in ("apprentice", "queen's apprentice", "mediator apprentice")
+                and self.moonplace_visit_moon is None)
 
     def not_working(self, ignored_injuries=()):
         """returns True if the cat cannot work, False if the cat can work"""
@@ -4810,6 +4782,7 @@ class Cat:
                 "build": self.pelt.build,
                 "w_done": self.w_done if self.w_done else False,
                 "talked_to": self.talked_to if self.talked_to else False,
+                "moonplace_visit_moon": self.moonplace_visit_moon,
                 "insulted": self.insulted if self.insulted else False,
                 "flirted": self.flirted if self.flirted else False,
                 "joined_df": self.joined_df if self.joined_df else False,

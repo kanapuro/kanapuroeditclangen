@@ -29,6 +29,7 @@ from scripts.utility import (
     event_text_adjust,
     get_alive_status_cats,
     get_leader_life_notice,
+    handle_stolen_vitality,
 )
 
 
@@ -196,6 +197,7 @@ class Condition_Events:
                 History.add_death(cat, condition="starving", death_text=history_event)
 
             cat.die()
+            handle_stolen_vitality(cat, 1)
 
             # if the cat is the leader and isn't full dead
             # make them malnourished and refill nutrition slightly
@@ -587,6 +589,8 @@ class Condition_Events:
                 else:
                     History.add_death(cat, condition=illness, death_text=history_event)
 
+                handle_stolen_vitality(cat, 1)
+
                 # clear event list to get rid of any healed or risk event texts from other illnesses
                 event_list.clear()
                 event_list.append(event)
@@ -695,6 +699,8 @@ class Condition_Events:
 
                 else:
                     History.add_death(cat, condition=injury, death_text=history_text)
+
+                handle_stolen_vitality(cat, 1)
 
                 # clear event list first to make sure any heal or risk events from other injuries are not shown
                 event_list.clear()
@@ -871,6 +877,8 @@ class Condition_Events:
                     History.add_death(cat, death_text=event)
                 else:
                     History.add_death(cat, death_text=f"died to {condition}")
+
+                handle_stolen_vitality(cat, 1)
 
                 game.herb_events_list.append(event)
                 break

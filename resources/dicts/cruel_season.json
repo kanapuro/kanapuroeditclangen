@@ -23,6 +23,42 @@
             ],
             "license": "MPL-2.0 code; CC BY-NC 4.0 sprites/art/icons",
             "adaptations": "Retain the local ordinary four-moon prey lifetime. Crowfood uses the source one-moon lifetime and expiry-before-feeding order. Prevent combining it with Survival of the Fittest because manual feeding is required, as requested by the maintainer."
+        },
+        {
+            "project": "ClanGen",
+            "repository": "https://github.com/ClanGenOfficial/clangen",
+            "commit": "904012b9e9c62ab24a8988ae23d8a516232ff7e2",
+            "path": "resources/dicts/cruel_season/society_cards.json",
+            "cards": ["fated_paths"],
+            "license": "MPL-2.0 code; existing CC BY-NC 4.0 card artwork",
+            "adaptations": "Retain source manual-rank/manual-mate restrictions and forced deputy automation. Also force the local automatic-leader setting because disabling both manual ranks and automatic succession would prevent replacement leaders. Custom roles, newborn origins, natural relationships, ceremonies and editor/command overrides are retained."
+        },
+        {
+            "project": "ClanGen",
+            "repository": "https://github.com/ClanGenOfficial/clangen",
+            "commit": "904012b9e9c62ab24a8988ae23d8a516232ff7e2",
+            "path": "resources/dicts/cruel_season/society_cards.json",
+            "cards": ["pride_and_joy"],
+            "license": "MPL-2.0 code; CC BY-NC 4.0 card artwork",
+            "adaptations": "Preserve source initial deputy omission, direct biological/adoptive child eligibility in both deputy pools and blocked manual deputy appointments. Force local automatic leader succession as well as deputy appointments to prevent settings from stranding a rank-locked colony. Preserve existing deputies on load, newborn starts and custom roles; no eligible child leaves the position vacant."
+        },
+        {
+            "project": "ClanGen",
+            "repository": "https://github.com/ClanGenOfficial/clangen",
+            "commit": "904012b9e9c62ab24a8988ae23d8a516232ff7e2",
+            "path": "scripts/events_module/pregnancy/check_parents.py; resources/dicts/cruel_season/society_cards.json",
+            "cards": ["prideful"],
+            "license": "MPL-2.0 code; CC BY-NC 4.0 card artwork",
+            "adaptations": "Preserve source qualifying ranks and qualifying-mate eligibility. Enforce new-conception and adoption restrictions in automatic and player-directed paths without rewriting existing pregnancies, starting families or generic kit generation. The ordinary null rank limit preserves all local adult/custom roles. Retain local same-sex/intersex rules, poly mates, both litter samplers and outsider availability."
+        },
+        {
+            "project": "ClanGen",
+            "repository": "https://github.com/ClanGenOfficial/clangen",
+            "commit": "904012b9e9c62ab24a8988ae23d8a516232ff7e2",
+            "path": "scripts/events_module/consequences.py; resources/dicts/cruel_season/danger_cards.json; resources/lang/en/cruel_season/special_text.en.json",
+            "cards": ["stolen_vitality"],
+            "license": "MPL-2.0 code; CC BY-NC 4.0 card artwork",
+            "adaptations": "Preserve one random living colony sacrifice per revival, unique victims and final-fatal-life exclusion. Apply the price after original death histories to retain local murder/follow-up identity. Emit a separate event with actual participant IDs and include the price in patrol results. An unpaid price exhausts remaining lives and completes death, avoiding an alive zero-life leader. Retain local leader grants, life caps, faith routing and save schema."
         }
     ],
     "limit": 12,
@@ -51,6 +87,47 @@
         ]
     },
     "cards": {
+        "stolen_vitality": {
+            "name": "Stolen Vitality",
+            "category": "Danger",
+            "description": "When a leader revives, a random colony cat dies in their place. If the price cannot be paid, the leader loses their remaining lives.",
+            "modifiers": {"cruel_season.event.stolen_vitality": true},
+            "card_art": "danger/stolen_vitality.png"
+        },
+        "prideful": {
+            "name": "Prideful",
+            "category": "Society",
+            "description": "Only leaders, outsiders and cats with a leader or outsider mate can have or adopt kits. Existing pregnancies and starting families are preserved.",
+            "modifiers": {
+                "pregnancy.can_have_kits": ["leader", "loner", "rogue", "kittypet"]
+            },
+            "card_art": "society/prideful.png"
+        },
+        "pride_and_joy": {
+            "name": "Pride and Joy",
+            "category": "Society",
+            "description": "Only the leader's biological or adopted children can become deputy. Start without a deputy; appointments and succession are automatic.",
+            "modifiers": {
+                "settings.force_enable.deputy": true,
+                "settings.force_enable.leader": true,
+                "ranks.can_manually_change.deputy": false,
+                "clan_creation.ranks_needed.deputy": false,
+                "ranks.only_leader_kits_deputy": true
+            },
+            "card_art": "society/pride_and_joy.png"
+        },
+        "fated_paths": {
+            "name": "Fated Paths",
+            "category": "Society",
+            "description": "Mates and ranks cannot be changed manually. Deputies succeed leaders automatically, and leaders automatically choose deputies. Natural relationships, ceremonies and succession continue.",
+            "modifiers": {
+                "ranks.can_manually_change.all": false,
+                "mates.allow_manual": false,
+                "settings.force_enable.deputy": true,
+                "settings.force_enable.leader": true
+            },
+            "card_art": "society/resolute.png"
+        },
         "always_newleaf": {
             "name": "Endless Newleaf",
             "category": "Environment",

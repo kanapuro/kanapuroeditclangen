@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 from scripts.cat.history import History
 from scripts.clan import HERBS
 from scripts.utility import (
+    handle_stolen_vitality,
     change_clan_relations,
     change_clan_reputation,
     change_relationship_values,
@@ -607,6 +608,7 @@ class PatrolOutcome:
         if "no_body" in self.dead_cats:
             body = False
 
+        lives_before_death = game.clan.leader_lives
         results = []
         for _cat in cats_to_kill:
             if _cat.status == "leader":
@@ -630,6 +632,11 @@ class PatrolOutcome:
             self.__handle_death_history(_cat, patrol)
             _cat.die(body)
 
+        price = handle_stolen_vitality(
+            game.clan.leader, lives_before_death - max(0, game.clan.leader_lives)
+        )
+        if price:
+            results.append(price)
         return " ".join(results)
 
     def _handle_lost(self, patrol: "Patrol") -> str:
@@ -853,8 +860,9 @@ class PatrolOutcome:
                 lethal = False
 
             # Injury or scar the cats
-            results = []
             for _cat in cats:
+                if _cat.dead:
+                    continue
                 # give condition
                 if not possible_injuries:
                     continue
@@ -863,22 +871,11 @@ class PatrolOutcome:
                 old_illnesses = list(_cat.illnesses.keys())
                 old_perm_cond = list(_cat.permanent_condition.keys())
 
-                if set(possible_injuries).issubset(
-                    old_injuries + old_illnesses + old_perm_cond
-                ):
-                    print(
-                        "WARNING: All possible conditions are already on this cat! (poor kitty)"
-                    )
+                available = [name for name in possible_injuries
+                             if name not in old_injuries + old_illnesses + old_perm_cond]
+                if not available:
                     continue
-
-                give_injury = choice(possible_injuries)
-                # If the cat already has this injury, reroll it to get something new
-                while (
-                    give_injury in old_injuries
-                    or give_injury in old_illnesses
-                    or give_injury in old_perm_cond
-                ):
-                    give_injury = choice(possible_injuries)
+                give_injury = choice(available)
 
                 if give_injury in INJURIES:
                     _cat.get_injured(give_injury, lethal=lethal, cause=cause)
@@ -904,6 +901,9 @@ class PatrolOutcome:
                         if x not in old_perm_cond
                     ]
                 )
+                if not given_conditions:
+                    continue
+
                 # History is also ties to "no_results"
                 if not block.get("no_results"):
                     for given_condition in given_conditions:
@@ -912,9 +912,10 @@ class PatrolOutcome:
                     results.append(f"{_cat.name} got: {combined_conditions}.")
                 else:
                     # If no results are shown, assume the cat didn't get the patrol history. Default override.
-                    self.__handle_condition_history(
-                        _cat, give_injury, patrol, default_overide=True
-                    )
+                    for given_condition in given_conditions:
+                        self.__handle_condition_history(
+                            _cat, given_condition, patrol, default_overide=True
+                        )
 
         return " ".join(results)
     
@@ -1334,7 +1335,7 @@ class PatrolOutcome:
         if not final_death_history:
             final_death_history = "m_c died on patrol."
 
-        if final_death_history and isinstance(final_death_history, str):
+        if isinstance(final_death_history, str) and "o_c_n" in final_death_history:
             final_death_history = final_death_history.replace(
                 "o_c_n", f"{str(patrol.other_clan.name)}"
             )

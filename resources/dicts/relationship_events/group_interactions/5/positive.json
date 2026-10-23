@@ -93,5 +93,75 @@
 				"trust": "increase"
 			}
 		}
+	},
+	{
+		"id": "group_5_pos_medteachingapps",
+		"cat_amount": 5,
+		"intensity": "medium",
+		"interactions": [
+			"m_c is proud of how productive and attentive r_c1, r_c2, r_c3, and r_c4 are during a lesson about poisonous plants.",
+			"r_c1, r_c2, r_c3, and r_c4 listen intently to m_c's lecture about basic first aid.",
+			"After giving r_c1, r_c2, r_c3, and r_c4 a lecture about the basic herbs, m_c quizzes them and is proud of the results.",
+			"m_c appreciates how r_c1, r_c2, r_c3, and r_c4 don't goof around during {PRONOUN/m_c/poss} lecture about herbs.",
+			"After conducting a lesson about basic first aid, m_c raves about r_c1, r_c2, r_c3, and r_c4's fantastic behavior.",
+			"m_c assumed that {PRONOUN/m_c/poss} lesson about poisonous plants would go unheard, but r_c1, r_c2, r_c3, and r_c4 are diligent listeners.",
+			"m_c is impressed by r_c1, r_c2, r_c3, and r_c4's attitudes during a short lesson about illnesses, their symptoms, and when to worry.",
+			"During a lecture about the severity of injuries, r_c1, r_c2, r_c3, and r_c4 wow m_c with their maturity."
+		],
+		"status_constraint": {
+			"m_c": [
+				"medicine cat"
+			],
+			"r_c1": [
+				"apprentice",
+				"mediator apprentice"
+			],
+			"r_c2": [
+				"apprentice",
+				"mediator apprentice"
+			],
+			"r_c3": [
+				"apprentice",
+				"mediator apprentice"
+			],
+			"r_c4": [
+				"apprentice",
+				"mediator apprentice"
+			]
+		},
+		"specific_reaction": {
+			"m_c_to_r_c1": {
+				"amount": 10,
+				"admiration": "increase"
+			},
+			"r_c1_to_m_c": {
+				"amount": 10,
+				"admiration": "increase"
+			},
+			"m_c_to_r_c2": {
+				"amount": 10,
+				"admiration": "increase"
+			},
+			"r_c2_to_m_c": {
+				"amount": 10,
+				"admiration": "increase"
+			},
+			"m_c_to_r_c3": {
+				"amount": 10,
+				"admiration": "increase"
+			},
+			"r_c3_to_m_c": {
+				"amount": 10,
+				"admiration": "increase"
+			},
+			"m_c_to_r_c4": {
+				"amount": 10,
+				"admiration": "increase"
+			},
+			"r_c4_to_m_c": {
+				"amount": 10,
+				"admiration": "increase"
+			}
+		}
 	}
 ]

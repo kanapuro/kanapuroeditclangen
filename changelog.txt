@@ -1,3 +1,88 @@
+<strong>v2.0.0-alpha.19 (KanapuroEdit): </strong>
+- Added LifeGen group events for medicine lessons, disrupted lectures by older cats and muddy apprentice nests, for groups of three to five. Participants follow the source role and age restrictions, with the original directed respect and liking changes adapted to our relationship values.
+- Fixed general group events failing to change relationships or applying the wrong relationship value. Three-cat events now work with exactly three cats; skill requirements and relationship thresholds are checked correctly. Existing group events retain their usual effect amounts.
+- Fixed Stolen Vitality not charging its revival price on the patrol implementation used by the game. The price resolves after the patrol's original deaths and appears in the results. Leader lives, sacrifices, histories and saved events are covered through the active handler.
+- Patrol results now retain all condition blocks, including the two illnesses from eating tansy. Rejected conditions no longer produce empty results or phantom histories, dead patrol cats do not receive new conditions, and condition selection avoids rerolling existing conditions.
+- Fixed patrol deaths crashing without neighboring colonies, and unmuting menu/creation music failing after an incomplete save load.
+
+<strong>v2.0.0-alpha.18 (KanapuroEdit): </strong>
+- Fixed skill-specific thoughts falling back to the error message, and mentor thoughts failing to recognize saved apprentice IDs.
+- Thoughts requiring another cat now wait for an actual subject. Thoughts respect personality-cluster restrictions even when a cat has only one cluster, and explicit Unknown Residence thoughts no longer confuse that destination with the other afterlives.
+- Thought companions are selected directly from eligible cats. Solitary cats no longer think about themselves or repeatedly search for an unavailable companion, and unborn cats no longer prevent thoughts about an eligible known cat. Existing relationship requirements and chances to think about the dead are retained.
+
+<strong>v2.0.0-alpha.17 (KanapuroEdit): </strong>
+- Fixed nursery outbreaks selecting already-sick cats or announcing kittencough infections in newborns who cannot acquire it. Only healthy kittens are selected, and event links now match the newly infected cats.
+- A nursery with too few eligible kittens no longer prevents a different contagious illness from spreading. Each illness uses its own eligible recipients.
+- Outbreaks now use living members present in the colony. Exiled and nonmember cats cannot spread camp outbreaks, receive infections or affect sickness counts and medical protection. Existing seasonal rules, Rest and Recover and Cruel Season medical modifiers are preserved.
+
+<strong>v2.0.0-alpha.16 (KanapuroEdit): </strong>
+- Relationships now has All Feelings, Positive, Negative and Balanced view filters. The colony remembers your choice, and it combines with search, Family/Romance/Only You and Dead/Empty filters. Hover help explains how the existing seven values are compared; relationship values and dating rules are unchanged.
+- Added relationship-screen keyboard navigation: arrow keys switch cats, Page Up/Down switch pages, and Escape closes an inspection or dropdown before going back. Search typing and the keyboard-shortcut preference are respected.
+- Fixed queued clicks and search refreshes changing the screen behind an open relationship log. Disabled dead-cat focus buttons can no longer activate, and filtering or changing pages clears stale inspection actions. Filter hover help remains available after reopening its dropdown.
+
+<strong>v2.0.0-alpha.15 (KanapuroEdit): </strong>
+- Added Stolen Vitality: a random living colony cat dies for each leader revival. The final life costs no sacrifice; if the price cannot be paid, the leader loses their remaining lives and dies.
+- The revival price applies to medical deaths, starvation, childbirth, patrols, murder and manual kills. Events link the actual sacrifices, histories retain their causes, and patrol results show the price. One-life leaders, automatic succession and saved life balances remain supported.
+- Fixed player murders of ordinary cats incorrectly removing a life from the colony leader. Retaliation and revival costs now resolve after the original casualties, preventing a cat from being killed twice by the same action.
+- Fixed murder crashing when there are no neighboring colonies. Text requiring another colony is excluded when unavailable, and neighboring colony names are substituted correctly.
+
+<strong>v2.0.0-alpha.14 (KanapuroEdit): </strong>
+- Added Prideful: leaders, outsiders and cats with a leader or outsider mate may have or adopt new kits. Automatic pregnancies, single-parent births, adoption and player-directed affairs respect the rule; affairs retain their relationship effects.
+- The player's Have Kits button explains the restriction when unavailable. Existing pregnancies still complete after eligibility changes, starting-player families remain intact, and ordinary colonies retain their existing parent and custom-role rules.
+- Prideful works alongside Pride and Joy and Fated Paths. Biological and adopted family links survive save/reload and can qualify children for automatic deputy selection.
+
+<strong>v2.0.0-alpha.13 (KanapuroEdit): </strong>
+- Added Pride and Joy: only the leader's biological or adopted children can become deputy. Colonies using this card start without a deputy and keep the position vacant until an eligible child is available; unrelated warriors cannot bypass the restriction.
+- Pride and Joy keeps deputy appointments and leader succession automatic. Manual appointments and deputy rank changes explain the restriction, while other cats can still change ordinary roles. Saved deputies and family links are preserved, and succession follows the new leader's children.
+
+<strong>v2.0.0-alpha.12 (KanapuroEdit): </strong>
+- Added Fated Paths: mates and ranks cannot be changed manually, while natural relationships and ceremonies continue. Profile controls, role management and deputy selection explain and enforce the restriction; existing mates and histories are preserved.
+- Fated Paths keeps automatic deputy appointments and leader succession enabled, including after save/reload. Their colony settings are checked and locked so a disabled promotion preference cannot strand the colony without a leader. Newborn starts and existing custom roles remain supported.
+- Fixed the ordinary deputy chooser changing a cat's rank without registering them as the colony's deputy. Chosen deputies can now succeed a missing leader through the normal ceremony.
+
+<strong>v2.0.0-alpha.11 (KanapuroEdit): </strong>
+- Music volume changes now apply while playback is paused, so unmuting no longer keeps the previous volume until the next track. Volume settings can still be adjusted when an audio device is unavailable.
+- Music checks the current season and biome again at track boundaries, without requiring navigation to another screen. Empty playlists stop the previous track, and muted or disabled audio cannot start queued music.
+
+<strong>v2.0.0-alpha.10 (KanapuroEdit): </strong>
+- Selecting an incompatible Cruel Season card now opens a Keep/Replace dialog. Replacement removes only conflicting choices and preserves the rest of your deck; Keep, Escape and close leave the deck unchanged.
+- The dialog respects all existing conflicts, including Crowfood Chaos and Survival of the Fittest, and blocks background card selection/navigation while a decision is pending. Random cards still choose compatible options, and pasted incompatible decks are still rejected.
+
+<strong>v2.0.0-alpha.9 (KanapuroEdit): </strong>
+- Added Leave colony to the player's Dangerous tab, available from six moons old. Choose loner, rogue or kittypet, then confirm; closing the window cancels without changes.
+- Leaving releases leadership, deputy, medical and mentoring duties while retaining family, relationships and original history. The chosen outside life survives save/reload, and all three choices can request a return using the existing colony-acceptance rules.
+
+<strong>v2.0.0-alpha.8 (KanapuroEdit): </strong>
+- Returning to the colony no longer replaces a cat's original birth or joining history. Children returning with a parent also retain their origins; first-time arrivals still receive their joining history.
+- Fixed returning cats exactly six or twelve moons old receiving kitten or apprentice status respectively. Accepted returns and fatal border encounters now use the correct age boundaries.
+
+<strong>v2.0.0-alpha.7 (KanapuroEdit): </strong>
+- Moonplace visits now save separately for each cat. Apprentices keep their one-visit limit after reloading or switching characters, and medicine cats can attend again at the next eligible six-moon gathering. Older saves remain compatible; previously unrecorded visits cannot be recovered.
+- Moonplace now selects only available StarClan spirits. Missing IDs, living cats, wanderers, Dark Forest cats and faded spirits cannot be selected. An empty spirit pool shows an explanation without using up the visit, and direct entry cannot bypass normal visit restrictions.
+- Fixed medical gatherings crashing without neighboring colonies and greetings retaining another colony's neighbors. Missing, dead or outside mentors now use the existing mentorless introduction; paired medical introductions choose an eligible companion directly instead of occasionally becoming empty.
+
+<strong>v2.0.0-alpha.6 (KanapuroEdit): </strong>
+- Centered profile activity buttons as a group, following LifeGen's layout. Apprentices with both a role activity and a Moonplace visit now have evenly spaced controls; dialogue, mediation and existing custom profile features remain available.
+- Moonplace visits now respect temporary conditions that prevent work. Unavailable profile actions cannot be activated through queued clicks, and dead former colonycats no longer receive a return-home button.
+- Fixed condition cards extending past their panel and descriptions overlapping wrapped condition names. Clearing the last condition also clears the previous page's cards.
+- Failed return-home attempts no longer add empty scar entries or stop awarding new scars after four. Existing scars and return-home outcomes are preserved.
+
+<strong>v2.0.0-alpha.5 (KanapuroEdit): </strong>
+- Updated Relationships to the upstream-style full-width, eight-cat layout with individual focus, log and profile buttons. Click a portrait to open the existing extra cat details in a closeable panel; all seven relationship values and existing filters remain.
+- Added upstream card frames, nameplates and a former-mate indicator. Full names, rank and age are available on name hover, and Previous/Next Cat now use clear directional arrows.
+- Relationship logs now block clicks through to the cards. Closing with the title-bar X restores hidden filters and disabled controls just like the log's other close buttons; dead cats' logs remain accessible.
+
+<strong>v2.0.0-alpha.4 (KanapuroEdit): </strong>
+- Added Family and Romance filters to Relationships, alongside Everyone and the existing Only You option. Romance uses the colony's existing dating rules; family includes relatives regardless of cousin-romance settings. Choices are saved per colony.
+- Changing relationship filters now keeps the name search and returns to the first page. Empty searches show an explanation instead of an invalid page number.
+- All seven relationship bars now have numeric hover help. Existing values, inspection, focus switching, profile access and relationship logs are preserved.
+
+<strong>v2.0.0-alpha.3 (KanapuroEdit): </strong>
+- Fixed the leader's den crashing when there are no neighboring colonies. Both tabs remain usable, with clear messages for missing colonies or outsiders.
+- Reopening the leader's den or switching to Outsiders now displays saved plans without rerolling their outcomes or changing who will attend the Gathering.
+- Removed or unavailable targets no longer crash pending leader-den events or block a separate outsider plan. Plans finish after one moon even when no matching event text is available.
+- Fixed healthy leaders always receiving the outsider-interaction penalty intended for leaders unable to work, and stopped outsider list containers accumulating when the list is refreshed.
+
 <strong>v2.0.0-alpha.2 (KanapuroEdit): </strong>
 - Added the Bridge camp in Plains and Quay camp at the Beach, with all four seasons, light/dark variants and their upstream cat placements and den labels.
 - Both camps are available in colony creation, random backgrounds, Quick Start and camp/relocation commands. Bridge's tenth camp slot now saves correctly; existing camps and saved colonies keep their selections.

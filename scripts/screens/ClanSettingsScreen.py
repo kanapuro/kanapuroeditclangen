@@ -527,13 +527,15 @@ class ClanSettingsScreen(Screens):
 
         n = 0
         for code, desc in settings_dict[self.sub_menu].items():
+            if code in ("leader", "deputy") and game.get_config_value("settings", "force_enable", code):
+                game.clan.clan_settings[code] = True
             if game.clan.clan_settings[code]:
                 box_type = "@checked_checkbox"
             else:
                 box_type = "@unchecked_checkbox"
 
             # Handle nested
-            disabled = False
+            disabled = code in ("leader", "deputy") and game.get_config_value("settings", "force_enable", code)
             x_val = 170
             if len(desc) == 4 and isinstance(desc[3], list):
                 x_val += 25
@@ -557,6 +559,8 @@ class ClanSettingsScreen(Screens):
 
             if disabled:
                 self.checkboxes[code].disable()
+                if code in ("leader", "deputy") and game.get_config_value("settings", "force_enable", code):
+                    self.checkboxes[code].set_tooltip("Cruel Season requires automatic succession and deputy selection.")
 
             n += 1
 

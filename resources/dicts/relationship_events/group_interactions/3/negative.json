@@ -313,5 +313,92 @@
 							"trust": "increase"
 						}
 					}
-				}
+				},
+	{
+		"id": "muddypaws_3_app",
+		"cat_amount": 3,
+		"intensity": "medium",
+		"interactions": [
+			"m_c tracked a trail of muddy pawprints into the apprentice's den, straight through the nests of r_c1 and r_c2.",
+			"m_c returned to the apprentice's den dripping mud everywhere and managed to ruin r_c1 and r_c2's nests.",
+			"m_c tromped into the apprentice's den with muddy paws, trailing muck straight through r_c1 and r_c2's nests."
+		],
+		"status_constraint": {
+			"m_c": [
+				"apprentice",
+				"mediator apprentice"
+			],
+			"r_c1": [
+				"apprentice",
+				"mediator apprentice"
+			],
+			"r_c2": [
+				"apprentice",
+				"mediator apprentice"
 			]
+		},
+		"specific_reaction": {
+			"r_c1_to_m_c": {
+				"amount": 10,
+				"signed_like": "decrease",
+				"admiration": "decrease"
+			},
+			"r_c2_to_m_c": {
+				"amount": 10,
+				"signed_like": "decrease",
+				"admiration": "decrease"
+			}
+		}
+	},
+	{
+		"id": "group_3_negative_seniordisrespected_apprentices",
+		"cat_amount": 3,
+		"intensity": "medium",
+		"interactions": [
+			"m_c attempts to impart {PRONOUN/m_c/poss} knowledge onto r_c1 and r_c2, but none of the apprentices pays attention.",
+			"m_c tries teaching r_c1 and r_c2 one of {PRONOUN/m_c/poss} skills but gives up because no apprentice listens.",
+			"m_c had an informative lecture planned for r_c1 and r_c2, but gives up midway because the apprentices ignore {PRONOUN/m_c/object}.",
+			"r_c1 and r_c2 will not stop talking to each other during m_c's lesson, and m_c calls it off.",
+			"m_c spent an entire day planning a lesson for r_c1 and r_c2, but it goes to waste as the apprentices are distracted by each other.",
+			"m_c cannot believe how disrespectful r_c1 and r_c2 are while {PRONOUN/m_c/subject} {VERB/m_c/try/tries} to give a lecture."
+		],
+		"status_constraint": {
+			"r_c1": [
+				"apprentice",
+				"medicine cat apprentice",
+				"mediator apprentice"
+			],
+			"r_c2": [
+				"apprentice",
+				"medicine cat apprentice",
+				"mediator apprentice"
+			]
+		},
+		"age_constraint": {
+			"m_c": [
+				"senior adult",
+				"senior"
+			]
+		},
+		"specific_reaction": {
+			"m_c_to_r_c1": {
+				"amount": 10,
+				"admiration": "decrease",
+				"signed_like": "decrease"
+			},
+			"m_c_to_r_c2": {
+				"amount": 10,
+				"admiration": "decrease",
+				"signed_like": "decrease"
+			},
+			"r_c1_to_m_c": {
+				"amount": 5,
+				"admiration": "decrease"
+			},
+			"r_c2_to_m_c": {
+				"amount": 5,
+				"admiration": "decrease"
+			}
+		}
+	}
+]

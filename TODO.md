@@ -1,4 +1,5 @@
 OH FUCK MAKE SURE WE CREDIT WHOEVER WE PULL FROM IN CREDITS_TEXT.JSON AND THAT ANY BIG CHANGES CHANG THE VERSION # AS WELL 
+- (PRIORITY) allowing a player to change the gamemode (ie. from classic to normal to cruel season etc.). this would either be "converting" a save to make a duplicate (which may require us to shift to save ids? like numbers instead of names. saves perhaps named numbers/unique ids, which is displayed only on save selection screen? idk. worth considering) or just overwrite the existing save :p nondestructive style, advanced compatibility between gamemodes!
 - Murder motives: record the reason for a murder and show it in history.
 - Leader lives: manually verify one/nine-life toggles, reloads, deputy promotion, and command/MC revivals. New saves preserve the hidden nine-life balance; old saves already capped at one may lack the original balance and must not receive invented lives. Manually verify the corrected revival/one-life history wording, especially older retired-leader saves and multiple-life death events.
 - merge w genemod - advanced genetics and (PRIORITY) multi-clan management - https://github.com/narvin42/genemod-expanded 
@@ -52,3 +53,4 @@ OH FUCK MAKE SURE WE CREDIT WHOEVER WE PULL FROM IN CREDITS_TEXT.JSON AND THAT A
 - a random patrol outcome button that weighs the behaviors of the patrollers and selects an appropriate reaction based on their demeanor. more often than not this is an actionable outcome ("proceed" or "antagonize") rather than an inactionable one ("do not proceed"), though this is up to chance. this will create interesting scenarios where a patrol will antagonize when you wouldnt reasonably do so yourself.
 - "antagonize" option on "decides to eat some food themself while hunting" scenario wherein they feed themselves and bring home no prey and thus reduce reputation/"break the code" in their own colony
 - POTENTIAL! (needs thinking) mediator patrols
+- eyebags accessory :)

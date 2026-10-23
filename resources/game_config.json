@@ -1,4 +1,7 @@
 {
+    "cruel_season": {"event": {"stolen_vitality": false}},
+    "ranks": {"can_manually_change": {"all": true, "deputy": true}, "only_leader_kits_deputy": false},
+    "settings": {"force_enable": {"deputy": false, "leader": false}},
     "progress": {"difficulty_modifier": 0},
 	"forced_starting_season": null,
 	"outsiders": {"max_reputation": 100, "starting_reputation": 80},
@@ -169,6 +172,7 @@
 		"cat_amount_welcoming": 3
 	},
 	"pregnancy": {
+        "can_have_kits": null,
 		"birth_cooldown": 6,
 		"primary_chance_mated": 80,
 		"primary_chance_unmated": 200,
@@ -371,6 +375,7 @@
 		"war_injury_modifier": 100
 	},
 	"clan_creation": {
+        "ranks_needed": {"deputy": true},
 		"starting_clan_relation": null,
 		"rerolls": -1,
 		"comment": "Set this to -1 for it to be infinite"

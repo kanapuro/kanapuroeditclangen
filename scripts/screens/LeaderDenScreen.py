@@ -95,10 +95,10 @@ class LeaderDenScreen(Screens):
                     ):
                         self.focus_clan = game.clan.all_clans[i]
                         self.update_other_clan_focus()
-            elif event.ui_element == self.focus_frame_elements["negative_interaction"]:
+            elif event.ui_element == self.focus_frame_elements.get("negative_interaction"):
                 text = self.focus_frame_elements["negative_interaction"].text
                 self.update_clan_interaction_choice(text)
-            elif event.ui_element == self.focus_frame_elements["positive_interaction"]:
+            elif event.ui_element == self.focus_frame_elements.get("positive_interaction"):
                 text = self.focus_frame_elements["positive_interaction"].text
                 self.update_clan_interaction_choice(text)
             elif event.ui_element == self.focus_frame_elements["clans_tab"]:
@@ -323,10 +323,16 @@ class LeaderDenScreen(Screens):
             current_setting = game.clan.clan_settings["lead_den_clan_event"]
             self.focus_clan = get_other_clan(current_setting["other_clan"])
             self.update_other_clan_focus()
-            self.update_clan_interaction_choice(current_setting["interaction_type"])
+            if self.focus_clan:
+                self.update_clan_interaction_choice(current_setting["interaction_type"], record=False)
+            else:
+                self.screen_elements["clan_notice_text"].set_text(
+                    "The colony chosen for the next Gathering is no longer nearby."
+                )
         else:
-            self.focus_clan = game.clan.all_clans[0]
+            self.focus_clan = game.clan.all_clans[0] if game.clan.all_clans else None
             self.update_other_clan_focus()
+        self.update_text(clan=True)
 
     def exit_screen(self):
         """
@@ -574,7 +580,14 @@ class LeaderDenScreen(Screens):
             current_setting = game.clan.clan_settings["lead_den_outsider_event"]
             self.focus_cat = Cat.fetch_cat(current_setting["cat_ID"])
             self.update_outsider_focus()
-            self.update_outsider_interaction_choice(current_setting["interaction_type"])
+            if self.focus_cat:
+                self.update_outsider_interaction_choice(current_setting["interaction_type"], record=False)
+            else:
+                self.screen_elements["outsider_notice_text"].set_text(
+                    "The outsider chosen for this moon is no longer available."
+                )
+        else:
+            self.update_outsider_focus()
 
         self.update_text(clan=False)
 
@@ -592,6 +605,20 @@ class LeaderDenScreen(Screens):
             container=self.focus_frame_container,
             manager=MANAGER,
         )
+
+        self.focus_clan_elements = {}
+        self.focus_frame_elements.pop("negative_interaction", None)
+        self.focus_frame_elements.pop("positive_interaction", None)
+        if self.focus_clan is None:
+            self.focus_clan_elements["empty"] = pygame_gui.elements.UITextBox(
+                "There are no neighboring colonies." if not game.clan.all_clans
+                else "The selected colony is no longer nearby.",
+                ui_scale(pygame.Rect((15, 165), (210, 100))),
+                object_id="#text_box_30_horizcenter",
+                container=self.focus_clan_container,
+                manager=MANAGER,
+            )
+            return
 
         self.focus_clan_elements["clan_symbol"] = pygame_gui.elements.UIImage(
             ui_scale(pygame.Rect((0, 67), (100, 100))),
@@ -681,7 +708,7 @@ class LeaderDenScreen(Screens):
                 "Enmity prevents relations from rising above hostile." if "enmity" in (game.clan.cruel_cards or [])
                 else "Relations are already at their maximum.")
 
-    def update_clan_interaction_choice(self, object_id):
+    def update_clan_interaction_choice(self, object_id, record=True):
         """
         handles changing chosen clan interaction. updates notice text.
         :param object_id: the text in the button
@@ -694,7 +721,8 @@ class LeaderDenScreen(Screens):
             f" {self.leader_name} has decided to {interaction} {other_clan}."
         )
 
-        self.handle_other_clan_interaction(interaction)
+        if record:
+            self.handle_other_clan_interaction(interaction)
 
     def handle_other_clan_interaction(self, interaction_type: str):
         game.clan.clan_settings["lead_den_interaction"] = True
@@ -797,6 +825,20 @@ class LeaderDenScreen(Screens):
             starting_height=1,
             manager=MANAGER,
         )
+
+        self.focus_outsider_elements = {}
+        self.focus_button = {}
+        if self.focus_cat is None or self.focus_cat.dead or not self.focus_cat.outside or self.focus_cat.driven_out:
+            self.focus_cat = None
+            self.focus_outsider_elements["empty"] = pygame_gui.elements.UITextBox(
+                "Select an outsider to view them here." if self.outsider_cat_buttons
+                else "There are no outsiders nearby.",
+                ui_scale(pygame.Rect((15, 165), (210, 100))),
+                object_id="#text_box_30_horizcenter",
+                container=self.focus_outsider_container,
+                manager=MANAGER,
+            )
+            return
 
         self.focus_outsider_elements["cat_sprite"] = pygame_gui.elements.UIImage(
             ui_scale(pygame.Rect((0, 67), (100, 100))),
@@ -942,9 +984,13 @@ class LeaderDenScreen(Screens):
             self.screen_elements["outsider_notice_text"].hide()
             self.screen_elements["clan_notice_text"].show()
 
-            self.screen_elements["temper_text"].set_text(
-                f"The other colonies think {game.clan.name} is {self.clan_temper}."
-            )
+            if game.clan.all_clans:
+                self.screen_elements["temper_text"].set_text(
+                    f"The other colonies think {game.clan.name} is {self.clan_temper}."
+                )
+            else:
+                self.screen_elements["clan_notice_text"].set_text("There are no neighboring colonies to visit at a Gathering.")
+                self.screen_elements["temper_text"].set_text("")
         else:
             self.screen_elements["outsider_notice_text"].show()
             self.screen_elements["clan_notice_text"].hide()
@@ -998,6 +1044,8 @@ class LeaderDenScreen(Screens):
             display_cats = outsider_chunks[self.current_page - 1]
 
         # container for all the cat sprites and names
+        if self.outsider_cat_list_container:
+            self.outsider_cat_list_container.kill()
         self.outsider_cat_list_container = pygame_gui.elements.UIAutoResizingContainer(
             ui_scale(pygame.Rect((40, 27), (0, 0))),
             container=self.outsider_selection_container,
@@ -1048,7 +1096,7 @@ class LeaderDenScreen(Screens):
 
             i += 1
 
-    def update_outsider_interaction_choice(self, object_id):
+    def update_outsider_interaction_choice(self, object_id, record=True):
         """
         handles changing chosen outsider interaction. updates notice text.
         :param object_id: the object ID of the interaction button
@@ -1069,7 +1117,8 @@ class LeaderDenScreen(Screens):
             f" {self.leader_name} has decided to {interaction} {outsider}."
         )
 
-        self.handle_outsider_interaction(object_id)
+        if record:
+            self.handle_outsider_interaction(object_id)
 
     def handle_outsider_interaction(self, object_id):
         """
@@ -1081,7 +1130,7 @@ class LeaderDenScreen(Screens):
 
         # percentage of success
         success_chance = (int(game.clan.reputation) / 100) / 1.5
-        if game.clan.leader.not_working:
+        if game.clan.leader.not_working():
             success_chance = success_chance / 1.2
         # searching should be extra hard, after all those kitties are LOST
         if interaction_type == "search":

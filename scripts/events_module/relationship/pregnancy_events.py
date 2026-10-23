@@ -8,6 +8,7 @@ from scripts.cat.cats import Cat
 from scripts.cat.history import History
 from scripts.cat.names import names, Name
 from scripts.cat_relations.relationship import Relationship
+from scripts.clan_resources.cruel_season import apply_modifiers
 from scripts.event_class import Single_Event
 from scripts.events_module.short.condition_events import Condition_Events
 from scripts.game_structure.game_essentials import game
@@ -18,6 +19,7 @@ from scripts.utility import (
     get_personality_compatibility,
     change_relationship_values,
     get_alive_status_cats,
+    handle_stolen_vitality,
 )
 
 
@@ -136,7 +138,7 @@ class Pregnancy_Events:
         # Check if they can have kits.
         can_have_kits = Pregnancy_Events.check_if_can_have_kits(
             cat, clan.clan_settings["single parentage"], clan.clan_settings["affair"],
-            allow_unmated=clan.clan_settings["unmated parentage"],
+            allow_unmated=clan.clan_settings["unmated parentage"], clan=clan,
         )
         if not can_have_kits:
             return
@@ -153,7 +155,7 @@ class Pregnancy_Events:
             clan.clan_settings["affair"],
             clan.clan_settings["same sex birth"],
             clan.clan_settings["same sex adoption"],
-            allow_unmated=clan.clan_settings["unmated parentage"],
+            allow_unmated=clan.clan_settings["unmated parentage"], clan=clan,
         )
         if second_parent:
             if not can_have_kits:
@@ -188,6 +190,11 @@ class Pregnancy_Events:
         """Handle if the there is no pregnancy but the pair triggered kits chance."""
         if other_cat and (
             other_cat.dead or other_cat.outside or other_cat.birth_cooldown > 0
+        ):
+            return
+
+        if not Pregnancy_Events.check_parent_rank(cat, clan) or (
+            other_cat and not Pregnancy_Events.check_parent_rank(other_cat, clan)
         ):
             return
 
@@ -256,6 +263,11 @@ class Pregnancy_Events:
         """Handles if the cat is zero moons pregnant."""
         if other_cat and (
             other_cat.dead or other_cat.outside or other_cat.birth_cooldown > 0
+        ):
+            return
+
+        if not Pregnancy_Events.check_parent_rank(cat, clan) or (
+            other_cat and not Pregnancy_Events.check_parent_rank(other_cat, clan)
         ):
             return
 
@@ -530,6 +542,7 @@ class Pregnancy_Events:
                 cat.die()
                 death_event = f"{cat.name} died while kitting."
             History.add_death(cat, death_text=death_event)
+            handle_stolen_vitality(cat, 1)
         elif not cat.outside:  # if cat doesn't die, give recovering from birth
             cat.get_injured("recovering from birth", event_triggered=True)
             if "blood loss" in cat.injuries:
@@ -583,7 +596,17 @@ class Pregnancy_Events:
     # ---------------------------------------------------------------------------- #
 
     @staticmethod
-    def check_if_can_have_kits(cat, single_parentage, allow_affair, allow_unmated=False):
+    def check_parent_rank(cat, clan=None):
+        clan = clan or game.clan
+        ranks = apply_modifiers(clan.cruel_cards if clan else None, ("pregnancy", "can_have_kits"),
+                                game.config["pregnancy"]["can_have_kits"])
+        return ranks is None or cat.status in ranks or any(
+            Cat.all_cats[mate_id].status in ranks
+            for mate_id in cat.mates if mate_id in Cat.all_cats
+        )
+
+    @staticmethod
+    def check_if_can_have_kits(cat, single_parentage, allow_affair, allow_unmated=False, clan=None):
         """Check if the given cat can have kits, see for age, birth-cooldown and so on."""
         if not cat:
             return False
@@ -600,6 +623,9 @@ class Pregnancy_Events:
             cat.age in ["newborn", "kitten", "adolescent"] or cat.moons < 15
         )
         if not_correct_age or cat.no_kits or cat.dead:
+            return False
+
+        if not Pregnancy_Events.check_parent_rank(cat, clan):
             return False
 
         # check for mate
@@ -726,6 +752,7 @@ class Pregnancy_Events:
         same_sex_birth: bool,
         same_sex_adoption: bool,
         allow_unmated: bool = False,
+        clan=None,
     ):
         """
         This checks to see if the chosen second parent and CAT can have kits. It assumes CAT can have kits.
@@ -735,7 +762,7 @@ class Pregnancy_Events:
 
         # Checks for second parent alone:
         if not Pregnancy_Events.check_if_can_have_kits(
-            second_parent, single_parentage, allow_affair, allow_unmated=allow_unmated
+            second_parent, single_parentage, allow_affair, allow_unmated=allow_unmated, clan=clan
         ):
             return False, False
 

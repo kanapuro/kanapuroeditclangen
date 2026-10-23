@@ -70,11 +70,17 @@ class MoonplaceScreen(Screens):
 
     def screen_switches(self):
         super().screen_switches()
-        self.the_cat = Cat.all_cats.get(choice(game.clan.starclan_cats))
-        game.switches["attended half-moon"] = True
+        spirits = []
+        for cat_id in game.clan.starclan_cats:
+            cat = Cat.all_cats.get(cat_id)
+            if cat and cat.dead and not (cat.df or cat.outside or cat.faded):
+                spirits.append(cat)
+        can_visit = game.clan.your_cat.can_visit_moonplace()
+        self.the_cat = choice(spirits) if spirits and can_visit else None
         self.update_camp_bg()
         self.hide_menu_buttons()
-        self.handle_other_med()
+        if self.the_cat is not None:
+            self.handle_other_med()
         self.text_index = 0
         self.frame_index = 0
         self.choicepanel = False
@@ -87,13 +93,19 @@ class MoonplaceScreen(Screens):
                     "resources/images/clan_name_bg.png").convert_alpha(),
                 (500, 870)),
             manager=MANAGER)
-        self.profile_elements["cat_name"] = pygame_gui.elements.UITextBox(str(self.the_cat.name),
+        self.profile_elements["cat_name"] = pygame_gui.elements.UITextBox(str(self.the_cat.name) if self.the_cat else "",
                                                                     ui_scale(pygame.Rect((150, 437), (-1, 40))),
                                                                         object_id="#text_box_34_horizcenter_light",
                                                                         manager=MANAGER)
 
         self.text_type = ""
-        self.texts = self.load_texts(self.the_cat)
+        if self.the_cat is not None:
+            self.texts = self.load_texts(self.the_cat)
+            game.clan.your_cat.moonplace_visit_moon = game.clan.age
+        elif can_visit:
+            self.texts = ["[No StarClan cats are available to meet you. You can return when there is someone to speak with.]"]
+        else:
+            self.texts = ["[You cannot visit the Moonplace right now.]"]
         self.text_frames = [[text[:i+1] for i in range(len(text))] for text in self.texts]
         self.talk_box_img = image_cache.load_image("resources/images/talk_box.png").convert_alpha()
 
@@ -124,7 +136,7 @@ class MoonplaceScreen(Screens):
 
         self.profile_elements["cat_image"] = pygame_gui.elements.UIImage(ui_scale(pygame.Rect((35, 450), (200, 200))),
                                                                         pygame.transform.scale(
-                                                                            generate_sprite(self.the_cat),
+                                                                            generate_sprite(self.the_cat) if self.the_cat else pygame.Surface((200, 200), pygame.SRCALPHA),
                                                                             (200, 200)), manager=MANAGER)
         self.paw = pygame_gui.elements.UIImage(
                 ui_scale(pygame.Rect((685, 590), (15, 15))),
@@ -297,7 +309,8 @@ class MoonplaceScreen(Screens):
     def get_med_type(self, you):
         med_type = "you_single_med"
 
-        if you.status == "medicine cat apprentice" and not you.mentor:
+        mentor = Cat.all_cats.get(you.mentor)
+        if you.status == "medicine cat apprentice" and (not mentor or mentor.dead or mentor.outside):
             med_type = "you_app_mentorless"
         elif you.status == "medicine cat apprentice":
             med_type = "you_app_mentor"
@@ -542,17 +555,11 @@ class MoonplaceScreen(Screens):
                     alive_app = choice(alive_apps)
                 text = text.replace("r_w", str(alive_app.name))
             if "r_m" in text:
-                alive_apps = get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"])
-                if len(alive_apps) <= 1:
+                other_meds = [med for med in get_alive_status_cats(Cat, ["medicine cat", "medicine cat apprentice"])
+                              if med.ID not in (game.clan.your_cat.ID, cat.ID)]
+                if not other_meds:
                     return ""
-                alive_app = choice(alive_apps)
-                counter = 0
-                while alive_app.ID == game.clan.your_cat.ID or alive_app.ID == cat.ID:
-                    counter+=1
-                    if counter == 30:
-                        return ""
-                    alive_app = choice(alive_apps)
-                text = text.replace("r_m", str(alive_app.name))
+                text = text.replace("r_m", str(choice(other_meds).name))
             if "r_d" in text:
                 alive_apps = get_alive_status_cats(Cat, ["mediator", "mediator apprentice"])
                 if len(alive_apps) <= 1:
@@ -827,6 +834,8 @@ class MoonplaceScreen(Screens):
                             med_names[0]
             return template.replace("o_cn", f"{clan_name}").replace("o_c_m", formatted_names)
 
+        if not game.switches["other_med_clan"]:
+            return []
         other_clan = choice(game.switches["other_med_clan"])
         clan_index = game.switches["other_med_clan"].index(other_clan)
         med_cats = game.switches["other_med"][clan_index]
@@ -882,7 +891,8 @@ class MoonplaceScreen(Screens):
                 sublist[:] = [s for s in sublist if randint(1, 10) != 1]
             return lists_of_strings
 
-        if "other_med" not in game.switches:
+        if ("other_med" not in game.switches
+                or game.switches.get("other_med_clan") != list(game.clan.all_clans)):
             game.switches["other_med"] = []
             game.switches["other_med_clan"] = list(game.clan.all_clans)
             game.switches["last_visited_moonplace"] = game.clan.age

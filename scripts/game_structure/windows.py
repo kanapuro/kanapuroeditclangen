@@ -45,6 +45,7 @@ from scripts.ui.generate_button import ButtonStyles, get_button_dict
 from scripts.ui.get_arrow import get_arrow
 from scripts.ui.icon import Icon
 from scripts.utility import (
+    handle_stolen_vitality,
     ui_scale,
     quit,
     update_sprite,
@@ -1397,6 +1398,7 @@ class KillCat(UIWindow):
                             "were", "{VERB/m_c/were/was}", 1
                         )
 
+                    lives_before_death = game.clan.leader_lives
                     if self.take_all:
                         game.clan.leader_lives = 0
                     else:
@@ -1404,6 +1406,8 @@ class KillCat(UIWindow):
 
                 self.the_cat.die()
                 self.history.add_death(self.the_cat, death_message)
+                if self.the_cat.status == "leader":
+                    handle_stolen_vitality(self.the_cat, lives_before_death - max(0, game.clan.leader_lives))
                 update_sprite(self.the_cat)
                 game.all_screens["profile screen"].exit_screen()
                 game.all_screens["profile screen"].screen_switches()
@@ -1786,6 +1790,55 @@ class TutorialPopup(UIWindow):
         return super().process_event(event)
 
 
+class LeaveClanWindow(GameWindow):
+    def __init__(self, cat, screen):
+        super().__init__((225, 165, 350, 340))
+        self.cat = cat
+        self.screen = screen
+        self.selected = None
+        UITextBoxTweaked(
+            "Leave the colony", ui_scale(pygame.Rect((25, 15), (300, 35))),
+            container=self, manager=MANAGER, object_id="#text_box_30_horizcenter",
+        )
+        UITextBoxTweaked(
+            "Choose your life outside. You will give up your duties. Returning requires your colony's acceptance.",
+            ui_scale(pygame.Rect((25, 55), (300, 95))), container=self, manager=MANAGER,
+            object_id="#text_box_26_horizcenter",
+        )
+        self.choices = {}
+        for i, status in enumerate(("loner", "rogue", "kittypet")):
+            self.choices[status] = UISurfaceImageButton(
+                ui_scale(pygame.Rect((89, 155 + i * 35), (172, 30))), status.capitalize(),
+                get_button_dict(ButtonStyles.SQUOVAL, (172, 30)), object_id="@buttonstyles_squoval",
+                container=self, manager=MANAGER,
+            )
+        self.done_button = UISurfaceImageButton(
+            ui_scale(pygame.Rect((89, 285), (172, 30))), "Leave colony",
+            get_button_dict(ButtonStyles.SQUOVAL, (172, 30)), object_id="@buttonstyles_squoval",
+            container=self, manager=MANAGER,
+        )
+        self.done_button.disable()
+
+    def process_event(self, event):
+        if event.type == pygame_gui.UI_BUTTON_START_PRESS:
+            for status, button in self.choices.items():
+                if event.ui_element == button:
+                    for choice_button in self.choices.values():
+                        choice_button.enable()
+                    button.disable()
+                    self.selected = status
+                    self.done_button.enable()
+                    return True
+            if event.ui_element == self.done_button and self.selected is not None:
+                if self.cat.ID == game.clan.your_cat.ID and self.cat.leave_clan(self.selected):
+                    self.kill()
+                    self.screen.clear_profile()
+                    self.screen.build_profile()
+                    self.screen.update_disabled_buttons_and_text()
+                    return True
+        return super().process_event(event)
+
+
 class RelChangeDetailWindow(GameWindow):
     # Layout adapted from LifeGen bab3814eee64852125c004dac588fab809a730e9 (MPL-2.0).
     def __init__(self, changes, screen):
@@ -1946,6 +1999,9 @@ class RelationshipLog(UIWindow):
                 manager=MANAGER,
                 container=self,
             )
+
+    def on_close_window_button_pressed(self):
+        self.closing_process()
 
     def closing_process(self):
         """Handles to enable and kill all processes when an exit button is clicked."""
@@ -2521,7 +2577,11 @@ class DeputyScreen(UIWindow):
         )
         
         self.begin_anew_button.enable()
-        self.mediator_button.enable()
+        if game.get_config_value("ranks", "can_manually_change", "all") and game.get_config_value("ranks", "can_manually_change", "deputy"):
+            self.mediator_button.enable()
+        else:
+            self.mediator_button.disable()
+            self.mediator_button.set_tooltip("Cruel Season prevents manual deputy appointments.")
 
 
     def process_event(self, event):
@@ -2535,6 +2595,8 @@ class DeputyScreen(UIWindow):
                 self.mediator_button.kill()
                 self.kill()
             elif event.ui_element == self.mediator_button:
+                if not game.get_config_value("ranks", "can_manually_change", "all") or not game.get_config_value("ranks", "can_manually_change", "deputy"):
+                    return
                 game.last_screen_forupdate = None
                 if game.clan.deputy:
                     game.clan.deputy.status_change('warrior')

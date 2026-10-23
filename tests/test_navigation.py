@@ -46,12 +46,25 @@ def test_shared_navigation_preserves_destinations(navigation, key, target):
         change.assert_called_once_with(target)
 
 
+def dropdown_state(dropdown):
+    manager = dropdown.ui_manager
+    return {
+        "manager": id(manager), "expected_manager": id(MANAGER),
+        "parent": (dropdown.parent_button.visible, dropdown.parent_button.is_enabled,
+                   tuple(dropdown.parent_button.rect)),
+        "open": dropdown.is_open,
+        "windows": [(type(window).__name__, window.is_blocking, window.alive(), window.visible)
+                    for window in manager.get_window_stack().get_full_stack()],
+        "offset": manager.offset,
+    }
+
+
 def test_dropdowns_open_on_hover_stay_open_over_children_and_close_outside(navigation):
     dropdown = core.menu_dropdowns["dens"]
     assert not dropdown.is_open
     with patch.object(MANAGER, "get_mouse_position", return_value=core.menu_buttons["dens"].rect.center):
         dropdown.update(0.01)
-    assert dropdown.is_open and core.menu_buttons["lead_den"].visible
+    assert dropdown.is_open and core.menu_buttons["lead_den"].visible, dropdown_state(dropdown)
     with patch.object(MANAGER, "get_mouse_position", return_value=core.menu_buttons["lead_den"].rect.center):
         dropdown.update(0.01)
     assert dropdown.is_open
@@ -206,7 +219,7 @@ def test_camp_dropdown_click_wins_over_large_colony_hitboxes(navigation, monkeyp
             MANAGER.process_events(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=1, pos=point))
             MANAGER.process_events(pygame.event.Event(pygame.MOUSEBUTTONUP, button=1, pos=point))
         pressed = [event.ui_element for event in pygame.event.get() if event.type == pygame_gui.UI_BUTTON_START_PRESS]
-        assert target in pressed
+        assert target in pressed, dropdown_state(dropdown)
         assert not any(button.button in pressed for button in screen.cat_buttons)
         screen.handle_event(pygame.event.Event(pygame.MOUSEBUTTONDOWN, button=3, pos=point))
         assert screen._dragging_cat_id is None

@@ -216,15 +216,21 @@ class DeputyScreen(Screens):
             self.next_cat = 0
 
     def change_cat(self, new_mentor=None):
+        if not game.get_config_value("ranks", "can_manually_change", "all") or not game.get_config_value("ranks", "can_manually_change", "deputy"):
+            return
         self.exit_screen()
         game.cur_events_list.clear()
         if game.clan.deputy:
             game.clan.deputy.status_change('warrior')
         new_mentor.status_change('deputy')
+        game.clan.deputy = new_mentor
         game.switches['cur_screen'] = "events screen"
 
     def update_selected_cat(self):
         """Updates the image and information on the currently selected mentor"""
+        if not game.get_config_value("ranks", "can_manually_change", "all") or not game.get_config_value("ranks", "can_manually_change", "deputy"):
+            self.confirm_mentor.disable()
+            self.confirm_mentor.set_tooltip("Cruel Season prevents manual deputy appointments.")
         for ele in self.selected_details:
             self.selected_details[ele].kill()
         self.selected_details = {}
