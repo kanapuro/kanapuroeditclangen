@@ -1578,6 +1578,18 @@ class TestFeedingControls(unittest.TestCase):
     def press(self, button):
         self.screen.handle_event(pygame.event.Event(pygame_gui.UI_BUTTON_START_PRESS, ui_element=button))
 
+    def test_pregnant_and_nursing_priority_is_distinct_from_the_queen_role(self):
+        nursing = self.screen.additional_text["queen/pregnant"]
+        queen = self.screen.additional_text["queen"]
+        self.assertIn("Pregnant / nursing", nursing.html_text)
+        self.assertNotIn("queen", nursing.html_text)
+        self.assertIn("queen", queen.html_text)
+        self.assertIn("regardless of their role", nursing.tool_tip_text)
+        self.assertIn("not pregnant or nursing", queen.tool_tip_text)
+        order = self.clan.freshkill_pile.get_status_order()
+        self.assertEqual(order.count("queen/pregnant"), 1)
+        self.assertEqual(order.count("queen"), 1)
+
     def test_native_multi_selection_reorder_rank_order_and_ration_independence(self):
         pile = self.clan.freshkill_pile
         self.assertEqual(pile.get_feeding_priorities(), ["by-status"])

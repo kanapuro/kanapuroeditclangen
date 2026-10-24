@@ -489,7 +489,7 @@ class LeaderDenScreen(Screens):
                 f"clan_rel{i}"
             ] = pygame_gui.elements.UILabel(
                 ui_scale(pygame.Rect((0, 2), (133, -1))),
-                text=f"{get_other_clan_relation(other_clan.relations).strip()}",
+                text=f"{get_other_clan_relation(other_clan.relations)} ({other_clan.relations})",
                 object_id=get_text_box_theme("#text_box_22_horizcenter"),
                 container=self.other_clan_selection_elements[f"container{i}"],
                 manager=MANAGER,
@@ -661,7 +661,7 @@ class LeaderDenScreen(Screens):
         )
         self.focus_clan_elements["clan_rel"] = pygame_gui.elements.UILabel(
             ui_scale(pygame.Rect((0, 0), (215, -1))),
-            text=f"{relation}",
+            text=f"{relation} ({self.focus_clan.relations})",
             object_id="#text_box_22_horizcenter",
             container=self.focus_clan_container,
             manager=MANAGER,

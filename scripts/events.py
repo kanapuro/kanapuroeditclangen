@@ -2287,14 +2287,14 @@ class Events:
                 game.cur_events_list.append(
                     Single_Event(
                         f"Without regular contact, relations with {drifted_clans[0]} have cooled.",
-                        "other clans"
+                        "other_clans"
                     )
                 )
             else:
                 game.cur_events_list.append(
                     Single_Event(
                         f"Without regular contact, relations with several colonies have cooled.",
-                        "other clans"
+                        "other_clans"
                     )
                 )
 

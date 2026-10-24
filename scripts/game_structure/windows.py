@@ -673,6 +673,7 @@ class ChangeCatName(UIWindow):
         if event.type == pygame_gui.UI_BUTTON_START_PRESS:
             if event.ui_element == self.done_button:
                 old_name = str(self.the_cat.name)
+                old_components = self.the_cat.name.prefix, self.the_cat.name.suffix
                 if self.the_cat.status in self.the_cat.name.names_dict["special_suffixes"] and not self.specsuffix_hidden:
                     self.the_cat.name.suffix = sub(r"[^A-Za-z0-9 '\-]+", "", self.custom_suffix)
 
@@ -718,9 +719,16 @@ class ChangeCatName(UIWindow):
                 if self.the_cat.name.suffix.strip() != "" and self.the_cat.name.name_type in ("single", "syllable"):
                     self.the_cat.name.name_type = "warrior"
 
-                # If the user typed a space in the suffix field, prefer the ancient format.
-                if " " in self.suffix_entry_box.get_text():
-                    self.the_cat.name.name_type = "ancient"
+                if not self.pending_name_type and (
+                    old_components[1] != self.the_cat.name.suffix
+                    or old_components[0][-1:].isspace() != self.the_cat.name.prefix[-1:].isspace()
+                ):
+                    if self.the_cat.name.suffix and (
+                        self.the_cat.name.specsuffix_hidden
+                        or self.the_cat.status not in self.the_cat.name.names_dict["special_suffixes"]
+                    ):
+                        boundary_space = self.the_cat.name.prefix[-1:].isspace() or self.the_cat.name.suffix[:1].isspace()
+                        self.the_cat.name.name_type = "ancient" if boundary_space else "warrior"
 
                 self.custom_suffix = self.the_cat.name.suffix
                 if old_name != str(self.the_cat.name):

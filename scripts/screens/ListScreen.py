@@ -277,6 +277,7 @@ class ListScreen(Screens):
         super().screen_switches()
         self.show_mute_buttons()
         self.clan_name = game.clan.name
+        self.get_cat_list()
 
         self.set_disabled_menu_buttons(["catlist_screen"])
         self.show_menu_buttons()
@@ -577,12 +578,8 @@ class ListScreen(Screens):
         # don't ask why
         MANAGER.update(1)
 
-        # Determine the starting list of cats.
-        self.get_cat_list()
         self.update_cat_list()
-        game.last_list_forProfile = (
-            "clan"  # wipe the saved last_list to avoid inconsistencies
-        )
+        game.last_list_forProfile = None
 
     def display_change_save(self) -> Dict:
         variable_dict = super().display_change_save()
@@ -767,14 +764,15 @@ class ListScreen(Screens):
         """
         grabs the correct cat list for current group
         """
-        if game.last_list_forProfile:
-            if game.last_list_forProfile == "sc":
+        group = game.last_list_forProfile or self.current_group
+        if group:
+            if group == "sc":
                 self.get_sc_cats()
-            elif game.last_list_forProfile == "df":
+            elif group == "df":
                 self.get_df_cats()
-            elif game.last_list_forProfile == "ur":
+            elif group == "ur":
                 self.get_ur_cats()
-            elif game.last_list_forProfile == "cotc":
+            elif group == "cotc":
                 self.get_cotc_cats()
             else:
                 self.get_your_clan_cats()

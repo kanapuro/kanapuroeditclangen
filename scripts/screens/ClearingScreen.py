@@ -844,11 +844,17 @@ class ClearingScreen(Screens):
             label_rect = ui_scale(pygame.Rect((5, 0), (159, -1)))
             label_rect.y = row_y
             self.additional_text[status] = pygame_gui.elements.UITextBox(
-                f"{n + 1}. {status}", label_rect,
+                f"{n + 1}. {'Pregnant / nursing' if status == 'queen/pregnant' else status}", label_rect,
                 container=self.additional_text["container_general"],
                 object_id="#text_box_26_horizleft_pad_10_14", manager=MANAGER,
             )
-            self.additional_text[status].set_tooltip("This order is used by by-status feeding, including its place in your priority list.")
+            if status == "queen/pregnant":
+                explanation = "Pregnant cats and parents nursing kits younger than three moons, regardless of their role."
+            elif status == "queen":
+                explanation = "Cats with the queen role who are not pregnant or nursing young kits."
+            else:
+                explanation = "This order is used by by-status feeding, including its place in your priority list."
+            self.additional_text[status].set_tooltip(explanation)
             row_height = max(ui_scale_dimensions((0, 32))[1], self.additional_text[status].rect.height)
             amount_rect = ui_scale(pygame.Rect((168, 0), (32, -1)))
             amount_rect.y = row_y

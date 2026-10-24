@@ -3274,9 +3274,8 @@ class ProfileScreen(Screens):
             self.condition_container.kill()
 
         self.condition_data = {}
-        self.condition_container = pygame_gui.core.UIContainer(
-            ui_scale(pygame.Rect((89, 471), (624, 151))), MANAGER
-        )
+        bounds = self.conditions_background.rect.move(-MANAGER.get_root_container().rect.x, -MANAGER.get_root_container().rect.y)
+        self.condition_container = pygame_gui.core.UIContainer(bounds, MANAGER)
 
         # gather a list of all the conditions and info needed.
         all_illness_injuries = [
@@ -3322,11 +3321,11 @@ class ProfileScreen(Screens):
         else:
             self.right_conditions_arrow.enable()
 
-        x_pos = 13
+        x_pos = 16
         for con in all_illness_injuries[self.conditions_page]:
             # Background Box
             self.condition_data[f"bg_{con}"] = pygame_gui.elements.UIPanel(
-                ui_scale(pygame.Rect((x_pos, 5), (142, 142))),
+                ui_scale(pygame.Rect((x_pos, 16), (136, 132))),
                 manager=MANAGER,
                 container=self.condition_container,
                 object_id="#profile_condition_panel",
@@ -3344,7 +3343,7 @@ class ProfileScreen(Screens):
             )
 
             y_adjust = self.condition_data[f"name_{con}"].get_relative_rect().height
-            details_rect = ui_scale(pygame.Rect((0, 0), (142, 142)))
+            details_rect = ui_scale(pygame.Rect((0, 0), (136, 132)))
             details_rect.height -= y_adjust + ui_scale_value(5)
             details_rect.bottomleft = (0, 0)
 

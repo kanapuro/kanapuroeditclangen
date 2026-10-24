@@ -425,11 +425,14 @@ class MakeClanScreen(CatCustomizer, Screens):
                 return
             
             self.your_cat.name.name_type = self.pending_name_type
+            changed = (new_prefix, new_suffix) != (self.your_cat.name.prefix, self.your_cat.name.suffix)
             self.your_cat.name.prefix = new_prefix
             self.your_cat.name.suffix = new_suffix
             self.your_cat.name.specsuffix_hidden = self.specsuffix_hidden
-            if new_suffix and new_suffix[0].isspace():
+            if new_prefix[-1:].isspace() or new_suffix[:1].isspace():
                 self.your_cat.name.name_type = "ancient"
+            elif changed and new_suffix:
+                self.your_cat.name.name_type = "warrior"
 
             if game.switches["customise_new_life"] is True:
                 self.open_clan_saved_screen()
@@ -441,7 +444,7 @@ class MakeClanScreen(CatCustomizer, Screens):
             from scripts.cat.names import Name
             new_name_obj = Name(cat=self.your_cat, biome=game.clan.biome, specsuffix_hidden=self.specsuffix_hidden)
             self.elements["prefix_entry"].set_text(new_name_obj.prefix)
-            self.elements["suffix_entry"].set_text(new_name_obj.suffix)
+            self.elements["suffix_entry"].set_text((" " if new_name_obj.name_type == "ancient" else "") + new_name_obj.suffix)
             self.pending_name_type = new_name_obj.name_type
             self.specsuffix_hidden = new_name_obj.specsuffix_hidden
             self.elements["use_spec_suffix"].change_object_id(

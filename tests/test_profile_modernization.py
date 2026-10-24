@@ -211,6 +211,7 @@ def test_condition_cards_scale_without_title_overlap(profile):
                                 name = screen.condition_data["name_" + key[3:]]
                                 details = screen.condition_data["desc_" + key[3:]]
                                 assert screen.condition_container.rect.contains(panel.rect)
+                                assert panel.rect.top >= screen.conditions_background.rect.top + int(15 * scale)
                                 assert name.rect.bottom <= details.rect.top
                                 assert panel.rect.contains(details.rect)
                     finally:

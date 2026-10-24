@@ -1,3 +1,12 @@
+<strong>v2.0.0-alpha.20 (KanapuroEdit): </strong>
+- Newborns now inherit only naming styles enabled for their colony, including when a litter already has a cached naming style. Existing cats keep their names.
+- Fixed typed spaces being removed or added between name components. Renaming preserves explicit spacing through save/reload; creation name rolls keep their chosen style.
+- Newborn naming now starts with the kitten's current name and displays its actual suffix, rather than showing -kit for every naming style. The suffix no longer overlaps the name field.
+- Returning to the Cats screen now retains the selected afterlife or outside view.
+- Fixed condition cards sitting above the slots on the profile's Conditions tab, including scaled layouts.
+- Feeding priorities now distinguish Pregnant / nursing from the queen role, with hover explanations for both.
+- Diplomacy now shows numeric colony relations alongside ally/neutral/hostile, so smaller changes remain visible. Passive relation-loss notices now appear in the Other Clans event category.
+
 <strong>v2.0.0-alpha.19 (KanapuroEdit): </strong>
 - Added LifeGen group events for medicine lessons, disrupted lectures by older cats and muddy apprentice nests, for groups of three to five. Participants follow the source role and age restrictions, with the original directed respect and liking changes adapted to our relationship values.
 - Fixed general group events failing to change relationships or applying the wrong relationship value. Three-cat events now work with exactly three cats; skill requirements and relationship thresholds are checked correctly. Existing group events retain their usual effect amounts.

@@ -988,7 +988,7 @@ def test_leader_den_explains_relationship_caps_in_the_actual_panel(colony, monke
         screen.update_other_clan_focus()
         tooltip = screen.focus_frame_elements["positive_interaction"].tool_tip_text
         assert (help_text in tooltip) if help_text else not tooltip
-        assert screen.focus_clan_elements["clan_rel"].text == ("hostile" if relations == 7 else "ally")
+        assert screen.focus_clan_elements["clan_rel"].text == f"{'hostile' if relations == 7 else 'ally'} ({relations})"
     finally:
         screen.exit_screen()
 

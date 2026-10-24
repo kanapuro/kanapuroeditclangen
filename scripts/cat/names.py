@@ -171,6 +171,8 @@ class Name:
                 inherit_type = None
                 if litter_key is not None:
                     inherit_type = game.clan._litter_style_cache.get(litter_key)
+                    if inherit_type not in enabled_types:
+                        inherit_type = None
 
                 if inherit_type is None and parent_ids:
                     parent_types = []
@@ -180,22 +182,15 @@ class Name:
                             parent_cat = self.cat.__class__.all_cats.get(pid)
                         except Exception:
                             parent_cat = None
-                        if parent_cat and getattr(parent_cat, "name", None):
+                        if parent_cat and getattr(parent_cat, "name", None) and parent_cat.name.name_type in enabled_types:
                             parent_types.append(parent_cat.name.name_type)
 
-                    if parent_types:
-                        # Choose randomly from parent types instead of prioritizing warrior
-                        inherit_type = random.choice(parent_types)
+                    inherit_type = random.choice(parent_types or enabled_types)
 
                     if litter_key is not None and inherit_type is not None:
                         game.clan._litter_style_cache[litter_key] = inherit_type
 
                 if inherit_type:
-                    # If we inherited a type, always use it (add to enabled_types if needed)
-                    if inherit_type not in enabled_types:
-                        # Temporarily add the inherited type so kits can use parent's naming style
-                        # even if it's not currently enabled in settings
-                        pass  # We'll return it anyway
                     return inherit_type
         except Exception:
             pass
@@ -455,14 +450,16 @@ class Name:
     @staticmethod
     def format_components(prefix, suffix, name_type, special_suffix=None):
         """Format stored name components without mutating their style or content."""
-        prefix = str(prefix or "").strip()
+        prefix = str(prefix or "")
         suffix = "" if suffix is None else str(suffix)
         if special_suffix is not None:
             return prefix + str(special_suffix).strip()
         if name_type in ("single", "syllable"):
             return prefix
         if name_type == "ancient":
-            return f"{prefix} {suffix.strip()}" if suffix.strip() else prefix
+            if prefix[-1:].isspace() or suffix[:1].isspace():
+                return prefix + suffix
+            return f"{prefix} {suffix}" if suffix else prefix
         return prefix + suffix
 
     @classmethod

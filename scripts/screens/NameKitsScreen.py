@@ -286,17 +286,17 @@ class NameKitsScreen(Screens):
                 manager=MANAGER
                 )
             self.selected_details["name_entry"] = pygame_gui.elements.UITextEntryLine(
-                ui_scale(pygame.Rect((100, 192), (140, 29))),
+                ui_scale(pygame.Rect((100, 192), (115, 29))),
                 manager=MANAGER,
-                initial_text=""
+                initial_text=self.selected_cat.name.prefix
                 )
 
             self.selected_details["name_entry"].set_allowed_characters(
                 list("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_- "))
             self.selected_details["name_entry"].set_text_length_limit(30)
             self.selected_details["clan"] = pygame_gui.elements.UITextBox(
-                "-kit",
-                ui_scale(pygame.Rect((160, 192), (100, 25))),
+                str(self.selected_cat.name)[len(self.selected_cat.name.prefix):],
+                ui_scale(pygame.Rect((215, 192), (100, 25))),
                 object_id="#text_box_30_horizcenter",
                 manager=MANAGER)
         else:

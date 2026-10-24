@@ -126,6 +126,7 @@ def test_rename_special_suffix_toggle_preserves_the_draft_until_done(naming, sav
     ("ancient", "Moss", "Wildeharbor"), ("single", "Fireheart", ""), ("syllable", "Kyra", "")])
 def test_newborn_inherits_stored_parent_style_instead_of_guessing_from_display(naming, style, prefix, suffix):
     clan, parent, elements = naming
+    clan.clan_settings.update(ancient_names=True, single_names=True, syllable_names=True)
     parent.status = "leader" if style == "ancient" else "warrior"
     parent.name = Name(prefix=prefix, suffix=suffix, name_type=style, cat=parent,
                        specsuffix_hidden=style in ("single", "syllable"), load_existing_name=True)
@@ -135,6 +136,7 @@ def test_newborn_inherits_stored_parent_style_instead_of_guessing_from_display(n
 
 def test_a_later_litter_uses_the_parents_current_naming_style(naming):
     clan, parent, elements = naming
+    clan.clan_settings.update(ancient_names=True, single_names=True, syllable_names=True)
     parent.name = Name(prefix="Kyra", suffix="", name_type="syllable", cat=parent,
                        specsuffix_hidden=True, load_existing_name=True)
     first = Cat(gender="female", status="newborn", moons=0, parent1=parent.ID)
@@ -179,10 +181,12 @@ def test_done_keeps_the_draft_custom_suffix_behind_the_visible_rank_suffix(namin
 
 def test_naming_cache_is_separate_for_different_colonies(naming, monkeypatch):
     clan, parent, elements = naming
+    clan.clan_settings["syllable_names"] = True
     parent.name = Name(prefix="Kyra", suffix="", name_type="syllable", cat=parent,
                        specsuffix_hidden=True, load_existing_name=True)
     first = Cat(gender="female", status="newborn", moons=0, parent1=parent.ID)
     other = Clan(name="OtherNaming", camp_bg="camp1", game_mode="expanded")
+    other.clan_settings["ancient_names"] = True
     monkeypatch.setattr(game, "clan", other)
     parent.name = Name(prefix="Moss", suffix="Wildeharbor", name_type="ancient", cat=parent,
                        specsuffix_hidden=True, load_existing_name=True)
@@ -193,6 +197,7 @@ def test_naming_cache_is_separate_for_different_colonies(naming, monkeypatch):
 
 def test_mixed_style_litter_stays_consistent_and_can_disable_inheritance(naming):
     clan, parent, elements = naming
+    clan.clan_settings.update(ancient_names=True, single_names=True, syllable_names=True)
     parent.name = Name(prefix="Kyra", suffix="", name_type="syllable", cat=parent,
                        specsuffix_hidden=True, load_existing_name=True)
     other = Cat(prefix="Moss", suffix="Wildeharbor", gender="female", status="warrior", moons=40,
@@ -201,7 +206,7 @@ def test_mixed_style_litter_stays_consistent_and_can_disable_inheritance(naming)
                for _ in range(4)]
     assert len({cat.name.name_type for cat in kittens}) == 1
     assert kittens[0].name.name_type in ("ancient", "syllable")
-    clan.clan_settings["kit_inherit_naming"] = False
+    clan.clan_settings.update(kit_inherit_naming=False, ancient_names=False, single_names=False, syllable_names=False)
     independent = Cat(gender="female", status="newborn", moons=0, parent1=parent.ID, parent2=other.ID)
     assert independent.name.name_type == "warrior"
 
